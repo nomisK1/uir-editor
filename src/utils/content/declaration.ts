@@ -46,9 +46,9 @@ class declaration extends functon {
 
     public getVariables() {
         let vars: variable[] = [];
-        /* this.args.forEach((a) => {
+        this.args.forEach((a) => {
             vars.push(...a.getVariables());
-        }); */
+        });
         return vars;
     }
 }

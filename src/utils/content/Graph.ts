@@ -186,11 +186,11 @@ class Graph {
 
     // level: ...-2->grandparents, -1->parents, 0->[], 1-> children, 2->grandchildren...
     private getVariableRelatives(name: string, level: number) {
-        if (level === 0) return [...this.getVariables(name)];
-        let relatives: variable[] = [];
+        if (level === 0) return [];
+        let relatives = this.getVariables(name);
         if (level < 0) {
             level = Math.abs(level);
-            relatives = this.getVariableParents(name);
+            relatives.push(...this.getVariableParents(name));
             for (let i = 1; i < level; i++) {
                 let temp: variable[] = [];
                 relatives.forEach((r) => {
@@ -200,7 +200,7 @@ class Graph {
             }
             return relatives;
         } else {
-            relatives = this.getVariableChildren(name);
+            relatives.push(...this.getVariableChildren(name));
             for (let i = 1; i < level; i++) {
                 let temp: variable[] = [];
                 relatives.forEach((r) => {
@@ -210,10 +210,6 @@ class Graph {
             }
             return relatives;
         }
-    }
-
-    private getVariableRelativesRanges(name: string, level: number) {
-        return this.getVariableRanges(this.getVariableRelatives(name, level));
     }
 
     public getVariableParentsTree(name: string) {

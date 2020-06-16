@@ -37,7 +37,7 @@ class Decorations {
     public findDecorationsHover(/* target: monaco.Range */ word: string) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateHover()) {
-            let targets = getMonacoRanges(graph.getVariableRanges(graph.getVariableBalancedTree(word)));
+            let targets = getMonacoRanges(graph.getVariableRanges(graph.getVariables(word)));
             //console.log(word);
             return targets;
         }
@@ -79,7 +79,7 @@ class Decorations {
                     options: {
                         isWholeLine: false,
                         className: 'myContentClass',
-                        glyphMarginClassName: 'myGlyphMarginClass',
+                        glyphMarginClassName: '',
                     },
                 },
             ];
