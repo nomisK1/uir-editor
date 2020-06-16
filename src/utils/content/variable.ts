@@ -22,11 +22,16 @@ class variable extends node {
     }
 
     public getParents() {
+        if (this.parents === null) return [];
         return this.parents;
     }
 
     public getRange(): range {
         return { line: this.line, start: this.index /*  + 1 */, end: this.index + this.name.length /*  + 1 */ };
+    }
+
+    public isCalled(name: string) {
+        return this.name === name;
     }
 }
 

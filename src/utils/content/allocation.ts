@@ -29,6 +29,7 @@ class allocation extends instruction {
             index: sides[0].length + 5,
             prev: null,
             next: null,
+            context: this,
         });
         this.operation.build();
         this.target = new variable({
@@ -36,9 +37,10 @@ class allocation extends instruction {
             data: this.data,
             line: this.line,
             index: 2,
-            prev: this.operation,
-            next: null,
+            prev: null,
+            next: this.operation,
             parents: this.operation.getVariables(),
+            context: this,
         });
         // add reference to target
         this.operation.setNext(this.target);
@@ -49,6 +51,14 @@ class allocation extends instruction {
         vars.push(this.target!);
         vars.push(...this.operation!.getVariables());
         return vars;
+    }
+
+    public getChild() {
+        return this.target;
+    }
+
+    public hasParent(name: string) {
+        if (this.operation) return this.operation.hasVariable(name);
     }
 }
 

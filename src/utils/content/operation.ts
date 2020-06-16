@@ -117,6 +117,7 @@ class operation extends instruction {
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,
+                    context: this,
                 }),
             );
         });
@@ -128,6 +129,13 @@ class operation extends instruction {
 
     public getVariables() {
         return this.args;
+    }
+
+    public hasVariable(name: string) {
+        for (let i = 0; i < this.args.length; i++) {
+            if (this.args[i].isCalled(name)) return true;
+        }
+        return false;
     }
 }
 

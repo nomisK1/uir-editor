@@ -3,10 +3,9 @@ import TcphDropdown from './components/TcphDropdown';
 import FeatureChecker from './components/FeatureChecker';
 import Editor from './components/Editor';
 import Graph from './utils/content/Graph';
-import graph from './utils/graph/Graph';
 import { setupLanguage } from './utils/language/setup';
 import { languageID } from './utils/language/config';
-import { get } from './utils/content/tcph';
+import { get } from './utils/editor/tcph';
 
 enum Feature {
     HOVER = 'Hover Highlighting',
@@ -38,9 +37,6 @@ class App extends React.Component<IAppProps, IAppState> {
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
-        //for testing
-        let test = new graph({ query: queries[0] });
-        test.print();
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {

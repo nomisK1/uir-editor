@@ -34,6 +34,7 @@ class declaration extends functon {
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,
+                    context: this,
                 }),
             );
         });
@@ -44,11 +45,11 @@ class declaration extends functon {
     }
 
     public getVariables() {
-        /* let vars: variable[] = [];
-        this.args.forEach((a) => {
+        let vars: variable[] = [];
+        /* this.args.forEach((a) => {
             vars.push(...a.getVariables());
         }); */
-        return [];
+        return vars;
     }
 }
 

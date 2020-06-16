@@ -9,13 +9,26 @@ interface IBlockProps extends INodeProps {}
 
 class block extends node {
     protected instructions: instruction[];
+    protected target: variable | null;
 
     constructor(props: IBlockProps) {
         super(props);
         this.instructions = [];
+        this.target = null;
     }
 
     public build() {
+        // create target reference
+        this.target = new variable({
+            name: '%' + this.name,
+            data: 'TargetForBlock:' + this.name + '@l:' + this.line,
+            line: this.line,
+            index: this.index,
+            prev: null,
+            next: null,
+            parents: null,
+            context: this,
+        });
         // split block into lines
         let lines = this.data.split(/\n/).slice(1);
         for (let i = 0; i < lines.length; i++) {
@@ -34,6 +47,7 @@ class block extends node {
                         index: 2,
                         prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
                         next: null,
+                        context: this,
                     }),
                 );
             } else {
@@ -45,6 +59,7 @@ class block extends node {
                         index: 2,
                         prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
                         next: null,
+                        context: this,
                     }),
                 );
             }
@@ -61,10 +76,19 @@ class block extends node {
 
     public getVariables() {
         let vars: variable[] = [];
+        vars.push(this.target!);
         this.instructions.forEach((i) => {
             vars.push(...i.getVariables());
         });
         return vars;
+    }
+
+    public getAllocations() {
+        let allocations: allocation[] = [];
+        this.instructions.forEach((i) => {
+            if (i instanceof allocation) allocations.push(i);
+        });
+        return allocations;
     }
 }
 

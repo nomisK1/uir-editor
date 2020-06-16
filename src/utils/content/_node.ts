@@ -1,3 +1,4 @@
+import Graph from './Graph';
 import variable from './variable';
 
 export enum Type {
@@ -19,6 +20,7 @@ export interface INodeProps {
     index: number;
     prev: node | null;
     next: node | null;
+    context: Graph | node;
 }
 
 abstract class node {
@@ -28,6 +30,7 @@ abstract class node {
     protected index: number;
     protected prev: node | null;
     protected next: node | null;
+    protected context: Graph | node;
 
     constructor(props: INodeProps) {
         this.name = props.name;
@@ -36,6 +39,7 @@ abstract class node {
         this.index = props.index;
         this.prev = props.prev;
         this.next = props.next;
+        this.context = props.context;
     }
 
     public abstract build(): void;
@@ -53,25 +57,6 @@ abstract class node {
     public setNext(next: node | null) {
         this.next = next;
     }
-
-    /* public getAncestors(level: number, max: number) {
-        let ancestors: Node[] = [];
-        if (level > max) {
-            return ancestors;
-        }
-        this.parents.forEach((n) => {
-            ancestors = [...ancestors, n, ...n.getAncestors(++level, max)];
-        });
-        return ancestors;
-    }
-
-    public getRange() {
-        return new monaco.Range(this.line, this.index + 1, this.line, this.index + this.name.length + 1);
-    }
-
-    public toString() {
-        return this.line + ': ' + this.name;
-    } */
 }
 
 export default node;

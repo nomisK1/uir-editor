@@ -2,6 +2,7 @@ import { Type } from './_node';
 import functon, { IFunctonProps } from './_functon';
 import block from './block';
 import variable from './variable';
+import allocation from './allocation';
 
 // keyword: define | /define[^}]*}/
 interface IDefinitionProps extends IFunctonProps {}
@@ -37,6 +38,7 @@ class definition extends functon {
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,
+                    context: this,
                 }),
             );
         });
@@ -58,6 +60,7 @@ class definition extends functon {
                     index: 0,
                     prev: this.blocks.length > 0 ? this.blocks[this.blocks.length - 1] : null,
                     next: null,
+                    context: this,
                 }),
             );
             line += b.match(/\n/g)!.length + 2;
@@ -81,6 +84,14 @@ class definition extends functon {
             vars.push(...b.getVariables());
         });
         return vars;
+    }
+
+    public getAllocations() {
+        let allocations: allocation[] = [];
+        this.blocks.forEach((b) => {
+            allocations.push(...b.getAllocations());
+        });
+        return allocations;
     }
 }
 
