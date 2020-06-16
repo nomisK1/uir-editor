@@ -1,4 +1,4 @@
-import range, { isEqual } from '../editor/IRange';
+import range from '../editor/IRange';
 import component from './_component';
 import global from './global';
 import declaration from './declaration';
@@ -36,7 +36,6 @@ class Graph {
                         index: 0,
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
-                        context: this,
                     }),
                 );
             }
@@ -51,7 +50,6 @@ class Graph {
                         index: 0,
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
-                        context: this,
                     }),
                 );
             }
@@ -66,7 +64,6 @@ class Graph {
                         index: 0,
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
-                        context: this,
                     }),
                 );
             }
@@ -137,7 +134,7 @@ class Graph {
         return vars;
     }
 
-    public getVariables(name: string) {
+    public findVariables(name: string) {
         let vars: variable[] = [];
         this.getAllVariables().forEach((v) => {
             if (v.isCalled(name)) {
@@ -153,16 +150,6 @@ class Graph {
             ranges.push(v.getRange());
         });
         return ranges;
-    }
-
-    public getVariableAtRange(name: string, range: range) {
-        let vars = this.getAllVariables();
-        for (let i = 0; i < vars.length; i++) {
-            if (vars[i].isCalled(name) && isEqual(vars[i].getRange(), range)) {
-                return vars[i];
-            }
-        }
-        return null;
     }
 
     private getVariableChildren(name: string) {
@@ -187,7 +174,7 @@ class Graph {
     // level: ...-2->grandparents, -1->parents, 0->[], 1-> children, 2->grandchildren...
     private getVariableRelatives(name: string, level: number) {
         if (level === 0) return [];
-        let relatives = this.getVariables(name);
+        let relatives = this.findVariables(name);
         if (level < 0) {
             level = Math.abs(level);
             relatives.push(...this.getVariableParents(name));
@@ -241,7 +228,7 @@ class Graph {
     }
 
     public print() {
-        console.log(this.getVariableBalancedTree('%CompilationContext_cpp_214_'));
+        console.log(this);
     }
 }
 

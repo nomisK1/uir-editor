@@ -37,7 +37,7 @@ class Decorations {
     public findDecorationsHover(/* target: monaco.Range */ word: string) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateHover()) {
-            let targets = getMonacoRanges(graph.getVariableRanges(graph.getVariables(word)));
+            let targets = getMonacoRanges(graph.getVariableRanges(graph.findVariables(word)));
             //console.log(word);
             return targets;
         }

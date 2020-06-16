@@ -5,30 +5,21 @@ import operation from './operation';
 import variable from './variable';
 
 // keyword: label (name)
-interface IBlockProps extends INodeProps {}
+interface IBlockProps extends INodeProps {
+    target: variable;
+}
 
 class block extends node {
     protected instructions: instruction[];
-    protected target: variable | null;
+    protected target: variable;
 
     constructor(props: IBlockProps) {
         super(props);
         this.instructions = [];
-        this.target = null;
+        this.target = props.target;
     }
 
     public build() {
-        // create target reference
-        this.target = new variable({
-            name: '%' + this.name,
-            data: 'TargetForBlock:' + this.name + '@l:' + this.line,
-            line: this.line,
-            index: this.index,
-            prev: null,
-            next: null,
-            parents: null,
-            context: this,
-        });
         // split block into lines
         let lines = this.data.split(/\n/).slice(1);
         for (let i = 0; i < lines.length; i++) {
@@ -47,7 +38,6 @@ class block extends node {
                         index: 2,
                         prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
                         next: null,
-                        context: this,
                     }),
                 );
             } else {
@@ -59,7 +49,6 @@ class block extends node {
                         index: 2,
                         prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
                         next: null,
-                        context: this,
                     }),
                 );
             }
@@ -76,7 +65,6 @@ class block extends node {
 
     public getVariables() {
         let vars: variable[] = [];
-        vars.push(this.target!);
         this.instructions.forEach((i) => {
             vars.push(...i.getVariables());
         });
@@ -89,6 +77,10 @@ class block extends node {
             if (i instanceof allocation) allocations.push(i);
         });
         return allocations;
+    }
+
+    public getTarget() {
+        return this.target;
     }
 }
 

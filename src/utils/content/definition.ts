@@ -38,7 +38,6 @@ class definition extends functon {
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,
-                    context: this,
                 }),
             );
         });
@@ -52,6 +51,15 @@ class definition extends functon {
         let line = this.line + 2;
         blocks.forEach((b) => {
             let label = b.split(':')[0];
+            let target = new variable({
+                name: '' + label,
+                data: 'Target:' + label + ':Active@l:' + this.line + '->' + this.getLastLineNumber(),
+                line: line,
+                index: 0,
+                prev: this.blocks.length > 0 ? this.blocks[this.blocks.length - 1].getTarget() : null,
+                next: null,
+                parents: null,
+            });
             this.blocks.push(
                 new block({
                     name: label,
@@ -60,7 +68,7 @@ class definition extends functon {
                     index: 0,
                     prev: this.blocks.length > 0 ? this.blocks[this.blocks.length - 1] : null,
                     next: null,
-                    context: this,
+                    target,
                 }),
             );
             line += b.match(/\n/g)!.length + 2;
@@ -92,6 +100,20 @@ class definition extends functon {
             allocations.push(...b.getAllocations());
         });
         return allocations;
+    }
+
+    public getTargets(line: number) {
+        let targets: variable[] = [];
+        if (line >= this.line && line <= this.getLastLineNumber())
+            this.blocks.forEach((b) => {
+                targets.push(b.getTarget());
+            });
+        return targets;
+    }
+
+    public getLastLineNumber() {
+        if (this.next === null) return 0;
+        return this.next.getLine() - 2;
     }
 }
 

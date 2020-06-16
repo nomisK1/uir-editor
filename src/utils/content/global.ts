@@ -21,7 +21,6 @@ class global extends component {
             prev: this.prev,
             next: this.prev,
             parents: null,
-            context: this,
         });
     }
 

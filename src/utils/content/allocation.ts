@@ -29,7 +29,6 @@ class allocation extends instruction {
             index: sides[0].length + 5,
             prev: null,
             next: null,
-            context: this,
         });
         this.operation.build();
         this.target = new variable({
@@ -40,7 +39,6 @@ class allocation extends instruction {
             prev: null,
             next: this.operation,
             parents: this.operation.getVariables(),
-            context: this,
         });
         // add reference to target
         this.operation.setNext(this.target);

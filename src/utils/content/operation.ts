@@ -117,7 +117,6 @@ class operation extends instruction {
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,
-                    context: this,
                 }),
             );
         });

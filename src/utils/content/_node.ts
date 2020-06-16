@@ -1,4 +1,3 @@
-import Graph from './Graph';
 import variable from './variable';
 
 export enum Type {
@@ -20,7 +19,6 @@ export interface INodeProps {
     index: number;
     prev: node | null;
     next: node | null;
-    context: Graph | node;
 }
 
 abstract class node {
@@ -30,7 +28,6 @@ abstract class node {
     protected index: number;
     protected prev: node | null;
     protected next: node | null;
-    protected context: Graph | node;
 
     constructor(props: INodeProps) {
         this.name = props.name;
@@ -39,7 +36,6 @@ abstract class node {
         this.index = props.index;
         this.prev = props.prev;
         this.next = props.next;
-        this.context = props.context;
     }
 
     public abstract build(): void;
@@ -48,6 +44,10 @@ abstract class node {
 
     public getName() {
         return this.name;
+    }
+
+    public getLine() {
+        return this.line;
     }
 
     public setData(data: string) {
