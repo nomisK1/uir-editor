@@ -50,24 +50,28 @@ abstract class node {
         return this.name;
     }
 
-    public getRange() {
-        return this.range;
+    public getData() {
+        return this.data;
     }
 
     public setData(data: string) {
         this.data = data;
     }
 
-    public getData() {
-        return this.data;
+    public getRange() {
+        return this.range;
     }
 
-    public setNext(next: node | null) {
-        this.next = next;
+    public getPrev() {
+        return this.prev;
     }
 
     public getNext() {
         return this.next;
+    }
+
+    public setNext(next: node | null) {
+        this.next = next;
     }
 }
 

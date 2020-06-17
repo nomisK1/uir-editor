@@ -13,13 +13,13 @@ interface IBlockProps extends INodeProps {
 class block extends node {
     static offset = 2;
 
-    protected instructions: instruction[];
     protected target: variable;
+    protected instructions: instruction[];
 
     constructor(props: IBlockProps) {
         super(props);
-        this.instructions = [];
         this.target = props.target;
+        this.instructions = [];
     }
 
     public build() {

@@ -86,10 +86,6 @@ class Graph {
         this.components = comps;
     }
 
-    private getComponents() {
-        return this.components;
-    }
-
     private getGlobals() {
         let globals: global[] = [];
         this.components.forEach((c) => {
@@ -131,6 +127,13 @@ class Graph {
         return vars;
     }
 
+    public findNode(position: monaco.Position) {
+        for (let i = 0; i < this.components.length; i++) {
+            if (this.components[i].getRange().containsPosition(position)) return this.components[i].findNode(position);
+        }
+        return null;
+    }
+
     public findVariable(postition: monaco.Position) {
         let vars: variable[] = [];
         this.getAllVariables().forEach((v) => {
@@ -147,13 +150,6 @@ class Graph {
             }
         });
         return vars;
-    }
-
-    public findNode(position: monaco.Position) {
-        for (let i = 0; i < this.components.length; i++) {
-            if (this.components[i].getRange().containsPosition(position)) return this.components[i].findNode(position);
-        }
-        return null;
     }
 
     public getVariableRanges(vars: variable[]) {

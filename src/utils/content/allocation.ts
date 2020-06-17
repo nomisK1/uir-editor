@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor';
 import instruction, { IInstructionProps } from './_instruction';
-import variable from './variable';
 import operation from './operation';
+import variable from './variable';
 
 // keyword: "="
 interface IAllocationProps extends IInstructionProps {}
