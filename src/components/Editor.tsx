@@ -100,6 +100,7 @@ class Editor extends React.Component<IEditorProps> {
         this.activateHover = this.props.activateHover;
         this.activateClick = this.props.activateClick;
 
+        this.graph.print();
         console.log(this.graph);
         console.log(this.activateHover);
         console.log(this.activateClick);

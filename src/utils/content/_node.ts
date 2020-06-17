@@ -38,9 +38,9 @@ abstract class node {
 
     public abstract build(): void;
 
-    public abstract getVariables(): variable[];
+    public abstract findNode(position: monaco.Position): node | null;
 
-    //public abstract findNode(line: number, column: number): node | null;
+    public abstract getVariables(): variable[];
 
     public getNode() {
         return this;

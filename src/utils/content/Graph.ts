@@ -123,10 +123,6 @@ class Graph {
         return allocations;
     }
 
-    private findNode(line: number, column: number) {
-        this.components.forEach((c) => {});
-    }
-
     private getAllVariables() {
         let vars: variable[] = [];
         this.components.forEach((c) => {
@@ -135,10 +131,10 @@ class Graph {
         return vars;
     }
 
-    public findVariable(lineNumber: number, column: number) {
+    public findVariable(postition: monaco.Position) {
         let vars: variable[] = [];
         this.getAllVariables().forEach((v) => {
-            if (v.getRange().containsPosition({ lineNumber, column })) return vars.push(v);
+            if (v.getRange().containsPosition(postition)) return vars.push(v);
         });
         return vars;
     }
@@ -151,6 +147,13 @@ class Graph {
             }
         });
         return vars;
+    }
+
+    public findNode(position: monaco.Position) {
+        for (let i = 0; i < this.components.length; i++) {
+            if (this.components[i].getRange().containsPosition(position)) return this.components[i].findNode(position);
+        }
+        return null;
     }
 
     public getVariableRanges(vars: variable[]) {
@@ -237,7 +240,7 @@ class Graph {
     }
 
     public print() {
-        console.log(this);
+        console.log(this.findNode(new monaco.Position(10000, 34)));
     }
 }
 

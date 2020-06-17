@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import node, { INodeProps } from './_node';
 
 // keyword: "%"
@@ -15,6 +16,10 @@ class variable extends node {
     }
 
     public build() {}
+
+    public findNode(position: monaco.Position): node | null {
+        return this;
+    }
 
     public getVariables() {
         return [this];

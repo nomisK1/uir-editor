@@ -30,9 +30,8 @@ class block extends node {
             lines[i] = lines[i].trim();
         }
         // define instructions
-        let i = 0;
         lines.forEach((l) => {
-            line += ++i;
+            line += 1;
             if (l.includes('=')) {
                 this.instructions.push(
                     new allocation({
@@ -70,6 +69,15 @@ class block extends node {
             this.getLastLineNumber(),
             this.instructions[this.instructions.length - 1].getData().length + block.offset,
         );
+    }
+
+    public findNode(position: monaco.Position): node | null {
+        if (this.target!.getRange().containsPosition(position)) return this.target.findNode(position);
+        for (let i = 0; i < this.instructions.length; i++) {
+            if (this.instructions[i].getRange().containsPosition(position))
+                return this.instructions[i].findNode(position);
+        }
+        return this;
     }
 
     public getVariables() {

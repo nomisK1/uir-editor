@@ -29,16 +29,22 @@ class Decorations {
         return Decorations.instance;
     }
 
+    private shiftRange(range: monaco.Range) {
+        return range
+            .setStartPosition(range.startLineNumber, range.startColumn + 1)
+            .setEndPosition(range.endLineNumber, range.endColumn + 1);
+    }
+
     /**
      * findDecorationsHover:
      *
      */
-    public findDecorationsHover(/* target: monaco.Range */ word: string, lineNumber: number, column: number) {
+    public findDecorationsHover(position: monaco.Position) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateHover()) {
-            let targets = graph.getVariableRanges(graph.findVariable(lineNumber, column));
-            //console.log(word);
-            return targets;
+            let target = graph.findNode(position);
+            console.log(position, target);
+            if (target) return [this.shiftRange(target!.getRange())];
         }
         return [];
     }
@@ -47,12 +53,12 @@ class Decorations {
      * findDecorationsClick:
      *
      */
-    public findDecorationsClick(/* target: monaco.Range */ word: string, lineNumber: number, column: number) {
+    public findDecorationsClick(position: monaco.Position) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateClick()) {
-            let targets = graph.getVariableRanges(graph.getVariableBalancedTree(word));
-            //console.log(word);
-            return targets;
+            let target = graph.findNode(position);
+            console.log(position, target);
+            if (target) return [this.shiftRange(target!.getRange())];
         }
         return [];
     }

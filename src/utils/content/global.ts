@@ -21,8 +21,8 @@ class global extends component {
             name,
             data: this.data,
             range: new monaco.Range(line, index + 6, line, index + 6 + name.length),
-            prev: this.prev,
-            next: this.prev,
+            prev: null,
+            next: null,
             parents: null,
         });
     }
@@ -31,7 +31,10 @@ class global extends component {
         return [this.target!];
     }
 
-    public findNode(line: number, column: number) {}
+    public findNode(position: monaco.Position): component | null {
+        if (this.target!.getRange().containsPosition(position)) return this.target!.findNode(position);
+        return this;
+    }
 }
 
 export default global;

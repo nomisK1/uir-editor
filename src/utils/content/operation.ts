@@ -133,6 +133,13 @@ class operation extends instruction {
         }
     }
 
+    public findNode(position: monaco.Position): instruction | null {
+        for (let i = 0; i < this.args.length; i++) {
+            if (this.args[i].getRange().containsPosition(position)) return this.args[i].findNode(position);
+        }
+        return this;
+    }
+
     public getVariables() {
         return this.args;
     }

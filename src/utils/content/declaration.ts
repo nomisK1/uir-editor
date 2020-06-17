@@ -1,15 +1,19 @@
 import * as monaco from 'monaco-editor';
 import { Type } from './_node';
-import functon, { IFunctonProps } from './_functon';
+import component, { IComponentProps } from './_component';
 import variable from './variable';
 
 // keyword: declare | /declare.*/
-interface IDeclarationProps extends IFunctonProps {}
+interface IDeclarationProps extends IComponentProps {}
 
-class declaration extends functon {
-    // eslint-disable-next-line
+class declaration extends component {
+    protected type: Type;
+    protected args: variable[];
+
     constructor(props: IDeclarationProps) {
         super(props);
+        this.type = Type.VOID;
+        this.args = [];
     }
 
     public build() {
@@ -42,6 +46,13 @@ class declaration extends functon {
         for (let i = 0; i < this.args.length - 1; i++) {
             this.args[i].setNext(this.args[i + 1]);
         }
+    }
+
+    public findNode(position: monaco.Position): component | null {
+        for (let i = 0; i < this.args.length; i++) {
+            if (this.args[i].getRange().containsPosition(position)) return this.args[i].findNode(position);
+        }
+        return this;
     }
 
     public getVariables() {
