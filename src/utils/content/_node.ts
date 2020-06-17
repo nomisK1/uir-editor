@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import variable from './variable';
 
 export enum Type {
@@ -15,8 +16,7 @@ export enum Type {
 export interface INodeProps {
     name: string;
     data: string;
-    line: number;
-    index: number;
+    range: monaco.Range;
     prev: node | null;
     next: node | null;
 }
@@ -24,16 +24,14 @@ export interface INodeProps {
 abstract class node {
     protected name: string;
     protected data: string;
-    protected line: number;
-    protected index: number;
+    protected range: monaco.Range;
     protected prev: node | null;
     protected next: node | null;
 
     constructor(props: INodeProps) {
         this.name = props.name;
         this.data = props.data;
-        this.line = props.line;
-        this.index = props.index;
+        this.range = props.range;
         this.prev = props.prev;
         this.next = props.next;
     }
@@ -42,20 +40,34 @@ abstract class node {
 
     public abstract getVariables(): variable[];
 
+    //public abstract findNode(line: number, column: number): node | null;
+
+    public getNode() {
+        return this;
+    }
+
     public getName() {
         return this.name;
     }
 
-    public getLine() {
-        return this.line;
+    public getRange() {
+        return this.range;
     }
 
     public setData(data: string) {
         this.data = data;
     }
 
+    public getData() {
+        return this.data;
+    }
+
     public setNext(next: node | null) {
         this.next = next;
+    }
+
+    public getNext() {
+        return this.next;
     }
 }
 

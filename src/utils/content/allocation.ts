@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import instruction, { IInstructionProps } from './_instruction';
 import variable from './variable';
 import operation from './operation';
@@ -16,6 +17,7 @@ class allocation extends instruction {
     }
 
     public build() {
+        let line = this.range.startLineNumber;
         // split assignment on "="
         let sides = this.data.split(/=/);
         for (let i = 0; i < sides.length; i++) {
@@ -23,10 +25,9 @@ class allocation extends instruction {
         }
         // define target and operation
         this.operation = new operation({
-            name: 'Operation@l:' + this.line,
+            name: 'Operation@l:' + line,
             data: sides[1],
-            line: this.line,
-            index: sides[0].length + 5,
+            range: new monaco.Range(line, sides[0].length + 5, line, sides[0].length + 5 + sides[1].length),
             prev: null,
             next: null,
         });
@@ -34,8 +35,7 @@ class allocation extends instruction {
         this.target = new variable({
             name: sides[0],
             data: this.data,
-            line: this.line,
-            index: 2,
+            range: new monaco.Range(line, 2, line, 2 + sides[0].length),
             prev: null,
             next: this.operation,
             parents: this.operation.getVariables(),

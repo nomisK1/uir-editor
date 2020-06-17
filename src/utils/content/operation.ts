@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import { Type } from './_node';
 import instruction, { IInstructionProps } from './_instruction';
 import variable from './variable';
@@ -95,6 +96,8 @@ class operation extends instruction {
     }
 
     public build() {
+        let line = this.range.startLineNumber;
+        let index = this.range.startColumn;
         // match opcode
         let opc = this.data.substr(0, this.data.indexOf(' '));
         let opcodes = Object.values(OpCode);
@@ -112,8 +115,12 @@ class operation extends instruction {
                 new variable({
                     name: a,
                     data: this.data,
-                    line: this.line,
-                    index: this.index + this.data.indexOf(a),
+                    range: new monaco.Range(
+                        line,
+                        index + this.data.indexOf(a),
+                        line,
+                        index + this.data.indexOf(a) + a.length,
+                    ),
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,

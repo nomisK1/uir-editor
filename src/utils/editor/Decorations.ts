@@ -1,7 +1,6 @@
 import './Decorations.css';
 import * as monaco from 'monaco-editor';
 import Editor from '../../components/Editor';
-import { getMonacoRanges } from './IRange';
 
 // Singleton
 class Decorations {
@@ -34,10 +33,10 @@ class Decorations {
      * findDecorationsHover:
      *
      */
-    public findDecorationsHover(/* target: monaco.Range */ word: string, line: number, column: number) {
+    public findDecorationsHover(/* target: monaco.Range */ word: string, lineNumber: number, column: number) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateHover()) {
-            let targets = getMonacoRanges(graph.getVariableRanges(graph.findVariable(line, column)));
+            let targets = graph.getVariableRanges(graph.findVariable(lineNumber, column));
             //console.log(word);
             return targets;
         }
@@ -48,10 +47,10 @@ class Decorations {
      * findDecorationsClick:
      *
      */
-    public findDecorationsClick(/* target: monaco.Range */ word: string, line: number, column: number) {
+    public findDecorationsClick(/* target: monaco.Range */ word: string, lineNumber: number, column: number) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateClick()) {
-            let targets = getMonacoRanges(graph.getVariableRanges(graph.getVariableBalancedTree(word)));
+            let targets = graph.getVariableRanges(graph.getVariableBalancedTree(word));
             //console.log(word);
             return targets;
         }

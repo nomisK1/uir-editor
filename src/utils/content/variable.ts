@@ -1,5 +1,4 @@
 import node, { INodeProps } from './_node';
-import range from '../editor/IRange';
 
 // keyword: "%"
 interface IVariableProps extends INodeProps {
@@ -26,8 +25,8 @@ class variable extends node {
         return this.parents;
     }
 
-    public getRange(): range {
-        return { line: this.line, start: this.index /*  + 1 */, end: this.index + this.name.length /*  + 1 */ };
+    public getRange() {
+        return this.range;
     }
 
     public isCalled(name: string) {

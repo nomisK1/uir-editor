@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import component, { IComponentProps } from './_component';
 import variable from './variable';
 
@@ -5,19 +6,21 @@ import variable from './variable';
 interface IGlobalProps extends IComponentProps {}
 
 class global extends component {
-    protected variable: variable | null;
+    protected target: variable | null;
 
     constructor(props: IGlobalProps) {
         super(props);
-        this.variable = null;
+        this.target = null;
     }
 
     public build() {
-        this.variable = new variable({
-            name: this.name.match(/%[\w]*/)![0],
+        let name = this.name.match(/%[\w]*/)![0];
+        let line = this.range.startLineNumber;
+        let index = this.range.startColumn;
+        this.target = new variable({
+            name,
             data: this.data,
-            line: this.line,
-            index: this.index + 6,
+            range: new monaco.Range(line, index + 6, line, index + 6 + name.length),
             prev: this.prev,
             next: this.prev,
             parents: null,
@@ -25,8 +28,10 @@ class global extends component {
     }
 
     public getVariables() {
-        return [this.variable!];
+        return [this.target!];
     }
+
+    public findNode(line: number, column: number) {}
 }
 
 export default global;

@@ -1,4 +1,4 @@
-import range, { inRange } from '../editor/IRange';
+import * as monaco from 'monaco-editor';
 import component from './_component';
 import global from './global';
 import declaration from './declaration';
@@ -23,45 +23,42 @@ class Graph {
     private build() {
         let comps: component[] = [];
         // split query into globals, declarations, definitions
-        const lines = this.query.split(/\n/);
+        let lines = this.query.split(/\n/);
         for (let i = 0; i < lines.length; i++) {
-            const consts = lines[i].match(/const.*/g);
-            if (consts) {
-                const names = consts[0].match(/%[\w]*\[[\d]+\]/);
+            let globals = lines[i].match(/const.*/g);
+            if (globals) {
+                let names = globals[0].match(/%[\w]*\[[\d]+\]/);
                 comps.push(
                     new global({
                         name: names![0],
-                        data: consts[0],
-                        line: i + 1,
-                        index: 0,
+                        data: globals[0],
+                        range: new monaco.Range(i + 1, 0, i + 1, globals[0].length),
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
                     }),
                 );
             }
-            const declares = lines[i].match(/declare.*/g);
+            let declares = lines[i].match(/declare.*/g);
             if (declares) {
-                const names = declares[0].match(/@[_\w]*/);
+                let names = declares[0].match(/@[_\w]*/);
                 comps.push(
                     new declaration({
                         name: names![0],
                         data: declares[0],
-                        line: i + 1,
-                        index: 0,
+                        range: new monaco.Range(i + 1, 0, i + 1, declares[0].length),
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
                     }),
                 );
             }
-            const defines = lines[i].match(/define.*/g);
+            let defines = lines[i].match(/define.*/g);
             if (defines) {
-                const names = defines[0].match(/@[_\w]*/);
+                let names = defines[0].match(/@[_\w]*/);
                 comps.push(
                     new definition({
                         name: names![0],
                         data: defines[0],
-                        line: i + 1,
-                        index: 0,
+                        range: new monaco.Range(i + 1, 0, i + 1, 0),
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
                     }),
@@ -69,12 +66,12 @@ class Graph {
             }
         }
         // add body to definitions
-        const defines = this.query.match(/define[\s\S]*?}/g);
-        defines?.forEach((s) => {
-            const name = s.match(/@[_\w]*/)![0];
+        let defines = this.query.match(/define[\s\S]*?}/g);
+        defines?.forEach((d) => {
+            let name = d.match(/@[_\w]*/)![0];
             comps.forEach((c) => {
                 if (c.getName() === name) {
-                    c.setData(s);
+                    c.setData(d);
                 }
             });
         });
@@ -126,7 +123,9 @@ class Graph {
         return allocations;
     }
 
-    private getNode(line: number, column: number) {}
+    private findNode(line: number, column: number) {
+        this.components.forEach((c) => {});
+    }
 
     private getAllVariables() {
         let vars: variable[] = [];
@@ -136,10 +135,10 @@ class Graph {
         return vars;
     }
 
-    public findVariable(line: number, column: number) {
+    public findVariable(lineNumber: number, column: number) {
         let vars: variable[] = [];
         this.getAllVariables().forEach((v) => {
-            if (inRange(v.getRange(), line, column)) return vars.push(v);
+            if (v.getRange().containsPosition({ lineNumber, column })) return vars.push(v);
         });
         return vars;
     }
@@ -155,7 +154,7 @@ class Graph {
     }
 
     public getVariableRanges(vars: variable[]) {
-        let ranges: range[] = [];
+        let ranges: monaco.Range[] = [];
         vars.forEach((v) => {
             ranges.push(v.getRange());
         });

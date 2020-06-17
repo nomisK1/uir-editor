@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import { Type } from './_node';
 import functon, { IFunctonProps } from './_functon';
 import variable from './variable';
@@ -12,6 +13,7 @@ class declaration extends functon {
     }
 
     public build() {
+        let line = this.range.startLineNumber;
         // match type
         let type = this.data.match(/declare(.*?)@/)![1].trim();
         let types = Object.values(Type);
@@ -29,8 +31,7 @@ class declaration extends functon {
                 new variable({
                     name: a,
                     data: argument,
-                    line: this.line,
-                    index: this.data.indexOf(a),
+                    range: new monaco.Range(line, this.data.indexOf(a), line, this.data.indexOf(a) + a.length),
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,

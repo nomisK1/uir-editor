@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import node, { INodeProps } from './_node';
 import instruction from './_instruction';
 import allocation from './allocation';
@@ -10,6 +11,8 @@ interface IBlockProps extends INodeProps {
 }
 
 class block extends node {
+    static offset = 2;
+
     protected instructions: instruction[];
     protected target: variable;
 
@@ -20,6 +23,7 @@ class block extends node {
     }
 
     public build() {
+        let line = this.range.startLineNumber;
         // split block into lines
         let lines = this.data.split(/\n/).slice(1);
         for (let i = 0; i < lines.length; i++) {
@@ -28,14 +32,13 @@ class block extends node {
         // define instructions
         let i = 0;
         lines.forEach((l) => {
-            let line = this.line + ++i;
+            line += ++i;
             if (l.includes('=')) {
                 this.instructions.push(
                     new allocation({
                         name: 'Allocation@l:' + line,
                         data: l,
-                        line: line,
-                        index: 2,
+                        range: new monaco.Range(line, block.offset, line, block.offset + l.length),
                         prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
                         next: null,
                     }),
@@ -45,8 +48,7 @@ class block extends node {
                     new operation({
                         name: 'Operation@l:' + line,
                         data: l,
-                        line: line,
-                        index: 2,
+                        range: new monaco.Range(line, block.offset, line, block.offset + l.length),
                         prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
                         next: null,
                     }),
@@ -61,6 +63,13 @@ class block extends node {
         this.instructions.forEach((i) => {
             i.build();
         });
+        // set range
+        this.range = new monaco.Range(
+            this.range.startLineNumber,
+            0,
+            this.getLastLineNumber(),
+            this.instructions[this.instructions.length - 1].getData().length + block.offset,
+        );
     }
 
     public getVariables() {
@@ -81,6 +90,11 @@ class block extends node {
 
     public getTarget() {
         return this.target;
+    }
+
+    private getLastLineNumber() {
+        if (this.next === null) return this.range.endLineNumber;
+        return this.next.getRange().startLineNumber - 2;
     }
 }
 

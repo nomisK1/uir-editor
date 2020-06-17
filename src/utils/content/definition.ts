@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor';
 import { Type } from './_node';
 import functon, { IFunctonProps } from './_functon';
 import block from './block';
@@ -16,6 +17,7 @@ class definition extends functon {
     }
 
     public build() {
+        let line = this.range.startLineNumber;
         // match type
         let type = this.data.match(/define(.*?)@/)![1].trim();
         let types = Object.values(Type);
@@ -33,8 +35,7 @@ class definition extends functon {
                 new variable({
                     name: a,
                     data: argument,
-                    line: this.line,
-                    index: this.data.indexOf(a),
+                    range: new monaco.Range(line, this.data.indexOf(a), line, this.data.indexOf(a) + a.length),
                     prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
                     next: null,
                     parents: null,
@@ -48,14 +49,12 @@ class definition extends functon {
         // match blocks
         let body = this.data.match(/{[\s\S]*?}/)![0];
         let blocks = body.slice(2, body.length - 2).split(/\n\n/);
-        let line = this.line + 2;
         blocks.forEach((b) => {
             let label = b.split(':')[0];
             let target = new variable({
                 name: '%' + label,
-                data: 'Target:' + label + ':Active@l:' + this.line + '->' + this.getLastLineNumber(),
-                line: line,
-                index: 0,
+                data: 'Target:' + label + '@l:' + line + 2,
+                range: new monaco.Range(line + 2, 0, line + 2, label.length),
                 prev: this.blocks.length > 0 ? this.blocks[this.blocks.length - 1].getTarget() : null,
                 next: null,
                 parents: null,
@@ -64,8 +63,7 @@ class definition extends functon {
                 new block({
                     name: label,
                     data: b,
-                    line: line,
-                    index: 0,
+                    range: new monaco.Range(line + 2, 0, this.getLastLineNumber() - 1, 0),
                     prev: this.blocks.length > 0 ? this.blocks[this.blocks.length - 1] : null,
                     next: null,
                     target,
@@ -81,6 +79,8 @@ class definition extends functon {
         this.blocks.forEach((b) => {
             b.build();
         });
+        // set range
+        this.range = new monaco.Range(this.range.startLineNumber, 0, this.getLastLineNumber(), 0);
     }
 
     public getVariables() {
@@ -102,18 +102,9 @@ class definition extends functon {
         return allocations;
     }
 
-    public getTargets(line: number) {
-        let targets: variable[] = [];
-        if (line >= this.line && line <= this.getLastLineNumber())
-            this.blocks.forEach((b) => {
-                targets.push(b.getTarget());
-            });
-        return targets;
-    }
-
-    public getLastLineNumber() {
-        if (this.next === null) return 0;
-        return this.next.getLine() - 2;
+    private getLastLineNumber() {
+        if (this.next === null) return this.range.endLineNumber;
+        return this.next.getRange().startLineNumber - 2;
     }
 }
 
