@@ -6,8 +6,8 @@ interface IRange {
     end: number;
 }
 
-export function isEqual(range1: IRange, range2: IRange): boolean {
-    return range1.line === range2.line && range1.start === range2.start && range1.end === range2.end;
+export function inRange(range: IRange, line: number, column: number) {
+    return range.line === line && range.start <= column && range.end >= column;
 }
 
 export function getMonacoRange(range: IRange): monaco.Range {

@@ -34,10 +34,10 @@ class Decorations {
      * findDecorationsHover:
      *
      */
-    public findDecorationsHover(/* target: monaco.Range */ word: string) {
+    public findDecorationsHover(/* target: monaco.Range */ word: string, line: number, column: number) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateHover()) {
-            let targets = getMonacoRanges(graph.getVariableRanges(graph.findVariables(word)));
+            let targets = getMonacoRanges(graph.getVariableRanges(graph.findVariable(line, column)));
             //console.log(word);
             return targets;
         }
@@ -48,7 +48,7 @@ class Decorations {
      * findDecorationsClick:
      *
      */
-    public findDecorationsClick(/* target: monaco.Range */ word: string) {
+    public findDecorationsClick(/* target: monaco.Range */ word: string, line: number, column: number) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateClick()) {
             let targets = getMonacoRanges(graph.getVariableRanges(graph.getVariableBalancedTree(word)));

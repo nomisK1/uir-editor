@@ -52,7 +52,7 @@ class definition extends functon {
         blocks.forEach((b) => {
             let label = b.split(':')[0];
             let target = new variable({
-                name: '' + label,
+                name: '%' + label,
                 data: 'Target:' + label + ':Active@l:' + this.line + '->' + this.getLastLineNumber(),
                 line: line,
                 index: 0,

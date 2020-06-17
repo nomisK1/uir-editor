@@ -1,4 +1,4 @@
-import range from '../editor/IRange';
+import range, { inRange } from '../editor/IRange';
 import component from './_component';
 import global from './global';
 import declaration from './declaration';
@@ -126,10 +126,20 @@ class Graph {
         return allocations;
     }
 
+    private getNode(line: number, column: number) {}
+
     private getAllVariables() {
         let vars: variable[] = [];
         this.components.forEach((c) => {
             vars.push(...c.getVariables());
+        });
+        return vars;
+    }
+
+    public findVariable(line: number, column: number) {
+        let vars: variable[] = [];
+        this.getAllVariables().forEach((v) => {
+            if (inRange(v.getRange(), line, column)) return vars.push(v);
         });
         return vars;
     }
