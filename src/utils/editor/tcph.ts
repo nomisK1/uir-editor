@@ -1,5 +1,6 @@
 export function get() {
     // TODO: escape backslashes in strings
+    let uir = '../queries/tpch1.uir';
     return queries.length > 0 ? queries : [''];
 }
 
