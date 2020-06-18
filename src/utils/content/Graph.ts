@@ -226,9 +226,23 @@ class Graph {
                     );
                     break;
                 case operation:
-                    vars.push(
-                        ...nodevariable.getContext()!.getContext()!.getContext()!.findVariables(nodevariable.getName()),
-                    );
+                    if (nodevariable.getContext()!.getContext()! instanceof allocation)
+                        vars.push(
+                            ...nodevariable
+                                .getContext()!
+                                .getContext()!
+                                .getContext()!
+                                .getContext()!
+                                .findVariables(nodevariable.getName()),
+                        );
+                    else
+                        vars.push(
+                            ...nodevariable
+                                .getContext()!
+                                .getContext()!
+                                .getContext()!
+                                .findVariables(nodevariable.getName()),
+                        );
                     break;
                 default:
                     break;
