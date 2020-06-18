@@ -7,18 +7,18 @@ import variable from './variable';
 
 // keyword: label (name)
 interface IBlockProps extends INodeProps {
-    //target: variable;
+    target: variable;
 }
 
 class block extends node {
     static offset = 2;
 
-    //protected target: variable;
+    protected target: variable;
     protected instructions: instruction[];
 
     constructor(props: IBlockProps) {
         super(props);
-        //this.target = props.target;
+        this.target = props.target;
         this.instructions = [];
     }
 
@@ -73,34 +73,22 @@ class block extends node {
         );
     }
 
-    public findNode(position: monaco.Position): node | null {
-        //if (this.target!.getRange().containsPosition(position)) return this.target.findNode(position);
+    public findNodeAt(position: monaco.Position): node | null {
+        if (this.target!.getRange().containsPosition(position)) return this.target.findNodeAt(position);
         for (let i = 0; i < this.instructions.length; i++) {
             if (this.instructions[i].getRange().containsPosition(position))
-                return this.instructions[i].findNode(position);
+                return this.instructions[i].findNodeAt(position);
         }
         return this;
     }
 
     public getVariables() {
         let vars: variable[] = [];
-        //vars.push(this.target);
+        vars.push(this.target);
         this.instructions.forEach((i) => {
             vars.push(...i.getVariables());
         });
         return vars;
-    }
-
-    /* public getTarget() {
-        return this.target;
-    } */
-
-    public contains(variable: variable) {
-        let vars = this.getVariables();
-        for (let i = 0; i < vars.length; i++) {
-            if (vars[i].isCalled(variable.getName())) return true;
-        }
-        return false;
     }
 
     public getAllocations() {

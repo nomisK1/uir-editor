@@ -17,10 +17,12 @@ interface IGraphProps {
 class Graph {
     private query: string;
     private components: component[];
+    private variables: variable[];
 
     constructor(props: IGraphProps) {
         this.query = props.query;
         this.components = [];
+        this.variables = [];
         this.build();
     }
 
@@ -97,6 +99,7 @@ class Graph {
             vars[i].setNext(vars[i + 1]);
             vars[i + 1].setPrev(vars[i]);
         }
+        this.variables = vars;
     }
 
     private getGlobals() {
@@ -149,10 +152,24 @@ class Graph {
         return vars;
     }
 
-    public findNodeAt(position: monaco.Position) {
+    private findVariables(name: string) {
+        let vars: variable[] = [];
+        this.variables.forEach((v) => {
+            if (v.getName() === name) vars.push(v);
+        });
+        return vars;
+    }
+
+    private findComponentAt(position: monaco.Position) {
         for (let i = 0; i < this.components.length; i++) {
-            if (this.components[i].getRange().containsPosition(position)) return this.components[i].findNode(position);
+            if (this.components[i].getRange().containsPosition(position)) return this.components[i];
         }
+        return null;
+    }
+
+    public findNodeAt(position: monaco.Position) {
+        let component = this.findComponentAt(position);
+        if (component) return component.findNodeAt(position);
         return null;
     }
 
@@ -162,7 +179,7 @@ class Graph {
             nodes.push(node);
             switch (node.constructor) {
                 case global:
-                    nodes.push(...this.findVariablesIn(node.getVariables()[0].getName(), this.getAllVariables()));
+                    nodes.push(...this.findVariables(node.getVariables()[0].getName()));
                     break;
                 case declaration:
                     nodes.push(...this.findFunctionReferences(node.getFunctionName()));
@@ -170,7 +187,7 @@ class Graph {
                 case definition:
                     break;
                 case block:
-                    nodes.push(...this.findVariablesIn('%' + node.getName(), node.getContext()!.getVariables()));
+                    nodes.push(...this.findRelatedVariables(node));
                     break;
                 case allocation:
                     break;
@@ -178,16 +195,49 @@ class Graph {
                     nodes.push(...this.findFunctionReferences(node.getFunctionName()));
                     break;
                 case variable:
-                    nodes.push(...this.findVariablesIn(node.getName(), this.getAllVariables()));
+                    nodes.push(...this.findRelatedVariables(node));
                     break;
                 default:
                     break;
             }
         }
-        return nodes;
+        //return nodes;
+        return this.getNodeRanges(nodes);
     }
 
-    public findFunctionReferences(fname: string) {
+    private findRelatedVariables(nodevariable: node | null) {
+        let vars: node[] = [];
+        if (nodevariable !== null && nodevariable.getContext() !== null && nodevariable instanceof variable) {
+            switch (nodevariable.getContext()!.constructor) {
+                case global:
+                    vars.push(...this.findVariables(nodevariable.getName()));
+                    break;
+                case declaration:
+                    break;
+                case definition:
+                    vars.push(...nodevariable.getContext()!.findVariables(nodevariable.getName()));
+                    break;
+                case block:
+                    vars.push(...nodevariable.getContext()!.getContext()!.findVariables(nodevariable.getName()));
+                    break;
+                case allocation:
+                    vars.push(
+                        ...nodevariable.getContext()!.getContext()!.getContext()!.findVariables(nodevariable.getName()),
+                    );
+                    break;
+                case operation:
+                    vars.push(
+                        ...nodevariable.getContext()!.getContext()!.getContext()!.findVariables(nodevariable.getName()),
+                    );
+                    break;
+                default:
+                    break;
+            }
+        }
+        return vars;
+    }
+
+    private findFunctionReferences(fname: string) {
         let nodes: node[] = [];
         if (fname) {
             this.getDeclarations().forEach((d) => {
@@ -198,16 +248,6 @@ class Graph {
             });
         }
         return nodes;
-    }
-
-    public findVariablesIn(name: string, variables: variable[]) {
-        let vars: variable[] = [];
-        variables.forEach((v) => {
-            if (v.isCalled(name)) {
-                vars.push(v);
-            }
-        });
-        return vars;
     }
 
     private getVariableChildren(name: string) {
@@ -232,7 +272,7 @@ class Graph {
     // level: ...-2->grandparents, -1->parents, 0->[], 1-> children, 2->grandchildren...
     private getVariableRelatives(name: string, level: number) {
         if (level === 0) return [];
-        let relatives = this.findVariablesIn(name, this.getAllVariables());
+        let relatives = this.findVariables(name /* , this.getAllVariables() */);
         if (level < 0) {
             level = Math.abs(level);
             relatives.push(...this.getVariableParents(name));
@@ -281,7 +321,7 @@ class Graph {
         return tree;
     }
 
-    public getNodeRanges(nodes: node[]) {
+    private getNodeRanges(nodes: node[]) {
         let ranges: monaco.Range[] = [];
         nodes.forEach((n) => {
             ranges.push(n.getRange());

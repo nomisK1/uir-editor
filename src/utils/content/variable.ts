@@ -12,12 +12,11 @@ class variable extends node {
     constructor(props: IVariableProps) {
         super(props);
         this.parents = props.parents;
-        /* this.name = this.name.slice(1); */
     }
 
     public build() {}
 
-    public findNode(position: monaco.Position): node | null {
+    public findNodeAt(position: monaco.Position): node | null {
         return this;
     }
 

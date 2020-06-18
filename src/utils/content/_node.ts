@@ -41,9 +41,22 @@ abstract class node {
 
     public abstract build(): void;
 
-    public abstract findNode(position: monaco.Position): node | null;
+    public abstract findNodeAt(position: monaco.Position): node | null;
 
     public abstract getVariables(): variable[];
+
+    public findVariables(name: string) {
+        let vars: variable[] = [];
+        this.getVariables().forEach((v) => {
+            if (v.getName() === name) vars.push(v);
+        });
+        return vars;
+    }
+
+    public getFunctionName() {
+        let matches = this.data.match(/_[\w]*/);
+        return matches ? matches[0] : '';
+    }
 
     public getNode() {
         return this;
@@ -83,11 +96,6 @@ abstract class node {
 
     public getContext() {
         return this.context;
-    }
-
-    public getFunctionName() {
-        let matches = this.data.match(/_[\w]*/);
-        return matches ? matches[0] : '';
     }
 }
 

@@ -32,8 +32,8 @@ class global extends component {
         return [this.target!];
     }
 
-    public findNode(position: monaco.Position): component | null {
-        if (this.target!.getRange().containsPosition(position)) return this.target!.findNode(position);
+    public findNodeAt(position: monaco.Position): component | null {
+        if (this.target!.getRange().containsPosition(position)) return this.target!.findNodeAt(position);
         return this;
     }
 }

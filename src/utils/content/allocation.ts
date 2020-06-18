@@ -46,9 +46,9 @@ class allocation extends instruction {
         /* this.operation.setNext(this.target); */
     }
 
-    public findNode(position: monaco.Position): instruction | null {
-        if (this.target!.getRange().containsPosition(position)) return this.target!.findNode(position);
-        if (this.operation!.getRange().containsPosition(position)) return this.operation!.findNode(position);
+    public findNodeAt(position: monaco.Position): instruction | null {
+        if (this.target!.getRange().containsPosition(position)) return this.target!.findNodeAt(position);
+        if (this.operation!.getRange().containsPosition(position)) return this.operation!.findNodeAt(position);
         return this;
     }
 

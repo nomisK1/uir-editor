@@ -54,7 +54,7 @@ class Decorations {
         if (Decorations.editor.getActivateHover()) {
             let target = graph.findNodeAt(position);
             console.log(target);
-            return Decorations.shiftRanges(graph.getNodeRanges(graph.findRealatedNodes(target)));
+            return Decorations.shiftRanges(graph.findRealatedNodes(target));
         }
         return [];
     }
@@ -68,7 +68,7 @@ class Decorations {
         if (Decorations.editor.getActivateClick()) {
             let target = graph.findNodeAt(position);
             console.log(target);
-            return Decorations.shiftRanges(graph.getNodeRanges(graph.findRealatedNodes(target)));
+            return Decorations.shiftRanges(graph.findRealatedNodes(target));
         }
         return [];
     }
