@@ -1,9 +1,13 @@
 import * as monaco from 'monaco-editor';
+import node from './_node';
 import component from './_component';
 import global from './global';
 import declaration from './declaration';
 import definition from './definition';
+import block from './block';
+//import instruction from './_instruction';
 import allocation from './allocation';
+import operation from './operation';
 import variable from './variable';
 
 interface IGraphProps {
@@ -35,6 +39,7 @@ class Graph {
                         range: new monaco.Range(i + 1, 0, i + 1, globals[0].length),
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
+                        context: null,
                     }),
                 );
             }
@@ -48,6 +53,7 @@ class Graph {
                         range: new monaco.Range(i + 1, 0, i + 1, declares[0].length),
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
+                        context: null,
                     }),
                 );
             }
@@ -61,6 +67,7 @@ class Graph {
                         range: new monaco.Range(i + 1, 0, i + 1, 0),
                         prev: comps.length > 0 ? comps[comps.length - 1] : null,
                         next: null,
+                        context: null,
                     }),
                 );
             }
@@ -75,7 +82,7 @@ class Graph {
                 }
             });
         });
-        // add references to next object
+        // add references to next component
         for (let i = 0; i < comps.length - 1; i++) {
             comps[i].setNext(comps[i + 1]);
         }
@@ -84,6 +91,12 @@ class Graph {
             c.build();
         });
         this.components = comps;
+        //connect all variables
+        let vars = this.getAllVariables();
+        for (let i = 0; i < vars.length - 1; i++) {
+            vars[i].setNext(vars[i + 1]);
+            vars[i + 1].setPrev(vars[i]);
+        }
     }
 
     private getGlobals() {
@@ -119,6 +132,15 @@ class Graph {
         return allocations;
     }
 
+    private getOperations() {
+        let operations: operation[] = [];
+        let defnitions = this.getDefinitions();
+        defnitions.forEach((d) => {
+            operations.push(...d.getOperations());
+        });
+        return operations;
+    }
+
     private getAllVariables() {
         let vars: variable[] = [];
         this.components.forEach((c) => {
@@ -127,37 +149,65 @@ class Graph {
         return vars;
     }
 
-    public findNode(position: monaco.Position) {
+    public findNodeAt(position: monaco.Position) {
         for (let i = 0; i < this.components.length; i++) {
             if (this.components[i].getRange().containsPosition(position)) return this.components[i].findNode(position);
         }
         return null;
     }
 
-    public findVariable(postition: monaco.Position) {
-        let vars: variable[] = [];
-        this.getAllVariables().forEach((v) => {
-            if (v.getRange().containsPosition(postition)) return vars.push(v);
-        });
-        return vars;
+    public findRealatedNodes(node: node | null) {
+        let nodes: node[] = [];
+        if (node !== null) {
+            nodes.push(node);
+            switch (node.constructor) {
+                case global:
+                    nodes.push(...this.findVariablesIn(node.getVariables()[0].getName(), this.getAllVariables()));
+                    break;
+                case declaration:
+                    nodes.push(...this.findFunctionReferences(node.getFunctionName()));
+                    break;
+                case definition:
+                    break;
+                case block:
+                    nodes.push(...this.findVariablesIn('%' + node.getName(), node.getContext()!.getVariables()));
+                    break;
+                case allocation:
+                    break;
+                case operation:
+                    nodes.push(...this.findFunctionReferences(node.getFunctionName()));
+                    break;
+                case variable:
+                    nodes.push(...this.findVariablesIn(node.getName(), this.getAllVariables()));
+                    break;
+                default:
+                    break;
+            }
+        }
+        return nodes;
     }
 
-    public findVariables(name: string) {
+    public findFunctionReferences(fname: string) {
+        let nodes: node[] = [];
+        if (fname) {
+            this.getDeclarations().forEach((d) => {
+                if (d.getFunctionName() === fname) nodes.push(d);
+            });
+            this.getOperations().forEach((o) => {
+                if (o.getFunctionName() === fname) nodes.push(o);
+            });
+        }
+        return nodes;
+    }
+
+    public findVariablesIn(name: string, variables: variable[]) {
         let vars: variable[] = [];
-        this.getAllVariables().forEach((v) => {
+        variables.forEach((v) => {
             if (v.isCalled(name)) {
                 vars.push(v);
             }
         });
         return vars;
-    }
-
-    public getVariableRanges(vars: variable[]) {
-        let ranges: monaco.Range[] = [];
-        vars.forEach((v) => {
-            ranges.push(v.getRange());
-        });
-        return ranges;
     }
 
     private getVariableChildren(name: string) {
@@ -182,7 +232,7 @@ class Graph {
     // level: ...-2->grandparents, -1->parents, 0->[], 1-> children, 2->grandchildren...
     private getVariableRelatives(name: string, level: number) {
         if (level === 0) return [];
-        let relatives = this.findVariables(name);
+        let relatives = this.findVariablesIn(name, this.getAllVariables());
         if (level < 0) {
             level = Math.abs(level);
             relatives.push(...this.getVariableParents(name));
@@ -231,12 +281,20 @@ class Graph {
         return tree;
     }
 
+    public getNodeRanges(nodes: node[]) {
+        let ranges: monaco.Range[] = [];
+        nodes.forEach((n) => {
+            ranges.push(n.getRange());
+        });
+        return ranges;
+    }
+
     private removeDuplicates(array: variable[]) {
         return array.filter((a, b) => array.indexOf(a) === b);
     }
 
     public print() {
-        console.log(this.findNode(new monaco.Position(10000, 34)));
+        console.log(this.findNodeAt(new monaco.Position(10000, 34)));
     }
 }
 

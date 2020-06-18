@@ -24,6 +24,7 @@ class global extends component {
             prev: null,
             next: null,
             parents: null,
+            context: this,
         });
     }
 

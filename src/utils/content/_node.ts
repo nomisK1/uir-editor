@@ -19,6 +19,7 @@ export interface INodeProps {
     range: monaco.Range;
     prev: node | null;
     next: node | null;
+    context: node | null;
 }
 
 abstract class node {
@@ -27,6 +28,7 @@ abstract class node {
     protected range: monaco.Range;
     protected prev: node | null;
     protected next: node | null;
+    protected context: node | null;
 
     constructor(props: INodeProps) {
         this.name = props.name;
@@ -34,6 +36,7 @@ abstract class node {
         this.range = props.range;
         this.prev = props.prev;
         this.next = props.next;
+        this.context = props.context;
     }
 
     public abstract build(): void;
@@ -66,12 +69,25 @@ abstract class node {
         return this.prev;
     }
 
+    public setPrev(prev: node | null) {
+        this.prev = prev;
+    }
+
     public getNext() {
         return this.next;
     }
 
     public setNext(next: node | null) {
         this.next = next;
+    }
+
+    public getContext() {
+        return this.context;
+    }
+
+    public getFunctionName() {
+        let matches = this.data.match(/_[\w]*/);
+        return matches ? matches[0] : '';
     }
 }
 

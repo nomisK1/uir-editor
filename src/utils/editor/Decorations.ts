@@ -29,10 +29,20 @@ class Decorations {
         return Decorations.instance;
     }
 
-    private shiftRange(range: monaco.Range) {
-        return range
-            .setStartPosition(range.startLineNumber, range.startColumn + 1)
-            .setEndPosition(range.endLineNumber, range.endColumn + 1);
+    /**
+     * shiftRanges:
+     * Shifts the Ranges by one column to the right
+     */
+    public static shiftRanges(ranges: monaco.Range[]) {
+        let shifted: monaco.Range[] = [];
+        ranges.forEach((r) => {
+            shifted.push(
+                r
+                    .setStartPosition(r.startLineNumber, r.startColumn + 1)
+                    .setEndPosition(r.endLineNumber, r.endColumn + 1),
+            );
+        });
+        return shifted;
     }
 
     /**
@@ -42,9 +52,9 @@ class Decorations {
     public findDecorationsHover(position: monaco.Position) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateHover()) {
-            let target = graph.findNode(position);
-            console.log(position, target);
-            if (target) return [this.shiftRange(target!.getRange())];
+            let target = graph.findNodeAt(position);
+            console.log(target);
+            return Decorations.shiftRanges(graph.getNodeRanges(graph.findRealatedNodes(target)));
         }
         return [];
     }
@@ -56,9 +66,9 @@ class Decorations {
     public findDecorationsClick(position: monaco.Position) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateClick()) {
-            let target = graph.findNode(position);
-            console.log(position, target);
-            if (target) return [this.shiftRange(target!.getRange())];
+            let target = graph.findNodeAt(position);
+            console.log(target);
+            return Decorations.shiftRanges(graph.getNodeRanges(graph.findRealatedNodes(target)));
         }
         return [];
     }
@@ -84,7 +94,7 @@ class Decorations {
                     options: {
                         isWholeLine: false,
                         className: 'myContentClass',
-                        glyphMarginClassName: '',
+                        glyphMarginClassName: 'myGlyphMarginClass',
                     },
                 },
             ];

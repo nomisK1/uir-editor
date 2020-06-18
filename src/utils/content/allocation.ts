@@ -30,6 +30,7 @@ class allocation extends instruction {
             range: new monaco.Range(line, sides[0].length + 5, line, sides[0].length + 5 + sides[1].length),
             prev: null,
             next: null,
+            context: this,
         });
         this.operation.build();
         this.target = new variable({
@@ -37,11 +38,12 @@ class allocation extends instruction {
             data: this.data,
             range: new monaco.Range(line, 2, line, 2 + sides[0].length),
             prev: null,
-            next: this.operation,
+            next: null,
             parents: this.operation.getVariables(),
+            context: this,
         });
         // add reference to target
-        this.operation.setNext(this.target);
+        /* this.operation.setNext(this.target); */
     }
 
     public findNode(position: monaco.Position): instruction | null {

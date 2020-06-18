@@ -36,16 +36,17 @@ class declaration extends component {
                     name: a,
                     data: argument,
                     range: new monaco.Range(line, this.data.indexOf(a), line, this.data.indexOf(a) + a.length),
-                    prev: this.args.length > 0 ? this.args[this.args.length - 1] : null,
+                    prev: /* this.args.length > 0 ? this.args[this.args.length - 1] :  */ null,
                     next: null,
                     parents: null,
+                    context: this,
                 }),
             );
         });
         // add references to next variable
-        for (let i = 0; i < this.args.length - 1; i++) {
+        /* for (let i = 0; i < this.args.length - 1; i++) {
             this.args[i].setNext(this.args[i + 1]);
-        }
+        } */
     }
 
     public findNode(position: monaco.Position): component | null {
