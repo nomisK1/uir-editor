@@ -5,7 +5,6 @@ import allocation from './allocation';
 import operation from './operation';
 import variable from './variable';
 
-// keyword: label (name)
 interface IBlockProps extends INodeProps {
     target: variable;
 }

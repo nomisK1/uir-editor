@@ -3,7 +3,6 @@ import instruction, { IInstructionProps } from './_instruction';
 import operation from './operation';
 import variable from './variable';
 
-// keyword: "="
 interface IAllocationProps extends IInstructionProps {}
 
 class allocation extends instruction {

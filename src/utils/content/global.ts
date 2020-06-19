@@ -3,7 +3,6 @@ import { Type } from './_node';
 import component, { IComponentProps } from './_component';
 import variable from './variable';
 
-// keyword: const | /const.*/
 interface IGlobalProps extends IComponentProps {}
 
 class global extends component {

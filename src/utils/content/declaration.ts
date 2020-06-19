@@ -3,7 +3,6 @@ import { Type } from './_node';
 import component, { IComponentProps } from './_component';
 import variable from './variable';
 
-// keyword: declare | /declare.*/
 interface IDeclarationProps extends IComponentProps {}
 
 class declaration extends component {

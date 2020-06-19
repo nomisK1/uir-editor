@@ -5,7 +5,6 @@ import global from './global';
 import declaration from './declaration';
 import definition from './definition';
 import block from './block';
-//import instruction from './_instruction';
 import allocation from './allocation';
 import operation from './operation';
 import variable from './variable';
@@ -237,7 +236,7 @@ class Graph {
         return tree;
     }
 
-    public findVariableChildren(variable: variable) {
+    private findVariableChildren(variable: variable) {
         let children: variable[] = [];
         let context = variable.getOuterContext();
         if (context.constructor === definition) {

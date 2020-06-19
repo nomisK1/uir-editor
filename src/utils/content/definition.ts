@@ -6,7 +6,6 @@ import allocation from './allocation';
 import operation from './operation';
 import variable from './variable';
 
-// keyword: define | /define[^}]*}/
 interface IDefinitionProps extends IComponentProps {}
 
 class definition extends component {
