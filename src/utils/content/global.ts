@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import { Type } from './_node';
 import component, { IComponentProps } from './_component';
 import variable from './variable';
 
@@ -6,10 +7,12 @@ import variable from './variable';
 interface IGlobalProps extends IComponentProps {}
 
 class global extends component {
+    protected type: Type;
     protected target: variable | null;
 
     constructor(props: IGlobalProps) {
         super(props);
+        this.type = Type.GLOBAL;
         this.target = null;
     }
 
@@ -19,7 +22,7 @@ class global extends component {
         let index = this.range.startColumn;
         this.target = new variable({
             name,
-            data: this.data,
+            data: 'Variable:' + name + '@l:' + line,
             range: new monaco.Range(line, index + 6, line, index + 6 + name.length),
             prev: null,
             next: null,

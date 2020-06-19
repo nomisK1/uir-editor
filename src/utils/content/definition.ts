@@ -16,13 +16,12 @@ class definition extends component {
 
     constructor(props: IDefinitionProps) {
         super(props);
-        this.type = Type.VOID;
+        this.type = Type.NULL;
         this.args = [];
         this.blocks = [];
     }
 
     public build() {
-        let line = this.range.startLineNumber;
         // match type
         let type = this.data.match(/define(.*?)@/)![1].trim();
         let types = Object.values(Type);
@@ -33,25 +32,26 @@ class definition extends component {
             }
         });
         // match args
-        let argument = this.data.match(/\((.*?)\)/)![1];
-        let args = argument.match(/%[\w]*/g);
+        let line = this.range.startLineNumber;
+        let args = this.data.split(/\n/)[0].match(/%[\w]*/g);
         args?.forEach((a) => {
             this.args.push(
                 new variable({
                     name: a,
-                    data: argument,
-                    range: new monaco.Range(line, this.data.indexOf(a), line, this.data.indexOf(a) + a.length),
-                    prev: /* this.args.length > 0 ? this.args[this.args.length - 1] :  */ null,
+                    data: 'Variable:' + a + '@l:' + line,
+                    range: new monaco.Range(
+                        line,
+                        variable.indexOfStrict(a, this.data),
+                        line,
+                        variable.indexOfStrict(a, this.data) + a.length,
+                    ),
+                    prev: null,
                     next: null,
                     parents: null,
                     context: this,
                 }),
             );
         });
-        // add references to next variable
-        /* for (let i = 0; i < this.args.length - 1; i++) {
-            this.args[i].setNext(this.args[i + 1]);
-        } */
         // match blocks
         let body = this.data.match(/{[\s\S]*?}/)![0];
         let blocks = body.slice(2, body.length - 2).split(/\n\n/);
@@ -61,7 +61,7 @@ class definition extends component {
                 name: '%' + label,
                 data: 'Block:' + label + '@l:' + (line + 2),
                 range: new monaco.Range(line + 2, 0, line + 2, label.length),
-                prev: /* this.blocks.length > 0 ? this.blocks[this.blocks.length - 1].getTarget() :  */ null,
+                prev: null,
                 next: null,
                 parents: null,
                 context: this,

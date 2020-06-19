@@ -2,15 +2,24 @@ import * as monaco from 'monaco-editor';
 import variable from './variable';
 
 export enum Type {
+    NULL = 'null',
     VOID = 'void',
     BOOL = 'bool',
+    I8 = 'i8',
     INT8 = 'int8',
+    I16 = 'i16',
     INT16 = 'int16',
+    I32 = 'i32',
     INT32 = 'int32',
+    I64 = 'i64',
     INT64 = 'int64',
+    D128 = 'd128',
     DATA128 = 'data128',
     DOUBLE = 'double',
+    PTR = 'ptr',
     POINTER = 'pointer',
+    GLOBAL = 'global',
+    OBJECT = 'object',
 }
 
 export interface INodeProps {
@@ -96,6 +105,13 @@ abstract class node {
 
     public getContext() {
         return this.context;
+    }
+
+    public getOuterContext(): node {
+        if (this.context) {
+            return this.context.getOuterContext();
+        }
+        return this;
     }
 }
 

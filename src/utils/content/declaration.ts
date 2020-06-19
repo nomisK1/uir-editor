@@ -12,12 +12,11 @@ class declaration extends component {
 
     constructor(props: IDeclarationProps) {
         super(props);
-        this.type = Type.VOID;
+        this.type = Type.NULL;
         this.args = [];
     }
 
     public build() {
-        let line = this.range.startLineNumber;
         // match type
         let type = this.data.match(/declare(.*?)@/)![1].trim();
         let types = Object.values(Type);
@@ -28,25 +27,26 @@ class declaration extends component {
             }
         });
         // match args
-        let argument = this.data.match(/\((.*?)\)/)![1];
-        let args = argument.match(/%[\w]*/g);
+        let line = this.range.startLineNumber;
+        let args = this.data.match(/%[\w]*/g);
         args?.forEach((a) => {
             this.args.push(
                 new variable({
                     name: a,
-                    data: argument,
-                    range: new monaco.Range(line, this.data.indexOf(a), line, this.data.indexOf(a) + a.length),
-                    prev: /* this.args.length > 0 ? this.args[this.args.length - 1] :  */ null,
+                    data: 'Variable:' + a + '@l:' + line,
+                    range: new monaco.Range(
+                        line,
+                        variable.indexOfStrict(a, this.data),
+                        line,
+                        variable.indexOfStrict(a, this.data) + a.length,
+                    ),
+                    prev: null,
                     next: null,
                     parents: null,
                     context: this,
                 }),
             );
         });
-        // add references to next variable
-        /* for (let i = 0; i < this.args.length - 1; i++) {
-            this.args[i].setNext(this.args[i + 1]);
-        } */
     }
 
     public findNodeAt(position: monaco.Position): component | null {

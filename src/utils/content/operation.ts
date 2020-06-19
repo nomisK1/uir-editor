@@ -91,15 +91,22 @@ class operation extends instruction {
     constructor(props: IOperationProps) {
         super(props);
         this.opcode = OpCode.CONST;
-        this.type = Type.VOID;
+        this.type = Type.NULL;
         this.args = [];
     }
 
     public build() {
+        // (I) %RelationMappedLogic_cpp_341_ = lshr i64 %firstTid, 16
+        // (II) %firstTid = phi i64 [%TableScanTranslator_cpp_354_, %body %RelationMappedLogic_cpp_343_2, %loopDoneTuples]
+        // (III) %Numeric_cpp_698_ = call d128 _ZN5umbra17BigNumericRuntime7mulTrapENS_9data128_tES1_ (%BigNumeric_cpp_863_16, %BigNumeric_cpp_863_18)
+        // (IV) call void _ZN5umbra17AggregationTarget14exchangeTablesEPvm (%CompilationContext_cpp_214_, %state, i64 32)
+        // (V) condbr %RelationMappedLogic_cpp_349_ %loopTuples %loopDoneTuples
         let line = this.range.startLineNumber;
         let index = this.range.startColumn;
         // match opcode
-        let opc = this.data.substr(0, this.data.indexOf(' '));
+        let opc = this.data.match(
+            /ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext|return|returnvoid|br|condbr|unreachable/,
+        )![0];
         let opcodes = Object.values(OpCode);
         opcodes.forEach((o) => {
             let str = '' + o;
@@ -107,31 +114,38 @@ class operation extends instruction {
                 this.opcode = o;
             }
         });
+        // match type
+        let type = this.data.match(/\b(i(nt)?(8|32|64)|d(ata)?128|bool|global|ptr|void|object)/);
+        if (type) {
+            let types = Object.values(Type);
+            types.forEach((t) => {
+                let str = '' + t;
+                if (str === type![0]) {
+                    this.type = t;
+                }
+            });
+        }
         // match args
-        let argument = this.data.match(/\((.*?)\)/);
-        let args = argument ? argument[1].match(/%[\w]*/g) : this.data.match(/%[\w]*/g);
+        let args = this.data.match(/%[\w]*/g);
         args?.forEach((a) => {
             this.args.push(
                 new variable({
                     name: a,
-                    data: this.data,
+                    data: 'Variable:' + a + '@l:' + line,
                     range: new monaco.Range(
                         line,
-                        index + this.data.indexOf(a),
+                        index + variable.indexOfStrict(a, this.data),
                         line,
-                        index + this.data.indexOf(a) + a.length,
+                        index + variable.indexOfStrict(a, this.data) + a.length,
                     ),
-                    prev: /* this.args.length > 0 ? this.args[this.args.length - 1] :  */ null,
+                    prev: null,
                     next: null,
                     parents: null,
                     context: this,
                 }),
             );
+            index += 0;
         });
-        // add references to next variable
-        /* for (let i = 0; i < this.args.length - 1; i++) {
-            this.args[i].setNext(this.args[i + 1]);
-        } */
     }
 
     public findNodeAt(position: monaco.Position): instruction | null {

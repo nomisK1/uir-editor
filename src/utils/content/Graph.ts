@@ -93,21 +93,17 @@ class Graph {
             c.build();
         });
         this.components = comps;
-        //connect all variables
-        let vars = this.getAllVariables();
+        // get all variables
+        let vars: variable[] = [];
+        this.components.forEach((c) => {
+            vars.push(...c.getVariables());
+        });
+        // connect all variables
         for (let i = 0; i < vars.length - 1; i++) {
             vars[i].setNext(vars[i + 1]);
             vars[i + 1].setPrev(vars[i]);
         }
         this.variables = vars;
-    }
-
-    private getGlobals() {
-        let globals: global[] = [];
-        this.components.forEach((c) => {
-            if (c instanceof global) globals.push(c);
-        });
-        return globals;
     }
 
     private getDeclarations() {
@@ -124,32 +120,6 @@ class Graph {
             if (c instanceof definition) definitions.push(c);
         });
         return definitions;
-    }
-
-    private getAllocations() {
-        let allocations: allocation[] = [];
-        let defnitions = this.getDefinitions();
-        defnitions.forEach((d) => {
-            allocations.push(...d.getAllocations());
-        });
-        return allocations;
-    }
-
-    private getOperations() {
-        let operations: operation[] = [];
-        let defnitions = this.getDefinitions();
-        defnitions.forEach((d) => {
-            operations.push(...d.getOperations());
-        });
-        return operations;
-    }
-
-    private getAllVariables() {
-        let vars: variable[] = [];
-        this.components.forEach((c) => {
-            vars.push(...c.getVariables());
-        });
-        return vars;
     }
 
     private findVariables(name: string) {
@@ -173,7 +143,13 @@ class Graph {
         return null;
     }
 
-    public findRealatedNodes(node: node | null) {
+    public findVariableAt(position: monaco.Position) {
+        let node = this.findNodeAt(position);
+        if (node instanceof variable) return node;
+        return null;
+    }
+
+    public findRelatedNodes(node: node | null) {
         let nodes: node[] = [];
         if (node !== null) {
             nodes.push(node);
@@ -187,7 +163,7 @@ class Graph {
                 case definition:
                     break;
                 case block:
-                    nodes.push(...this.findRelatedVariables(node));
+                    nodes.push(...this.findRelatedVariables(node.getVariables()[0]));
                     break;
                 case allocation:
                     break;
@@ -195,57 +171,22 @@ class Graph {
                     nodes.push(...this.findFunctionReferences(node.getFunctionName()));
                     break;
                 case variable:
-                    nodes.push(...this.findRelatedVariables(node));
+                    nodes.push(...this.findRelatedVariables(node as variable));
                     break;
                 default:
                     break;
             }
         }
-        //return nodes;
-        return this.getNodeRanges(nodes);
+        return nodes;
     }
 
-    private findRelatedVariables(nodevariable: node | null) {
-        let vars: node[] = [];
-        if (nodevariable !== null && nodevariable.getContext() !== null && nodevariable instanceof variable) {
-            switch (nodevariable.getContext()!.constructor) {
-                case global:
-                    vars.push(...this.findVariables(nodevariable.getName()));
-                    break;
-                case declaration:
-                    break;
-                case definition:
-                    vars.push(...nodevariable.getContext()!.findVariables(nodevariable.getName()));
-                    break;
-                case block:
-                    vars.push(...nodevariable.getContext()!.getContext()!.findVariables(nodevariable.getName()));
-                    break;
-                case allocation:
-                    vars.push(
-                        ...nodevariable.getContext()!.getContext()!.getContext()!.findVariables(nodevariable.getName()),
-                    );
-                    break;
-                case operation:
-                    if (nodevariable.getContext()!.getContext()! instanceof allocation)
-                        vars.push(
-                            ...nodevariable
-                                .getContext()!
-                                .getContext()!
-                                .getContext()!
-                                .getContext()!
-                                .findVariables(nodevariable.getName()),
-                        );
-                    else
-                        vars.push(
-                            ...nodevariable
-                                .getContext()!
-                                .getContext()!
-                                .getContext()!
-                                .findVariables(nodevariable.getName()),
-                        );
-                    break;
-                default:
-                    break;
+    private findRelatedVariables(variable: variable | null) {
+        let vars: variable[] = [];
+        if (variable !== null && variable.getContext() !== null) {
+            if (variable.getContext()!.constructor === global) {
+                vars.push(...this.findVariables(variable.getName()));
+            } else {
+                vars.push(...variable.getOuterContext().findVariables(variable.getName()));
             }
         }
         return vars;
@@ -257,85 +198,75 @@ class Graph {
             this.getDeclarations().forEach((d) => {
                 if (d.getFunctionName() === fname) nodes.push(d);
             });
-            this.getOperations().forEach((o) => {
-                if (o.getFunctionName() === fname) nodes.push(o);
+            this.getDefinitions().forEach((d) => {
+                d.getOperations().forEach((o) => {
+                    if (o.getFunctionName() === fname) nodes.push(o);
+                });
             });
         }
         return nodes;
     }
 
-    private getVariableChildren(name: string) {
-        let allocations = this.getAllocations();
+    private findVariableParents(variable: variable) {
+        let parents: variable[] = [];
+        let context = variable.getOuterContext();
+        if (context.constructor === definition) {
+            let def = context as definition;
+            def.getVariables().forEach((v) => {
+                if (v.isCalled(variable.getName())) {
+                    parents.push(...v.getParents());
+                }
+            });
+        }
+        return parents;
+    }
+
+    public findVariableParentsTree(variable: variable) {
+        let tree: variable[] = [...this.findRelatedVariables(variable)];
+        let parents = this.findVariableParents(variable);
+        while (parents.length > 0) {
+            let grandparents: variable[] = [];
+            parents.forEach((p) => {
+                if (tree.includes(p) === false) {
+                    tree.push(...this.findRelatedVariables(p));
+                    grandparents.push(...this.findVariableParents(p));
+                }
+            });
+            parents = grandparents;
+        }
+        return tree;
+    }
+
+    public findVariableChildren(variable: variable) {
         let children: variable[] = [];
-        for (let i = 0; i < allocations.length; i++) {
-            if (allocations[i].hasParent(name)) children.push(allocations[i].getChild()!);
+        let context = variable.getOuterContext();
+        if (context.constructor === definition) {
+            let def = context as definition;
+            let allocations = def.getAllocations();
+            for (let i = 0; i < allocations.length; i++) {
+                if (allocations[i].hasParent(variable.getName())) children.push(allocations[i].getChild()!);
+            }
         }
         return children;
     }
 
-    private getVariableParents(name: string) {
-        let parents: variable[] = [];
-        this.getAllVariables().forEach((v) => {
-            if (v.isCalled(name)) {
-                parents.push(...v.getParents());
-            }
-        });
-        return parents;
-    }
-
-    // level: ...-2->grandparents, -1->parents, 0->[], 1-> children, 2->grandchildren...
-    private getVariableRelatives(name: string, level: number) {
-        if (level === 0) return [];
-        let relatives = this.findVariables(name /* , this.getAllVariables() */);
-        if (level < 0) {
-            level = Math.abs(level);
-            relatives.push(...this.getVariableParents(name));
-            for (let i = 1; i < level; i++) {
-                let temp: variable[] = [];
-                relatives.forEach((r) => {
-                    temp.push(...this.getVariableParents(r.getName()));
-                });
-                relatives = this.removeDuplicates(temp);
-            }
-            return relatives;
-        } else {
-            relatives.push(...this.getVariableChildren(name));
-            for (let i = 1; i < level; i++) {
-                let temp: variable[] = [];
-                relatives.forEach((r) => {
-                    temp.push(...this.getVariableChildren(r.getName()));
-                });
-                relatives = this.removeDuplicates(temp);
-            }
-            return relatives;
-        }
-    }
-
-    public getVariableParentsTree(name: string) {
-        let tree: variable[] = [];
-        for (let i = 1; i < 10; i++) {
-            tree.push(...this.getVariableRelatives(name, -i));
+    public findVariableChildrenTree(variable: variable) {
+        let tree: variable[] = [...this.findRelatedVariables(variable)];
+        let children = this.findVariableChildren(variable);
+        while (children.length > 0) {
+            let grandchildren: variable[] = [];
+            children.forEach((c) => {
+                if (tree.includes(c) === false) {
+                    tree.push(...this.findRelatedVariables(c));
+                    grandchildren.push(...this.findVariableChildren(c));
+                }
+            });
+            children = grandchildren;
         }
         return tree;
     }
 
-    public getVariableChildrenTree(name: string) {
-        let tree: variable[] = [];
-        for (let i = 1; i < 10; i++) {
-            tree.push(...this.getVariableRelatives(name, i));
-        }
-        return tree;
-    }
-
-    public getVariableBalancedTree(name: string) {
-        let tree: variable[] = [];
-        for (let i = -10; i <= 10; i++) {
-            tree.push(...this.getVariableRelatives(name, i));
-        }
-        return tree;
-    }
-
-    private getNodeRanges(nodes: node[]) {
+    public getNodeRanges(nodes: node[]) {
         let ranges: monaco.Range[] = [];
         nodes.forEach((n) => {
             ranges.push(n.getRange());
@@ -348,7 +279,7 @@ class Graph {
     }
 
     public print() {
-        console.log(this.findNodeAt(new monaco.Position(10000, 34)));
+        console.log();
     }
 }
 

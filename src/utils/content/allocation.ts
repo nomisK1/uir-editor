@@ -35,7 +35,7 @@ class allocation extends instruction {
         this.operation.build();
         this.target = new variable({
             name: sides[0],
-            data: this.data,
+            data: 'Variable:' + sides[0] + '@l:' + line,
             range: new monaco.Range(line, 2, line, 2 + sides[0].length),
             prev: null,
             next: null,

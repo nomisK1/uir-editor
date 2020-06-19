@@ -52,9 +52,11 @@ class Decorations {
     public findDecorationsHover(position: monaco.Position) {
         let graph = Decorations.editor.getGraph();
         if (Decorations.editor.getActivateHover()) {
-            let target = graph.findNodeAt(position);
+            let target = graph.findVariableAt(position);
             console.log(target);
-            return Decorations.shiftRanges(graph.findRealatedNodes(target));
+            let vars = target ? graph.findVariableChildrenTree(target) : [];
+            console.log(vars);
+            return Decorations.shiftRanges(graph.getNodeRanges(vars));
         }
         return [];
     }
@@ -68,7 +70,8 @@ class Decorations {
         if (Decorations.editor.getActivateClick()) {
             let target = graph.findNodeAt(position);
             console.log(target);
-            return Decorations.shiftRanges(graph.findRealatedNodes(target));
+            let nodes = graph.findRelatedNodes(target);
+            return Decorations.shiftRanges(graph.getNodeRanges(nodes));
         }
         return [];
     }
