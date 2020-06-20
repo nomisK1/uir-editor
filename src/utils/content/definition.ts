@@ -52,7 +52,7 @@ class definition extends component {
             );
         });
         // match blocks
-        let body = this.data.match(/{[\s\S]*?}/)![0];
+        let body = this.data.match(/{[\s\S]*?\n}/)![0];
         let blocks = body.slice(2, body.length - 2).split(/\n\n/);
         blocks.forEach((b) => {
             let label = b.split(':')[0];

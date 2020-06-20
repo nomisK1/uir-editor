@@ -74,7 +74,7 @@ class Graph {
             }
         }
         // add body to definitions
-        let defines = this.query.match(/define[\s\S]*?}/g);
+        let defines = this.query.match(/define[\s\S]*?\n}/g);
         defines?.forEach((d) => {
             let name = d.match(/@[_\w]*/)![0];
             comps.forEach((c) => {

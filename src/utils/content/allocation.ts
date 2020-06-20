@@ -16,13 +16,13 @@ class allocation extends instruction {
     }
 
     public build() {
-        let line = this.range.startLineNumber;
         // split assignment on "="
         let sides = this.data.split(/=/);
         for (let i = 0; i < sides.length; i++) {
             sides[i] = sides[i].trim();
         }
         // define target and operation
+        let line = this.range.startLineNumber;
         this.operation = new operation({
             name: 'Operation@l:' + line,
             data: sides[1],
@@ -41,8 +41,6 @@ class allocation extends instruction {
             parents: this.operation.getVariables(),
             context: this,
         });
-        // add reference to target
-        /* this.operation.setNext(this.target); */
     }
 
     public findNodeAt(position: monaco.Position): instruction | null {

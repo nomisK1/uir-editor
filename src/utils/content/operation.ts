@@ -96,16 +96,9 @@ class operation extends instruction {
     }
 
     public build() {
-        // (I) %RelationMappedLogic_cpp_341_ = lshr i64 %firstTid, 16
-        // (II) %firstTid = phi i64 [%TableScanTranslator_cpp_354_, %body %RelationMappedLogic_cpp_343_2, %loopDoneTuples]
-        // (III) %Numeric_cpp_698_ = call d128 _ZN5umbra17BigNumericRuntime7mulTrapENS_9data128_tES1_ (%BigNumeric_cpp_863_16, %BigNumeric_cpp_863_18)
-        // (IV) call void _ZN5umbra17AggregationTarget14exchangeTablesEPvm (%CompilationContext_cpp_214_, %state, i64 32)
-        // (V) condbr %RelationMappedLogic_cpp_349_ %loopTuples %loopDoneTuples
-        let line = this.range.startLineNumber;
-        let index = this.range.startColumn;
         // match opcode
         let opc = this.data.match(
-            /ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext|return|returnvoid|br|condbr|unreachable/,
+            /|ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext|return|returnvoid|br|condbr|unreachable/,
         )![0];
         let opcodes = Object.values(OpCode);
         opcodes.forEach((o) => {
@@ -126,6 +119,8 @@ class operation extends instruction {
             });
         }
         // match args
+        let line = this.range.startLineNumber;
+        let index = this.range.startColumn;
         let args = this.data.match(/%[\w]*/g);
         args?.forEach((a) => {
             this.args.push(

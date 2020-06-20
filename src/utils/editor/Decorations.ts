@@ -102,17 +102,16 @@ class Decorations {
      *
      */
     public decorateHover(position: monaco.Position) {
-        if (
-            (Decorations.editor.getActivateCHover() && Decorations.editor.getActivatePHover()) ||
-            !(Decorations.editor.getActivateCHover() || Decorations.editor.getActivatePHover())
-        ) {
+        if (!(Decorations.editor.getActivateCHover() || Decorations.editor.getActivatePHover())) {
             return [];
         }
         let decorations: { range: monaco.Range; depth: number }[] = [];
-        if (Decorations.editor.getActivateCHover()) {
+        if (Decorations.editor.getActivateCHover() && !Decorations.editor.getActivatePHover()) {
             decorations = this.findDecorationsCHover(position);
-        } else {
+        } else if (!Decorations.editor.getActivatePHover() && Decorations.editor.getActivatePHover()) {
             decorations = this.findDecorationsPHover(position);
+        } else {
+            decorations = [...this.findDecorationsCHover(position), ...this.findDecorationsPHover(position)];
         }
         let ranges: monaco.Range[] = [];
         decorations.forEach((d) => {
