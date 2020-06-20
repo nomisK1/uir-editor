@@ -33,7 +33,7 @@ export const hoverProvider: monaco.languages.HoverProvider = {
         };
         if (iWord) {
             d.resetDecorations();
-            d.setDecorations(d.findDecorationsHover(position));
+            d.decorateHover(position);
             return dummy;
         } else {
             d.resetDecorations();
@@ -46,7 +46,7 @@ export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (model, position, token) {
         //let iWord = model.getWordAtPosition(position);
         return new Promise(function (resolve, reject) {
-            let ranges: monaco.Range[] = D.getInstance().findDecorationsClick(position);
+            let ranges: monaco.Range[] = D.getInstance().decorateVTrack(position);
             let targets: monaco.languages.DocumentHighlight[] = [];
             ranges.forEach((r) => {
                 targets = [...targets, { range: r }];

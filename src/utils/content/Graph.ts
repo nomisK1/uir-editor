@@ -221,13 +221,22 @@ class Graph {
     }
 
     public findVariableParentsTree(variable: variable) {
-        let tree: variable[] = [...this.findRelatedVariables(variable)];
+        let tree: { variable: variable; depth: number }[] = [];
+        let depth = 0;
+        this.findRelatedVariables(variable).forEach((v) => {
+            tree.push({ variable: v, depth });
+        });
         let parents = this.findVariableParents(variable);
         while (parents.length > 0) {
             let grandparents: variable[] = [];
+            depth++;
+            // eslint-disable-next-line
             parents.forEach((p) => {
-                if (tree.includes(p) === false) {
-                    tree.push(...this.findRelatedVariables(p));
+                let vars = tree.map((t) => t.variable);
+                if (vars.includes(p) === false) {
+                    this.findRelatedVariables(p).forEach((v) => {
+                        tree.push({ variable: v, depth });
+                    });
                     grandparents.push(...this.findVariableParents(p));
                 }
             });
@@ -250,27 +259,28 @@ class Graph {
     }
 
     public findVariableChildrenTree(variable: variable) {
-        let tree: variable[] = [...this.findRelatedVariables(variable)];
+        let tree: { variable: variable; depth: number }[] = [];
+        let depth = 0;
+        this.findRelatedVariables(variable).forEach((v) => {
+            tree.push({ variable: v, depth });
+        });
         let children = this.findVariableChildren(variable);
         while (children.length > 0) {
             let grandchildren: variable[] = [];
+            depth--;
+            // eslint-disable-next-line
             children.forEach((c) => {
-                if (tree.includes(c) === false) {
-                    tree.push(...this.findRelatedVariables(c));
+                let vars = tree.map((t) => t.variable);
+                if (vars.includes(c) === false) {
+                    this.findRelatedVariables(c).forEach((v) => {
+                        tree.push({ variable: v, depth });
+                    });
                     grandchildren.push(...this.findVariableChildren(c));
                 }
             });
             children = grandchildren;
         }
         return tree;
-    }
-
-    public getNodeRanges(nodes: node[]) {
-        let ranges: monaco.Range[] = [];
-        nodes.forEach((n) => {
-            ranges.push(n.getRange());
-        });
-        return ranges;
     }
 
     private removeDuplicates(array: variable[]) {

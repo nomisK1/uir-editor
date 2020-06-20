@@ -8,8 +8,9 @@ import { languageID } from './utils/language/config';
 import { get } from './utils/editor/tcph';
 
 enum Feature {
-    HOVER = 'Hover Highlighting',
-    CLICK = 'Click Highlighting',
+    CHOVER = 'Hover: Highlight Variable Children',
+    PHOVER = 'Hover: Highlight Variable Parents',
+    VTRACK = 'Click: Find Variable Occurrences',
 }
 
 interface IAppProps {}
@@ -18,8 +19,9 @@ interface IAppState {
     data: string[];
     selected: string;
     graph: Graph;
-    activateHover: boolean;
-    activateClick: boolean;
+    activateCHover: boolean;
+    activatePHover: boolean;
+    activateVTrack: boolean;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -32,8 +34,9 @@ class App extends React.Component<IAppProps, IAppState> {
             data: queries,
             selected: queries[0],
             graph: new Graph({ query: queries[0] }),
-            activateHover: false,
-            activateClick: false,
+            activateCHover: false,
+            activatePHover: false,
+            activateVTrack: false,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
@@ -47,13 +50,17 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public handleCheckerChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.id === Feature.HOVER) {
+        if (event.target.id === Feature.CHOVER) {
             this.setState({
-                activateHover: event.target.checked,
+                activateCHover: event.target.checked,
             });
-        } else if (event.target.id === Feature.CLICK) {
+        } else if (event.target.id === Feature.PHOVER) {
             this.setState({
-                activateClick: event.target.checked,
+                activatePHover: event.target.checked,
+            });
+        } else if (event.target.id === Feature.VTRACK) {
+            this.setState({
+                activateVTrack: event.target.checked,
             });
         }
     }
@@ -75,8 +82,9 @@ class App extends React.Component<IAppProps, IAppState> {
                 language={languageID}
                 value={this.state.selected}
                 graph={this.state.graph}
-                activateHover={this.state.activateHover}
-                activateClick={this.state.activateClick}
+                activateCHover={this.state.activateCHover}
+                activatePHover={this.state.activatePHover}
+                activateVTrack={this.state.activateVTrack}
             ></Editor>
         );
         return (

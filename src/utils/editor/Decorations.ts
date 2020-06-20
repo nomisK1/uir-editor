@@ -30,50 +30,134 @@ class Decorations {
     }
 
     /**
-     * shiftRanges:
-     * Shifts the Ranges by one column to the right
+     * shiftRange:
+     * Shifts the Range by one column to the right
      */
-    public static shiftRanges(ranges: monaco.Range[]) {
-        let shifted: monaco.Range[] = [];
-        ranges.forEach((r) => {
-            shifted.push(
-                r
-                    .setStartPosition(r.startLineNumber, r.startColumn + 1)
-                    .setEndPosition(r.endLineNumber, r.endColumn + 1),
-            );
+    public static shiftRange(range: monaco.Range) {
+        return range
+            .setStartPosition(range.startLineNumber, range.startColumn + 1)
+            .setEndPosition(range.endLineNumber, range.endColumn + 1);
+    }
+
+    /**
+     * findDecorationsVTrack:
+     *
+     */
+    private findDecorationsVTrack(position: monaco.Position) {
+        let graph = Decorations.editor.getGraph();
+        let target = graph.findNodeAt(position);
+        console.log(target);
+        let nodes = target ? graph.findRelatedNodes(target) : [];
+        let decorations = nodes.map((n) => n.getRange()).map((r) => Decorations.shiftRange(r));
+        return decorations;
+    }
+
+    /**
+     * decorateVTrack:
+     *
+     */
+    public decorateVTrack(position: monaco.Position) {
+        if (Decorations.editor.getActivateVTrack()) {
+            return this.findDecorationsVTrack(position);
+        }
+        return [];
+    }
+
+    /**
+     * findDecorationsCHover:
+     *
+     */
+    private findDecorationsCHover(position: monaco.Position) {
+        let graph = Decorations.editor.getGraph();
+        let target = graph.findVariableAt(position);
+        console.log(target);
+        let vars = target ? graph.findVariableChildrenTree(target) : [];
+        console.log(vars);
+        let decorations: { range: monaco.Range; depth: number }[] = [];
+        vars.forEach((v) => {
+            decorations.push({ range: Decorations.shiftRange(v.variable.getRange()), depth: v.depth });
         });
-        return shifted;
+        return decorations;
     }
 
     /**
-     * findDecorationsHover:
+     * findDecorationsPHover:
      *
      */
-    public findDecorationsHover(position: monaco.Position) {
+    private findDecorationsPHover(position: monaco.Position) {
         let graph = Decorations.editor.getGraph();
-        if (Decorations.editor.getActivateHover()) {
-            let target = graph.findVariableAt(position);
-            console.log(target);
-            let vars = target ? graph.findVariableChildrenTree(target) : [];
-            console.log(vars);
-            return Decorations.shiftRanges(graph.getNodeRanges(vars));
-        }
-        return [];
+        let target = graph.findVariableAt(position);
+        console.log(target);
+        let vars = target ? graph.findVariableParentsTree(target) : [];
+        console.log(vars);
+        let decorations: { range: monaco.Range; depth: number }[] = [];
+        vars.forEach((v) => {
+            decorations.push({ range: Decorations.shiftRange(v.variable.getRange()), depth: v.depth });
+        });
+        return decorations;
     }
 
     /**
-     * findDecorationsClick:
+     * decorateHover:
      *
      */
-    public findDecorationsClick(position: monaco.Position) {
-        let graph = Decorations.editor.getGraph();
-        if (Decorations.editor.getActivateClick()) {
-            let target = graph.findNodeAt(position);
-            console.log(target);
-            let nodes = graph.findRelatedNodes(target);
-            return Decorations.shiftRanges(graph.getNodeRanges(nodes));
+    public decorateHover(position: monaco.Position) {
+        if (
+            (Decorations.editor.getActivateCHover() && Decorations.editor.getActivatePHover()) ||
+            !(Decorations.editor.getActivateCHover() || Decorations.editor.getActivatePHover())
+        ) {
+            return [];
         }
-        return [];
+        let decorations: { range: monaco.Range; depth: number }[] = [];
+        if (Decorations.editor.getActivateCHover()) {
+            decorations = this.findDecorationsCHover(position);
+        } else {
+            decorations = this.findDecorationsPHover(position);
+        }
+        let ranges: monaco.Range[] = [];
+        decorations.forEach((d) => {
+            this.setDecorationHover(d);
+            ranges.push(d.range);
+        });
+        Decorations.editor.updateDecorations();
+        return ranges;
+    }
+
+    /**
+     * setDecorationHover:
+     *
+     */
+    private setDecorationHover(target: { range: monaco.Range; depth: number }) {
+        if (target.depth === 0) {
+            this.array.push({
+                range: target.range,
+                options: {
+                    isWholeLine: false,
+                    className: 'contentVariable',
+                    glyphMarginClassName: 'glyphVariable',
+                },
+            });
+        } else if (target.depth < 0) {
+            let className = 'contentChild' + target.depth;
+            this.array.push({
+                range: target.range,
+                options: {
+                    isWholeLine: false,
+                    className,
+                    glyphMarginClassName: 'glyphChild',
+                },
+            });
+        } else {
+            let className = 'contentParent' + target.depth;
+            this.array.push({
+                range: target.range,
+                options: {
+                    isWholeLine: false,
+                    className,
+                    glyphMarginClassName: 'glyphParent',
+                },
+            });
+        }
     }
 
     /**
@@ -82,27 +166,6 @@ class Decorations {
      */
     public getDecorations() {
         return this.array;
-    }
-
-    /**
-     * setDecorations:
-     *
-     */
-    public setDecorations(ranges: monaco.Range[]) {
-        ranges.forEach((r) => {
-            this.array = [
-                ...this.array,
-                {
-                    range: r,
-                    options: {
-                        isWholeLine: false,
-                        className: 'myContentClass',
-                        glyphMarginClassName: 'myGlyphMarginClass',
-                    },
-                },
-            ];
-        });
-        Decorations.editor.updateDecorations();
     }
 
     /**

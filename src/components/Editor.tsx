@@ -8,29 +8,32 @@ interface IEditorProps {
     language: string;
     value: string;
     graph: Graph;
-    activateHover: boolean;
-    activateClick: boolean;
+    activateVTrack: boolean;
+    activateCHover: boolean;
+    activatePHover: boolean;
 }
 
 class Editor extends React.Component<IEditorProps> {
     private container: HTMLDivElement | null;
     private editor: monaco.editor.IStandaloneCodeEditor | null;
     private value: string | null;
-    private graph: Graph;
     private decorations: string[];
-    private activateHover: boolean;
-    private activateClick: boolean;
+    private graph: Graph;
+    private activateVTrack: boolean;
+    private activateCHover: boolean;
+    private activatePHover: boolean;
 
     constructor(props: IEditorProps) {
         super(props);
         this.container = null;
         this.editor = null;
         this.value = null;
-        this.graph = this.props.graph;
         this.decorations = [];
         D.initializeDecorations(this);
-        this.activateHover = this.props.activateHover;
-        this.activateClick = this.props.activateClick;
+        this.graph = this.props.graph;
+        this.activateVTrack = this.props.activateVTrack;
+        this.activateCHover = this.props.activateCHover;
+        this.activatePHover = this.props.activatePHover;
     }
 
     public componentDidMount() {
@@ -76,12 +79,16 @@ class Editor extends React.Component<IEditorProps> {
         return this.graph;
     }
 
-    public getActivateHover() {
-        return this.activateHover;
+    public getActivateVTrack() {
+        return this.activateVTrack;
     }
 
-    public getActivateClick() {
-        return this.activateClick;
+    public getActivateCHover() {
+        return this.activateCHover;
+    }
+
+    public getActivatePHover() {
+        return this.activatePHover;
     }
 
     /**
@@ -97,13 +104,15 @@ class Editor extends React.Component<IEditorProps> {
 
     render() {
         this.graph = this.props.graph;
-        this.activateHover = this.props.activateHover;
-        this.activateClick = this.props.activateClick;
+        this.activateVTrack = this.props.activateVTrack;
+        this.activateCHover = this.props.activateCHover;
+        this.activatePHover = this.props.activatePHover;
 
         this.graph.print();
         console.log(this.graph);
-        console.log(this.activateHover);
-        console.log(this.activateClick);
+        console.log(this.activateVTrack);
+        console.log(this.activateCHover);
+        console.log(this.activatePHover);
 
         return (
             <div>
