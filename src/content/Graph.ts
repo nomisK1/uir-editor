@@ -121,7 +121,7 @@ class Graph {
         return definitions;
     }
 
-    private findVariables(name: string) {
+    public findVariables(name: string) {
         let vars: variable[] = [];
         this.variables.forEach((v) => {
             if (v.getName() === name) vars.push(v);
@@ -281,6 +281,10 @@ class Graph {
             children = grandchildren;
         }
         return tree;
+    }
+
+    public getNodeRanges(nodes: node[]) {
+        return nodes.map(n => n.getRange());
     }
 
     private removeDuplicates(array: variable[]) {

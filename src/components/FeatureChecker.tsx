@@ -6,12 +6,8 @@ interface IFeatureCheckerProps {
 }
 
 class FeatureChecker extends React.Component<IFeatureCheckerProps> {
-    constructor(props: IFeatureCheckerProps) {
-        super(props);
-        this.renderOptions = this.renderOptions.bind(this);
-    }
 
-    public renderOptions() {
+    renderOptions() {
         return this.props.features.map((e, i) => {
             return (
                 <div key={i}>
@@ -25,7 +21,6 @@ class FeatureChecker extends React.Component<IFeatureCheckerProps> {
     render() {
         return (
             <label>
-                {/* <b>Features: </b> */}
                 {this.renderOptions()}
             </label>)
     }

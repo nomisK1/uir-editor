@@ -2,17 +2,13 @@ import React from 'react';
 
 interface ITcphDropdownProps {
     data: string[];
-    selected: string;
+    query: string;
     onDropdownChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 class TcphDropdown extends React.Component<ITcphDropdownProps> {
-    constructor(props: ITcphDropdownProps) {
-        super(props);
-        this.renderOptions = this.renderOptions.bind(this);
-    }
 
-    public renderOptions() {
+    renderOptions() {
         return this.props.data.map((e, i) => {
             return (
                 <option key={i} value={e}>
@@ -24,13 +20,13 @@ class TcphDropdown extends React.Component<ITcphDropdownProps> {
 
     render() {
         return (
-            <label>
+            <div>
                 <b>Query: </b>
-                <select value={this.props.selected} onChange={this.props.onDropdownChange}>
+                <select value={this.props.query} onChange={this.props.onDropdownChange}>
                     {this.renderOptions()}
                 </select>
                 <br />
-            </label>
+            </div>
         );
     }
 }

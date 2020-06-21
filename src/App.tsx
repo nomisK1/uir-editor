@@ -1,11 +1,13 @@
 import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
 import FeatureChecker from './components/FeatureChecker';
+import VariableSelector from './components/VariableSelector';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
-import { get } from './queries/tpch';
+import { tpch } from './queries/tpch';
+import "./App.css"
 
 enum Feature {
     CHOVER = 'Hover: Colorize Variable Children',
@@ -17,8 +19,9 @@ interface IAppProps { }
 
 interface IAppState {
     data: string[];
-    selected: string;
+    query: string;
     graph: Graph;
+    selection: string;
     activateCHover: boolean;
     activatePHover: boolean;
     activateNTrack: boolean;
@@ -29,22 +32,25 @@ class App extends React.Component<IAppProps, IAppState> {
 
     constructor(props: IAppProps) {
         super(props);
-        let queries = [...get()];
+        let queries = [...tpch()];
         this.state = {
             data: queries,
-            selected: queries[0],
+            query: queries[0],
             graph: new Graph({ query: queries[0] }),
+            selection: "",
             activateCHover: false,
             activatePHover: false,
             activateNTrack: false,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
+        this.handleSelectionChange = this.handleSelectionChange.bind(this);
+        this.handleSelectionKeypress = this.handleSelectionKeypress.bind(this);
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
         this.setState({
-            selected: event.target.value,
+            query: event.target.value,
             graph: new Graph({ query: event.target.value }),
         });
     }
@@ -65,32 +71,57 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
+    public handleSelectionChange(event: React.ChangeEvent<HTMLInputElement>) {
+        this.setState({ selection: event.target.value });
+    }
+
+    public handleSelectionKeypress(event: React.KeyboardEvent<HTMLDivElement>) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.setState({
+                selection: "CompilationContext_cpp_214_"
+            });
+        }
+    }
+
     render() {
         setupLanguage();
         let dropdown = (
             <TcphDropdown
                 data={this.state.data}
-                selected={this.state.selected}
+                query={this.state.query}
                 onDropdownChange={this.handleDropdownChange}
-            ></TcphDropdown>
+            />
         );
         let checker = (
-            <FeatureChecker features={this.features} onCheckerChange={this.handleCheckerChange}></FeatureChecker>
+            <FeatureChecker
+                features={this.features}
+                onCheckerChange={this.handleCheckerChange}
+            />
+        );
+        let display = (
+            <VariableSelector
+                selection={this.state.selection}
+                onSelectionChange={this.handleSelectionChange}
+                onSelectionKeypress={this.handleSelectionKeypress}
+            />
         );
         let editor = (
             <Editor
                 language={languageID}
-                value={this.state.selected}
+                value={this.state.query}
                 graph={this.state.graph}
+                selection={this.state.selection}
                 activateCHover={this.state.activateCHover}
                 activatePHover={this.state.activatePHover}
                 activateNTrack={this.state.activateNTrack}
-            ></Editor>
+            />
         );
         return (
             <div>
                 {dropdown}
                 {checker}
+                {display}
                 {editor}
             </div>
         );

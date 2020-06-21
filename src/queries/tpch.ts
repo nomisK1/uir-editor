@@ -21,7 +21,7 @@ import { tpch20 } from './tpch20';
 import { tpch21 } from './tpch21';
 import { tpch22 } from './tpch22';
 
-export function get() {
+export function tpch() {
     return [
         tpch1,
         tpch2,

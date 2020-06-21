@@ -38,6 +38,17 @@ class Singleton {
             .setEndPosition(range.endLineNumber, range.endColumn + 1);
     }
 
+    public findSelectorVariables() {
+        let graph = Singleton.editor.getGraph();
+        let selection = Singleton.editor.getSelection();
+        selection = selection.charAt(0) !== "%" ? "%" + selection : selection;
+        let vars = graph.findVariables(selection);
+        if(vars.length > 0) {
+            return graph.getNodeRanges(vars);
+        }   
+        return [new monaco.Range(0,0,0,0)];
+    }
+
     /**
      * findHighlightsNTrack:
      *
