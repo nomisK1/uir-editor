@@ -108,7 +108,7 @@ class Decorations {
         let decorations: { range: monaco.Range; depth: number }[] = [];
         if (Decorations.editor.getActivateCHover() && !Decorations.editor.getActivatePHover()) {
             decorations = this.findDecorationsCHover(position);
-        } else if (!Decorations.editor.getActivatePHover() && Decorations.editor.getActivatePHover()) {
+        } else if (!Decorations.editor.getActivateCHover() && Decorations.editor.getActivatePHover()) {
             decorations = this.findDecorationsPHover(position);
         } else {
             decorations = [...this.findDecorationsCHover(position), ...this.findDecorationsPHover(position)];
