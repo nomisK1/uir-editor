@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as monaco from 'monaco-editor';
 import { themeID, monarchTheme } from '../language/uirTheme';
 import Graph from '../content/Graph';
-import S from '../utils/Singleton';
+import S from './Singleton';
 
 interface IEditorProps {
     language: string;

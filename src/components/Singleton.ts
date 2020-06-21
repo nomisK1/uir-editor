@@ -1,6 +1,6 @@
-import './Singleton.css';
 import * as monaco from 'monaco-editor';
-import Editor from '../components/Editor';
+import Editor from './Editor';
+import './Editor.css';
 
 class Singleton {
     private static instance: Singleton;

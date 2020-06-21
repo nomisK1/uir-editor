@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import S from '../utils/Singleton';
+import S from '../components/Singleton';
 
 export const monarchLanguage: monaco.languages.IMonarchLanguage = {
     // defaultToken: "invalid",
