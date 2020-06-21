@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as monaco from 'monaco-editor';
-import { themeID, monarchTheme } from '../utils/language/uirTheme';
-import Graph from '../utils/content/Graph';
-import D from '../utils/editor/Decorations';
+import { themeID, monarchTheme } from '../language/uirTheme';
+import Graph from '../content/Graph';
+import S from '../utils/Singleton';
 
 interface IEditorProps {
     language: string;
@@ -17,8 +17,8 @@ class Editor extends React.Component<IEditorProps> {
     private container: HTMLDivElement | null;
     private editor: monaco.editor.IStandaloneCodeEditor | null;
     private value: string | null;
-    private decorations: string[];
     private graph: Graph;
+    private decorations: string[];
     private activateNTrack: boolean;
     private activateCHover: boolean;
     private activatePHover: boolean;
@@ -28,12 +28,12 @@ class Editor extends React.Component<IEditorProps> {
         this.container = null;
         this.editor = null;
         this.value = null;
-        this.decorations = [];
-        D.initializeDecorations(this);
         this.graph = this.props.graph;
+        this.decorations = [];
         this.activateNTrack = this.props.activateNTrack;
         this.activateCHover = this.props.activateCHover;
         this.activatePHover = this.props.activatePHover;
+        S.initializeSingleton(this);
     }
 
     public componentDidMount() {
@@ -97,8 +97,7 @@ class Editor extends React.Component<IEditorProps> {
      */
     public updateDecorations() {
         if (this.editor !== null) {
-            let array = D.getInstance().getDecorations();
-            this.decorations = this.editor.deltaDecorations(this.decorations, array);
+            this.decorations = this.editor.deltaDecorations(this.decorations, S.getInstance().getDecorations());
         }
     }
 

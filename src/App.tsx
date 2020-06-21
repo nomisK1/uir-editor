@@ -2,10 +2,10 @@ import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
 import FeatureChecker from './components/FeatureChecker';
 import Editor from './components/Editor';
-import Graph from './utils/content/Graph';
-import { setupLanguage } from './utils/language/setup';
-import { languageID } from './utils/language/config';
-import { get } from './utils/editor/tcph';
+import Graph from './content/Graph';
+import { setupLanguage } from './language/setup';
+import { languageID } from './language/config';
+import { get } from './queries/tpch';
 
 enum Feature {
     CHOVER = 'Hover: Colorize Variable Children',
