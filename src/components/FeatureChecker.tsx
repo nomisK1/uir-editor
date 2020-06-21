@@ -23,7 +23,11 @@ class FeatureChecker extends React.Component<IFeatureCheckerProps> {
     }
 
     render() {
-        return this.renderOptions();
+        return (
+            <label>
+                {/* <b>Features: </b> */}
+                {this.renderOptions()}
+            </label>)
     }
 }
 

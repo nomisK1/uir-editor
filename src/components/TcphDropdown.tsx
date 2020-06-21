@@ -16,7 +16,7 @@ class TcphDropdown extends React.Component<ITcphDropdownProps> {
         return this.props.data.map((e, i) => {
             return (
                 <option key={i} value={e}>
-                    TCP-H Query {i + 1}
+                    TCP-H {i + 1}
                 </option>
             );
         });
@@ -25,10 +25,11 @@ class TcphDropdown extends React.Component<ITcphDropdownProps> {
     render() {
         return (
             <label>
-                {'Choose TCP-H Query: '}
+                <b>Query: </b>
                 <select value={this.props.selected} onChange={this.props.onDropdownChange}>
                     {this.renderOptions()}
                 </select>
+                <br />
             </label>
         );
     }

@@ -8,12 +8,12 @@ import { languageID } from './utils/language/config';
 import { get } from './utils/editor/tcph';
 
 enum Feature {
-    CHOVER = 'Hover: Highlight Variable Children',
-    PHOVER = 'Hover: Highlight Variable Parents',
-    VTRACK = 'Click: Find Variable Occurrences',
+    CHOVER = 'Hover: Colorize Variable Children',
+    PHOVER = 'Hover: Colorize Variable Parents',
+    NTRACK = 'Click: Highlight Node Occurrences',
 }
 
-interface IAppProps {}
+interface IAppProps { }
 
 interface IAppState {
     data: string[];
@@ -21,7 +21,7 @@ interface IAppState {
     graph: Graph;
     activateCHover: boolean;
     activatePHover: boolean;
-    activateVTrack: boolean;
+    activateNTrack: boolean;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -36,7 +36,7 @@ class App extends React.Component<IAppProps, IAppState> {
             graph: new Graph({ query: queries[0] }),
             activateCHover: false,
             activatePHover: false,
-            activateVTrack: false,
+            activateNTrack: false,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
@@ -58,9 +58,9 @@ class App extends React.Component<IAppProps, IAppState> {
             this.setState({
                 activatePHover: event.target.checked,
             });
-        } else if (event.target.id === Feature.VTRACK) {
+        } else if (event.target.id === Feature.NTRACK) {
             this.setState({
-                activateVTrack: event.target.checked,
+                activateNTrack: event.target.checked,
             });
         }
     }
@@ -84,7 +84,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 graph={this.state.graph}
                 activateCHover={this.state.activateCHover}
                 activatePHover={this.state.activatePHover}
-                activateVTrack={this.state.activateVTrack}
+                activateNTrack={this.state.activateNTrack}
             ></Editor>
         );
         return (

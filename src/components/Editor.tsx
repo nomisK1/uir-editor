@@ -8,7 +8,7 @@ interface IEditorProps {
     language: string;
     value: string;
     graph: Graph;
-    activateVTrack: boolean;
+    activateNTrack: boolean;
     activateCHover: boolean;
     activatePHover: boolean;
 }
@@ -19,7 +19,7 @@ class Editor extends React.Component<IEditorProps> {
     private value: string | null;
     private decorations: string[];
     private graph: Graph;
-    private activateVTrack: boolean;
+    private activateNTrack: boolean;
     private activateCHover: boolean;
     private activatePHover: boolean;
 
@@ -31,7 +31,7 @@ class Editor extends React.Component<IEditorProps> {
         this.decorations = [];
         D.initializeDecorations(this);
         this.graph = this.props.graph;
-        this.activateVTrack = this.props.activateVTrack;
+        this.activateNTrack = this.props.activateNTrack;
         this.activateCHover = this.props.activateCHover;
         this.activatePHover = this.props.activatePHover;
     }
@@ -79,8 +79,8 @@ class Editor extends React.Component<IEditorProps> {
         return this.graph;
     }
 
-    public getActivateVTrack() {
-        return this.activateVTrack;
+    public getActivateNTrack() {
+        return this.activateNTrack;
     }
 
     public getActivateCHover() {
@@ -104,13 +104,13 @@ class Editor extends React.Component<IEditorProps> {
 
     render() {
         this.graph = this.props.graph;
-        this.activateVTrack = this.props.activateVTrack;
+        this.activateNTrack = this.props.activateNTrack;
         this.activateCHover = this.props.activateCHover;
         this.activatePHover = this.props.activatePHover;
 
         this.graph.print();
         console.log(this.graph);
-        console.log(this.activateVTrack);
+        console.log(this.activateNTrack);
         console.log(this.activateCHover);
         console.log(this.activatePHover);
 

@@ -40,10 +40,10 @@ class Decorations {
     }
 
     /**
-     * findDecorationsVTrack:
+     * findDecorationsNTrack:
      *
      */
-    private findDecorationsVTrack(position: monaco.Position) {
+    private findDecorationsNTrack(position: monaco.Position) {
         let graph = Decorations.editor.getGraph();
         let target = graph.findNodeAt(position);
         console.log(target);
@@ -53,12 +53,12 @@ class Decorations {
     }
 
     /**
-     * decorateVTrack:
+     * decorateNTrack:
      *
      */
-    public decorateVTrack(position: monaco.Position) {
-        if (Decorations.editor.getActivateVTrack()) {
-            return this.findDecorationsVTrack(position);
+    public decorateNTrack(position: monaco.Position) {
+        if (Decorations.editor.getActivateNTrack()) {
+            return this.findDecorationsNTrack(position);
         }
         return [];
     }
