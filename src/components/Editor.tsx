@@ -9,9 +9,10 @@ interface IEditorProps {
     value: string;
     graph: Graph;
     selection: string;
-    activateCHover: boolean;
-    activatePHover: boolean;
-    activateNTrack: boolean;
+    activateNodeHighlighting: boolean;
+    activateVariableDecoration: boolean;
+    activateChildDecoration: boolean;
+    activateParentDecoration: boolean;
 }
 
 class Editor extends React.Component<IEditorProps> {
@@ -21,9 +22,10 @@ class Editor extends React.Component<IEditorProps> {
     private graph: Graph;
     private selection: string;
     private decorations: string[];
-    private activateCHover: boolean;
-    private activatePHover: boolean;
-    private activateNTrack: boolean;
+    private activateNodeHighlighting: boolean;
+    private activateVariableDecoration: boolean;
+    private activateChildDecoration: boolean;
+    private activateParentDecoration: boolean;
 
     constructor(props: IEditorProps) {
         super(props);
@@ -33,11 +35,13 @@ class Editor extends React.Component<IEditorProps> {
         this.graph = this.props.graph;
         this.selection = this.props.selection;
         this.decorations = [];
-        this.activateCHover = this.props.activateCHover;
-        this.activatePHover = this.props.activatePHover;
-        this.activateNTrack = this.props.activateNTrack;
+        this.activateNodeHighlighting = this.props.activateNodeHighlighting;
+        this.activateVariableDecoration = this.props.activateVariableDecoration;
+        this.activateChildDecoration = this.props.activateChildDecoration;
+        this.activateParentDecoration = this.props.activateParentDecoration;
         S.initializeSingleton(this);
-        this.handleEditorKeypress = this.handleEditorKeypress.bind(this);
+        this.handleMouseClick = this.handleMouseClick.bind(this);
+        this.handleKeypress = this.handleKeypress.bind(this);
     }
 
     public componentDidMount() {
@@ -58,7 +62,8 @@ class Editor extends React.Component<IEditorProps> {
                 readOnly: true,
                 glyphMargin: true,
             });
-            this.editor.addCommand(monaco.KeyCode.F9, this.handleEditorKeypress);
+            this.editor.addCommand(monaco.KeyCode.F9, this.handleKeypress);
+            this.editor.onMouseDown(this.handleMouseClick);
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();
             });
@@ -88,22 +93,32 @@ class Editor extends React.Component<IEditorProps> {
         return this.selection;
     }
 
-    public getActivateNTrack() {
-        return this.activateNTrack;
+    public getActivateNodeHighlighting() {
+        return this.activateNodeHighlighting;
     }
 
-    public getActivateCHover() {
-        return this.activateCHover;
+    public getActivateVariableDecoration() {
+        return this.activateVariableDecoration;
     }
 
-    public getActivatePHover() {
-        return this.activatePHover;
+    public getActivateChildDecoration() {
+        return this.activateChildDecoration;
     }
 
-    public handleEditorKeypress() {
+    public getActivateParentDecoration() {
+        return this.activateParentDecoration;
+    }
+
+    public handleKeypress() {
         if (this.editor !== null) {
-            console.log("hi");
+            console.log('hi');
             this.editor.revealRangeInCenter(S.getInstance().findSelectorVariables()[0]);
+        }
+    }
+
+    public handleMouseClick(event: monaco.editor.IEditorMouseEvent) {
+        if (event.target.position !== null) {
+            S.getInstance().decorateTree(event.target.position);
         }
     }
 
@@ -120,16 +135,18 @@ class Editor extends React.Component<IEditorProps> {
     render() {
         this.graph = this.props.graph;
         this.selection = this.props.selection;
-        this.activateCHover = this.props.activateCHover;
-        this.activatePHover = this.props.activatePHover;
-        this.activateNTrack = this.props.activateNTrack;
+        this.activateNodeHighlighting = this.props.activateNodeHighlighting;
+        this.activateVariableDecoration = this.props.activateVariableDecoration;
+        this.activateChildDecoration = this.props.activateChildDecoration;
+        this.activateParentDecoration = this.props.activateParentDecoration;
 
         console.log(this.graph);
         console.log(this.selection);
         console.log(S.getInstance().findSelectorVariables());
-        console.log(this.activateCHover);
-        console.log(this.activatePHover);
-        console.log(this.activateNTrack);
+        console.log(this.activateNodeHighlighting);
+        console.log(this.activateVariableDecoration);
+        console.log(this.activateChildDecoration);
+        console.log(this.activateParentDecoration);
 
         return (
             <div>

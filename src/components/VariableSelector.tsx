@@ -7,17 +7,16 @@ interface IVariableSelectorProps {
 }
 
 class VariableSelector extends React.Component<IVariableSelectorProps> {
-
     render() {
         return (
             <input
                 type="selection"
-                placeholder={"---Search for a Variable in the Editor---"}
+                placeholder={'---Search for a Variable in the Editor---'}
                 value={this.props.selection}
                 onChange={this.props.onSelectionChange}
                 onKeyPress={this.props.onSelectionKeypress}
             />
-        )
+        );
     }
 }
 

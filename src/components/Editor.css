@@ -1,5 +1,8 @@
 .glyphVariable {
-    background: rgba(120, 79, 38); /* #784f26 // #264F78 */
+    background: rgba(38, 79, 120); /* #264F78 */
+}
+.glyphTarget {
+    background: rgba(120, 79, 38); /* #784f26 */
 }
 .glyphChild {
     background: rgba(38, 120, 120); /* #267878 */
@@ -8,6 +11,9 @@
     background: rgba(120, 38, 79); /* 78264f */
 }
 .contentVariable {
+    background: rgba(38, 79, 120);
+}
+.contentTarget {
     background: rgba(120, 79, 38);
 }
 .contentChild-20 {

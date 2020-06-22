@@ -7,7 +7,6 @@ interface ITcphDropdownProps {
 }
 
 class TcphDropdown extends React.Component<ITcphDropdownProps> {
-
     renderOptions() {
         return this.props.data.map((e, i) => {
             return (

@@ -1,9 +1,9 @@
 * {
     font-family: monospace;
 }
-input[type="selection"] {
+input[type='selection'] {
     width: 100%;
     padding: 5px;
     margin: 0;
-    box-sizing: border-box;   
+    box-sizing: border-box;
 }

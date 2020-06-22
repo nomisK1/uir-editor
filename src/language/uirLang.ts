@@ -32,11 +32,9 @@ export const hoverProvider: monaco.languages.HoverProvider = {
             contents: [{ value: '' }],
         };
         if (iWord) {
-            s.resetDecorations();
-            s.decorateHover(position);
+            s.decorateVariable(position);
             return dummy;
         } else {
-            s.resetDecorations();
             return dummy;
         }
     },
@@ -46,7 +44,7 @@ export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (_model, position, _token) {
         //let iWord = model.getWordAtPosition(position);
         return new Promise(function (resolve, _reject) {
-            let ranges: monaco.Range[] = S.getInstance().highlightNTrack(position);
+            let ranges: monaco.Range[] = S.getInstance().highlightNodes(position);
             let targets: monaco.languages.DocumentHighlight[] = [];
             ranges.forEach((r) => {
                 targets = [...targets, { range: r }];

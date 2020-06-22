@@ -7,24 +7,26 @@ import Graph from './content/Graph';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
 import { tpch } from './queries/tpch';
-import "./App.css"
+import './App.css';
 
 enum Feature {
-    CHOVER = 'Hover: Colorize Variable Children',
-    PHOVER = 'Hover: Colorize Variable Parents',
-    NTRACK = 'Click: Highlight Node Occurrences',
+    NODEHIGHLIGHTING = 'Click: Highlight Node Occurrences',
+    VARIABLEDECORATION = 'Hover: Decorate Variable',
+    CHILDDECORATION = 'Click: Decorate Variable Children',
+    PARENTDECORATION = 'Click: Decorate Variable Parents',
 }
 
-interface IAppProps { }
+interface IAppProps {}
 
 interface IAppState {
     data: string[];
     query: string;
     graph: Graph;
     selection: string;
-    activateCHover: boolean;
-    activatePHover: boolean;
-    activateNTrack: boolean;
+    activateNodeHighlighting: boolean;
+    activateVariableDecoration: boolean;
+    activateChildDecoration: boolean;
+    activateParentDecoration: boolean;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -37,10 +39,11 @@ class App extends React.Component<IAppProps, IAppState> {
             data: queries,
             query: queries[0],
             graph: new Graph({ query: queries[0] }),
-            selection: "",
-            activateCHover: false,
-            activatePHover: false,
-            activateNTrack: false,
+            selection: '',
+            activateNodeHighlighting: true,
+            activateVariableDecoration: true,
+            activateChildDecoration: true,
+            activateParentDecoration: true,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
@@ -56,17 +59,21 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public handleCheckerChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.id === Feature.CHOVER) {
+        if (event.target.id === Feature.NODEHIGHLIGHTING) {
             this.setState({
-                activateCHover: event.target.checked,
+                activateNodeHighlighting: event.target.checked,
             });
-        } else if (event.target.id === Feature.PHOVER) {
+        } else if (event.target.id === Feature.VARIABLEDECORATION) {
             this.setState({
-                activatePHover: event.target.checked,
+                activateVariableDecoration: event.target.checked,
             });
-        } else if (event.target.id === Feature.NTRACK) {
+        } else if (event.target.id === Feature.CHILDDECORATION) {
             this.setState({
-                activateNTrack: event.target.checked,
+                activateChildDecoration: event.target.checked,
+            });
+        } else if (event.target.id === Feature.PARENTDECORATION) {
+            this.setState({
+                activateParentDecoration: event.target.checked,
             });
         }
     }
@@ -79,7 +86,7 @@ class App extends React.Component<IAppProps, IAppState> {
         if (event.key === 'Enter') {
             event.preventDefault();
             this.setState({
-                selection: "TableScanTranslator_cpp_354_"
+                selection: 'TableScanTranslator_cpp_354_',
             });
         }
     }
@@ -96,6 +103,10 @@ class App extends React.Component<IAppProps, IAppState> {
         let checker = (
             <FeatureChecker
                 features={this.features}
+                activateNodeHighlighting={this.state.activateNodeHighlighting}
+                activateVariableDecoration={this.state.activateVariableDecoration}
+                activateChildDecoration={this.state.activateChildDecoration}
+                activateParentDecoration={this.state.activateParentDecoration}
                 onCheckerChange={this.handleCheckerChange}
             />
         );
@@ -112,9 +123,10 @@ class App extends React.Component<IAppProps, IAppState> {
                 value={this.state.query}
                 graph={this.state.graph}
                 selection={this.state.selection}
-                activateCHover={this.state.activateCHover}
-                activatePHover={this.state.activatePHover}
-                activateNTrack={this.state.activateNTrack}
+                activateNodeHighlighting={this.state.activateNodeHighlighting}
+                activateVariableDecoration={this.state.activateVariableDecoration}
+                activateChildDecoration={this.state.activateChildDecoration}
+                activateParentDecoration={this.state.activateParentDecoration}
             />
         );
         return (

@@ -179,7 +179,7 @@ class Graph {
         return nodes;
     }
 
-    private findRelatedVariables(variable: variable | null) {
+    public findRelatedVariables(variable: variable | null) {
         let vars: variable[] = [];
         if (variable !== null && variable.getContext() !== null) {
             if (variable.getContext()!.constructor === global) {
@@ -213,7 +213,7 @@ class Graph {
             let def = context as definition;
             def.getVariables().forEach((v) => {
                 if (v.isCalled(variable.getName())) {
-                    if(v.getContext()!.constructor === allocation) parents.push(v);
+                    if (v.getContext()!.constructor === allocation) parents.push(v);
                     parents.push(...v.getParents());
                 }
             });
@@ -221,7 +221,7 @@ class Graph {
         return parents;
     }
 
-    public findVariableParentsTree(variable: variable) {
+    public findVariableParentTree(variable: variable) {
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
         this.findRelatedVariables(variable).forEach((v) => {
@@ -257,7 +257,7 @@ class Graph {
         return children;
     }
 
-    public findVariableChildrenTree(variable: variable) {
+    public findVariableChildTree(variable: variable) {
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
         this.findRelatedVariables(variable).forEach((v) => {
@@ -283,7 +283,7 @@ class Graph {
     }
 
     public getNodeRanges(nodes: node[]) {
-        return nodes.map(n => n.getRange());
+        return nodes.map((n) => n.getRange());
     }
 
     private removeDuplicates(array: variable[]) {

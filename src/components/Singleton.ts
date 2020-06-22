@@ -5,10 +5,12 @@ import './Editor.css';
 class Singleton {
     private static instance: Singleton;
     private static editor: Editor;
-    private decorations: monaco.editor.IModelDeltaDecoration[];
+    private variableDecorations: monaco.editor.IModelDeltaDecoration[];
+    private treeDecorations: monaco.editor.IModelDeltaDecoration[];
 
     private constructor() {
-        this.decorations = [];
+        this.variableDecorations = [];
+        this.treeDecorations = [];
     }
 
     /**
@@ -41,19 +43,19 @@ class Singleton {
     public findSelectorVariables() {
         let graph = Singleton.editor.getGraph();
         let selection = Singleton.editor.getSelection();
-        selection = selection.charAt(0) !== "%" ? "%" + selection : selection;
+        selection = selection.charAt(0) !== '%' ? '%' + selection : selection;
         let vars = graph.findVariables(selection);
-        if(vars.length > 0) {
+        if (vars.length > 0) {
             return graph.getNodeRanges(vars);
-        }   
-        return [new monaco.Range(0,0,0,0)];
+        }
+        return [new monaco.Range(0, 0, 0, 0)];
     }
 
     /**
-     * findHighlightsNTrack:
+     * findNodeHighlights:
      *
      */
-    private findHighlightsNTrack(position: monaco.Position) {
+    private findNodeHighlights(position: monaco.Position) {
         let graph = Singleton.editor.getGraph();
         let target = graph.findNodeAt(position);
         console.log(target);
@@ -63,25 +65,68 @@ class Singleton {
     }
 
     /**
-     * highlightNTrack:
+     * highlightNodes:
      *
      */
-    public highlightNTrack(position: monaco.Position) {
-        if (Singleton.editor.getActivateNTrack()) {
-            return this.findHighlightsNTrack(position);
+    public highlightNodes(position: monaco.Position) {
+        if (Singleton.editor.getActivateNodeHighlighting()) {
+            return this.findNodeHighlights(position);
         }
         return [];
     }
 
     /**
-     * findDecorationsCHover:
+     * findVariableDecorations:
      *
      */
-    private findDecorationsCHover(position: monaco.Position) {
+    private findVariableDecorations(position: monaco.Position) {
         let graph = Singleton.editor.getGraph();
         let target = graph.findVariableAt(position);
         console.log(target);
-        let vars = target ? graph.findVariableChildrenTree(target) : [];
+        let vars = graph.findRelatedVariables(target);
+        let decorations = vars.map((v) => v.getRange()).map((r) => Singleton.shiftRange(r));
+        return decorations;
+    }
+
+    /**
+     * setVariableDecoration:
+     *
+     */
+    private setVariableDecoration(target: monaco.Range) {
+        this.variableDecorations.push({
+            range: target,
+            options: {
+                isWholeLine: false,
+                className: 'contentVariable',
+                glyphMarginClassName: 'glyphVariable',
+            },
+        });
+    }
+
+    /**
+     * decorateVariable:
+     *
+     */
+    public decorateVariable(position: monaco.Position) {
+        this.variableDecorations = [];
+        if (Singleton.editor.getActivateVariableDecoration()) {
+            let decorations = this.findVariableDecorations(position);
+            decorations.forEach((d) => this.setVariableDecoration(d));
+            Singleton.editor.updateDecorations();
+            return decorations;
+        }
+        return [];
+    }
+
+    /**
+     * findChildDecorations:
+     *
+     */
+    private findChildDecorations(position: monaco.Position) {
+        let graph = Singleton.editor.getGraph();
+        let target = graph.findVariableAt(position);
+        console.log(target);
+        let vars = target ? graph.findVariableChildTree(target) : [];
         console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
@@ -91,14 +136,14 @@ class Singleton {
     }
 
     /**
-     * findDecorationsPHover:
+     * findParentDecorations:
      *
      */
-    private findDecorationsPHover(position: monaco.Position) {
+    private findParentDecorations(position: monaco.Position) {
         let graph = Singleton.editor.getGraph();
         let target = graph.findVariableAt(position);
         console.log(target);
-        let vars = target ? graph.findVariableParentsTree(target) : [];
+        let vars = target ? graph.findVariableParentTree(target) : [];
         console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
@@ -108,47 +153,22 @@ class Singleton {
     }
 
     /**
-     * decorateHover:
+     * setTreeDecoration:
      *
      */
-    public decorateHover(position: monaco.Position) {
-        if (!(Singleton.editor.getActivateCHover() || Singleton.editor.getActivatePHover())) {
-            return [];
-        }
-        let decorations: { range: monaco.Range; depth: number }[] = [];
-        if (Singleton.editor.getActivateCHover() && !Singleton.editor.getActivatePHover()) {
-            decorations = this.findDecorationsCHover(position);
-        } else if (!Singleton.editor.getActivateCHover() && Singleton.editor.getActivatePHover()) {
-            decorations = this.findDecorationsPHover(position);
-        } else {
-            decorations = [...this.findDecorationsCHover(position), ...this.findDecorationsPHover(position)];
-        }
-        let ranges: monaco.Range[] = [];
-        decorations.forEach((d) => {
-            this.setDecorationHover(d);
-            ranges.push(d.range);
-        });
-        Singleton.editor.updateDecorations();
-        return ranges;
-    }
-
-    /**
-     * setDecorationHover:
-     *
-     */
-    private setDecorationHover(target: { range: monaco.Range; depth: number }) {
+    private setTreeDecoration(target: { range: monaco.Range; depth: number }) {
         if (target.depth === 0) {
-            this.decorations.push({
+            this.treeDecorations.push({
                 range: target.range,
                 options: {
                     isWholeLine: false,
-                    className: 'contentVariable',
-                    glyphMarginClassName: 'glyphVariable',
+                    className: 'contentTarget',
+                    glyphMarginClassName: 'glyphTarget',
                 },
             });
         } else if (target.depth < 0) {
             let className = 'contentChild' + target.depth;
-            this.decorations.push({
+            this.treeDecorations.push({
                 range: target.range,
                 options: {
                     isWholeLine: false,
@@ -158,7 +178,7 @@ class Singleton {
             });
         } else {
             let className = 'contentParent' + target.depth;
-            this.decorations.push({
+            this.treeDecorations.push({
                 range: target.range,
                 options: {
                     isWholeLine: false,
@@ -170,19 +190,46 @@ class Singleton {
     }
 
     /**
+     * decorateTree:
+     *
+     */
+    public decorateTree(position: monaco.Position) {
+        this.removeDecorations();
+        if (!(Singleton.editor.getActivateChildDecoration() || Singleton.editor.getActivateParentDecoration())) {
+            return [];
+        }
+        let decorations: { range: monaco.Range; depth: number }[] = [];
+        if (Singleton.editor.getActivateChildDecoration() && !Singleton.editor.getActivateParentDecoration()) {
+            decorations = this.findChildDecorations(position);
+        } else if (!Singleton.editor.getActivateChildDecoration() && Singleton.editor.getActivateParentDecoration()) {
+            decorations = this.findParentDecorations(position);
+        } else {
+            decorations = [...this.findChildDecorations(position), ...this.findParentDecorations(position)];
+        }
+        let ranges: monaco.Range[] = [];
+        decorations.forEach((d) => {
+            this.setTreeDecoration(d);
+            ranges.push(d.range);
+        });
+        Singleton.editor.updateDecorations();
+        return ranges;
+    }
+
+    /**
      * getDecorations:
      *
      */
     public getDecorations() {
-        return this.decorations;
+        return [...this.variableDecorations, ...this.treeDecorations];
     }
 
     /**
-     * resetDecorations:
+     * removeDecorations:
      *
      */
-    public resetDecorations() {
-        this.decorations = [];
+    public removeDecorations() {
+        this.variableDecorations = [];
+        this.treeDecorations = [];
         Singleton.editor.updateDecorations();
     }
 }
