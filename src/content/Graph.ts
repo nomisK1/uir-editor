@@ -213,6 +213,7 @@ class Graph {
             let def = context as definition;
             def.getVariables().forEach((v) => {
                 if (v.isCalled(variable.getName())) {
+                    if(v.getContext()!.constructor === allocation) parents.push(v);
                     parents.push(...v.getParents());
                 }
             });
@@ -234,9 +235,7 @@ class Graph {
             parents.forEach((p) => {
                 let vars = tree.map((t) => t.variable);
                 if (vars.includes(p) === false) {
-                    this.findRelatedVariables(p).forEach((v) => {
-                        tree.push({ variable: v, depth });
-                    });
+                    tree.push({ variable: p, depth });
                     grandparents.push(...this.findVariableParents(p));
                 }
             });

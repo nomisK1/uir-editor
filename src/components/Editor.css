@@ -11,46 +11,46 @@
     background: rgba(120, 79, 38);
 }
 .contentChild-15 {
-    background: rgba(38, 120, 120, 0.05);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-14 {
     background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-13 {
-    background: rgba(38, 120, 120, 0.15);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-12 {
-    background: rgba(38, 120, 120, 0.2);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-11 {
-    background: rgba(38, 120, 120, 0.25);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-10 {
-    background: rgba(38, 120, 120, 0.3);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-9 {
-    background: rgba(38, 120, 120, 0.35);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-8 {
-    background: rgba(38, 120, 120, 0.4);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-7 {
-    background: rgba(38, 120, 120, 0.45);
+    background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-6 {
-    background: rgba(38, 120, 120, 0.5);
+    background: rgba(38, 120, 120, 0.2);
 }
 .contentChild-5 {
-    background: rgba(38, 120, 120, 0.6);
+    background: rgba(38, 120, 120, 0.3);
 }
 .contentChild-4 {
-    background: rgba(38, 120, 120, 0.7);
+    background: rgba(38, 120, 120, 0.4);
 }
 .contentChild-3 {
-    background: rgba(38, 120, 120, 0.8);
+    background: rgba(38, 120, 120, 0.6);
 }
 .contentChild-2 {
-    background: rgba(38, 120, 120, 0.9);
+    background: rgba(38, 120, 120, 0.8);
 }
 .contentChild-1 {
     background: rgba(38, 120, 120);
@@ -59,44 +59,44 @@
     background: rgba(120, 38, 79);
 }
 .contentParent2 {
-    background: rgba(120, 38, 79, 0.9);
-}
-.contentParent3 {
     background: rgba(120, 38, 79, 0.8);
 }
-.contentParent4 {
-    background: rgba(120, 38, 79, 0.7);
-}
-.contentParent5 {
+.contentParent3 {
     background: rgba(120, 38, 79, 0.6);
 }
-.contentParent6 {
-    background: rgba(120, 38, 79, 0.5);
-}
-.contentParent7 {
-    background: rgba(120, 38, 79, 0.45);
-}
-.contentParent8 {
+.contentParent4 {
     background: rgba(120, 38, 79, 0.4);
 }
-.contentParent9 {
-    background: rgba(120, 38, 79, 0.35);
-}
-.contentParent10 {
+.contentParent5 {
     background: rgba(120, 38, 79, 0.3);
 }
-.contentParent11 {
-    background: rgba(120, 38, 79, 0.25);
-}
-.contentParent12 {
+.contentParent6 {
     background: rgba(120, 38, 79, 0.2);
 }
+.contentParent7 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent8 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent9 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent10 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent11 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent12 {
+    background: rgba(120, 38, 79, 0.1);
+}
 .contentParent13 {
-    background: rgba(120, 38, 79, 0.15);
+    background: rgba(120, 38, 79, 0.1);
 }
 .contentParent14 {
     background: rgba(120, 38, 79, 0.1);
 }
 .contentParent15 {
-    background: rgba(120, 38, 79, 0.05);
+    background: rgba(120, 38, 79, 0.1);
 }

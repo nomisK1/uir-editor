@@ -9,9 +9,9 @@ interface IEditorProps {
     value: string;
     graph: Graph;
     selection: string;
-    activateNTrack: boolean;
     activateCHover: boolean;
     activatePHover: boolean;
+    activateNTrack: boolean;
 }
 
 class Editor extends React.Component<IEditorProps> {
@@ -21,9 +21,9 @@ class Editor extends React.Component<IEditorProps> {
     private graph: Graph;
     private selection: string;
     private decorations: string[];
-    private activateNTrack: boolean;
     private activateCHover: boolean;
     private activatePHover: boolean;
+    private activateNTrack: boolean;
 
     constructor(props: IEditorProps) {
         super(props);
@@ -33,9 +33,9 @@ class Editor extends React.Component<IEditorProps> {
         this.graph = this.props.graph;
         this.selection = this.props.selection;
         this.decorations = [];
-        this.activateNTrack = this.props.activateNTrack;
         this.activateCHover = this.props.activateCHover;
         this.activatePHover = this.props.activatePHover;
+        this.activateNTrack = this.props.activateNTrack;
         S.initializeSingleton(this);
         this.handleEditorKeypress = this.handleEditorKeypress.bind(this);
     }
@@ -120,16 +120,16 @@ class Editor extends React.Component<IEditorProps> {
     render() {
         this.graph = this.props.graph;
         this.selection = this.props.selection;
-        this.activateNTrack = this.props.activateNTrack;
         this.activateCHover = this.props.activateCHover;
         this.activatePHover = this.props.activatePHover;
+        this.activateNTrack = this.props.activateNTrack;
 
         console.log(this.graph);
         console.log(this.selection);
-        console.log(this.activateNTrack);
+        console.log(S.getInstance().findSelectorVariables());
         console.log(this.activateCHover);
         console.log(this.activatePHover);
-        console.log(S.getInstance().findSelectorVariables());
+        console.log(this.activateNTrack);
 
         return (
             <div>

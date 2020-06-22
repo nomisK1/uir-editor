@@ -79,7 +79,7 @@ class App extends React.Component<IAppProps, IAppState> {
         if (event.key === 'Enter') {
             event.preventDefault();
             this.setState({
-                selection: "CompilationContext_cpp_214_"
+                selection: "TableScanTranslator_cpp_354_"
             });
         }
     }
