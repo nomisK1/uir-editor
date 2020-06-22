@@ -10,6 +10,21 @@
 .contentVariable {
     background: rgba(120, 79, 38);
 }
+.contentChild-20 {
+    background: rgba(38, 120, 120, 0.1);
+}
+.contentChild-19 {
+    background: rgba(38, 120, 120, 0.1);
+}
+.contentChild-18 {
+    background: rgba(38, 120, 120, 0.1);
+}
+.contentChild-17 {
+    background: rgba(38, 120, 120, 0.1);
+}
+.contentChild-16 {
+    background: rgba(38, 120, 120, 0.1);
+}
 .contentChild-15 {
     background: rgba(38, 120, 120, 0.1);
 }
@@ -98,5 +113,20 @@
     background: rgba(120, 38, 79, 0.1);
 }
 .contentParent15 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent16 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent17 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent18 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent19 {
+    background: rgba(120, 38, 79, 0.1);
+}
+.contentParent20 {
     background: rgba(120, 38, 79, 0.1);
 }
