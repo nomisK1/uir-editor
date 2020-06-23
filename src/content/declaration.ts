@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { Type } from './_node';
+import node, { Type } from './_node';
 import component, { IComponentProps } from './_component';
 import variable from './variable';
 
@@ -35,9 +35,9 @@ class declaration extends component {
                     data: 'Variable:' + a + '@l:' + line,
                     range: new monaco.Range(
                         line,
-                        variable.indexOfStrict(a, this.data),
+                        node.indexOfStrict(a, this.data),
                         line,
-                        variable.indexOfStrict(a, this.data) + a.length,
+                        node.indexOfStrict(a, this.data) + a.length,
                     ),
                     prev: null,
                     next: null,

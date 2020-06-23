@@ -24,19 +24,14 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
 };
 
 export const hoverProvider: monaco.languages.HoverProvider = {
-    provideHover: function (model, position) {
+    provideHover: function (_model, position) {
         const s = S.getInstance();
-        let iWord = model.getWordAtPosition(position);
         let dummy = {
             range: new monaco.Range(0, 0, 0, 0),
             contents: [{ value: '' }],
         };
-        if (iWord) {
-            s.decorateVariable(position);
-            return dummy;
-        } else {
-            return dummy;
-        }
+        s.decorateVariable(position);
+        return dummy;
     },
 };
 

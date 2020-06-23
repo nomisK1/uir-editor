@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { Type } from './_node';
+import node, { Type } from './_node';
 import instruction, { IInstructionProps } from './_instruction';
 import variable from './variable';
 
@@ -129,9 +129,9 @@ class operation extends instruction {
                     data: 'Variable:' + a + '@l:' + line,
                     range: new monaco.Range(
                         line,
-                        index + variable.indexOfStrict(a, this.data),
+                        index + node.indexOfStrict(a, this.data),
                         line,
-                        index + variable.indexOfStrict(a, this.data) + a.length,
+                        index + node.indexOfStrict(a, this.data) + a.length,
                     ),
                     prev: null,
                     next: null,

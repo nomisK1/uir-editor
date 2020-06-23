@@ -30,16 +30,6 @@ class Singleton {
         return Singleton.instance;
     }
 
-    /**
-     * shiftRange:
-     * Shifts the Range by one column to the right
-     */
-    public static shiftRange(range: monaco.Range) {
-        return range
-            .setStartPosition(range.startLineNumber, range.startColumn + 1)
-            .setEndPosition(range.endLineNumber, range.endColumn + 1);
-    }
-
     public findSelectorVariables() {
         let graph = Singleton.editor.getGraph();
         let selection = Singleton.editor.getSelection();
@@ -60,7 +50,7 @@ class Singleton {
         let target = graph.findNodeAt(position);
         console.log(target);
         let nodes = target ? graph.findRelatedNodes(target) : [];
-        let highlights = nodes.map((n) => n.getRange()).map((r) => Singleton.shiftRange(r));
+        let highlights = nodes.map((n) => n.getRange());
         return highlights;
     }
 
@@ -84,7 +74,7 @@ class Singleton {
         let target = graph.findVariableAt(position);
         console.log(target);
         let vars = graph.findRelatedVariables(target);
-        let decorations = vars.map((v) => v.getRange()).map((r) => Singleton.shiftRange(r));
+        let decorations = vars.map((v) => v.getRange());
         return decorations;
     }
 
@@ -130,7 +120,7 @@ class Singleton {
         console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
-            decorations.push({ range: Singleton.shiftRange(v.variable.getRange()), depth: v.depth });
+            decorations.push({ range: v.variable.getRange(), depth: v.depth });
         });
         return decorations;
     }
@@ -147,7 +137,7 @@ class Singleton {
         console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
-            decorations.push({ range: Singleton.shiftRange(v.variable.getRange()), depth: v.depth });
+            decorations.push({ range: v.variable.getRange(), depth: v.depth });
         });
         return decorations;
     }

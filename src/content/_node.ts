@@ -84,7 +84,7 @@ abstract class node {
     }
 
     public getRange() {
-        return this.range;
+        return node.shiftRange(this.range);
     }
 
     public getPrev() {
@@ -112,6 +112,34 @@ abstract class node {
             return this.context.getOuterContext();
         }
         return this;
+    }
+
+    /**
+     * shiftRange:
+     * Shifts the Range by one column to the right
+     */
+    public static shiftRange(range: monaco.Range) {
+        return range
+            .setStartPosition(range.startLineNumber, range.startColumn + 1)
+            .setEndPosition(range.endLineNumber, range.endColumn + 1);
+    }
+
+    /**
+     * indexOfStrict:
+     * Strict version of "string.indexOf"
+     */
+    public static indexOfStrict(string: string, text: string) {
+        let regexp = new RegExp(string + '\\b');
+        let index = text.search(regexp);
+        return index;
+    }
+
+    /**
+     * removeDuplicates:
+     *
+     */
+    public static removeDuplicates(array: node[]) {
+        return array.filter((a, b) => array.indexOf(a) === b);
     }
 }
 

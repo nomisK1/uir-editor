@@ -40,7 +40,7 @@ class Editor extends React.Component<IEditorProps> {
         this.activateChildDecoration = this.props.activateChildDecoration;
         this.activateParentDecoration = this.props.activateParentDecoration;
         S.initializeSingleton(this);
-        this.handleMouseClick = this.handleMouseClick.bind(this);
+        this.handleMouseclick = this.handleMouseclick.bind(this);
         this.handleKeypress = this.handleKeypress.bind(this);
     }
 
@@ -63,7 +63,7 @@ class Editor extends React.Component<IEditorProps> {
                 glyphMargin: true,
             });
             this.editor.addCommand(monaco.KeyCode.F9, this.handleKeypress);
-            this.editor.onMouseDown(this.handleMouseClick);
+            this.editor.onMouseDown(this.handleMouseclick);
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();
             });
@@ -72,7 +72,6 @@ class Editor extends React.Component<IEditorProps> {
         }
         monaco.editor.defineTheme(themeID, monarchTheme);
         monaco.editor.setTheme(themeID);
-        this.updateDecorations();
     }
 
     public componentDidUpdate(_prevProps: IEditorProps) {
@@ -111,16 +110,17 @@ class Editor extends React.Component<IEditorProps> {
 
     public handleKeypress() {
         if (this.editor !== null) {
-            console.log('hi');
-            this.editor.revealRangeInCenter(S.getInstance().findSelectorVariables()[0]);
+            this.editor.revealRangeAtTop(new monaco.Range(0, 0, 0, 0));
         }
     }
 
-    public handleMouseClick(event: monaco.editor.IEditorMouseEvent) {
+    public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
         if (event.target.position !== null) {
             S.getInstance().decorateTree(event.target.position);
         }
     }
+
+    public updateSelector() {}
 
     /**
      * updateDecorations:
@@ -139,6 +139,8 @@ class Editor extends React.Component<IEditorProps> {
         this.activateVariableDecoration = this.props.activateVariableDecoration;
         this.activateChildDecoration = this.props.activateChildDecoration;
         this.activateParentDecoration = this.props.activateParentDecoration;
+
+        this.updateSelector();
 
         console.log(this.graph);
         console.log(this.selection);

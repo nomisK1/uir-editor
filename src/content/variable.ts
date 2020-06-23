@@ -29,22 +29,8 @@ class variable extends node {
         return this.parents;
     }
 
-    public getRange() {
-        return this.range;
-    }
-
     public isCalled(name: string) {
         return this.name === name;
-    }
-
-    public toString() {
-        return this.data;
-    }
-
-    public static indexOfStrict(string: string, text: string) {
-        let regexp = new RegExp(string + '\\b');
-        let index = text.search(regexp);
-        return index;
     }
 }
 

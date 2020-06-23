@@ -17,12 +17,14 @@ class Graph {
     private query: string;
     private components: component[];
     private variables: variable[];
+    private current: variable;
 
     constructor(props: IGraphProps) {
         this.query = props.query;
         this.components = [];
         this.variables = [];
         this.build();
+        this.current = this.variables[0];
     }
 
     private build() {
@@ -286,12 +288,16 @@ class Graph {
         return nodes.map((n) => n.getRange());
     }
 
-    private removeDuplicates(array: variable[]) {
-        return array.filter((a, b) => array.indexOf(a) === b);
+    public getCurrentVariable() {
+        return this.current;
+    }
+
+    public setCurrentVariable(variable: variable) {
+        this.current = variable;
     }
 
     public print() {
-        console.log();
+        console.log(this.current);
     }
 }
 
