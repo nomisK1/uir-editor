@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import S from '../components/Singleton';
+import S from './Singleton';
 
 export const monarchLanguage: monaco.languages.IMonarchLanguage = {
     // defaultToken: "invalid",
@@ -25,12 +25,12 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
 
 export const hoverProvider: monaco.languages.HoverProvider = {
     provideHover: function (_model, position) {
-        const s = S.getInstance();
+        const editor = S.getInstance().getEditor();
         let dummy = {
             range: new monaco.Range(0, 0, 0, 0),
             contents: [{ value: '' }],
         };
-        s.decorateVariable(position);
+        if (editor) editor.decorateVariable(position);
         return dummy;
     },
 };
@@ -39,7 +39,9 @@ export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (_model, position, _token) {
         //let iWord = model.getWordAtPosition(position);
         return new Promise(function (resolve, _reject) {
-            let ranges: monaco.Range[] = S.getInstance().highlightNodes(position);
+            const editor = S.getInstance().getEditor();
+            let ranges: monaco.Range[] = [];
+            if (editor) ranges = editor.highlightNodes(position);
             let targets: monaco.languages.DocumentHighlight[] = [];
             ranges.forEach((r) => {
                 targets = [...targets, { range: r }];
