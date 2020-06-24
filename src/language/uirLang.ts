@@ -24,14 +24,16 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
 };
 
 export const hoverProvider: monaco.languages.HoverProvider = {
-    provideHover: function (_model, position) {
-        const editor = S.getInstance().getEditor();
-        let dummy = {
-            range: new monaco.Range(0, 0, 0, 0),
-            contents: [{ value: '' }],
-        };
-        if (editor) editor.decorateVariable(position);
-        return dummy;
+    provideHover: function (model, position) {
+        return new Promise(function (resolve, _reject) {
+            const editor = S.getInstance().getEditor();
+            let dummy = {
+                range: new monaco.Range(0, 0, 0, 0),
+                contents: [{ value: '' }],
+            };
+            if (editor) editor.decorateVariable(position);
+            resolve(dummy);
+        });
     },
 };
 
@@ -41,7 +43,9 @@ export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
         return new Promise(function (resolve, _reject) {
             const editor = S.getInstance().getEditor();
             let ranges: monaco.Range[] = [];
-            if (editor) ranges = editor.highlightNodes(position);
+            if (editor) {
+                ranges = editor.highlightNodes(position);
+            }
             let targets: monaco.languages.DocumentHighlight[] = [];
             ranges.forEach((r) => {
                 targets = [...targets, { range: r }];

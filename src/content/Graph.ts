@@ -17,14 +17,14 @@ class Graph {
     private query: string;
     private components: component[];
     private variables: variable[];
-    private current: variable;
+    private current: variable | null;
 
     constructor(props: IGraphProps) {
         this.query = props.query;
         this.components = [];
         this.variables = [];
+        this.current = null;
         this.build();
-        this.current = this.variables[0];
     }
 
     private build() {
@@ -292,7 +292,7 @@ class Graph {
         return this.current;
     }
 
-    public setCurrentVariable(variable: variable) {
+    public setCurrentVariable(variable: variable | null) {
         this.current = variable;
     }
 

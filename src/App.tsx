@@ -49,6 +49,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
         this.handleSelectionChange = this.handleSelectionChange.bind(this);
         this.handleSelectionKeypress = this.handleSelectionKeypress.bind(this);
+        this.passSelection = this.passSelection.bind(this);
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -82,6 +83,10 @@ class App extends React.Component<IAppProps, IAppState> {
         this.setState({ selection: event.target.value });
     }
 
+    public passSelection(selection: string) {
+        this.setState({ selection });
+    }
+
     public handleSelectionKeypress(event: React.KeyboardEvent<HTMLDivElement>) {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -90,6 +95,8 @@ class App extends React.Component<IAppProps, IAppState> {
             });
         }
     }
+
+    public focusEditor() {}
 
     render() {
         setupLanguage();
@@ -123,6 +130,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 value={this.state.query}
                 graph={this.state.graph}
                 selection={this.state.selection}
+                passSelection={this.passSelection}
                 activateNodeHighlighting={this.state.activateNodeHighlighting}
                 activateVariableDecoration={this.state.activateVariableDecoration}
                 activateChildDecoration={this.state.activateChildDecoration}

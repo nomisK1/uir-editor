@@ -10,6 +10,7 @@ interface IEditorProps {
     value: string;
     graph: Graph;
     selection: string;
+    passSelection: (selection: string) => void;
     activateNodeHighlighting: boolean;
     activateVariableDecoration: boolean;
     activateChildDecoration: boolean;
@@ -89,6 +90,38 @@ class Editor extends React.Component<IEditorProps> {
         if (this.editor !== null) this.editor.dispose();
     }
 
+    public shouldComponentUpdate(nextProps: IEditorProps) {
+        if (this.props.graph !== nextProps.graph) {
+            this.graph = nextProps.graph;
+            this.updateSelector(new monaco.Position(0, 0));
+            return true;
+        }
+        if (this.props.selection !== nextProps.selection) {
+            this.selection = nextProps.selection;
+            console.log(this.selection);
+            console.log(this.findSelectorVariables());
+        }
+        if (this.props.activateNodeHighlighting !== nextProps.activateNodeHighlighting) {
+            this.activateNodeHighlighting = nextProps.activateNodeHighlighting;
+        }
+        if (this.props.activateVariableDecoration !== nextProps.activateVariableDecoration) {
+            this.activateVariableDecoration = nextProps.activateVariableDecoration;
+            this.variableDecorations = [];
+            this.updateDecorations();
+        }
+        if (this.props.activateChildDecoration !== nextProps.activateChildDecoration) {
+            this.activateChildDecoration = nextProps.activateChildDecoration;
+            this.treeDecorations = [];
+            this.updateDecorations();
+        }
+        if (this.props.activateParentDecoration !== nextProps.activateParentDecoration) {
+            this.activateParentDecoration = nextProps.activateParentDecoration;
+            this.treeDecorations = [];
+            this.updateDecorations();
+        }
+        return false;
+    }
+
     public handleKeypress() {
         if (this.editor !== null) {
             this.editor.revealRangeAtTop(new monaco.Range(0, 0, 0, 0));
@@ -97,8 +130,20 @@ class Editor extends React.Component<IEditorProps> {
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
         if (event.target.position !== null) {
+            this.updateSelector(event.target.position);
             this.decorateTree(event.target.position);
         }
+    }
+
+    /**
+     * updateSelector:
+     * Updates the App Input field with the currently selected Variable name
+     */
+    public updateSelector(position: monaco.Position) {
+        let target = this.graph.findVariableAt(position);
+        this.graph.setCurrentVariable(target);
+        this.selection = target ? target.getName() : '';
+        this.props.passSelection(this.selection);
     }
 
     /**
@@ -114,15 +159,13 @@ class Editor extends React.Component<IEditorProps> {
         return [new monaco.Range(0, 0, 0, 0)];
     }
 
-    public updateSelector() {}
-
     /**
      * findNodeHighlights:
      *
      */
     private findNodeHighlights(position: monaco.Position) {
         let target = this.graph.findNodeAt(position);
-        console.log(target);
+        //console.log(target);
         let nodes = this.graph.findRelatedNodes(target);
         let ranges = nodes.map((n) => n.getRange());
         return ranges;
@@ -145,7 +188,7 @@ class Editor extends React.Component<IEditorProps> {
      */
     private findVariableDecorations(position: monaco.Position) {
         let target = this.graph.findVariableAt(position);
-        console.log(target);
+        //console.log(target);
         let vars = this.graph.findRelatedVariables(target);
         let ranges = vars.map((v) => v.getRange());
         return ranges;
@@ -178,6 +221,7 @@ class Editor extends React.Component<IEditorProps> {
             this.updateDecorations();
             return decorations;
         }
+        this.updateDecorations();
         return [];
     }
 
@@ -291,23 +335,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     render() {
-        this.graph = this.props.graph;
-        this.selection = this.props.selection;
-        this.activateNodeHighlighting = this.props.activateNodeHighlighting;
-        this.activateVariableDecoration = this.props.activateVariableDecoration;
-        this.activateChildDecoration = this.props.activateChildDecoration;
-        this.activateParentDecoration = this.props.activateParentDecoration;
-
-        this.updateSelector();
-
         console.log(this.graph);
-        console.log(this.selection);
-        console.log(this.findSelectorVariables());
-        console.log(this.activateNodeHighlighting);
-        console.log(this.activateVariableDecoration);
-        console.log(this.activateChildDecoration);
-        console.log(this.activateParentDecoration);
-
         return (
             <div>
                 <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }}></div>
