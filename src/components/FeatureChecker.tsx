@@ -19,22 +19,30 @@ class FeatureChecker extends React.Component<IFeatureCheckerProps> {
         ];
         return this.props.features.map((e, i) => {
             return (
-                <div key={i}>
+                <label key={i} form={e}>
                     <input
                         type="checkbox"
                         id={e}
                         name={e}
+                        value={e}
                         checked={featureIsActive[i]}
                         onChange={this.props.onCheckerChange}
                     ></input>
-                    <label>{e}</label>
-                </div>
+                    {e}
+                    <br />
+                </label>
             );
         });
     }
 
     render() {
-        return <label>{this.renderOptions()}</label>;
+        return (
+            <label>
+                {/* <b>Features: </b>
+                <br /> */}
+                {this.renderOptions()}
+            </label>
+        );
     }
 }
 

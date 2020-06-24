@@ -11,7 +11,7 @@ class VariableSelector extends React.Component<IVariableSelectorProps> {
         return (
             <input
                 type="selection"
-                placeholder={'---Search for a Variable in the Editor---'}
+                placeholder={'---Select a Variable in the Editor---'}
                 value={this.props.selection}
                 onChange={this.props.onSelectionChange}
                 onKeyPress={this.props.onSelectionKeypress}
