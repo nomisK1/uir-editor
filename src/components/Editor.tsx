@@ -20,7 +20,7 @@ interface IEditorProps {
 class Editor extends React.Component<IEditorProps> {
     private container: HTMLDivElement | null;
     private editor: monaco.editor.IStandaloneCodeEditor | null;
-    private value: string | null;
+    private value: string;
     private graph: Graph;
     private selection: string;
     private decorations: string[];
@@ -35,7 +35,7 @@ class Editor extends React.Component<IEditorProps> {
         super(props);
         this.container = null;
         this.editor = null;
-        this.value = null;
+        this.value = this.props.value;
         this.graph = this.props.graph;
         this.selection = this.props.selection;
         this.decorations = [];
@@ -54,7 +54,7 @@ class Editor extends React.Component<IEditorProps> {
         if (this.container) {
             this.editor = monaco.editor.create(this.container, {
                 language: this.props.language,
-                value: this.props.value,
+                value: this.value,
                 lineNumbers: 'on',
                 fontFamily: 'monospace',
                 fontSize: 15,
@@ -111,13 +111,23 @@ class Editor extends React.Component<IEditorProps> {
         }
         if (this.props.activateChildDecoration !== nextProps.activateChildDecoration) {
             this.activateChildDecoration = nextProps.activateChildDecoration;
-            this.treeDecorations = [];
-            this.updateDecorations();
+            if (!(this.activateChildDecoration || this.activateParentDecoration)) {
+                this.treeDecorations = [];
+                this.updateDecorations();
+            } else {
+                let target = this.graph.getCurrentVariable();
+                if (target) this.decorateTree(target.getRange().getStartPosition());
+            }
         }
         if (this.props.activateParentDecoration !== nextProps.activateParentDecoration) {
             this.activateParentDecoration = nextProps.activateParentDecoration;
-            this.treeDecorations = [];
-            this.updateDecorations();
+            if (!(this.activateChildDecoration || this.activateParentDecoration)) {
+                this.treeDecorations = [];
+                this.updateDecorations();
+            } else {
+                let target = this.graph.getCurrentVariable();
+                if (target) this.decorateTree(target.getRange().getStartPosition());
+            }
         }
         return false;
     }
@@ -231,9 +241,9 @@ class Editor extends React.Component<IEditorProps> {
      */
     private findChildDecorations(position: monaco.Position) {
         let target = this.graph.findVariableAt(position);
-        console.log(target);
+        //console.log(target);
         let vars = target ? this.graph.findVariableChildTree(target) : [];
-        console.log(vars);
+        //console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
             decorations.push({ range: v.variable.getRange(), depth: v.depth });
@@ -247,9 +257,9 @@ class Editor extends React.Component<IEditorProps> {
      */
     private findParentDecorations(position: monaco.Position) {
         let target = this.graph.findVariableAt(position);
-        console.log(target);
+        //console.log(target);
         let vars = target ? this.graph.findVariableParentTree(target) : [];
-        console.log(vars);
+        //console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
             decorations.push({ range: v.variable.getRange(), depth: v.depth });
