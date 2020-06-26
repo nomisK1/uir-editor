@@ -215,7 +215,8 @@ class Graph {
             let def = context as definition;
             def.getVariables().forEach((v) => {
                 if (v.isCalled(variable.getName())) {
-                    if (v.getContext()!.constructor === allocation) parents.push(v);
+                    if (v.getContext()!.constructor === allocation || v.getContext()!.constructor === definition)
+                        parents.push(v);
                     parents.push(...v.getParents());
                 }
             });

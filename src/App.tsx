@@ -1,7 +1,7 @@
 import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
 import FeatureChecker from './components/FeatureChecker';
-import VariableSelector from './components/VariableSelector';
+import VariableInput from './components/VariableInput';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { setupLanguage } from './language/setup';
@@ -30,6 +30,8 @@ interface IAppState {
 }
 
 class App extends React.Component<IAppProps, IAppState> {
+    private editor: Editor | null = null;
+    private input: VariableInput | null = null;
     private features: string[] = Object.values(Feature);
 
     constructor(props: IAppProps) {
@@ -50,6 +52,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.handleSelectionChange = this.handleSelectionChange.bind(this);
         this.handleSelectionKeypress = this.handleSelectionKeypress.bind(this);
         this.passSelection = this.passSelection.bind(this);
+        this.focusInput = this.focusInput.bind(this);
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -83,20 +86,23 @@ class App extends React.Component<IAppProps, IAppState> {
         this.setState({ selection: event.target.value });
     }
 
+    public handleSelectionKeypress(event: React.KeyboardEvent<HTMLDivElement>) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            if (this.editor) {
+                this.editor.getInstance().focus();
+                this.editor.handleKeypressEnter();
+            }
+        }
+    }
+
     public passSelection(selection: string) {
         this.setState({ selection });
     }
 
-    public handleSelectionKeypress(event: React.KeyboardEvent<HTMLDivElement>) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            this.setState({
-                selection: 'TableScanTranslator_cpp_354_',
-            });
-        }
+    public focusInput() {
+        if (this.input) this.input.getInstance().focus();
     }
-
-    public focusEditor() {}
 
     render() {
         setupLanguage();
@@ -117,11 +123,12 @@ class App extends React.Component<IAppProps, IAppState> {
                 onCheckerChange={this.handleCheckerChange}
             />
         );
-        let display = (
-            <VariableSelector
+        let input = (
+            <VariableInput
                 selection={this.state.selection}
                 onSelectionChange={this.handleSelectionChange}
                 onSelectionKeypress={this.handleSelectionKeypress}
+                ref={(ref) => (this.input = ref)}
             />
         );
         let editor = (
@@ -131,17 +138,19 @@ class App extends React.Component<IAppProps, IAppState> {
                 graph={this.state.graph}
                 selection={this.state.selection}
                 passSelection={this.passSelection}
+                focusInput={this.focusInput}
                 activateNodeHighlighting={this.state.activateNodeHighlighting}
                 activateVariableDecoration={this.state.activateVariableDecoration}
                 activateChildDecoration={this.state.activateChildDecoration}
                 activateParentDecoration={this.state.activateParentDecoration}
+                ref={(ref) => (this.editor = ref)}
             />
         );
         return (
             <div>
                 {dropdown}
                 {checker}
-                {display}
+                {input}
                 {editor}
             </div>
         );
