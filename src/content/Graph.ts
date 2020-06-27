@@ -107,6 +107,25 @@ class Graph {
         this.variables = vars;
     }
 
+    private getGlobals() {
+        let globals: global[] = [];
+        this.components.forEach((c) => {
+            if (c instanceof global) globals.push(c);
+        });
+        return globals;
+    }
+
+    public isGlobal(name: string) {
+        let vars: variable[] = [];
+        this.getGlobals().forEach((g) => {
+            vars.push(...g.getVariables());
+        });
+        for (let i = 0; i < vars.length; i++) {
+            if (vars[i].getName() === name) return true;
+        }
+        return false;
+    }
+
     private getDeclarations() {
         let declarations: declaration[] = [];
         this.components.forEach((c) => {
@@ -184,7 +203,7 @@ class Graph {
     public findRelatedVariables(variable: variable | null) {
         let vars: variable[] = [];
         if (variable !== null && variable.getContext() !== null) {
-            if (variable.getContext()!.constructor === global) {
+            if (this.isGlobal(variable.getName())) {
                 vars.push(...this.findVariables(variable.getName()));
             } else {
                 vars.push(...variable.getOuterContext().findVariables(variable.getName()));
@@ -287,6 +306,52 @@ class Graph {
 
     public getNodeRanges(nodes: node[]) {
         return nodes.map((n) => n.getRange());
+    }
+
+    public updateCurrentVariable(name: string) {
+        let selection = name.charAt(0) !== '%' ? '%' + name : name;
+        if (this.current && this.current.getName() === name) this.setCurrentNextOccurrence();
+        else {
+            let next = this.findVariables(selection)[0];
+            this.current = next ? next : null;
+        }
+    }
+
+    public updateCurrentVariableShift(name: string) {
+        let selection = name.charAt(0) !== '%' ? '%' + name : name;
+        if (this.current && this.current.getName() === name) this.setCurrentPrevOccurrence();
+        else {
+            let next = this.findVariables(selection)[0];
+            this.current = next ? next : null;
+        }
+    }
+
+    private setCurrentNextOccurrence() {
+        if (this.current) {
+            let vars = this.findVariables(this.current!.getName());
+            for (let i = 0; i < vars.length; i++) {
+                if (
+                    !vars[i].getRange().getStartPosition().isBeforeOrEqual(this.current!.getRange().getStartPosition())
+                ) {
+                    this.current = vars[i];
+                    return;
+                }
+            }
+            this.current = vars[0];
+        }
+    }
+
+    private setCurrentPrevOccurrence() {
+        if (this.current) {
+            let vars = this.findVariables(this.current!.getName());
+            for (let i = vars.length - 1; i >= 0; i--) {
+                if (vars[i].getRange().getStartPosition().isBefore(this.current!.getRange().getStartPosition())) {
+                    this.current = vars[i];
+                    return;
+                }
+            }
+            this.current = vars[vars.length - 1];
+        }
     }
 
     public getCurrentVariable() {

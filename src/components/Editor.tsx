@@ -48,8 +48,9 @@ class Editor extends React.Component<IEditorProps> {
         this.activateParentDecoration = this.props.activateParentDecoration;
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
-        this.handleKeypressEnter = this.handleKeypressEnter.bind(this);
         this.handleKeypressBack = this.handleKeypressBack.bind(this);
+        this.handleKeypressEnter = this.handleKeypressEnter.bind(this);
+        this.handleKeypressUp = this.handleKeypressUp.bind(this);
         this.handleKeypressDown = this.handleKeypressDown.bind(this);
     }
 
@@ -72,8 +73,9 @@ class Editor extends React.Component<IEditorProps> {
                 glyphMargin: true,
             });
             this.editor.onMouseDown(this.handleMouseclick);
-            this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressEnter);
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressBack);
+            this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressEnter);
+            this.editor.addCommand(monaco.KeyCode.UpArrow, this.handleKeypressUp);
             this.editor.addCommand(monaco.KeyCode.DownArrow, this.handleKeypressDown);
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();
@@ -103,7 +105,6 @@ class Editor extends React.Component<IEditorProps> {
         }
         if (this.props.selection !== nextProps.selection) {
             this.selection = nextProps.selection;
-            //TODO
         }
         if (this.props.activateNodeHighlighting !== nextProps.activateNodeHighlighting) {
             this.activateNodeHighlighting = nextProps.activateNodeHighlighting;
@@ -143,23 +144,46 @@ class Editor extends React.Component<IEditorProps> {
         }
     }
 
-    public handleKeypressEnter() {
-        let target = this.findInputVariables()[0].getStartPosition();
-        this.updateInput(target);
-        this.decorateVariable(target);
-        this.editor!.setPosition(target);
-        this.editor!.revealPositionInCenter(target);
-        console.log(this.selection);
-        console.log(this.graph.getCurrentVariable());
-        console.log(this.findInputVariables());
-    }
-
     public handleKeypressBack() {
         this.props.focusInput();
     }
 
+    public handleKeypressEnter() {
+        this.graph.updateCurrentVariable(this.selection);
+        this.jumpToCurrentVariable();
+    }
+
+    public handleKeypressUp() {
+        this.graph.updateCurrentVariableShift(this.selection);
+        this.jumpToCurrentVariable();
+    }
+
     public handleKeypressDown() {
-        //TODO
+        this.graph.updateCurrentVariable(this.selection);
+        this.jumpToCurrentVariable();
+    }
+
+    public jumpToCurrentVariable() {
+        let target = this.graph.getCurrentVariable();
+        if (target) {
+            let position = target.getRange().getStartPosition();
+            this.decorateVariable(position);
+            this.editor!.setPosition(position);
+            this.editor!.revealPositionInCenter(position);
+            console.log('JUMP!');
+            console.log(target);
+        } else {
+            this.jumpToStart();
+            console.log('HOME!');
+            console.log(target);
+        }
+    }
+
+    public jumpToStart() {
+        let position = new monaco.Position(0, 0);
+        this.decorateVariable(position);
+        this.editor!.setPosition(position);
+        this.editor!.revealPositionInCenter(position);
     }
 
     /**
@@ -168,28 +192,9 @@ class Editor extends React.Component<IEditorProps> {
      */
     public updateInput(position: monaco.Position) {
         let target = this.graph.findVariableAt(position);
-        this.graph.setCurrentVariable(target);
         this.selection = target ? target.getName() : this.selection;
+        this.graph.setCurrentVariable(target);
         this.props.passSelection(this.selection);
-    }
-
-    /**
-     * findInputVariables:
-     *
-     */
-    private findInputVariables() {
-        let selection = this.selection.charAt(0) !== '%' ? '%' + this.selection : this.selection;
-        let vars = this.graph.findVariables(selection);
-        if (vars.length > 0) {
-            let ranges = this.graph.getNodeRanges(vars);
-            /* this.editor!.revealRangeInCenter(ranges[0]);
-            ranges.forEach((r) => {
-                this.decorateVariable(r.getStartPosition());
-            });
-            this.updateDecorations(); */
-            return ranges;
-        }
-        return [new monaco.Range(0, 0, 0, 0)];
     }
 
     /**
