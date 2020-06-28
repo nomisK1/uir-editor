@@ -49,9 +49,17 @@ class Editor extends React.Component<IEditorProps> {
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
         this.handleKeypressBack = this.handleKeypressBack.bind(this);
+        this.handleKeypressTab = this.handleKeypressTab.bind(this);
         this.handleKeypressEnter = this.handleKeypressEnter.bind(this);
+        this.handleKeypressCtrlEnter = this.handleKeypressCtrlEnter.bind(this);
+        this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
         this.handleKeypressUp = this.handleKeypressUp.bind(this);
+        this.handleKeypressRight = this.handleKeypressRight.bind(this);
         this.handleKeypressDown = this.handleKeypressDown.bind(this);
+        this.handleKeypressCtrlLeft = this.handleKeypressCtrlLeft.bind(this);
+        this.handleKeypressCtrlUp = this.handleKeypressCtrlUp.bind(this);
+        this.handleKeypressCtrlRight = this.handleKeypressCtrlRight.bind(this);
+        this.handleKeypressCtrlDown = this.handleKeypressCtrlDown.bind(this);
     }
 
     public componentDidMount() {
@@ -74,9 +82,17 @@ class Editor extends React.Component<IEditorProps> {
             });
             this.editor.onMouseDown(this.handleMouseclick);
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressBack);
+            this.editor.addCommand(monaco.KeyCode.Tab, this.handleKeypressTab);
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressEnter);
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, this.handleKeypressCtrlEnter);
+            this.editor.addCommand(monaco.KeyCode.LeftArrow, this.handleKeypressLeft);
             this.editor.addCommand(monaco.KeyCode.UpArrow, this.handleKeypressUp);
+            this.editor.addCommand(monaco.KeyCode.RightArrow, this.handleKeypressRight);
             this.editor.addCommand(monaco.KeyCode.DownArrow, this.handleKeypressDown);
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.LeftArrow, this.handleKeypressCtrlLeft);
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow, this.handleKeypressCtrlUp);
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.RightArrow, this.handleKeypressCtrlRight);
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow, this.handleKeypressCtrlDown);
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();
             });
@@ -100,11 +116,15 @@ class Editor extends React.Component<IEditorProps> {
     public shouldComponentUpdate(nextProps: IEditorProps) {
         if (this.props.graph !== nextProps.graph) {
             this.graph = nextProps.graph;
-            this.updateInput(new monaco.Position(0, 0));
+            this.resetInput();
             return true;
         }
         if (this.props.selection !== nextProps.selection) {
             this.selection = nextProps.selection;
+            if (this.selection !== '' && this.selection.charAt(0) !== '%') {
+                this.selection = '%' + this.selection;
+                this.props.passSelection(this.selection);
+            }
         }
         if (this.props.activateNodeHighlighting !== nextProps.activateNodeHighlighting) {
             this.activateNodeHighlighting = nextProps.activateNodeHighlighting;
@@ -116,28 +136,19 @@ class Editor extends React.Component<IEditorProps> {
         }
         if (this.props.activateChildDecoration !== nextProps.activateChildDecoration) {
             this.activateChildDecoration = nextProps.activateChildDecoration;
-            if (!(this.activateChildDecoration || this.activateParentDecoration)) {
-                this.treeDecorations = [];
-                this.updateDecorations();
-            } else {
-                let target = this.graph.getCurrentVariable();
-                if (target) this.decorateTree(target.getRange().getStartPosition());
-            }
+            let target = this.graph.getCurrentVariable();
+            if (target) this.decorateTree(target.getRange().getStartPosition());
         }
         if (this.props.activateParentDecoration !== nextProps.activateParentDecoration) {
             this.activateParentDecoration = nextProps.activateParentDecoration;
-            if (!(this.activateChildDecoration || this.activateParentDecoration)) {
-                this.treeDecorations = [];
-                this.updateDecorations();
-            } else {
-                let target = this.graph.getCurrentVariable();
-                if (target) this.decorateTree(target.getRange().getStartPosition());
-            }
+            let target = this.graph.getCurrentVariable();
+            if (target) this.decorateTree(target.getRange().getStartPosition());
         }
         return false;
     }
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
+        this.resetInput();
         if (event.target.position !== null) {
             this.updateInput(event.target.position);
             this.decorateTree(event.target.position);
@@ -148,52 +159,80 @@ class Editor extends React.Component<IEditorProps> {
         this.props.focusInput();
     }
 
+    public handleKeypressTab() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(undefined, position.column + 20));
+    }
+
     public handleKeypressEnter() {
         this.graph.updateCurrentVariable(this.selection);
+        let target = this.graph.getCurrentVariable();
+        if (target) this.decorateTree(target.getRange().getStartPosition());
         this.jumpToCurrentVariable();
+    }
+
+    public handleKeypressCtrlEnter() {
+        this.graph.updateCurrentVariableReverse(this.selection);
+        let target = this.graph.getCurrentVariable();
+        if (target) this.decorateTree(target.getRange().getStartPosition());
+        this.jumpToCurrentVariable();
+    }
+
+    public handleKeypressLeft() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(undefined, position.column - 1));
     }
 
     public handleKeypressUp() {
-        this.graph.updateCurrentVariableShift(this.selection);
-        this.jumpToCurrentVariable();
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(position.lineNumber - 1, undefined));
+    }
+
+    public handleKeypressRight() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(undefined, position.column + 1));
     }
 
     public handleKeypressDown() {
-        this.graph.updateCurrentVariable(this.selection);
-        this.jumpToCurrentVariable();
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(position.lineNumber + 1, undefined));
+    }
+
+    public handleKeypressCtrlLeft() {}
+
+    public handleKeypressCtrlUp() {}
+
+    public handleKeypressCtrlRight() {}
+
+    public handleKeypressCtrlDown() {}
+
+    private updatePosition(position: monaco.Position) {
+        this.editor!.setPosition(position);
+        this.editor!.revealPositionInCenter(position);
+        this.resetInput();
+        this.updateInput(position);
+        this.decorateTree(position);
     }
 
     public jumpToCurrentVariable() {
         let target = this.graph.getCurrentVariable();
-        if (target) {
-            let position = target.getRange().getStartPosition();
-            this.decorateVariable(position);
-            this.editor!.setPosition(position);
-            this.editor!.revealPositionInCenter(position);
-            console.log('JUMP!');
-            console.log(target);
-        } else {
-            this.jumpToStart();
-            console.log('HOME!');
-            console.log(target);
-        }
-    }
-
-    public jumpToStart() {
-        let position = new monaco.Position(0, 0);
-        this.decorateVariable(position);
-        this.editor!.setPosition(position);
-        this.editor!.revealPositionInCenter(position);
+        this.updatePosition(target ? target.getRange().getStartPosition() : new monaco.Position(0, 0));
     }
 
     /**
      * updateInput:
      * Updates the App Input field with the currently selected Variable name
      */
-    public updateInput(position: monaco.Position) {
+    private updateInput(position: monaco.Position) {
         let target = this.graph.findVariableAt(position);
         this.selection = target ? target.getName() : this.selection;
         this.graph.setCurrentVariable(target);
+        this.props.passSelection(this.selection);
+    }
+
+    private resetInput() {
+        this.selection = '';
+        this.graph.setCurrentVariable(null);
         this.props.passSelection(this.selection);
     }
 
@@ -339,11 +378,10 @@ class Editor extends React.Component<IEditorProps> {
     public decorateTree(position: monaco.Position) {
         this.variableDecorations = [];
         this.treeDecorations = [];
-        if (!(this.activateChildDecoration || this.activateParentDecoration)) {
-            return [];
-        }
         let decorations: { range: monaco.Range; depth: number }[] = [];
-        if (this.activateChildDecoration && !this.activateParentDecoration) {
+        if (!(this.activateChildDecoration || this.activateParentDecoration)) {
+            this.findVariableDecorations(position).forEach((d) => decorations.push({ range: d, depth: 0 }));
+        } else if (this.activateChildDecoration && !this.activateParentDecoration) {
             decorations = this.findChildDecorations(position);
         } else if (!this.activateChildDecoration && this.activateParentDecoration) {
             decorations = this.findParentDecorations(position);

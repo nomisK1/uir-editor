@@ -12,8 +12,8 @@ import './App.css';
 enum Feature {
     NODEHIGHLIGHTING = 'Click: Highlight Node Occurrences',
     VARIABLEDECORATION = 'Hover: Decorate Variable',
-    CHILDDECORATION = 'Click: Decorate Variable Children',
-    PARENTDECORATION = 'Click: Decorate Variable Parents',
+    CHILDDECORATION = 'Select: Decorate Variable Children',
+    PARENTDECORATION = 'Select: Decorate Variable Parents',
 }
 
 interface IAppProps {}

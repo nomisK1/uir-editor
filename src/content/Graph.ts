@@ -308,18 +308,16 @@ class Graph {
         return nodes.map((n) => n.getRange());
     }
 
-    public updateCurrentVariable(name: string) {
-        let selection = name.charAt(0) !== '%' ? '%' + name : name;
-        if (this.current && this.current.getName() === name) this.setCurrentNextOccurrence();
+    public updateCurrentVariable(selection: string) {
+        if (this.current && this.current.getName() === selection) this.setCurrentNextOccurrence();
         else {
             let next = this.findVariables(selection)[0];
             this.current = next ? next : null;
         }
     }
 
-    public updateCurrentVariableShift(name: string) {
-        let selection = name.charAt(0) !== '%' ? '%' + name : name;
-        if (this.current && this.current.getName() === name) this.setCurrentPrevOccurrence();
+    public updateCurrentVariableReverse(selection: string) {
+        if (this.current && this.current.getName() === selection) this.setCurrentPrevOccurrence();
         else {
             let next = this.findVariables(selection)[0];
             this.current = next ? next : null;
