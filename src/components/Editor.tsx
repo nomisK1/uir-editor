@@ -27,6 +27,7 @@ class Editor extends React.Component<IEditorProps> {
     private decorations: string[];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[];
     private treeDecorations: monaco.editor.IModelDeltaDecoration[];
+    //private highlights: monaco.languages.DocumentHighlight[] = [];
     private activateNodeHighlighting: boolean;
     private activateVariableDecoration: boolean;
     private activateChildDecoration: boolean;
@@ -42,6 +43,7 @@ class Editor extends React.Component<IEditorProps> {
         this.decorations = [];
         this.variableDecorations = [];
         this.treeDecorations = [];
+        //this.highlights = [];
         this.activateNodeHighlighting = this.props.activateNodeHighlighting;
         this.activateVariableDecoration = this.props.activateVariableDecoration;
         this.activateChildDecoration = this.props.activateChildDecoration;
@@ -253,10 +255,13 @@ class Editor extends React.Component<IEditorProps> {
      *
      */
     public highlightNodes(position: monaco.Position) {
+        let highlights: monaco.languages.DocumentHighlight[] = [];
         if (this.activateNodeHighlighting) {
-            return this.findNodeHighlights(position);
+            let ranges = this.findNodeHighlights(position);
+            ranges.forEach((r) => highlights.push({ range: r }));
         }
-        return [];
+        //this.highlights = highlights;
+        return highlights;
     }
 
     /**
@@ -408,6 +413,18 @@ class Editor extends React.Component<IEditorProps> {
                 ...this.treeDecorations,
             ]);
         }
+    }
+
+    public getFoldingRanges() {
+        let ranges: monaco.languages.FoldingRange[] = [];
+        this.graph.getDefinitionRanges().forEach((r) =>
+            ranges.push({
+                start: r.startLineNumber,
+                end: r.endLineNumber,
+                kind: monaco.languages.FoldingRangeKind.Region,
+            }),
+        );
+        return ranges;
     }
 
     public getInstance() {

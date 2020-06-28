@@ -156,6 +156,8 @@ class App extends React.Component<IAppProps, IAppState> {
         );
         return (
             <div>
+                <b>CTRL+K and CTRL+0 to FoldAll // CTRL+K and CTRL+J to UnfoldAll</b>
+                <br />
                 {dropdown}
                 {checker}
                 {input}

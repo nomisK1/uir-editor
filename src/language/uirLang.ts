@@ -40,17 +40,20 @@ export const hoverProvider: monaco.languages.HoverProvider = {
 export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (_model, position, _token) {
         //let iWord = model.getWordAtPosition(position);
-        return new Promise(function (resolve, _reject) {
+        return new Promise(function (resolve, reject) {
             const editor = S.getInstance().getEditor();
-            let ranges: monaco.Range[] = [];
-            if (editor) {
-                ranges = editor.highlightNodes(position);
-            }
-            let targets: monaco.languages.DocumentHighlight[] = [];
-            ranges.forEach((r) => {
-                targets = [...targets, { range: r }];
-            });
-            resolve(targets);
+            if (editor) resolve(editor.highlightNodes(position));
+            reject(null);
+        });
+    },
+};
+
+export const foldingProvider: monaco.languages.FoldingRangeProvider = {
+    provideFoldingRanges: function (_model, _context, _token) {
+        return new Promise(function (resolve, reject) {
+            const editor = S.getInstance().getEditor();
+            if (editor) resolve(editor.getFoldingRanges());
+            reject(null);
         });
     },
 };

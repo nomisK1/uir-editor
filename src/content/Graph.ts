@@ -143,6 +143,10 @@ class Graph {
         return definitions;
     }
 
+    public getDefinitionRanges() {
+        return this.getDefinitions().map((d) => d.getRange());
+    }
+
     public findVariables(name: string) {
         let vars: variable[] = [];
         this.variables.forEach((v) => {
