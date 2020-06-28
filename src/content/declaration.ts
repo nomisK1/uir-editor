@@ -27,17 +27,17 @@ class declaration extends component {
         });
         // match args
         let line = this.range.startLineNumber;
-        let args = this.data.match(/%[\w]*/g);
-        args?.forEach((a) => {
+        let matches = this.data.match(/%[\w]*/g);
+        matches?.forEach((m) => {
             this.args.push(
                 new variable({
-                    name: a,
-                    data: 'Variable:' + a + '@l:' + line,
+                    name: m,
+                    data: 'Variable:' + m + '@l:' + line,
                     range: new monaco.Range(
                         line,
-                        node.indexOfStrict(a, this.data),
+                        node.indexOfStrict(m, this.data),
                         line,
-                        node.indexOfStrict(a, this.data) + a.length,
+                        node.indexOfStrict(m, this.data) + m.length,
                     ),
                     prev: null,
                     next: null,

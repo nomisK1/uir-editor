@@ -1,6 +1,8 @@
 import * as monaco from 'monaco-editor';
 import node, { Type } from './_node';
+import definition from './definition';
 import instruction, { IInstructionProps } from './_instruction';
+import target from './target';
 import variable from './variable';
 
 enum OpCode {
@@ -87,26 +89,30 @@ class operation extends instruction {
     protected opcode: OpCode;
     protected type: Type;
     protected args: variable[];
+    protected targets: target[];
 
     constructor(props: IOperationProps) {
         super(props);
         this.opcode = OpCode.CONST;
         this.type = Type.NULL;
         this.args = [];
+        this.targets = [];
     }
 
     public build() {
         // match opcode
         let opc = this.data.match(
-            /|ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext|return|returnvoid|br|condbr|unreachable/,
-        )![0];
-        let opcodes = Object.values(OpCode);
-        opcodes.forEach((o) => {
-            let str = '' + o;
-            if (str === opc) {
-                this.opcode = o;
-            }
-        });
+            /ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext|return|returnvoid|br|condbr|unreachable/,
+        );
+        if (opc) {
+            let opcodes = Object.values(OpCode);
+            opcodes.forEach((o) => {
+                let str = '' + o;
+                if (str === opc![0]) {
+                    this.opcode = o;
+                }
+            });
+        }
         // match type
         let type = this.data.match(/\b(i(nt)?(8|32|64)|d(ata)?128|bool|global|ptr|void|object)/);
         if (type) {
@@ -118,32 +124,56 @@ class operation extends instruction {
                 }
             });
         }
-        // match args
+        // match args / targets
         let line = this.range.startLineNumber;
         let index = this.range.startColumn;
-        let args = this.data.match(/%[\w]*/g);
-        args?.forEach((a) => {
-            this.args.push(
-                new variable({
-                    name: a,
-                    data: 'Variable:' + a + '@l:' + line,
-                    range: new monaco.Range(
-                        line,
-                        index + node.indexOfStrict(a, this.data),
-                        line,
-                        index + node.indexOfStrict(a, this.data) + a.length,
-                    ),
-                    prev: null,
-                    next: null,
-                    parents: null,
-                    context: this,
-                }),
-            );
+        let context = this.getOuterContext() as definition;
+        let tgts = context.getTargets();
+        let labels = tgts.map((t) => t.getName());
+        let matches = this.data.match(/%[\w]*/g);
+        matches?.forEach((m) => {
+            if (labels.includes(m)) {
+                this.targets.push(
+                    new target({
+                        name: m,
+                        data: 'Target:' + m + '@l:' + line,
+                        range: new monaco.Range(
+                            line,
+                            index + node.indexOfStrict(m, this.data),
+                            line,
+                            index + node.indexOfStrict(m, this.data) + m.length,
+                        ),
+                        prev: this.args[1] ? this.args[1] : this.args[0] ? this.args[0] : null,
+                        next: tgts[labels.indexOf(m)],
+                        context: this,
+                    }),
+                );
+            } else {
+                this.args.push(
+                    new variable({
+                        name: m,
+                        data: 'Variable:' + m + '@l:' + line,
+                        range: new monaco.Range(
+                            line,
+                            index + node.indexOfStrict(m, this.data),
+                            line,
+                            index + node.indexOfStrict(m, this.data) + m.length,
+                        ),
+                        prev: null,
+                        next: null,
+                        parents: null,
+                        context: this,
+                    }),
+                );
+            }
             index += 0;
         });
     }
 
     public findNodeAt(position: monaco.Position): instruction | null {
+        for (let i = 0; i < this.targets.length; i++) {
+            if (this.targets[i].getRange().containsPosition(position)) return this.targets[i].findNodeAt(position);
+        }
         for (let i = 0; i < this.args.length; i++) {
             if (this.args[i].getRange().containsPosition(position)) return this.args[i].findNodeAt(position);
         }
@@ -154,9 +184,13 @@ class operation extends instruction {
         return this.args;
     }
 
+    public getTargets() {
+        return this.targets;
+    }
+
     public hasVariable(name: string) {
         for (let i = 0; i < this.args.length; i++) {
-            if (this.args[i].isCalled(name)) return true;
+            if (this.args[i].getName() === name) return true;
         }
         return false;
     }

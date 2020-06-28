@@ -1,7 +1,7 @@
 .glyphVariable {
     background: rgba(38, 79, 120); /* #264F78 */
 }
-.glyphTarget {
+.glyphSelect {
     background: rgba(120, 79, 38); /* #784f26 */
 }
 .glyphChild {
@@ -13,7 +13,7 @@
 .contentVariable {
     background: rgba(38, 79, 120);
 }
-.contentTarget {
+.contentSelect {
     background: rgba(120, 79, 38);
 }
 .contentChild-20 {

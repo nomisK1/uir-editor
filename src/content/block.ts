@@ -4,15 +4,16 @@ import instruction from './_instruction';
 import allocation from './allocation';
 import operation from './operation';
 import variable from './variable';
+import target from './target';
 
 interface IBlockProps extends INodeProps {
-    target: variable;
+    target: target;
 }
 
 class block extends node {
     static offset = 2;
 
-    protected target: variable;
+    protected target: target;
     protected instructions: instruction[];
 
     constructor(props: IBlockProps) {
@@ -83,7 +84,6 @@ class block extends node {
 
     public getVariables() {
         let vars: variable[] = [];
-        vars.push(this.target);
         this.instructions.forEach((i) => {
             vars.push(...i.getVariables());
         });
@@ -104,6 +104,14 @@ class block extends node {
             if (i instanceof operation) operations.push(i);
         });
         return operations;
+    }
+
+    public getTargets() {
+        let targets: target[] = [];
+        this.getOperations().forEach((o) => {
+            targets.push(...o.getTargets());
+        });
+        return [this.target, ...targets];
     }
 
     private getLastLineNumber() {

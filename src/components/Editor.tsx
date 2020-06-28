@@ -136,13 +136,13 @@ class Editor extends React.Component<IEditorProps> {
         }
         if (this.props.activateChildDecoration !== nextProps.activateChildDecoration) {
             this.activateChildDecoration = nextProps.activateChildDecoration;
-            let target = this.graph.getCurrentVariable();
-            if (target) this.decorateTree(target.getRange().getStartPosition());
+            let variable = this.graph.getCurrentVariable();
+            if (variable) this.decorateTree(variable.getRange().getStartPosition());
         }
         if (this.props.activateParentDecoration !== nextProps.activateParentDecoration) {
             this.activateParentDecoration = nextProps.activateParentDecoration;
-            let target = this.graph.getCurrentVariable();
-            if (target) this.decorateTree(target.getRange().getStartPosition());
+            let variable = this.graph.getCurrentVariable();
+            if (variable) this.decorateTree(variable.getRange().getStartPosition());
         }
         return false;
     }
@@ -167,15 +167,15 @@ class Editor extends React.Component<IEditorProps> {
 
     public handleKeypressEnter() {
         this.graph.updateCurrentVariable(this.selection);
-        let target = this.graph.getCurrentVariable();
-        if (target) this.decorateTree(target.getRange().getStartPosition());
+        let variable = this.graph.getCurrentVariable();
+        if (variable) this.decorateTree(variable.getRange().getStartPosition());
         this.jumpToCurrentVariable();
     }
 
     public handleKeypressCtrlEnter() {
         this.graph.updateCurrentVariableReverse(this.selection);
-        let target = this.graph.getCurrentVariable();
-        if (target) this.decorateTree(target.getRange().getStartPosition());
+        let variable = this.graph.getCurrentVariable();
+        if (variable) this.decorateTree(variable.getRange().getStartPosition());
         this.jumpToCurrentVariable();
     }
 
@@ -221,8 +221,8 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public jumpToCurrentVariable() {
-        let target = this.graph.getCurrentVariable();
-        this.updatePosition(target ? target.getRange().getStartPosition() : new monaco.Position(0, 0));
+        let variable = this.graph.getCurrentVariable();
+        this.updatePosition(variable ? variable.getRange().getStartPosition() : new monaco.Position(0, 0));
     }
 
     /**
@@ -230,9 +230,9 @@ class Editor extends React.Component<IEditorProps> {
      * Updates the App Input field with the currently selected Variable name
      */
     private updateInput(position: monaco.Position) {
-        let target = this.graph.findVariableAt(position);
-        this.selection = target ? target.getName() : '';
-        this.graph.setCurrentVariable(target);
+        let variable = this.graph.findVariableAt(position);
+        this.selection = variable ? variable.getName() : '';
+        this.graph.setCurrentVariable(variable);
         this.props.passSelection(this.selection);
     }
 
@@ -241,9 +241,9 @@ class Editor extends React.Component<IEditorProps> {
      *
      */
     private findNodeHighlights(position: monaco.Position) {
-        let target = this.graph.findNodeAt(position);
-        //console.log(target);
-        let nodes = this.graph.findRelatedNodes(target);
+        let node = this.graph.findNodeAt(position);
+        console.log(node);
+        let nodes = this.graph.findRelatedNodes(node);
         let ranges = nodes.map((n) => n.getRange());
         return ranges;
     }
@@ -264,9 +264,9 @@ class Editor extends React.Component<IEditorProps> {
      *
      */
     private findVariableDecorations(position: monaco.Position) {
-        let target = this.graph.findVariableAt(position);
-        //console.log(target);
-        let vars = this.graph.findRelatedVariables(target);
+        let variable = this.graph.findVariableAt(position);
+        //console.log(variable);
+        let vars = this.graph.findRelatedVariables(variable);
         let ranges = vars.map((v) => v.getRange());
         return ranges;
     }
@@ -275,9 +275,9 @@ class Editor extends React.Component<IEditorProps> {
      * setVariableDecoration:
      *
      */
-    private setVariableDecoration(target: monaco.Range) {
+    private setVariableDecoration(range: monaco.Range) {
         this.variableDecorations.push({
-            range: target,
+            range,
             options: {
                 isWholeLine: false,
                 className: 'contentVariable',
@@ -307,9 +307,9 @@ class Editor extends React.Component<IEditorProps> {
      *
      */
     private findChildDecorations(position: monaco.Position) {
-        let target = this.graph.findVariableAt(position);
-        //console.log(target);
-        let vars = target ? this.graph.findVariableChildTree(target) : [];
+        let variable = this.graph.findVariableAt(position);
+        //console.log(variable);
+        let vars = variable ? this.graph.findVariableChildTree(variable) : [];
         //console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
@@ -323,9 +323,9 @@ class Editor extends React.Component<IEditorProps> {
      *
      */
     private findParentDecorations(position: monaco.Position) {
-        let target = this.graph.findVariableAt(position);
-        //console.log(target);
-        let vars = target ? this.graph.findVariableParentTree(target) : [];
+        let variable = this.graph.findVariableAt(position);
+        //console.log(variable);
+        let vars = variable ? this.graph.findVariableParentTree(variable) : [];
         //console.log(vars);
         let decorations: { range: monaco.Range; depth: number }[] = [];
         vars.forEach((v) => {
@@ -338,20 +338,20 @@ class Editor extends React.Component<IEditorProps> {
      * setTreeDecoration:
      *
      */
-    private setTreeDecoration(target: { range: monaco.Range; depth: number }) {
-        if (target.depth === 0) {
+    private setTreeDecoration(leaf: { range: monaco.Range; depth: number }) {
+        if (leaf.depth === 0) {
             this.treeDecorations.push({
-                range: target.range,
+                range: leaf.range,
                 options: {
                     isWholeLine: false,
-                    className: 'contentTarget',
-                    glyphMarginClassName: 'glyphTarget',
+                    className: 'contentSelect',
+                    glyphMarginClassName: 'glyphSelect',
                 },
             });
-        } else if (target.depth < 0) {
-            let className = 'contentChild' + target.depth;
+        } else if (leaf.depth < 0) {
+            let className = 'contentChild' + leaf.depth;
             this.treeDecorations.push({
-                range: target.range,
+                range: leaf.range,
                 options: {
                     isWholeLine: false,
                     className,
@@ -359,9 +359,9 @@ class Editor extends React.Component<IEditorProps> {
                 },
             });
         } else {
-            let className = 'contentParent' + target.depth;
+            let className = 'contentParent' + leaf.depth;
             this.treeDecorations.push({
-                range: target.range,
+                range: leaf.range,
                 options: {
                     isWholeLine: false,
                     className,
@@ -416,7 +416,7 @@ class Editor extends React.Component<IEditorProps> {
 
     render() {
         this.graph.print();
-        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '85vh' }} />;
+        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '73vh' }} />;
     }
 }
 

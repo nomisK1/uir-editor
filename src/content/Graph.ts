@@ -7,6 +7,7 @@ import definition from './definition';
 import block from './block';
 import allocation from './allocation';
 import operation from './operation';
+import target from './target';
 import variable from './variable';
 
 interface IGraphProps {
@@ -190,6 +191,9 @@ class Graph {
                 case operation:
                     nodes.push(...this.findFunctionReferences(node.getFunctionName()));
                     break;
+                case target:
+                    nodes.push(...this.findRelatedTargets(node as target));
+                    break;
                 case variable:
                     nodes.push(...this.findRelatedVariables(node as variable));
                     break;
@@ -198,6 +202,17 @@ class Graph {
             }
         }
         return nodes;
+    }
+
+    public findRelatedTargets(target: target | null) {
+        let targets: target[] = [];
+        if (target !== null) {
+            let context = target.getOuterContext() as definition;
+            context.getTargets().forEach((t) => {
+                if (t.getName() === target.getName()) targets.push(t);
+            });
+        }
+        return targets;
     }
 
     public findRelatedVariables(variable: variable | null) {
@@ -233,7 +248,7 @@ class Graph {
         if (context.constructor === definition) {
             let def = context as definition;
             def.getVariables().forEach((v) => {
-                if (v.isCalled(variable.getName())) {
+                if (v.getName() === variable.getName()) {
                     if (v.getContext()!.constructor === allocation || v.getContext()!.constructor === definition)
                         parents.push(v);
                     parents.push(...v.getParents());

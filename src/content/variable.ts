@@ -1,7 +1,6 @@
 import * as monaco from 'monaco-editor';
 import node, { INodeProps } from './_node';
 
-// keyword: "%"
 interface IVariableProps extends INodeProps {
     parents: variable[] | null;
 }
@@ -27,10 +26,6 @@ class variable extends node {
     public getParents() {
         if (this.parents === null) return [];
         return this.parents;
-    }
-
-    public isCalled(name: string) {
-        return this.name === name;
     }
 }
 

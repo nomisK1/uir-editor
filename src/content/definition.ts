@@ -5,6 +5,7 @@ import block from './block';
 import allocation from './allocation';
 import operation from './operation';
 import variable from './variable';
+import target from './target';
 
 interface IDefinitionProps extends IComponentProps {}
 
@@ -12,12 +13,14 @@ class definition extends component {
     protected type: Type;
     protected args: variable[];
     protected blocks: block[];
+    protected targets: target[];
 
     constructor(props: IDefinitionProps) {
         super(props);
         this.type = Type.NULL;
         this.args = [];
         this.blocks = [];
+        this.targets = [];
     }
 
     public build() {
@@ -32,17 +35,17 @@ class definition extends component {
         });
         // match args
         let line = this.range.startLineNumber;
-        let args = this.data.split(/\n/)[0].match(/%[\w]*/g);
-        args?.forEach((a) => {
+        let matches = this.data.split(/\n/)[0].match(/%[\w]*/g);
+        matches?.forEach((m) => {
             this.args.push(
                 new variable({
-                    name: a,
-                    data: 'Variable:' + a + '@l:' + line,
+                    name: m,
+                    data: 'Variable:' + m + '@l:' + line,
                     range: new monaco.Range(
                         line,
-                        node.indexOfStrict(a, this.data),
+                        node.indexOfStrict(m, this.data),
                         line,
-                        node.indexOfStrict(a, this.data) + a.length,
+                        node.indexOfStrict(m, this.data) + m.length,
                     ),
                     prev: null,
                     next: null,
@@ -56,15 +59,15 @@ class definition extends component {
         let blocks = body.slice(2, body.length - 2).split(/\n\n/);
         blocks.forEach((b) => {
             let label = b.split(':')[0];
-            let target = new variable({
+            let tgt = new target({
                 name: '%' + label,
-                data: 'Block:' + label + '@l:' + (line + 2),
+                data: 'Target:' + label + '@l:' + (line + 2),
                 range: new monaco.Range(line + 2, 0, line + 2, label.length),
                 prev: null,
                 next: null,
-                parents: null,
                 context: this,
             });
+            this.targets.push(tgt);
             this.blocks.push(
                 new block({
                     name: '%' + label,
@@ -72,7 +75,7 @@ class definition extends component {
                     range: new monaco.Range(line + 2, 0, this.getLastLineNumber() - 1, 0),
                     prev: this.blocks.length > 0 ? this.blocks[this.blocks.length - 1] : null,
                     next: null,
-                    target,
+                    target: tgt,
                     context: this,
                 }),
             );
@@ -81,7 +84,6 @@ class definition extends component {
         // add references to next block
         for (let i = 0; i < this.blocks.length - 1; i++) {
             this.blocks[i].setNext(this.blocks[i + 1]);
-            /* this.blocks[i].getTarget().setNext(this.blocks[i + 1].getTarget()); */
         }
         // build blocks
         this.blocks.forEach((b) => {
@@ -126,6 +128,14 @@ class definition extends component {
             operations.push(...b.getOperations());
         });
         return operations;
+    }
+
+    public getTargets() {
+        let targets: target[] = [];
+        this.blocks.forEach((b) => {
+            targets.push(...b.getTargets());
+        });
+        return targets;
     }
 
     private getLastLineNumber() {
