@@ -361,7 +361,7 @@ class Graph {
     }
 
     public print() {
-        console.log(this.current);
+        console.log(this);
     }
 }
 

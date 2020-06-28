@@ -80,6 +80,9 @@ class Editor extends React.Component<IEditorProps> {
                 readOnly: true,
                 glyphMargin: true,
             });
+            this.editor.onDidChangeModelContent((_event) => {
+                this.value = this.editor!.getValue();
+            });
             this.editor.onMouseDown(this.handleMouseclick);
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressBack);
             this.editor.addCommand(monaco.KeyCode.Tab, this.handleKeypressTab);
@@ -93,9 +96,6 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow, this.handleKeypressCtrlUp);
             this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.RightArrow, this.handleKeypressCtrlRight);
             this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow, this.handleKeypressCtrlDown);
-            this.editor.onDidChangeModelContent((_event) => {
-                this.value = this.editor!.getValue();
-            });
             this.editor.setPosition({ column: 0, lineNumber: 0 });
             this.editor.focus();
         }
@@ -148,11 +148,12 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
-        this.resetInput();
         if (event.target.position !== null) {
             this.updateInput(event.target.position);
             this.decorateTree(event.target.position);
         }
+        console.log(this.selection);
+        console.log(this.graph.getCurrentVariable());
     }
 
     public handleKeypressBack() {
@@ -208,10 +209,11 @@ class Editor extends React.Component<IEditorProps> {
 
     private updatePosition(position: monaco.Position) {
         this.editor!.setPosition(position);
-        this.editor!.revealPositionInCenter(position);
-        this.resetInput();
+        this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.updateInput(position);
         this.decorateTree(position);
+        console.log(this.selection);
+        console.log(this.graph.getCurrentVariable());
     }
 
     public resetPosition() {
@@ -229,14 +231,8 @@ class Editor extends React.Component<IEditorProps> {
      */
     private updateInput(position: monaco.Position) {
         let target = this.graph.findVariableAt(position);
-        this.selection = target ? target.getName() : this.selection;
+        this.selection = target ? target.getName() : '';
         this.graph.setCurrentVariable(target);
-        this.props.passSelection(this.selection);
-    }
-
-    private resetInput() {
-        this.selection = '';
-        this.graph.setCurrentVariable(null);
         this.props.passSelection(this.selection);
     }
 
@@ -419,8 +415,8 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     render() {
-        console.log(this.graph);
-        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }} />;
+        this.graph.print();
+        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '85vh' }} />;
     }
 }
 

@@ -91,14 +91,15 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public handleSelectionKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
-        event.preventDefault();
         if (event.key === 'Enter') {
+            event.preventDefault();
             if (this.editor) {
                 this.editor.getInstance().focus();
                 this.editor.handleKeypressEnter();
             }
         }
         if (event.key === 'z' && event.ctrlKey) {
+            event.preventDefault();
             this.setState({ selection: this.state.backup });
         }
     }
