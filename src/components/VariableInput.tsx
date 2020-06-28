@@ -3,7 +3,7 @@ import React from 'react';
 interface IVariableInputProps {
     selection: string;
     onSelectionChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onSelectionKeypress: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    onSelectionKeydown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 class VariableInput extends React.Component<IVariableInputProps> {
@@ -20,7 +20,7 @@ class VariableInput extends React.Component<IVariableInputProps> {
                 placeholder={'---Select a Variable in the Editor---'}
                 value={this.props.selection}
                 onChange={this.props.onSelectionChange}
-                onKeyPress={this.props.onSelectionKeypress}
+                onKeyDown={this.props.onSelectionKeydown}
                 ref={(ref) => (this.input = ref)}
             />
         );

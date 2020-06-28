@@ -116,7 +116,7 @@ class Editor extends React.Component<IEditorProps> {
     public shouldComponentUpdate(nextProps: IEditorProps) {
         if (this.props.graph !== nextProps.graph) {
             this.graph = nextProps.graph;
-            this.resetInput();
+            this.resetPosition();
             return true;
         }
         if (this.props.selection !== nextProps.selection) {
@@ -161,7 +161,7 @@ class Editor extends React.Component<IEditorProps> {
 
     public handleKeypressTab() {
         let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column + 20));
+        this.updatePosition(position.with(undefined, position.column + 10));
     }
 
     public handleKeypressEnter() {
@@ -212,6 +212,10 @@ class Editor extends React.Component<IEditorProps> {
         this.resetInput();
         this.updateInput(position);
         this.decorateTree(position);
+    }
+
+    public resetPosition() {
+        this.updatePosition(new monaco.Position(0, 0));
     }
 
     public jumpToCurrentVariable() {

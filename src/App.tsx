@@ -23,6 +23,7 @@ interface IAppState {
     query: string;
     graph: Graph;
     selection: string;
+    backup: string;
     activateNodeHighlighting: boolean;
     activateVariableDecoration: boolean;
     activateChildDecoration: boolean;
@@ -42,6 +43,7 @@ class App extends React.Component<IAppProps, IAppState> {
             query: queries[0],
             graph: new Graph({ query: queries[0] }),
             selection: '',
+            backup: '',
             activateNodeHighlighting: true,
             activateVariableDecoration: true,
             activateChildDecoration: false,
@@ -50,7 +52,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
         this.handleSelectionChange = this.handleSelectionChange.bind(this);
-        this.handleSelectionKeypress = this.handleSelectionKeypress.bind(this);
+        this.handleSelectionKeydown = this.handleSelectionKeydown.bind(this);
         this.passSelection = this.passSelection.bind(this);
         this.focusInput = this.focusInput.bind(this);
     }
@@ -60,6 +62,7 @@ class App extends React.Component<IAppProps, IAppState> {
             query: event.target.value,
             graph: new Graph({ query: event.target.value }),
         });
+        if (this.editor) this.editor.getInstance().focus();
     }
 
     public handleCheckerChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -80,24 +83,28 @@ class App extends React.Component<IAppProps, IAppState> {
                 activateParentDecoration: event.target.checked,
             });
         }
+        if (this.editor) this.editor.getInstance().focus();
     }
 
     public handleSelectionChange(event: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({ selection: event.target.value });
+        this.setState({ selection: event.target.value, backup: this.state.selection });
     }
 
-    public handleSelectionKeypress(event: React.KeyboardEvent<HTMLDivElement>) {
+    public handleSelectionKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
+        event.preventDefault();
         if (event.key === 'Enter') {
-            event.preventDefault();
             if (this.editor) {
                 this.editor.getInstance().focus();
                 this.editor.handleKeypressEnter();
             }
         }
+        if (event.key === 'z' && event.ctrlKey) {
+            this.setState({ selection: this.state.backup });
+        }
     }
 
     public passSelection(selection: string) {
-        this.setState({ selection });
+        this.setState({ selection, backup: this.state.selection });
     }
 
     public focusInput() {
@@ -127,7 +134,7 @@ class App extends React.Component<IAppProps, IAppState> {
             <VariableInput
                 selection={this.state.selection}
                 onSelectionChange={this.handleSelectionChange}
-                onSelectionKeypress={this.handleSelectionKeypress}
+                onSelectionKeydown={this.handleSelectionKeydown}
                 ref={(ref) => (this.input = ref)}
             />
         );
