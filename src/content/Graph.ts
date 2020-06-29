@@ -106,6 +106,29 @@ class Graph {
             vars[i + 1].setPrev(vars[i]);
         }
         this.variables = vars;
+        // set variable parents
+        this.getDefinitions().forEach((d) => {
+            d.getVariables().forEach((v) => {
+                if (v.getParents().length === 0) v.setParents(this.findVariableOrigin(v)!.getParents());
+            });
+        });
+    }
+
+    private findVariableOrigin(variable: variable) {
+        if (this.isGlobal(variable.getName())) {
+            let globals = this.getGlobals().map((g) => g.getVariables()[0].getName());
+            return this.getGlobals()[globals.indexOf(variable.getName())].getVariables()[0];
+        }
+        let context = variable.getOuterContext();
+        if (context.constructor === definition) {
+            let def = context as definition;
+            let args = def.getArgs().map((a) => a.getName());
+            if (args.includes(variable.getName())) return def.getArgs()[args.indexOf(variable.getName())];
+            let allocations = def.getAllocations().map((a) => a.getChild()!.getName());
+            if (allocations.includes(variable.getName()))
+                return def.getAllocations()[allocations.indexOf(variable.getName())].getChild()!;
+        }
+        return null;
     }
 
     private getGlobals() {
@@ -247,7 +270,7 @@ class Graph {
     }
 
     private findVariableParents(variable: variable) {
-        let parents: variable[] = [];
+        /* let parents: variable[] = [];
         let context = variable.getOuterContext();
         if (context.constructor === definition) {
             let def = context as definition;
@@ -259,7 +282,22 @@ class Graph {
                 }
             });
         }
-        return parents;
+        return parents; */
+        return variable.getParents();
+    }
+
+    private findVariableChildren(variable: variable) {
+        let children: variable[] = [];
+        let context = variable.getOuterContext();
+        if (context.constructor === definition) {
+            let def = context as definition;
+            def.getAllocations().forEach((a) => {
+                if (a.hasParent(variable.getName())) {
+                    children.push(a.getChild()!);
+                }
+            });
+        }
+        return children;
     }
 
     public findVariableParentTree(variable: variable) {
@@ -276,6 +314,8 @@ class Graph {
             parents.forEach((p) => {
                 let vars = tree.map((t) => t.variable);
                 if (vars.includes(p) === false) {
+                    let orig = this.findVariableOrigin(p);
+                    if (orig) tree.push({ variable: orig, depth });
                     tree.push({ variable: p, depth });
                     grandparents.push(...this.findVariableParents(p));
                 }
@@ -283,19 +323,6 @@ class Graph {
             parents = grandparents;
         }
         return tree;
-    }
-
-    private findVariableChildren(variable: variable) {
-        let children: variable[] = [];
-        let context = variable.getOuterContext();
-        if (context.constructor === definition) {
-            let def = context as definition;
-            let allocations = def.getAllocations();
-            for (let i = 0; i < allocations.length; i++) {
-                if (allocations[i].hasParent(variable.getName())) children.push(allocations[i].getChild()!);
-            }
-        }
-        return children;
     }
 
     public findVariableChildTree(variable: variable) {
@@ -323,52 +350,46 @@ class Graph {
         return tree;
     }
 
-    public getNodeRanges(nodes: node[]) {
-        return nodes.map((n) => n.getRange());
-    }
-
-    public updateCurrentVariable(selection: string) {
-        if (this.current && this.current.getName() === selection) this.setCurrentNextOccurrence();
-        else {
-            let next = this.findVariables(selection)[0];
-            this.current = next ? next : null;
-        }
-    }
-
-    public updateCurrentVariableReverse(selection: string) {
-        if (this.current && this.current.getName() === selection) this.setCurrentPrevOccurrence();
-        else {
-            let next = this.findVariables(selection)[0];
-            this.current = next ? next : null;
-        }
-    }
-
-    private setCurrentNextOccurrence() {
-        if (this.current) {
-            let vars = this.findVariables(this.current!.getName());
+    public setCurrentNextOccurrence(selection: string) {
+        if (this.current && this.current.getName() === selection) {
+            let vars = this.findVariables(this.current.getName());
             for (let i = 0; i < vars.length; i++) {
                 if (
-                    !vars[i].getRange().getStartPosition().isBeforeOrEqual(this.current!.getRange().getStartPosition())
+                    !vars[i].getRange().getStartPosition().isBeforeOrEqual(this.current.getRange().getStartPosition())
                 ) {
                     this.current = vars[i];
                     return;
                 }
             }
             this.current = vars[0];
+        } else {
+            let next = this.findVariables(selection)[0];
+            this.current = next ? next : null;
         }
     }
 
-    private setCurrentPrevOccurrence() {
-        if (this.current) {
-            let vars = this.findVariables(this.current!.getName());
+    public setCurrentPrevOccurrence(selection: string) {
+        if (this.current && this.current.getName() === selection) {
+            let vars = this.findVariables(this.current.getName());
             for (let i = vars.length - 1; i >= 0; i--) {
-                if (vars[i].getRange().getStartPosition().isBefore(this.current!.getRange().getStartPosition())) {
+                if (vars[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
                     this.current = vars[i];
                     return;
                 }
             }
             this.current = vars[vars.length - 1];
+        } else {
+            let next = this.findVariables(selection)[0];
+            this.current = next ? next : null;
         }
+    }
+
+    public setCurrentChild() {
+        if (this.current) this.current = this.findVariableChildren(this.current)[0];
+    }
+
+    public setCurrentParent() {
+        if (this.current) this.current = this.findVariableParents(this.current)[0];
     }
 
     public getCurrentVariable() {

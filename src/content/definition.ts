@@ -138,6 +138,10 @@ class definition extends component {
         return targets;
     }
 
+    public getArgs() {
+        return this.args;
+    }
+
     private getLastLineNumber() {
         if (this.next === null) return this.range.endLineNumber;
         return this.next.getRange().startLineNumber - 1;

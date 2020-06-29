@@ -7,19 +7,19 @@ interface IGlobalProps extends IComponentProps {}
 
 class global extends component {
     protected type: Type;
-    protected target: variable | null;
+    protected variable: variable | null;
 
     constructor(props: IGlobalProps) {
         super(props);
         this.type = Type.GLOBAL;
-        this.target = null;
+        this.variable = null;
     }
 
     public build() {
         let name = this.name.match(/%[\w]*/)![0];
         let line = this.range.startLineNumber;
         let index = this.range.startColumn;
-        this.target = new variable({
+        this.variable = new variable({
             name,
             data: 'Variable:' + name + '@l:' + line,
             range: new monaco.Range(line, index + 6, line, index + 6 + name.length),
@@ -31,11 +31,11 @@ class global extends component {
     }
 
     public getVariables() {
-        return [this.target!];
+        return [this.variable!];
     }
 
     public findNodeAt(position: monaco.Position): component | null {
-        if (this.target!.getRange().containsPosition(position)) return this.target!.findNodeAt(position);
+        if (this.variable!.getRange().containsPosition(position)) return this.variable!.findNodeAt(position);
         return this;
     }
 }

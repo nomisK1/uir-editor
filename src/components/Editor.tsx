@@ -27,7 +27,6 @@ class Editor extends React.Component<IEditorProps> {
     private decorations: string[];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[];
     private treeDecorations: monaco.editor.IModelDeltaDecoration[];
-    //private highlights: monaco.languages.DocumentHighlight[] = [];
     private activateNodeHighlighting: boolean;
     private activateVariableDecoration: boolean;
     private activateChildDecoration: boolean;
@@ -43,7 +42,6 @@ class Editor extends React.Component<IEditorProps> {
         this.decorations = [];
         this.variableDecorations = [];
         this.treeDecorations = [];
-        //this.highlights = [];
         this.activateNodeHighlighting = this.props.activateNodeHighlighting;
         this.activateVariableDecoration = this.props.activateVariableDecoration;
         this.activateChildDecoration = this.props.activateChildDecoration;
@@ -168,14 +166,14 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public handleKeypressEnter() {
-        this.graph.updateCurrentVariable(this.selection);
+        this.graph.setCurrentNextOccurrence(this.selection);
         let variable = this.graph.getCurrentVariable();
         if (variable) this.decorateTree(variable.getRange().getStartPosition());
         this.jumpToCurrentVariable();
     }
 
     public handleKeypressCtrlEnter() {
-        this.graph.updateCurrentVariableReverse(this.selection);
+        this.graph.setCurrentPrevOccurrence(this.selection);
         let variable = this.graph.getCurrentVariable();
         if (variable) this.decorateTree(variable.getRange().getStartPosition());
         this.jumpToCurrentVariable();
@@ -203,11 +201,21 @@ class Editor extends React.Component<IEditorProps> {
 
     public handleKeypressCtrlLeft() {}
 
-    public handleKeypressCtrlUp() {}
+    public handleKeypressCtrlUp() {
+        this.graph.setCurrentParent();
+        let variable = this.graph.getCurrentVariable();
+        if (variable) this.decorateTree(variable.getRange().getStartPosition());
+        this.jumpToCurrentVariable();
+    }
 
     public handleKeypressCtrlRight() {}
 
-    public handleKeypressCtrlDown() {}
+    public handleKeypressCtrlDown() {
+        this.graph.setCurrentChild();
+        let variable = this.graph.getCurrentVariable();
+        if (variable) this.decorateTree(variable.getRange().getStartPosition());
+        this.jumpToCurrentVariable();
+    }
 
     private updatePosition(position: monaco.Position) {
         this.editor!.setPosition(position);
@@ -223,8 +231,8 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public jumpToCurrentVariable() {
-        let variable = this.graph.getCurrentVariable();
-        this.updatePosition(variable ? variable.getRange().getStartPosition() : new monaco.Position(0, 0));
+        let current = this.graph.getCurrentVariable();
+        this.updatePosition(current ? current.getRange().getStartPosition() : this.editor!.getPosition()!);
     }
 
     /**
@@ -260,7 +268,6 @@ class Editor extends React.Component<IEditorProps> {
             let ranges = this.findNodeHighlights(position);
             ranges.forEach((r) => highlights.push({ range: r }));
         }
-        //this.highlights = highlights;
         return highlights;
     }
 

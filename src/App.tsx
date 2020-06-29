@@ -46,8 +46,8 @@ class App extends React.Component<IAppProps, IAppState> {
             backup: '',
             activateNodeHighlighting: true,
             activateVariableDecoration: true,
-            activateChildDecoration: false,
-            activateParentDecoration: false,
+            activateChildDecoration: true,
+            activateParentDecoration: true,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);

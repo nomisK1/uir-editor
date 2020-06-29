@@ -135,6 +135,14 @@ abstract class node {
     }
 
     /**
+     * getNodeRanges:
+     *
+     */
+    public static getNodeRanges(nodes: node[]) {
+        return nodes.map((n) => n.getRange());
+    }
+
+    /**
      * removeDuplicates:
      *
      */

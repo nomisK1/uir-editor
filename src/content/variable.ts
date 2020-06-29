@@ -27,6 +27,10 @@ class variable extends node {
         if (this.parents === null) return [];
         return this.parents;
     }
+
+    public setParents(parents: variable[] | null) {
+        this.parents = parents;
+    }
 }
 
 export default variable;
