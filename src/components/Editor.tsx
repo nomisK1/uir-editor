@@ -51,15 +51,16 @@ class Editor extends React.Component<IEditorProps> {
         this.handleKeypressBack = this.handleKeypressBack.bind(this);
         this.handleKeypressTab = this.handleKeypressTab.bind(this);
         this.handleKeypressEnter = this.handleKeypressEnter.bind(this);
-        this.handleKeypressCtrlEnter = this.handleKeypressCtrlEnter.bind(this);
+        this.handleKeypressShiftEnter = this.handleKeypressShiftEnter.bind(this);
         this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
         this.handleKeypressUp = this.handleKeypressUp.bind(this);
         this.handleKeypressRight = this.handleKeypressRight.bind(this);
         this.handleKeypressDown = this.handleKeypressDown.bind(this);
-        this.handleKeypressCtrlLeft = this.handleKeypressCtrlLeft.bind(this);
-        this.handleKeypressCtrlUp = this.handleKeypressCtrlUp.bind(this);
-        this.handleKeypressCtrlRight = this.handleKeypressCtrlRight.bind(this);
-        this.handleKeypressCtrlDown = this.handleKeypressCtrlDown.bind(this);
+        this.handleKeypressShiftLeft = this.handleKeypressShiftLeft.bind(this);
+        this.handleKeypressShiftUp = this.handleKeypressShiftUp.bind(this);
+        this.handleKeypressShiftRight = this.handleKeypressShiftRight.bind(this);
+        this.handleKeypressShiftDown = this.handleKeypressShiftDown.bind(this);
+        this.handleKeypressPrevious = this.handleKeypressPrevious.bind(this);
     }
 
     public componentDidMount() {
@@ -85,17 +86,30 @@ class Editor extends React.Component<IEditorProps> {
             });
             this.editor.onMouseDown(this.handleMouseclick);
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressBack);
+            this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressBack);
             this.editor.addCommand(monaco.KeyCode.Tab, this.handleKeypressTab);
+            this.editor.addCommand(monaco.KeyCode.KEY_M, this.handleKeypressTab);
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressEnter);
-            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, this.handleKeypressCtrlEnter);
+            this.editor.addCommand(monaco.KeyCode.KEY_N, this.handleKeypressEnter);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, this.handleKeypressShiftEnter);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_N, this.handleKeypressShiftEnter);
             this.editor.addCommand(monaco.KeyCode.LeftArrow, this.handleKeypressLeft);
+            this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft);
             this.editor.addCommand(monaco.KeyCode.UpArrow, this.handleKeypressUp);
+            this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressUp);
             this.editor.addCommand(monaco.KeyCode.RightArrow, this.handleKeypressRight);
+            this.editor.addCommand(monaco.KeyCode.KEY_L, this.handleKeypressRight);
             this.editor.addCommand(monaco.KeyCode.DownArrow, this.handleKeypressDown);
-            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.LeftArrow, this.handleKeypressCtrlLeft);
-            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.UpArrow, this.handleKeypressCtrlUp);
-            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.RightArrow, this.handleKeypressCtrlRight);
-            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.DownArrow, this.handleKeypressCtrlDown);
+            this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressDown);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.LeftArrow, this.handleKeypressShiftLeft);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_H, this.handleKeypressShiftLeft);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.UpArrow, this.handleKeypressShiftUp);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_J, this.handleKeypressShiftUp);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.RightArrow, this.handleKeypressShiftRight);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_L, this.handleKeypressShiftRight);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.DownArrow, this.handleKeypressShiftDown);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_K, this.handleKeypressShiftDown);
+            this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressPrevious);
             this.editor.setPosition({ column: 0, lineNumber: 0 });
             this.editor.focus();
         }
@@ -114,6 +128,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public shouldComponentUpdate(nextProps: IEditorProps) {
+        this.graph.print();
         if (this.props.graph !== nextProps.graph) {
             this.graph = nextProps.graph;
             this.resetPosition();
@@ -152,8 +167,6 @@ class Editor extends React.Component<IEditorProps> {
             this.updateInput(event.target.position);
             this.decorateTree(event.target.position);
         }
-        console.log(this.selection);
-        console.log(this.graph.getCurrentVariable());
     }
 
     public handleKeypressBack() {
@@ -172,7 +185,7 @@ class Editor extends React.Component<IEditorProps> {
         this.jumpToCurrentVariable();
     }
 
-    public handleKeypressCtrlEnter() {
+    public handleKeypressShiftEnter() {
         this.graph.setCurrentPrevOccurrence(this.selection);
         let variable = this.graph.getCurrentVariable();
         if (variable) this.decorateTree(variable.getRange().getStartPosition());
@@ -199,21 +212,38 @@ class Editor extends React.Component<IEditorProps> {
         this.updatePosition(position.with(position.lineNumber + 1, undefined));
     }
 
-    public handleKeypressCtrlLeft() {}
+    public handleKeypressShiftLeft() {
+        let parent = this.graph.updateNextParent();
+        if (parent) {
+            this.decorateVariable(parent.getRange().getStartPosition());
+        }
+    }
 
-    public handleKeypressCtrlUp() {
-        this.graph.setCurrentParent();
-        let variable = this.graph.getCurrentVariable();
-        if (variable) this.decorateTree(variable.getRange().getStartPosition());
+    public handleKeypressShiftUp() {
+        let parent = this.graph.getCurrentParent();
+        if (parent) {
+            this.graph.setCurrentVariable(parent);
+        }
         this.jumpToCurrentVariable();
     }
 
-    public handleKeypressCtrlRight() {}
+    public handleKeypressShiftRight() {
+        let child = this.graph.updateNextChild();
+        if (child) {
+            this.decorateVariable(child.getRange().getStartPosition());
+        }
+    }
 
-    public handleKeypressCtrlDown() {
-        this.graph.setCurrentChild();
-        let variable = this.graph.getCurrentVariable();
-        if (variable) this.decorateTree(variable.getRange().getStartPosition());
+    public handleKeypressShiftDown() {
+        let child = this.graph.getCurrentChild();
+        if (child) {
+            this.graph.setCurrentVariable(child);
+        }
+        this.jumpToCurrentVariable();
+    }
+
+    public handleKeypressPrevious() {
+        this.graph.setCurrentToPrevious();
         this.jumpToCurrentVariable();
     }
 
@@ -222,8 +252,6 @@ class Editor extends React.Component<IEditorProps> {
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.updateInput(position);
         this.decorateTree(position);
-        console.log(this.selection);
-        console.log(this.graph.getCurrentVariable());
     }
 
     public resetPosition() {

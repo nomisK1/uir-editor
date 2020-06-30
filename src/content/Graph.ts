@@ -19,12 +19,20 @@ class Graph {
     private components: component[];
     private variables: variable[];
     private current: variable | null;
+    private next: variable | undefined;
+    private currentParents: variable[];
+    private currentChildren: variable[];
+    private ancestors: variable[];
 
     constructor(props: IGraphProps) {
         this.query = props.query;
         this.components = [];
         this.variables = [];
         this.current = null;
+        this.next = undefined;
+        this.currentParents = [];
+        this.currentChildren = [];
+        this.ancestors = [];
         this.build();
     }
 
@@ -109,16 +117,15 @@ class Graph {
         // set variable parents
         this.getDefinitions().forEach((d) => {
             d.getVariables().forEach((v) => {
-                if (v.getParents().length === 0) v.setParents(this.findVariableOrigin(v)!.getParents());
+                if (v.getParents().length === 0) {
+                    let orig = this.findVariableOrigin(v);
+                    v.setParents(orig ? orig.getParents() : null);
+                }
             });
         });
     }
 
     private findVariableOrigin(variable: variable) {
-        if (this.isGlobal(variable.getName())) {
-            let globals = this.getGlobals().map((g) => g.getVariables()[0].getName());
-            return this.getGlobals()[globals.indexOf(variable.getName())].getVariables()[0];
-        }
         let context = variable.getOuterContext();
         if (context.constructor === definition) {
             let def = context as definition;
@@ -126,7 +133,7 @@ class Graph {
             if (args.includes(variable.getName())) return def.getArgs()[args.indexOf(variable.getName())];
             let allocations = def.getAllocations().map((a) => a.getChild()!.getName());
             if (allocations.includes(variable.getName()))
-                return def.getAllocations()[allocations.indexOf(variable.getName())].getChild()!;
+                return def.getAllocations()[allocations.indexOf(variable.getName())].getChild();
         }
         return null;
     }
@@ -357,14 +364,14 @@ class Graph {
                 if (
                     !vars[i].getRange().getStartPosition().isBeforeOrEqual(this.current.getRange().getStartPosition())
                 ) {
-                    this.current = vars[i];
+                    this.setCurrentVariable(vars[i]);
                     return;
                 }
             }
-            this.current = vars[0];
+            this.setCurrentVariable(vars[0]);
         } else {
             let next = this.findVariables(selection)[0];
-            this.current = next ? next : null;
+            this.setCurrentVariable(next ? next : null);
         }
     }
 
@@ -373,31 +380,70 @@ class Graph {
             let vars = this.findVariables(this.current.getName());
             for (let i = vars.length - 1; i >= 0; i--) {
                 if (vars[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
-                    this.current = vars[i];
+                    this.setCurrentVariable(vars[i]);
                     return;
                 }
             }
-            this.current = vars[vars.length - 1];
+            this.setCurrentVariable(vars[vars.length - 1]);
         } else {
             let next = this.findVariables(selection)[0];
-            this.current = next ? next : null;
+            this.setCurrentVariable(next ? next : null);
         }
     }
 
-    public setCurrentChild() {
-        if (this.current) this.current = this.findVariableChildren(this.current)[0];
+    public getCurrentParent() {
+        return this.currentParents[this.currentParents.length - 1];
     }
 
-    public setCurrentParent() {
-        if (this.current) this.current = this.findVariableParents(this.current)[0];
+    public getCurrentChild() {
+        return this.currentChildren[this.currentChildren.length - 1];
+    }
+
+    public updateNextParent() {
+        let temp = [...this.currentParents];
+        this.next = temp.shift();
+        if (this.next) temp.push(this.next);
+        this.currentParents = temp;
+        return this.next;
+    }
+
+    public updateNextChild() {
+        let temp = [...this.currentChildren];
+        this.next = temp.shift();
+        if (this.next) temp.push(this.next);
+        this.currentChildren = temp;
+        return this.next;
     }
 
     public getCurrentVariable() {
         return this.current;
     }
 
+    public setCurrentToPrevious() {
+        let previous = this.ancestors.pop();
+        this.current = previous ? previous : null;
+        this.next = undefined;
+        if (this.current) {
+            this.currentParents = this.findVariableParents(this.current);
+            this.currentChildren = this.findVariableChildren(this.current);
+        } else {
+            this.currentParents = [];
+            this.currentChildren = [];
+        }
+    }
+
     public setCurrentVariable(variable: variable | null) {
+        if (this.current && this.current !== variable && !this.ancestors.includes(this.current))
+            this.ancestors.push(this.current);
         this.current = variable;
+        this.next = undefined;
+        if (this.current) {
+            this.currentParents = this.findVariableParents(this.current);
+            this.currentChildren = this.findVariableChildren(this.current);
+        } else {
+            this.currentParents = [];
+            this.currentChildren = [];
+        }
     }
 
     public print() {
