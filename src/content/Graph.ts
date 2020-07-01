@@ -41,8 +41,10 @@ class Graph {
         // split query into globals, declarations, definitions
         let lines = this.query.split(/\n/);
         for (let i = 0; i < lines.length; i++) {
-            let globals = lines[i].match(/const.*/g);
+            let globals = lines[i].match(/^const.*/g);
             if (globals) {
+                console.log(globals);
+
                 let names = globals[0].match(/%[\w]*\[[\d]+\]/);
                 comps.push(
                     new global({
@@ -55,7 +57,7 @@ class Graph {
                     }),
                 );
             }
-            let declares = lines[i].match(/declare.*/g);
+            let declares = lines[i].match(/^declare.*/g);
             if (declares) {
                 let names = declares[0].match(/@[_\w]*/);
                 comps.push(
@@ -69,7 +71,7 @@ class Graph {
                     }),
                 );
             }
-            let defines = lines[i].match(/define.*/g);
+            let defines = lines[i].match(/^define.*/g);
             if (defines) {
                 let names = defines[0].match(/@[_\w]*/);
                 comps.push(

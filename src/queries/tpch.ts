@@ -20,6 +20,7 @@ import { tpch19 } from './tpch19';
 import { tpch20 } from './tpch20';
 import { tpch21 } from './tpch21';
 import { tpch22 } from './tpch22';
+import { tpch23 } from './tpch23';
 
 export function tpch() {
     return [
@@ -45,5 +46,6 @@ export function tpch() {
         tpch20,
         tpch21,
         tpch22,
+        tpch23,
     ];
 }

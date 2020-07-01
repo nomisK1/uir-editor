@@ -102,13 +102,13 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(monaco.KeyCode.DownArrow, this.handleKeypressDown);
             this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressDown);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.LeftArrow, this.handleKeypressShiftLeft);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_H, this.handleKeypressShiftLeft);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_H, this.handleKeypressShiftLeft);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.UpArrow, this.handleKeypressShiftUp);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_J, this.handleKeypressShiftUp);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J, this.handleKeypressShiftUp);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.RightArrow, this.handleKeypressShiftRight);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_L, this.handleKeypressShiftRight);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressShiftRight);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.DownArrow, this.handleKeypressShiftDown);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_K, this.handleKeypressShiftDown);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressShiftDown);
             this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressPrevious);
             this.editor.setPosition({ column: 0, lineNumber: 0 });
             this.editor.focus();
