@@ -392,10 +392,12 @@ class Graph {
     }
 
     public getCurrentParent() {
+        if (this.next === undefined) return this.currentParents[0];
         return this.currentParents[this.currentParents.length - 1];
     }
 
     public getCurrentChild() {
+        if (this.next === undefined) return this.currentChildren[0];
         return this.currentChildren[this.currentChildren.length - 1];
     }
 
