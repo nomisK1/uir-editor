@@ -1,0 +1,1585 @@
+{
+ "globals":[{
+  "isConst":true,
+  "name":890,
+  "size":216,
+  "data":"\012\000\000\000\012\000\000\000\000\000\000\000\000\000\000\016\000\000\000\000\000\000\000\000\000\000\000\000\/)*U\000\000\0**_%\000\000\000\000\000\000\000\000\000\000\000\000\0006a%\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\004\000\000\000\007\000\000\000\000\002\000\014\000\000\000\006\000\000\000\000\000\000\000\000\000\000\000\000\/)*U\000\000_\011\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\006\000\000\000\012\000\000\000\000\002\000\014\000\000\000\006\000\000\000\000\000\000\000\000\000\000\000\000\/)*U\000\000\005\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\007\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+ }, {
+  "isConst":true,
+  "name":1144,
+  "size":16,
+  "data":"\004\000\000\000\005\000\000\000\006\000\000\000\012\000\000\000"
+ }],
+ "functions":[{
+  "name":"_12_init",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"CompilationContext_cpp_215_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":128}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::RelationMapped::Reader::init(void*)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}]
+   }, {
+    "dst":"CompilationContext_cpp_215_0",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":216}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_0"}, {"type":"i64", "const":17}]
+   }, {
+    "dst":"CompilationContext_cpp_215_1",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":216}]
+   }, {
+    "dst":"GroupByTranslator_cpp_438_",
+    "opcode":"call",
+    "type":"ptr",
+    "fun":"umbra::AggregationTarget::createExplicitGroup(unsigned long)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_1"}, {"type":"i64", "const":3749646514382295044}]
+   }, {
+    "dst":"MaterializationHelper_cpp_726_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"GroupByTranslator_cpp_438_"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "opcode":"store",
+    "type":"data128",
+    "value":{"type":"d128", "const":[0, 0]},
+    "offsets":[]
+   }, {
+    "opcode":"store",
+    "type":"int8",
+    "value":{"type":"i8", "const":1},
+    "offsets":[]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":1}
+   }]
+  }]
+ }{
+  "name":"umbra::RelationMapped::Reader::init(void*)",
+  "returnType":"void",
+  "args":[{"var":144, "type":"int8*"}]
+ }{
+  "name":"umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long)",
+  "returnType":"void",
+  "args":[{"var":265, "type":"object umbra::AggregationTarget*"}, {"var":279, "type":"int64"}]
+ }{
+  "name":"umbra::AggregationTarget::createExplicitGroup(unsigned long)",
+  "returnType":"int8*",
+  "args":[{"var":464, "type":"object umbra::AggregationTarget*"}, {"var":478, "type":"int64"}]
+ }{
+  "name":"_12_planStep",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"CompilationContext_cpp_221_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":56}]
+   }, {
+    "dst":"CompilationContext_cpp_215_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":128}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_221_"}, {"global":false, "var":"CompilationContext_cpp_215_"}, {"type":"i64", "const":5}, {"global":true, "var":890}, {"type":"i64", "const":3}, {"global":true, "var":1144}, {"type":"i32", "const":4}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int)",
+    "args":[{"global":false, "var":"state"}, {"type":"i32", "const":28736}, {"type":"i32", "const":2}, {"type":"i32", "const":3}, {"type":"i32", "const":4}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::ExecutionPlan::setupParallelStep(void*, unsigned int)",
+    "args":[{"global":false, "var":"state"}, {"type":"i32", "const":5}]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":6}
+   }]
+  }]
+ }{
+  "name":"umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int)",
+  "returnType":"void",
+  "args":[{"var":1279, "type":"int8*"}, {"var":1293, "type":"int8*"}, {"var":1307, "type":"int64"}, {"var":1321, "type":"object umbra::Relation::RestrictionInfo*"}, {"var":1335, "type":"int64"}, {"var":1349, "type":"int32*"}, {"var":1363, "type":"int32"}]
+ }{
+  "name":"umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int)",
+  "returnType":"void",
+  "args":[{"var":1449, "type":"int8*"}, {"var":1463, "type":"int32"}, {"var":1477, "type":"int32"}, {"var":1491, "type":"int32"}, {"var":1505, "type":"int32"}]
+ }{
+  "name":"_12_planStep0",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"Pipeline_cpp_276_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i64", "const":32}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long)",
+    "args":[{"global":false, "var":"Pipeline_cpp_276_"}, {"type":"i64", "const":17}]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long)",
+  "returnType":"void",
+  "args":[{"var":1673, "type":"object umbra::Preaggregation*"}, {"var":1687, "type":"int64"}]
+ }{
+  "name":"_12_planStep1",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"Pipeline_cpp_276_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i64", "const":32}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::Preaggregation::destroy(umbra::Preaggregation*)",
+    "args":[{"global":false, "var":"Pipeline_cpp_276_"}]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"umbra::Preaggregation::destroy(umbra::Preaggregation*)",
+  "returnType":"void",
+  "args":[{"var":1843, "type":"object umbra::Preaggregation*"}]
+ }{
+  "name":"_12_planStep2",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"umbra::ExecutionPlan::setupParallelStep(void*, unsigned int)",
+  "returnType":"void",
+  "args":[{"var":1975, "type":"int8*"}, {"var":1989, "type":"int32"}]
+ }{
+  "name":"_12_groupby_tablescan_lineitem",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"from",
+    "opcode":"load",
+    "type":"object umbra::TableScanOperator::Morsel",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"to",
+    "opcode":"load",
+    "type":"object umbra::TableScanOperator::Morsel",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "dst":"reader",
+    "opcode":"load",
+    "type":"object umbra::TableScanOperator::Morsel",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":2}]
+   }, {
+    "dst":"data",
+    "opcode":"load",
+    "type":"object umbra::RelationMapped::Reader",
+    "pointer":{"var":"reader"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_343_",
+    "opcode":"cmpult",
+    "type":"i64",
+    "src":[{"global":false, "var":"from"}, {"global":false, "var":"to"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"RelationMappedLogic_cpp_343_"},
+    "targetTrue":"loopBlocks",
+    "targetFalse":"loopBlocks"
+   }]
+  }, {
+   "label":"loopBlocks",
+   "instructions":[{
+    "dst":"firstTid",
+    "opcode":"phi",
+    "type":"i64",
+    "incoming":[{"value":{"var":"from"}, "block":"body"}, {"value":{"var":"RelationMappedLogic_cpp_348_1"}, "block":"loopDoneTuples"}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_346_",
+    "opcode":"lshr",
+    "type":"i64",
+    "src":[{"global":false, "var":"firstTid"}, {"type":"i64", "const":16}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_347_",
+    "opcode":"shl",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_346_"}, {"type":"i64", "const":16}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_347_0",
+    "opcode":"add",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_347_"}, {"type":"i64", "const":65536}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_348_",
+    "opcode":"cmpult",
+    "type":"i64",
+    "src":[{"global":false, "var":"to"}, {"global":false, "var":"RelationMappedLogic_cpp_347_0"}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_348_1",
+    "opcode":"select",
+    "type":"i64",
+    "condition":{"var":"RelationMappedLogic_cpp_348_"},
+    "src":[{"global":false, "var":"to"}, {"global":false, "var":"RelationMappedLogic_cpp_347_0"}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_350_",
+    "opcode":"mul",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_346_"}, {"type":"i64", "const":116}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_350_2",
+    "opcode":"mul",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_350_"}, {"type":"i64", "const":65536}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_350_3",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"data"},
+    "offsets":[{"global":false, "var":"RelationMappedLogic_cpp_350_2"}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_351_",
+    "opcode":"shl",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_346_"}, {"type":"i64", "const":16}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_352_",
+    "opcode":"sub",
+    "type":"i64",
+    "src":[{"global":false, "var":"firstTid"}, {"global":false, "var":"RelationMappedLogic_cpp_351_"}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_352_4",
+    "opcode":"sub",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_1"}, {"global":false, "var":"RelationMappedLogic_cpp_351_"}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_354_",
+    "opcode":"cmpne",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_352_"}, {"global":false, "var":"RelationMappedLogic_cpp_352_4"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"RelationMappedLogic_cpp_354_"},
+    "targetTrue":"loopTuples",
+    "targetFalse":"loopTuples"
+   }]
+  }, {
+   "label":"loopTuples",
+   "instructions":[{
+    "dst":"localTid",
+    "opcode":"phi",
+    "type":"i64",
+    "incoming":[{"value":{"var":"RelationMappedLogic_cpp_352_"}, "block":"loopBlocks"}, {"value":{"var":"RelationMappedLogic_cpp_361_"}, "block":"contScan"}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_308_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "offsets":[{"type":"i64", "const":3670016}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_315_",
+    "opcode":"load",
+    "type":"int32",
+    "pointer":{"var":"RelationMappedLogic_cpp_308_"},
+    "offsets":[{"global":false, "var":"localTid"}]
+   }, {
+    "dst":"Date_cpp_57_",
+    "opcode":"cmpule",
+    "type":"i32",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_315_"}, {"type":"i32", "const":2449718}]
+   }, {
+    "dst":"Date_cpp_57_5",
+    "opcode":"cmpule",
+    "type":"i32",
+    "src":[{"type":"i32", "const":2449354}, {"global":false, "var":"RelationMappedLogic_cpp_315_"}]
+   }, {
+    "dst":"TableScanTranslator_cpp_413_",
+    "opcode":"and",
+    "type":"bool",
+    "src":[{"global":false, "var":"Date_cpp_57_5"}, {"global":false, "var":"Date_cpp_57_"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"TableScanTranslator_cpp_413_"},
+    "targetTrue":"then",
+    "targetFalse":"then"
+   }]
+  }, {
+   "label":"then",
+   "instructions":[{
+    "dst":"RelationMappedLogic_cpp_308_6",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "offsets":[{"type":"i64", "const":1048576}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_314_",
+    "opcode":"load",
+    "type":"int64",
+    "pointer":{"var":"RelationMappedLogic_cpp_308_6"},
+    "offsets":[{"global":false, "var":"localTid"}]
+   }, {
+    "dst":"Numeric_cpp_278_",
+    "opcode":"cmpsle",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_"}, {"type":"i64", "const":2399}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"Numeric_cpp_278_"},
+    "targetTrue":"then7",
+    "targetFalse":"then7"
+   }]
+  }, {
+   "label":"then7",
+   "instructions":[{
+    "dst":"RelationMappedLogic_cpp_308_8",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "offsets":[{"type":"i64", "const":2097152}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_314_9",
+    "opcode":"load",
+    "type":"int64",
+    "pointer":{"var":"RelationMappedLogic_cpp_308_8"},
+    "offsets":[{"global":false, "var":"localTid"}]
+   }, {
+    "dst":"Numeric_cpp_278_10",
+    "opcode":"cmpsle",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_9"}, {"type":"i64", "const":7}]
+   }, {
+    "dst":"Numeric_cpp_278_11",
+    "opcode":"cmpsle",
+    "type":"i64",
+    "src":[{"type":"i64", "const":5}, {"global":false, "var":"RelationMappedLogic_cpp_314_9"}]
+   }, {
+    "dst":"TableScanTranslator_cpp_413_12",
+    "opcode":"and",
+    "type":"bool",
+    "src":[{"global":false, "var":"Numeric_cpp_278_11"}, {"global":false, "var":"Numeric_cpp_278_10"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"TableScanTranslator_cpp_413_12"},
+    "targetTrue":"then13",
+    "targetFalse":"then13"
+   }]
+  }, {
+   "label":"then13",
+   "instructions":[{
+    "dst":"RelationMappedLogic_cpp_308_14",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "offsets":[{"type":"i64", "const":1572864}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_314_15",
+    "opcode":"load",
+    "type":"int64",
+    "pointer":{"var":"RelationMappedLogic_cpp_308_14"},
+    "offsets":[{"global":false, "var":"localTid"}]
+   }, {
+    "dst":"BigNumeric_cpp_863_",
+    "opcode":"ashr",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_15"}, {"type":"i64", "const":63}]
+   }, {
+    "dst":"BigNumeric_cpp_863_16",
+    "opcode":"builddata128",
+    "type":"d128",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_15"}, {"global":false, "var":"BigNumeric_cpp_863_"}]
+   }, {
+    "dst":"BigNumeric_cpp_863_17",
+    "opcode":"ashr",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_9"}, {"type":"i64", "const":63}]
+   }, {
+    "dst":"BigNumeric_cpp_863_18",
+    "opcode":"builddata128",
+    "type":"d128",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_9"}, {"global":false, "var":"BigNumeric_cpp_863_17"}]
+   }, {
+    "dst":"Numeric_cpp_698_",
+    "opcode":"call",
+    "type":"d128",
+    "fun":"umbra::BigNumericRuntime::mulTrap(umbra::data128_t, umbra::data128_t)",
+    "args":[{"global":false, "var":"BigNumeric_cpp_863_16"}, {"global":false, "var":"BigNumeric_cpp_863_18"}]
+   }, {
+    "dst":"Pipeline_cpp_276_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i64", "const":32}]
+   }, {
+    "dst":"hashTable",
+    "opcode":"getelementptr",
+    "type":"object umbra::Preaggregation",
+    "pointer":{"var":"Pipeline_cpp_276_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_20_",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader*",
+    "pointer":{"var":"hashTable"},
+    "offsets":[{"type":"i64", "const":4}]
+   }, {
+    "dst":"hash",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader",
+    "pointer":{"var":"PreaggregationLogic_cpp_20_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_25_",
+    "opcode":"cmpne",
+    "type":"i64",
+    "src":[{"global":false, "var":"hash"}, {"type":"i64", "const":3749646514382295044}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_25_"},
+    "targetTrue":"then19",
+    "targetFalse":"then19"
+   }]
+  }, {
+   "label":"then19",
+   "instructions":[{
+    "dst":"PreaggregationLogic_cpp_29_",
+    "opcode":"call",
+    "type":"ptr",
+    "fun":"umbra::Preaggregation::addEntry(unsigned long)",
+    "args":[{"global":false, "var":"Pipeline_cpp_276_"}, {"type":"i64", "const":3749646514382295044}]
+   }, {
+    "dst":"MaterializationHelper_cpp_726_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"PreaggregationLogic_cpp_29_"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "opcode":"store",
+    "type":"data128",
+    "value":{"var":"Numeric_cpp_698_"},
+    "offsets":[]
+   }, {
+    "opcode":"store",
+    "type":"int8",
+    "value":{"type":"i8", "const":0},
+    "offsets":[]
+   }, {
+    "opcode":"br",
+    "target":"cont24"
+   }]
+  }, {
+   "label":"else",
+   "instructions":[{
+    "dst":"PreaggregationLogic_cpp_36_",
+    "opcode":"getelementptr",
+    "type":"object umbra::Preaggregation::EntryHeader",
+    "pointer":{"var":"PreaggregationLogic_cpp_20_"},
+    "offsets":[{"type":"i32", "const":1}]
+   }, {
+    "dst":"MaterializationHelper_cpp_726_20",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"PreaggregationLogic_cpp_36_"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "dst":"MaterializationHelper_cpp_727_",
+    "opcode":"load",
+    "type":"int8",
+    "pointer":{"var":"MaterializationHelper_cpp_726_20"},
+    "offsets":[]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_",
+    "opcode":"and",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_727_"}, {"type":"i8", "const":1}]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_21",
+    "opcode":"cmpne",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_780_"}, {"type":"i8", "const":0}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"MaterializationHelper_cpp_780_21"},
+    "targetTrue":"then22",
+    "targetFalse":"then22"
+   }]
+  }, {
+   "label":"then22",
+   "instructions":[{
+    "dst":"MaterializationHelper_cpp_752_",
+    "opcode":"and",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_727_"}, {"type":"i8", "const":-2}]
+   }, {
+    "opcode":"store",
+    "type":"data128",
+    "value":{"var":"Numeric_cpp_698_"},
+    "offsets":[]
+   }, {
+    "opcode":"store",
+    "type":"int8",
+    "value":{"var":"MaterializationHelper_cpp_752_"},
+    "offsets":[]
+   }, {
+    "opcode":"br",
+    "target":"cont"
+   }]
+  }, {
+   "label":"else23",
+   "instructions":[{
+    "dst":"MaterializationHelper_cpp_977_",
+    "opcode":"load",
+    "type":"data128",
+    "pointer":{"var":"PreaggregationLogic_cpp_36_"},
+    "offsets":[]
+   }, {
+    "dst":"BigNumeric_cpp_688_",
+    "opcode":"call",
+    "type":"d128",
+    "fun":"umbra::BigNumericRuntime::addTrap(umbra::data128_t, umbra::data128_t)",
+    "args":[{"global":false, "var":"MaterializationHelper_cpp_977_"}, {"global":false, "var":"Numeric_cpp_698_"}]
+   }, {
+    "opcode":"store",
+    "type":"data128",
+    "value":{"var":"BigNumeric_cpp_688_"},
+    "offsets":[]
+   }, {
+    "opcode":"br",
+    "target":"cont"
+   }]
+  }, {
+   "label":"cont",
+   "instructions":[{
+    "opcode":"br",
+    "target":"cont24"
+   }]
+  }, {
+   "label":"cont24",
+   "instructions":[{
+    "opcode":"br",
+    "target":"contScan"
+   }]
+  }, {
+   "label":"contScan",
+   "instructions":[{
+    "dst":"RelationMappedLogic_cpp_361_",
+    "opcode":"add",
+    "type":"i64",
+    "src":[{"global":false, "var":"localTid"}, {"type":"i64", "const":1}]
+   }, {
+    "dst":"RelationMappedLogic_cpp_362_",
+    "opcode":"cmpne",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_361_"}, {"global":false, "var":"RelationMappedLogic_cpp_352_4"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"RelationMappedLogic_cpp_362_"},
+    "targetTrue":"loopTuples",
+    "targetFalse":"loopTuples"
+   }]
+  }, {
+   "label":"loopDoneTuples",
+   "instructions":[{
+    "dst":"RelationMappedLogic_cpp_364_",
+    "opcode":"cmpne",
+    "type":"i64",
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_1"}, {"global":false, "var":"to"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"RelationMappedLogic_cpp_364_"},
+    "targetTrue":"loopBlocks",
+    "targetFalse":"loopBlocks"
+   }]
+  }, {
+   "label":"loopDoneBlocks",
+   "instructions":[{
+    "opcode":"br",
+    "target":"stepDone"
+   }]
+  }, {
+   "label":"stepDone",
+   "instructions":[{
+    "opcode":"return",
+    "value":{"type":"i32", "const":5}
+   }]
+  }]
+ }{
+  "name":"umbra::BigNumericRuntime::mulTrap(umbra::data128_t, umbra::data128_t)",
+  "returnType":"data128",
+  "args":[{"var":4034, "type":"data128"}, {"var":4048, "type":"data128"}]
+ }{
+  "name":"umbra::Preaggregation::addEntry(unsigned long)",
+  "returnType":"int8*",
+  "args":[{"var":4350, "type":"object umbra::Preaggregation*"}, {"var":4364, "type":"int64"}]
+ }{
+  "name":"umbra::BigNumericRuntime::addTrap(umbra::data128_t, umbra::data128_t)",
+  "returnType":"data128",
+  "args":[{"var":4947, "type":"data128"}, {"var":4961, "type":"data128"}]
+ }{
+  "name":"_12_planStep3",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"CompilationContext_cpp_221_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":56}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::TableScanOperator::Job::destroy(void*)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_221_"}]
+   }, {
+    "dst":"CompilationContext_cpp_215_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":216}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::AggregationTarget::exchangeTables(void*, unsigned long)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"global":false, "var":"state"}, {"type":"i64", "const":32}]
+   }, {
+    "dst":"CompilationContext_cpp_221_0",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":56}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::AggregationTarget::setupAggregateJob(void*)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"global":false, "var":"CompilationContext_cpp_221_0"}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::ExecutionPlan::setupParallelStep(void*, unsigned int)",
+    "args":[{"global":false, "var":"state"}, {"type":"i32", "const":8}]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":7}
+   }]
+  }]
+ }{
+  "name":"umbra::TableScanOperator::Job::destroy(void*)",
+  "returnType":"void",
+  "args":[{"var":5445, "type":"int8*"}]
+ }{
+  "name":"umbra::AggregationTarget::exchangeTables(void*, unsigned long)",
+  "returnType":"void",
+  "args":[{"var":5527, "type":"object umbra::AggregationTarget*"}, {"var":5541, "type":"int8*"}, {"var":5555, "type":"int64"}]
+ }{
+  "name":"umbra::AggregationTarget::setupAggregateJob(void*)",
+  "returnType":"void",
+  "args":[{"var":5646, "type":"object umbra::AggregationTarget*"}, {"var":5660, "type":"int8*"}]
+ }{
+  "name":"_12_groupby_tablescan_lineitem_extra",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"PreaggregationLogic_cpp_47_",
+    "opcode":"load",
+    "type":"object umbra::AggregationTarget::Fragment*",
+    "pointer":{"var":"localState"},
+    "offsets":[]
+   }, {
+    "dst":"chunks",
+    "opcode":"load",
+    "type":"object umbra::AggregationTarget::Fragment",
+    "pointer":{"var":"PreaggregationLogic_cpp_47_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":3}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_50_",
+    "opcode":"isnotnull",
+    "type":"ptr",
+    "src":[{"global":false, "var":"chunks"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_50_"},
+    "targetTrue":"loopChunk",
+    "targetFalse":"loopChunk"
+   }]
+  }, {
+   "label":"loopChunk",
+   "instructions":[{
+    "dst":"chunk",
+    "opcode":"phi",
+    "type":"ptr",
+    "incoming":[{"value":{"var":"chunks"}, "block":"body"}, {"value":{"var":"next14"}, "block":"loopDoneChunkEntries"}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::AggregationTarget::Fragment::checkSize()",
+    "args":[{"global":false, "var":"PreaggregationLogic_cpp_47_"}]
+   }, {
+    "dst":"hashTable",
+    "opcode":"load",
+    "type":"object umbra::AggregationTarget::Fragment",
+    "pointer":{"var":"PreaggregationLogic_cpp_47_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"hashTableShift",
+    "opcode":"load",
+    "type":"object umbra::AggregationTarget::Fragment",
+    "pointer":{"var":"PreaggregationLogic_cpp_47_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_60_",
+    "opcode":"getelementptr",
+    "type":"object umbra::Preaggregation::EntryChunk",
+    "pointer":{"var":"chunk"},
+    "offsets":[{"type":"i32", "const":1}]
+   }, {
+    "dst":"limit",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryChunk",
+    "pointer":{"var":"chunk"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_62_",
+    "opcode":"cmpne",
+    "type":"ptr",
+    "src":[{"global":false, "var":"PreaggregationLogic_cpp_60_"}, {"global":false, "var":"limit"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_62_"},
+    "targetTrue":"loopChunkEntries",
+    "targetFalse":"loopChunkEntries"
+   }]
+  }, {
+   "label":"loopChunkEntries",
+   "instructions":[{
+    "dst":"entry",
+    "opcode":"phi",
+    "type":"ptr",
+    "incoming":[{"value":{"var":"PreaggregationLogic_cpp_60_"}, "block":"loopChunk"}, {"value":{"var":"PreaggregationLogic_cpp_110_"}, "block":"continue"}]
+   }, {
+    "dst":"hash",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader",
+    "pointer":{"var":"entry"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_67_",
+    "opcode":"lshr",
+    "type":"i64",
+    "src":[{"global":false, "var":"hash"}, {"global":false, "var":"hashTableShift"}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_67_0",
+    "opcode":"getelementptr",
+    "type":"object umbra::Preaggregation::EntryHeader*",
+    "pointer":{"var":"hashTable"},
+    "offsets":[{"global":false, "var":"PreaggregationLogic_cpp_67_"}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_69_",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader*",
+    "pointer":{"var":"PreaggregationLogic_cpp_67_0"},
+    "offsets":[]
+   }, {
+    "dst":"PreaggregationLogic_cpp_71_",
+    "opcode":"isnotnull",
+    "type":"ptr",
+    "src":[{"global":false, "var":"PreaggregationLogic_cpp_69_"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_71_"},
+    "targetTrue":"loopChain",
+    "targetFalse":"loopChain"
+   }]
+  }, {
+   "label":"loopChain",
+   "instructions":[{
+    "dst":"chainEntry",
+    "opcode":"phi",
+    "type":"ptr",
+    "incoming":[{"value":{"var":"PreaggregationLogic_cpp_69_"}, "block":"loopChunkEntries"}, {"value":{"var":"next"}, "block":"noMatch"}]
+   }, {
+    "dst":"hash1",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader",
+    "pointer":{"var":"chainEntry"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_75_",
+    "opcode":"cmpeq",
+    "type":"i64",
+    "src":[{"global":false, "var":"hash"}, {"global":false, "var":"hash1"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_75_"},
+    "targetTrue":"then",
+    "targetFalse":"then"
+   }]
+  }, {
+   "label":"then",
+   "instructions":[{
+    "dst":"GroupByTranslator_cpp_185_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"entry"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "dst":"GroupByTranslator_cpp_185_2",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"chainEntry"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "dst":"MaterializationHelper_cpp_726_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"GroupByTranslator_cpp_185_2"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "dst":"MaterializationHelper_cpp_727_",
+    "opcode":"load",
+    "type":"int8",
+    "pointer":{"var":"MaterializationHelper_cpp_726_"},
+    "offsets":[]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_",
+    "opcode":"and",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_727_"}, {"type":"i8", "const":1}]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_3",
+    "opcode":"cmpne",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_780_"}, {"type":"i8", "const":0}]
+   }, {
+    "dst":"MaterializationHelper_cpp_726_4",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "dst":"MaterializationHelper_cpp_727_5",
+    "opcode":"load",
+    "type":"int8",
+    "pointer":{"var":"MaterializationHelper_cpp_726_4"},
+    "offsets":[]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_6",
+    "opcode":"and",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_727_5"}, {"type":"i8", "const":1}]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_7",
+    "opcode":"cmpne",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_780_6"}, {"type":"i8", "const":0}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"MaterializationHelper_cpp_780_7"},
+    "targetTrue":"then8",
+    "targetFalse":"then8"
+   }]
+  }, {
+   "label":"then8",
+   "instructions":[{
+    "opcode":"br",
+    "target":"cont13"
+   }]
+  }, {
+   "label":"else",
+   "instructions":[{
+    "dst":"MaterializationHelper_cpp_752_",
+    "opcode":"and",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_727_"}, {"type":"i8", "const":-2}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"MaterializationHelper_cpp_780_3"},
+    "targetTrue":"then9",
+    "targetFalse":"then9"
+   }]
+  }, {
+   "label":"then9",
+   "instructions":[{
+    "dst":"MaterializationHelper_cpp_977_",
+    "opcode":"load",
+    "type":"data128",
+    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "offsets":[]
+   }, {
+    "opcode":"store",
+    "type":"data128",
+    "value":{"var":"MaterializationHelper_cpp_977_"},
+    "offsets":[]
+   }, {
+    "opcode":"br",
+    "target":"cont"
+   }]
+  }, {
+   "label":"else10",
+   "instructions":[{
+    "dst":"MaterializationHelper_cpp_977_11",
+    "opcode":"load",
+    "type":"data128",
+    "pointer":{"var":"GroupByTranslator_cpp_185_2"},
+    "offsets":[]
+   }, {
+    "dst":"MaterializationHelper_cpp_977_12",
+    "opcode":"load",
+    "type":"data128",
+    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "offsets":[]
+   }, {
+    "dst":"BigNumeric_cpp_688_",
+    "opcode":"call",
+    "type":"d128",
+    "fun":"umbra::BigNumericRuntime::addTrap(umbra::data128_t, umbra::data128_t)",
+    "args":[{"global":false, "var":"MaterializationHelper_cpp_977_11"}, {"global":false, "var":"MaterializationHelper_cpp_977_12"}]
+   }, {
+    "opcode":"store",
+    "type":"data128",
+    "value":{"var":"BigNumeric_cpp_688_"},
+    "offsets":[]
+   }, {
+    "opcode":"br",
+    "target":"cont"
+   }]
+  }, {
+   "label":"cont",
+   "instructions":[{
+    "opcode":"br",
+    "target":"cont13"
+   }]
+  }, {
+   "label":"cont13",
+   "instructions":[{
+    "dst":"MaterializationHelper_cpp_819_",
+    "opcode":"phi",
+    "type":"i8",
+    "incoming":[{"value":{"var":"MaterializationHelper_cpp_727_"}, "block":"then8"}, {"value":{"var":"MaterializationHelper_cpp_752_"}, "block":"cont"}]
+   }, {
+    "opcode":"store",
+    "type":"int8",
+    "value":{"var":"MaterializationHelper_cpp_819_"},
+    "offsets":[]
+   }, {
+    "opcode":"br",
+    "target":"continue"
+   }]
+  }, {
+   "label":"noMatch",
+   "instructions":[{
+    "dst":"next",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader",
+    "pointer":{"var":"chainEntry"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_83_",
+    "opcode":"isnotnull",
+    "type":"ptr",
+    "src":[{"global":false, "var":"next"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_83_"},
+    "targetTrue":"loopChain",
+    "targetFalse":"loopChain"
+   }]
+  }, {
+   "label":"loopDoneChain",
+   "instructions":[{
+    "opcode":"store",
+    "type":"object umbra::Preaggregation::EntryHeader",
+    "value":{"var":"PreaggregationLogic_cpp_69_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "opcode":"store",
+    "type":"object umbra::Preaggregation::EntryHeader*",
+    "value":{"var":"entry"},
+    "offsets":[]
+   }, {
+    "dst":"count",
+    "opcode":"load",
+    "type":"object umbra::AggregationTarget::Fragment",
+    "pointer":{"var":"PreaggregationLogic_cpp_47_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":2}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_90_",
+    "opcode":"add",
+    "type":"i64",
+    "src":[{"global":false, "var":"count"}, {"type":"i64", "const":1}]
+   }, {
+    "opcode":"store",
+    "type":"object umbra::AggregationTarget::Fragment",
+    "value":{"var":"PreaggregationLogic_cpp_90_"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":2}]
+   }, {
+    "opcode":"br",
+    "target":"continue"
+   }]
+  }, {
+   "label":"continue",
+   "instructions":[{
+    "dst":"PreaggregationLogic_cpp_110_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"entry"},
+    "offsets":[{"type":"i64", "const":33}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_111_",
+    "opcode":"cmpne",
+    "type":"ptr",
+    "src":[{"global":false, "var":"PreaggregationLogic_cpp_110_"}, {"global":false, "var":"limit"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_111_"},
+    "targetTrue":"loopChunkEntries",
+    "targetFalse":"loopChunkEntries"
+   }]
+  }, {
+   "label":"loopDoneChunkEntries",
+   "instructions":[{
+    "dst":"next14",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryChunk",
+    "pointer":{"var":"chunk"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_116_",
+    "opcode":"isnotnull",
+    "type":"ptr",
+    "src":[{"global":false, "var":"next14"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_116_"},
+    "targetTrue":"loopChunk",
+    "targetFalse":"loopChunk"
+   }]
+  }, {
+   "label":"loopDoneChunk",
+   "instructions":[{
+    "opcode":"store",
+    "type":"object umbra::AggregationTarget::Fragment",
+    "value":{"type":"ptr", "const":0},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":3}]
+   }, {
+    "opcode":"br",
+    "target":"stepDone"
+   }]
+  }, {
+   "label":"stepDone",
+   "instructions":[{
+    "opcode":"return",
+    "value":{"type":"i32", "const":8}
+   }]
+  }]
+ }{
+  "name":"umbra::AggregationTarget::Fragment::checkSize()",
+  "returnType":"void",
+  "args":[{"var":5985, "type":"object umbra::AggregationTarget::Fragment*"}]
+ }{
+  "name":"_12_planStep4",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::ExecutionPlan::cleanupParallelWork(void*)",
+    "args":[{"global":false, "var":"state"}]
+   }, {
+    "dst":"CompilationContext_cpp_221_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":56}]
+   }, {
+    "dst":"CompilationContext_cpp_215_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":216}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::AggregationTarget::setupScanJob(void*)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"global":false, "var":"CompilationContext_cpp_221_"}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int)",
+    "args":[{"global":false, "var":"state"}, {"type":"i32", "const":32}, {"type":"i32", "const":9}, {"type":"i32", "const":10}, {"type":"i32", "const":11}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::ExecutionPlan::setupParallelStep(void*, unsigned int)",
+    "args":[{"global":false, "var":"state"}, {"type":"i32", "const":12}]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":13}
+   }]
+  }]
+ }{
+  "name":"umbra::ExecutionPlan::cleanupParallelWork(void*)",
+  "returnType":"void",
+  "args":[{"var":8161, "type":"int8*"}]
+ }{
+  "name":"umbra::AggregationTarget::setupScanJob(void*)",
+  "returnType":"void",
+  "args":[{"var":8293, "type":"object umbra::AggregationTarget*"}, {"var":8307, "type":"int8*"}]
+ }{
+  "name":"_12_planStep5",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"_12_planStep6",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"_12_planStep7",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"_12_map_groupby",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"from",
+    "opcode":"load",
+    "type":"object umbra::AggregationTarget::ScanMorsel",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
+   }, {
+    "dst":"to",
+    "opcode":"load",
+    "type":"object umbra::AggregationTarget::ScanMorsel",
+    "pointer":{"var":"localState"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_130_",
+    "opcode":"cmpne",
+    "type":"ptr",
+    "src":[{"global":false, "var":"from"}, {"global":false, "var":"to"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_130_"},
+    "targetTrue":"loopSlots",
+    "targetFalse":"loopSlots"
+   }]
+  }, {
+   "label":"loopSlots",
+   "instructions":[{
+    "dst":"slot",
+    "opcode":"phi",
+    "type":"ptr",
+    "incoming":[{"value":{"var":"from"}, "block":"body"}, {"value":{"var":"PreaggregationLogic_cpp_146_"}, "block":"loopDoneChain"}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_135_",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader*",
+    "pointer":{"var":"slot"},
+    "offsets":[]
+   }, {
+    "dst":"PreaggregationLogic_cpp_136_",
+    "opcode":"isnotnull",
+    "type":"ptr",
+    "src":[{"global":false, "var":"PreaggregationLogic_cpp_135_"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_136_"},
+    "targetTrue":"loopChain",
+    "targetFalse":"loopChain"
+   }]
+  }, {
+   "label":"loopChain",
+   "instructions":[{
+    "dst":"iter",
+    "opcode":"phi",
+    "type":"ptr",
+    "incoming":[{"value":{"var":"PreaggregationLogic_cpp_135_"}, "block":"loopSlots"}, {"value":{"var":"next"}, "block":"cont7"}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_140_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"iter"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "dst":"MaterializationHelper_cpp_726_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"PreaggregationLogic_cpp_140_"},
+    "offsets":[{"type":"i64", "const":16}]
+   }, {
+    "dst":"MaterializationHelper_cpp_727_",
+    "opcode":"load",
+    "type":"int8",
+    "pointer":{"var":"MaterializationHelper_cpp_726_"},
+    "offsets":[]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_",
+    "opcode":"and",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_727_"}, {"type":"i8", "const":1}]
+   }, {
+    "dst":"MaterializationHelper_cpp_780_0",
+    "opcode":"cmpne",
+    "type":"i8",
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_780_"}, {"type":"i8", "const":0}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"MaterializationHelper_cpp_780_0"},
+    "targetTrue":"then",
+    "targetFalse":"then"
+   }]
+  }, {
+   "label":"then",
+   "instructions":[{
+    "opcode":"br",
+    "target":"cont"
+   }]
+  }, {
+   "label":"else",
+   "instructions":[{
+    "dst":"MaterializationHelper_cpp_977_",
+    "opcode":"load",
+    "type":"data128",
+    "pointer":{"var":"PreaggregationLogic_cpp_140_"},
+    "offsets":[]
+   }, {
+    "opcode":"br",
+    "target":"cont"
+   }]
+  }, {
+   "label":"cont",
+   "instructions":[{
+    "dst":"Aggregate_cpp_132_",
+    "opcode":"phi",
+    "type":"d128",
+    "incoming":[{"value":{"type":"d128", "const":[0, 0]}, "block":"then"}, {"value":{"var":"MaterializationHelper_cpp_977_"}, "block":"else"}]
+   }, {
+    "dst":"CompilationContext_cpp_215_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":120}]
+   }, {
+    "dst":"sql_cpp_125_",
+    "opcode":"atomicrmwxchg",
+    "type":"int8",
+    "value":{"type":"i8", "const":1},
+    "offsets":[]
+   }, {
+    "dst":"CodeGen_cpp_441_",
+    "opcode":"cmpule",
+    "type":"i8",
+    "src":[{"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_125_"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"CodeGen_cpp_441_"},
+    "targetTrue":"then1",
+    "targetFalse":"then1"
+   }]
+  }, {
+   "label":"then1",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::RuntimeFunctions::lockSpinlock(void*, unsigned char, unsigned char)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_125_"}]
+   }, {
+    "opcode":"br",
+    "target":"cont2"
+   }]
+  }, {
+   "label":"cont2",
+   "instructions":[{
+    "opcode":"condbr",
+    "condition":{"var":"MaterializationHelper_cpp_780_0"},
+    "targetTrue":"then3",
+    "targetFalse":"then3"
+   }]
+  }, {
+   "label":"then3",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::RuntimeFunctions::outputNull(umbra::OutputTarget&)",
+    "args":[{"type":"ptr", "const":94018725782048}]
+   }, {
+    "opcode":"br",
+    "target":"cont5"
+   }]
+  }, {
+   "label":"else4",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
+    "args":[{"type":"ptr", "const":94018725782048}, {"type":"i64", "const":504403158903030785}, {"global":false, "var":"Aggregate_cpp_132_"}]
+   }, {
+    "opcode":"br",
+    "target":"cont5"
+   }]
+  }, {
+   "label":"cont5",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::RuntimeFunctions::printNlResult()",
+    "args":[]
+   }, {
+    "dst":"sql_cpp_135_",
+    "opcode":"atomicrmwxchg",
+    "type":"int8",
+    "value":{"type":"i8", "const":0},
+    "offsets":[]
+   }, {
+    "dst":"CodeGen_cpp_450_",
+    "opcode":"cmpult",
+    "type":"i8",
+    "src":[{"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_135_"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"CodeGen_cpp_450_"},
+    "targetTrue":"then6",
+    "targetFalse":"then6"
+   }]
+  }, {
+   "label":"then6",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::RuntimeFunctions::unlockedSpinlock(void*)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}]
+   }, {
+    "opcode":"br",
+    "target":"cont7"
+   }]
+  }, {
+   "label":"cont7",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::RuntimeFunctions::bumpResultValue(void*)",
+    "args":[{"global":false, "var":"state"}]
+   }, {
+    "dst":"next",
+    "opcode":"load",
+    "type":"object umbra::Preaggregation::EntryHeader",
+    "pointer":{"var":"iter"},
+    "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_143_",
+    "opcode":"isnotnull",
+    "type":"ptr",
+    "src":[{"global":false, "var":"next"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_143_"},
+    "targetTrue":"loopChain",
+    "targetFalse":"loopChain"
+   }]
+  }, {
+   "label":"loopDoneChain",
+   "instructions":[{
+    "dst":"PreaggregationLogic_cpp_146_",
+    "opcode":"getelementptr",
+    "type":"object umbra::Preaggregation::EntryHeader*",
+    "pointer":{"var":"slot"},
+    "offsets":[{"type":"i32", "const":1}]
+   }, {
+    "dst":"PreaggregationLogic_cpp_147_",
+    "opcode":"cmpne",
+    "type":"ptr",
+    "src":[{"global":false, "var":"PreaggregationLogic_cpp_146_"}, {"global":false, "var":"to"}]
+   }, {
+    "opcode":"condbr",
+    "condition":{"var":"PreaggregationLogic_cpp_147_"},
+    "targetTrue":"loopSlots",
+    "targetFalse":"loopSlots"
+   }]
+  }, {
+   "label":"loopDoneSlots",
+   "instructions":[{
+    "opcode":"br",
+    "target":"stepDone"
+   }]
+  }, {
+   "label":"stepDone",
+   "instructions":[{
+    "opcode":"return",
+    "value":{"type":"i32", "const":12}
+   }]
+  }]
+ }{
+  "name":"umbra::RuntimeFunctions::lockSpinlock(void*, unsigned char, unsigned char)",
+  "returnType":"void",
+  "args":[{"var":9628, "type":"int8*"}, {"var":9642, "type":"int8"}, {"var":9656, "type":"int8"}]
+ }{
+  "name":"umbra::RuntimeFunctions::outputNull(umbra::OutputTarget&)",
+  "returnType":"void",
+  "args":[{"var":9738, "type":"object umbra::OutputTarget*"}]
+ }{
+  "name":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
+  "returnType":"void",
+  "args":[{"var":9794, "type":"object umbra::OutputTarget*"}, {"var":9808, "type":"int64"}, {"var":9822, "type":"data128"}]
+ }{
+  "name":"umbra::RuntimeFunctions::printNlResult()",
+  "returnType":"void",
+  "args":[]
+ }{
+  "name":"umbra::RuntimeFunctions::unlockedSpinlock(void*)",
+  "returnType":"void",
+  "args":[{"var":9970, "type":"int8*"}]
+ }{
+  "name":"umbra::RuntimeFunctions::bumpResultValue(void*)",
+  "returnType":"void",
+  "args":[{"var":10012, "type":"int8*"}]
+ }{
+  "name":"_12_planStep8",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::ExecutionPlan::cleanupParallelWork(void*)",
+    "args":[{"global":false, "var":"state"}]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"_12_cleanup",
+  "returnType":"int32",
+  "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
+  "variables":[],
+  "blocks":[{
+   "label":"body",
+   "instructions":[{
+    "dst":"CompilationContext_cpp_215_",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":128}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::RelationMapped::Reader::destroy(void*)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}]
+   }, {
+    "dst":"CompilationContext_cpp_215_0",
+    "opcode":"getelementptr",
+    "type":"int8",
+    "pointer":{"var":"state"},
+    "offsets":[{"type":"i64", "const":216}]
+   }, {
+    "opcode":"call",
+    "type":"void",
+    "fun":"umbra::AggregationTarget::destroy(umbra::AggregationTarget*)",
+    "args":[{"global":false, "var":"CompilationContext_cpp_215_0"}]
+   }, {
+    "opcode":"return",
+    "value":{"type":"i32", "const":0}
+   }]
+  }]
+ }{
+  "name":"umbra::RelationMapped::Reader::destroy(void*)",
+  "returnType":"void",
+  "args":[{"var":10532, "type":"int8*"}]
+ }{
+  "name":"umbra::AggregationTarget::destroy(umbra::AggregationTarget*)",
+  "returnType":"void",
+  "args":[{"var":10615, "type":"object umbra::AggregationTarget*"}]
+ }]
+}
