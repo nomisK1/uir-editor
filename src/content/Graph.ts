@@ -43,8 +43,6 @@ class Graph {
         for (let i = 0; i < lines.length; i++) {
             let globals = lines[i].match(/^const.*/g);
             if (globals) {
-                console.log(globals);
-
                 let names = globals[0].match(/%[\w]*\[[\d]+\]/);
                 comps.push(
                     new global({

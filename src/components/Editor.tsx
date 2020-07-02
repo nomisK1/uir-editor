@@ -128,7 +128,6 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public shouldComponentUpdate(nextProps: IEditorProps) {
-        this.graph.print();
         if (this.props.graph !== nextProps.graph) {
             this.graph = nextProps.graph;
             this.resetPosition();
@@ -467,7 +466,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     render() {
-        this.graph.print();
+        //this.graph.print();
         return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '73vh' }} />;
     }
 }

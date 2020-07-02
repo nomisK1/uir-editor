@@ -22,7 +22,7 @@ import { tpch21 } from './tpch21';
 import { tpch22 } from './tpch22';
 import { tpch23 } from './tpch23';
 
-export function tpch() {
+export function tpch0() {
     return [
         tpch1,
         tpch2,

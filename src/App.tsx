@@ -6,7 +6,8 @@ import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
-import { tpch } from './queries/tpch';
+import TPCH from './TPCH';
+import { tpch0 } from './queries/tpch0';
 import './App.css';
 
 enum Feature {
@@ -21,6 +22,7 @@ interface IAppProps {}
 interface IAppState {
     data: string[];
     query: string;
+    json: Object;
     graph: Graph;
     selection: string;
     backup: string;
@@ -37,10 +39,18 @@ class App extends React.Component<IAppProps, IAppState> {
 
     constructor(props: IAppProps) {
         super(props);
-        let queries = [...tpch()];
+        let tpch = TPCH.getInstance();
+        let queries = tpch.getStrings();
+        //queries.unshift(...tpch0());
+        let jsons = tpch.getJsons();
+        if (!queries.length || queries.length !== jsons.length)
+            throw new Error('ERROR: No TPC-H Queries found. Please make sure the Server is avaliable!');
+        console.log(queries);
+        console.log(jsons);
         this.state = {
             data: queries,
             query: queries[0],
+            json: jsons[0],
             graph: new Graph({ query: queries[0] }),
             selection: '',
             backup: '',
@@ -98,7 +108,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.editor.handleKeypressEnter();
             }
         }
-        if (event.key === 'z' && event.ctrlKey) {
+        if (event.ctrlKey && event.key === 'z') {
             event.preventDefault();
             this.setState({ selection: this.state.backup });
         }
@@ -118,6 +128,7 @@ class App extends React.Component<IAppProps, IAppState> {
             <TcphDropdown
                 data={this.state.data}
                 query={this.state.query}
+                json={this.state.json}
                 onDropdownChange={this.handleDropdownChange}
             />
         );
