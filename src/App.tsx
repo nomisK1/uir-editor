@@ -7,7 +7,6 @@ import Graph from './content/Graph';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
 import TPCH from './TPCH';
-import { tpch0 } from './queries/tpch0';
 import './App.css';
 
 enum Feature {
@@ -41,10 +40,7 @@ class App extends React.Component<IAppProps, IAppState> {
         super(props);
         let tpch = TPCH.getInstance();
         let queries = tpch.getStrings();
-        //queries.unshift(...tpch0());
         let jsons = tpch.getJsons();
-        if (!queries.length || queries.length !== jsons.length)
-            throw new Error('ERROR: No TPC-H Queries found. Please make sure the Server is avaliable!');
         console.log(queries);
         console.log(jsons);
         this.state = {

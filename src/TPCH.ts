@@ -18,10 +18,16 @@ class TPCH {
 
     private requestQueries(url: string) {
         let request = new XMLHttpRequest();
-        request.open('GET', url, false);
-        request.send(null);
-        this.strings.push(request.responseText);
-        this.jsons.push(JSON.parse(request.responseText));
+        for (let i = 1; i < 23; i++) {
+            request.open('GET', url + i + '.uir', false);
+            request.send(null);
+            this.strings.push(request.responseText);
+        }
+        for (let i = 1; i < 23; i++) {
+            request.open('GET', url + i + '.json', false);
+            request.send(null);
+            this.jsons.push(JSON.parse(request.responseText));
+        }
     }
 
     public getStrings() {

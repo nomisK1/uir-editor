@@ -1,5 +1,4 @@
 # https://code-maven.com/static-server-in-python
-#!/usr/bin/env python3
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
 import re
@@ -9,10 +8,10 @@ class StaticServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
         root = os.path.join(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__))), '')
+            os.path.dirname(os.path.abspath(__file__))), 'server/queries')
         # print(self.path)
         if self.path == '/':
-            filename = root + '/server/queries/1.json'
+            filename = root + '/webserver.html'
         else:
             filename = root + self.path
 
@@ -30,12 +29,14 @@ class StaticServer(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
         self.end_headers()
         with open(filename, 'r') as file:
-            data = file.read().replace('\\', '\\\\').replace(
-                "`", "\\`").replace("}{", "},{").replace("\"]", "\"")
-            fixed = re.sub(
-                r"\"src\":(.*)},\n", "\"src\":\\1}],\n", data)
-            html = bytes(fixed, 'utf8')
+            html = bytes(fixString(file.read()), 'utf8')
             self.wfile.write(html)
+
+
+def fixString(dump):
+    temp = dump.replace("\\", "\\\\").replace(
+        "`", "\'").replace("}{", "},{").replace("\"]", "\"")
+    return re.sub(r"\"src\":(.*)},\n", "\"src\":\\1}],\n", temp)
 
 
 def run(server_class=HTTPServer, handler_class=StaticServer, port=8000):
@@ -46,5 +47,3 @@ def run(server_class=HTTPServer, handler_class=StaticServer, port=8000):
 
 
 run()
-
-# vim: expandtab
