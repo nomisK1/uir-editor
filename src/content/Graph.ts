@@ -57,7 +57,7 @@ class Graph {
             }
             let declares = lines[i].match(/^declare.*/g);
             if (declares) {
-                let names = declares[0].match(/@[_\w]*/);
+                let names = declares[0].match(/@?umbra(::[\w]*){2,}/);
                 comps.push(
                     new declaration({
                         name: names![0],

@@ -41,8 +41,8 @@ class App extends React.Component<IAppProps, IAppState> {
         let tpch = TPCH.getInstance();
         let queries = tpch.getStrings();
         let jsons = tpch.getJsons();
-        console.log(queries);
-        console.log(jsons);
+        //console.log(queries);
+        //console.log(jsons);
         this.state = {
             data: queries,
             query: queries[0],

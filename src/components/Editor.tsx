@@ -279,7 +279,7 @@ class Editor extends React.Component<IEditorProps> {
      */
     private findNodeHighlights(position: monaco.Position) {
         let node = this.graph.findNodeAt(position);
-        console.log(node);
+        //console.log(node);
         let nodes = this.graph.findRelatedNodes(node);
         let ranges = nodes.map((n) => n.getRange());
         return ranges;

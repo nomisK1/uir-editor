@@ -6,16 +6,20 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
     ignoreCase: true,
     tokenizer: {
         root: [
+            [/\(|\)|\[|\]|{|}/, 'parenthesis'],
             [/%[\w]*/, 'variable'],
-            [/_[\w]*|@[_\w]*/, 'function'],
+            [/@?umbra(::[\w]*)*\(|@[\w_]*/, 'function'],
             [/^[\w]+:/, 'label'],
-            [/const|declare|define/, 'constdeclaredefine'],
+            [/const |declare |define /, 'constdeclaredefine'],
             [/return|returnvoid|br|condbr|unreachable/, 'statement'],
             [
                 /ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext/,
                 'operator',
             ],
-            [/i(nt)?(8|32|64)|d(ata)?128|bool|global|ptr|void|object|[\w]+::[\w]+(::[\w]+)?/, 'type'],
+            [
+                /i(nt)?(8|32|64)?|d(ata)?128|bool|char|const|global|long|ptr|void|object|unsigned|umbra(::[\w]*)*/,
+                'type',
+            ],
             [/true|false|0x[\w]+|\d+/, 'constant'],
             [/".*"/, 'string'],
             [/(\/\/).*/, 'comment'],

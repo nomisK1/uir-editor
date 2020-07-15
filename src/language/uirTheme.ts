@@ -6,6 +6,7 @@ export const monarchTheme: monaco.editor.IStandaloneThemeData = {
     base: 'vs-dark',
     inherit: true,
     rules: [
+        { token: 'parenthesis', foreground: 'FFFFFF' },
         { token: 'variable', foreground: '9CDCFE' },
         { token: 'function', foreground: '7FE06C' },
         { token: 'label', foreground: 'E09C6C' },
