@@ -6,7 +6,7 @@ import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
-import TPCH from './TPCH';
+import * as TPCH from './TPCH';
 import './App.css';
 
 enum Feature {
@@ -21,7 +21,6 @@ interface IAppProps {}
 interface IAppState {
     data: string[];
     query: string;
-    json: Object;
     graph: Graph;
     selection: string;
     backup: string;
@@ -38,15 +37,12 @@ class App extends React.Component<IAppProps, IAppState> {
 
     constructor(props: IAppProps) {
         super(props);
-        let tpch = TPCH.getInstance();
-        let queries = tpch.getStrings();
-        let jsons = tpch.getJsons();
-        //console.log(queries);
-        //console.log(jsons);
+        TPCH.requestQueries();
+        let queries = TPCH.getStrings();
+        let uir = TPCH.getUir();
         this.state = {
-            data: queries,
+            data: [...queries, ...uir],
             query: queries[0],
-            json: jsons[0],
             graph: new Graph({ query: queries[0] }),
             selection: '',
             backup: '',
@@ -124,7 +120,6 @@ class App extends React.Component<IAppProps, IAppState> {
             <TcphDropdown
                 data={this.state.data}
                 query={this.state.query}
-                json={this.state.json}
                 onDropdownChange={this.handleDropdownChange}
             />
         );

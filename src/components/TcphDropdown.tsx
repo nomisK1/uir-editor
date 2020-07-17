@@ -3,7 +3,6 @@ import React from 'react';
 interface ITcphDropdownProps {
     data: string[];
     query: string;
-    json: Object;
     onDropdownChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 

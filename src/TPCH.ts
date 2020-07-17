@@ -1,4 +1,10 @@
+import Graph from './content/Graph';
+
 const url: string = 'http://localhost:8000/';
+let uir: string[] = [];
+let jsons: Object[] = [];
+let strings: string[] = [];
+let graphs: Graph[] = [];
 
 function generateText(json: Object) {
     let text = '';
@@ -10,6 +16,7 @@ function generateText(json: Object) {
     // FUNCTIONS
     let functions = Object.values(json)[1] as Object[];
     functions.forEach((f) => {
+        console.log(Object.entries(f));
         let keys = Object.keys(f);
         if (keys.includes('blocks')) text += stringifyDefinition(f);
         else text += stringifyDeclaration(f);
@@ -225,47 +232,32 @@ function stringifyOSA(osa: Object[]) {
     return str.slice(0, -2);
 }
 
-class TPCH {
-    private static instance: TPCH;
-    private strings: string[];
-    private jsons: Object[];
-
-    constructor() {
-        this.strings = [];
-        this.jsons = [];
-        this.requestQueries(url);
+export function requestQueries() {
+    let request = new XMLHttpRequest();
+    for (let i = 1; i < 23; i++) {
+        request.open('GET', url + i + '.uir', false);
+        request.send(null);
+        uir.push(request.responseText);
     }
-
-    public static getInstance(): TPCH {
-        if (!TPCH.instance) TPCH.instance = new TPCH();
-        return TPCH.instance;
+    for (let i = 1; i < 23; i++) {
+        request.open('GET', url + i + '.json', false);
+        request.send(null);
+        jsons.push(JSON.parse(request.responseText));
     }
-
-    private requestQueries(url: string) {
-        let request = new XMLHttpRequest();
-        for (let i = 1; i < 23; i++) {
-            request.open('GET', url + i + '.uir', false);
-            request.send(null);
-            this.strings.push(request.responseText);
-        }
-        for (let i = 1; i < 23; i++) {
-            request.open('GET', url + i + '.json', false);
-            request.send(null);
-            this.jsons.push(JSON.parse(request.responseText));
-        }
-    }
-
-    public getStrings() {
-        this.strings.unshift(generateText(this.jsons[0]));
-        return this.strings;
-    }
-
-    public getJsons() {
-        return this.jsons;
-    }
+    strings.unshift(generateText(jsons[0]));
 }
 
-export default TPCH;
+export function getUir() {
+    return uir;
+}
+
+export function getStrings() {
+    return strings;
+}
+
+export function getGraphs() {
+    return graphs;
+}
 
 /*
 const fetchQuery = async () => {

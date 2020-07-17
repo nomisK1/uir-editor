@@ -94,21 +94,21 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, this.handleKeypressShiftEnter);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_N, this.handleKeypressShiftEnter);
             this.editor.addCommand(monaco.KeyCode.LeftArrow, this.handleKeypressLeft);
-            this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft);
+            this.editor.addCommand(monaco.KeyCode.KEY_L, this.handleKeypressLeft);
             this.editor.addCommand(monaco.KeyCode.UpArrow, this.handleKeypressUp);
-            this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressUp);
+            this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressUp);
             this.editor.addCommand(monaco.KeyCode.RightArrow, this.handleKeypressRight);
-            this.editor.addCommand(monaco.KeyCode.KEY_L, this.handleKeypressRight);
+            this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressRight);
             this.editor.addCommand(monaco.KeyCode.DownArrow, this.handleKeypressDown);
-            this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressDown);
+            this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressDown);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.LeftArrow, this.handleKeypressShiftLeft);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_H, this.handleKeypressShiftLeft);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressShiftLeft);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.UpArrow, this.handleKeypressShiftUp);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J, this.handleKeypressShiftUp);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressShiftUp);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.RightArrow, this.handleKeypressShiftRight);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressShiftRight);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_H, this.handleKeypressShiftRight);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.DownArrow, this.handleKeypressShiftDown);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressShiftDown);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J, this.handleKeypressShiftDown);
             this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressPrevious);
             this.editor.setPosition({ column: 0, lineNumber: 0 });
             this.editor.focus();
@@ -394,7 +394,7 @@ class Editor extends React.Component<IEditorProps> {
                 options: {
                     isWholeLine: false,
                     className,
-                    glyphMarginClassName: 'glyphChild',
+                    glyphMarginClassName: 'glyphChild' + leaf.depth,
                 },
             });
         } else {
@@ -404,7 +404,7 @@ class Editor extends React.Component<IEditorProps> {
                 options: {
                     isWholeLine: false,
                     className,
-                    glyphMarginClassName: 'glyphParent',
+                    glyphMarginClassName: 'glyphParent' + leaf.depth,
                 },
             });
         }
