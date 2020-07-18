@@ -1,4 +1,4 @@
-import Graph from './content/Graph';
+import Graph from './graph/Graph';
 
 const url: string = 'http://localhost:8000/';
 let uir: string[] = [];
@@ -6,23 +6,24 @@ let jsons: Object[] = [];
 let strings: string[] = [];
 let graphs: Graph[] = [];
 
-function generateText(json: Object) {
-    let text = '';
+function initializeQuery(json: Object) {
+    let str = '';
+    let graph = new Graph({ json });
     // GLOBALS
     let globals = Object.values(json)[0] as Object[];
     globals.forEach((g) => {
-        text += stringifyGlobal(g);
+        str += stringifyGlobal(g);
     });
     // FUNCTIONS
     let functions = Object.values(json)[1] as Object[];
     functions.forEach((f) => {
-        console.log(Object.entries(f));
         let keys = Object.keys(f);
-        if (keys.includes('blocks')) text += stringifyDefinition(f);
-        else text += stringifyDeclaration(f);
+        if (keys.includes('blocks')) str += stringifyDefinition(f);
+        else str += stringifyDeclaration(f);
     });
-    console.log(functions);
-    return text.slice(0, -1);
+    strings.push(str.slice(0, -1));
+    graphs.push(graph);
+    graph.print();
 }
 
 function stringifyGlobal(global: Object) {
@@ -244,7 +245,7 @@ export function requestQueries() {
         request.send(null);
         jsons.push(JSON.parse(request.responseText));
     }
-    strings.unshift(generateText(jsons[0]));
+    initializeQuery(jsons[0]);
 }
 
 export function getUir() {
