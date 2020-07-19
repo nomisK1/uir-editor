@@ -66,7 +66,7 @@ class Graph {
         });
         console.log(str);
         console.log(this);
-        return str;
+        return str.slice(0, -1);
     }
 }
 

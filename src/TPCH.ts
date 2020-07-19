@@ -21,9 +21,9 @@ function initializeQuery(json: Object) {
         if (keys.includes('blocks')) str += stringifyDefinition(f);
         else str += stringifyDeclaration(f);
     });
-    strings.push(str.slice(0, -1));
+    strings.push(graph.print());
     graphs.push(graph);
-    graph.print();
+    strings.push(str.slice(0, -1));
 }
 
 function stringifyGlobal(global: Object) {
