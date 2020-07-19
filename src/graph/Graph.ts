@@ -1,3 +1,4 @@
+import { lookupJSON } from './_node';
 import _component from './_component';
 import global from './global';
 import declaration from './declaration';
@@ -22,8 +23,8 @@ class Graph {
 
     private build() {
         let line = 1;
-        let globals = Object.values(this.json)[0] as Object[];
-        let functions = Object.values(this.json)[1] as Object[];
+        let globals = lookupJSON(this.json, 'globals') as Object[];
+        let functions = lookupJSON(this.json, 'functions') as Object[];
         globals.forEach((json) => {
             this.components.push(
                 new global({
@@ -35,8 +36,7 @@ class Graph {
             line = this.components[this.components.length - 1].getLastLine() + 2;
         });
         functions.forEach((json) => {
-            let keys = Object.keys(json);
-            if (keys.includes('blocks'))
+            if (lookupJSON(json, 'blocks'))
                 this.components.push(
                     new definition({
                         json,

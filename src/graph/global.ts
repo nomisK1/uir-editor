@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import { lookupJSON } from './_node';
 import component, { IComponentProps } from './_component';
 import variable, { findVariableRange } from './variable';
 
@@ -11,9 +12,9 @@ class global extends component {
 
     constructor(props: IGlobalProps) {
         super(props);
-        this.name = '' + Object.values(this.json)[1];
-        this.size = Object.values(this.json)[2];
-        this.data = Object.values(this.json)[3];
+        this.name = 'const:' + lookupJSON(this.json, 'name');
+        this.size = lookupJSON(this.json, 'size');
+        this.data = lookupJSON(this.json, 'data');
         this.variable = new variable({
             json: this.json,
             line: this.line,
@@ -29,7 +30,7 @@ class global extends component {
     }
 
     public toString() {
-        return 'const %' + this.name + '[' + this.size + '] = "' + this.data + '"';
+        return 'const %' + this.variable.getName() + '[' + this.size + '] = "' + this.data + '"';
     }
 }
 

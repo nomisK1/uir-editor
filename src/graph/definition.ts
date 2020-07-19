@@ -1,28 +1,30 @@
 import * as monaco from 'monaco-editor';
+import { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 import block from './block';
+import variable from './variable';
+
+// Number of linebreaks between blocks
+const offset = 2;
 
 interface IDefinitionProps extends IFunctionProps {}
 
 class definition extends _function {
-    // Number of linebreaks between blocks
-    static offset = 2;
-
     protected blocks: block[];
 
     constructor(props: IDefinitionProps) {
         super(props);
         this.blocks = [];
-        this.name = '' + Object.values(this.json)[0];
-        this.buildArgs(Object.values(this.json)[2]);
-        this.buildBlocks(Object.values(this.json)[4]);
+        this.name = '' + lookupJSON(this.json, 'name');
+        this.buildArgs(lookupJSON(this.json, 'args'));
+        this.buildBlocks(lookupJSON(this.json, 'blocks'));
         this.range = new monaco.Range(this.line, 0, this.getLastLine(), 1);
     }
 
     private buildBlocks(jsons: Object[]) {
         let line = this.line;
         jsons.forEach((json) => {
-            line += definition.offset;
+            line += offset;
             this.blocks.push(
                 new block({
                     json,
@@ -35,7 +37,11 @@ class definition extends _function {
     }
 
     public getVariables() {
-        return this.args;
+        let vars: variable[] = [];
+        this.blocks.forEach((b) => {
+            vars.push(...b.getVariables());
+        });
+        return vars;
     }
 
     public getLastLine() {
@@ -46,7 +52,7 @@ class definition extends _function {
         let str = '';
         this.blocks.forEach((b) => {
             str += b.toString();
-            for (let i = 0; i < block.offset; i++) str += '\n';
+            for (let i = 0; i < offset; i++) str += '\n';
         });
         return str.slice(0, -1);
     }

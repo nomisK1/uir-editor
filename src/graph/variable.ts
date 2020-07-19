@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { INodeProps, Type, matchType, indexOfStrict } from './_node';
+import _node, { INodeProps, Type, matchType, indexOfStrict, lookupJSON } from './_node';
 
 export function findVariableRange(variable: variable) {
     if (variable.getRange()) return variable.getRange();
@@ -20,14 +20,15 @@ class variable extends _node {
     constructor(props: IVariableProps) {
         super(props);
         this.parents = props.parents;
-        this.type = null;
-        let keys = Object.keys(this.json);
-        if (keys.includes('isConst') && Object.values(this.json)[1]) {
+        if (lookupJSON(this.json, 'isConst')) {
             this.type = Type.GLOBAL;
-            this.name = '' + Object.values(this.json)[1];
+            this.name = '' + lookupJSON(this.json, 'name');
+        } else if (lookupJSON(this.json, 'dst')) {
+            this.type = null;
+            this.name = '' + lookupJSON(this.json, 'dst');
         } else {
-            if (keys.includes('type')) this.type = matchType(Object.values(this.json)[1]);
-            this.name = '' + Object.values(this.json)[0];
+            this.type = matchType(lookupJSON(this.json, 'type'));
+            this.name = '' + lookupJSON(this.json, 'var');
         }
     }
 

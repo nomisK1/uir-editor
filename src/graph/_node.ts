@@ -40,7 +40,8 @@ export enum Type {
     OBJECT_ = 'object*',
 }
 
-export function matchType(str: string) {
+export function matchType(str: string | null) {
+    if (!str) return null;
     let types = Object.values(Type);
     for (let i = 0; i < types.length; i++) {
         let object = str.split(' ')[0] + str.slice(str.length - 1);
@@ -57,6 +58,17 @@ export function indexOfStrict(string: string, text: string) {
     let regexp = new RegExp(string + '\\b');
     let index = text.search(regexp);
     return index;
+}
+
+export function lookupJSON(json: Object, key: string) {
+    let keys = Object.keys(json);
+    let values = Object.values(json);
+    let i = 0;
+    while (i < keys.length) {
+        if (keys[i] === key) return values[i];
+        i++;
+    }
+    return null;
 }
 
 export interface INodeProps {

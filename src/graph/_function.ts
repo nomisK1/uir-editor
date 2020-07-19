@@ -1,4 +1,4 @@
-import { matchType } from './_node';
+import { matchType, lookupJSON } from './_node';
 import _component, { IComponentProps } from './_component';
 import variable, { findVariableRange } from './variable';
 
@@ -10,7 +10,7 @@ abstract class _function extends _component {
     constructor(props: IFunctionProps) {
         super(props);
         this.args = [];
-        this.type = matchType(Object.values(this.json)[1]);
+        this.type = matchType(lookupJSON(this.json, 'returnType'));
     }
 
     protected buildArgs(jsons: Object[]) {

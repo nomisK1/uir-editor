@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 
 interface IDeclarationProps extends IFunctionProps {}
@@ -8,9 +9,9 @@ class declaration extends _function {
 
     constructor(props: IDeclarationProps) {
         super(props);
-        this.fullName = '' + Object.values(this.json)[0];
+        this.fullName = '' + lookupJSON(this.json, 'name');
         this.name = this.fullName.split('(')[0];
-        this.buildArgs(Object.values(this.json)[2]);
+        this.buildArgs(lookupJSON(this.json, 'args'));
         this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 
