@@ -1,24 +1,25 @@
 import * as monaco from 'monaco-editor';
 import { Type, matchType, lookupJSON } from './_node';
+import { offset } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import _value from './_value';
-import variable from './variable';
-import constant from './constant';
-import target from './target';
+import variable, { findVariableRange } from './variable';
+import constant, { findConstantRange } from './constant';
+import target, { findTargetRange } from './target';
 
 interface IOperationProps extends IInstructionProps {}
 
 class operation extends _instruction {
     protected opcode: OpCode | null;
     protected type: Type | null;
-    protected values: _value[];
+    protected operands: (_value | target)[];
     protected presentation: string;
 
     constructor(props: IOperationProps) {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.values = [];
+        this.operands = [];
         this.presentation = this.opcode + ' ' + (this.type ? this.type + ' ' : '');
         this.build();
         this.name = 'operation@line:' + this.line;
@@ -29,43 +30,41 @@ class operation extends _instruction {
     private build() {
         switch (this.opcode) {
             case OpCode.CALL:
+                //[ "opcode", "type", "fun", "args" ] (call void umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long) (%CompilationContext_cpp_215_0, i64 88))
                 {
-                    this.presentation += lookupJSON(this.json, 'fun') + ' ';
+                    this.buildValues(lookupJSON(this.json, 'args'));
+                    this.presentation += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
                 }
                 break;
             case OpCode.STORE:
+                //[ "opcode", "type", "value", "offsets" ] (store int64 %Numeric_cpp_777_51, %MaterializationHelper_cpp_983_52)
                 {
+                    this.buildValue(lookupJSON(this.json, 'value'));
+                    this.buildValues(lookupJSON(this.json, 'offsets'));
+                    this.presentation += this.printOperands();
                 }
                 break;
             case OpCode.BR:
+                //[ "opcode", "target" ] (br %cont)
                 {
+                    this.buildTarget(this.json);
+                    this.presentation += this.printOperands();
                 }
                 break;
             case OpCode.CONDBR:
+                //[ "opcode", "condition", "targetTrue", "targetFalse" ] (condbr %RelationMappedLogic_cpp_343_ %loopBlocks %loopDoneBlocks)
                 {
+                    this.buildValue(lookupJSON(this.json, 'condition'));
+                    this.buildTarget(this.json, 'targetTrue');
+                    this.buildTarget(this.json, 'targetFalse');
+                    this.presentation += this.printOperands2();
                 }
                 break;
             case OpCode.RETURN:
                 //[ "opcode", "value" ] (return 1)
                 {
-                    let value: _value | null = null;
-                    let json = lookupJSON(this.json, 'value');
-                    if (lookupJSON(json, 'type')) {
-                        value = new constant({
-                            json,
-                            line: this.line,
-                            context: this,
-                        });
-                    } else {
-                        value = new variable({
-                            json,
-                            line: this.line,
-                            context: this,
-                            parents: null,
-                        });
-                    }
-                    this.values.push(value);
-                    this.presentation += value.toString();
+                    this.buildValue(lookupJSON(this.json, 'value'));
+                    this.presentation += this.printOperands();
                 }
                 break;
             case OpCode.PHI:
@@ -85,24 +84,89 @@ class operation extends _instruction {
                 }
                 break;
         }
+        this.operands.forEach((o) => {
+            if (o.constructor === variable) findVariableRange(o as variable, offset);
+            if (o.constructor === constant) findConstantRange(o as constant, offset);
+            if (o.constructor === target) findTargetRange(o as target, offset);
+        });
+    }
+
+    private buildTarget(json: Object, name?: string) {
+        this.operands.push(
+            new target({
+                json,
+                line: this.line,
+                context: this,
+                name,
+            }),
+        );
+    }
+
+    private buildValue(json: Object) {
+        if (lookupJSON(json, 'type')) {
+            this.operands.push(
+                new constant({
+                    json,
+                    line: this.line,
+                    context: this,
+                }),
+            );
+        } else {
+            this.operands.push(
+                new variable({
+                    json,
+                    line: this.line,
+                    context: this,
+                    parents: null,
+                }),
+            );
+        }
     }
 
     private buildValues(jsons: Object[]) {
-        jsons.forEach((json) => {});
+        jsons.forEach((json) => {
+            if (lookupJSON(json, 'type')) {
+                this.operands.push(
+                    new constant({
+                        json,
+                        line: this.line,
+                        context: this,
+                        showType: true,
+                    }),
+                );
+            } else {
+                this.operands.push(
+                    new variable({
+                        json,
+                        line: this.line,
+                        context: this,
+                        parents: null,
+                    }),
+                );
+            }
+        });
     }
 
-    private printValues() {
+    private printOperands() {
         let str = '';
-        this.values.forEach((v) => {
-            str += v.toString() + ', ';
+        this.operands.forEach((o) => {
+            str += o.toString() + ', ';
         });
         return str.slice(0, -2);
     }
 
+    private printOperands2() {
+        let str = '';
+        this.operands.forEach((o) => {
+            str += o.toString() + ' ';
+        });
+        return str.slice(0, -1);
+    }
+
     public getVariables() {
         let vars: variable[] = [];
-        this.values.forEach((v) => {
-            if (v.constructor === variable) vars.push(v as variable);
+        this.operands.forEach((o) => {
+            if (o.constructor === variable) vars.push(o as variable);
         });
         return vars;
     }
@@ -196,7 +260,7 @@ function matchOpCode(str: string | null) {
     if (!str) return null;
     let codes = Object.values(OpCode);
     for (let i = 0; i < codes.length; i++) {
-        if (str === codes[i]) return codes[i];
+        if (str.toUpperCase() == codes[i].toUpperCase()) return codes[i];
     }
     return null;
 }

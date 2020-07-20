@@ -1,14 +1,22 @@
 import * as monaco from 'monaco-editor';
-import { lookupJSON } from './_node';
-import _value, { IValueProps } from './_value';
+import _node, { INodeProps, indexOfStrict, lookupJSON } from './_node';
 
-interface ITargetProps extends IValueProps {}
+interface ITargetProps extends INodeProps {
+    name?: string;
+}
 
-class target extends _value {
+class target extends _node {
+    protected label: boolean;
+
     constructor(props: ITargetProps) {
         super(props);
-        this.name = '' + lookupJSON(this.json, 'label');
-        this.range = new monaco.Range(this.line, 0, this.line, this.name.length);
+        this.label = false;
+        if (props.name) this.name = lookupJSON(this.json, props.name);
+        else if (lookupJSON(this.json, 'label')) {
+            this.label = true;
+            this.name = '' + lookupJSON(this.json, 'label');
+            this.range = new monaco.Range(this.line, 0, this.line, this.name.length);
+        } else this.name = '' + lookupJSON(this.json, 'target');
     }
 
     public getVariables() {
@@ -16,8 +24,17 @@ class target extends _value {
     }
 
     public toString() {
-        return this.name + ':';
+        if (this.label) return this.name + ':';
+        return '%' + this.name;
     }
 }
 
 export default target;
+
+export function findTargetRange(target: target, offset?: number) {
+    if (target.getRange()) return target.getRange();
+    let name = target.getName()!;
+    let line = target.getLastLine();
+    let index = indexOfStrict('%' + name, target.getContext()!.toString()) + (offset ? offset : 0);
+    target.setRange(new monaco.Range(line, index, line, index + name.length + 1));
+}

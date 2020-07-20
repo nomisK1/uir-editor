@@ -97,7 +97,8 @@ export function matchType(str: string | null) {
     let types = Object.values(Type);
     for (let i = 0; i < types.length; i++) {
         let object = str.split(' ')[0] + str.slice(str.length - 1);
-        if (str === types[i] || object === types[i]) return types[i];
+        if (str.toUpperCase() === types[i].toUpperCase() || object.toUpperCase() === types[i].toUpperCase())
+            return types[i];
     }
     return null;
 }

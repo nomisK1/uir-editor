@@ -21,6 +21,7 @@ abstract class _function extends _component {
                     line: this.line,
                     context: this,
                     parents: null,
+                    showType: true,
                 }),
             );
             this.args.forEach((a) => findVariableRange(a));

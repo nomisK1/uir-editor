@@ -8,21 +8,22 @@ interface IVariableProps extends IValueProps {
 
 class variable extends _value {
     protected parents: variable[] | null;
-    protected type: Type | null;
 
     constructor(props: IVariableProps) {
         super(props);
         this.parents = props.parents;
         if (lookupJSON(this.json, 'isConst')) {
-            this.showType = true;
             this.type = Type.GLOBAL;
             this.name = '' + lookupJSON(this.json, 'name');
+        } else if (lookupJSON(this.json, 'global')) {
+            this.type = Type.GLOBAL;
+            this.showType = true;
+            this.name = '' + lookupJSON(this.json, 'var');
         } else {
             this.type = matchType(lookupJSON(this.json, 'type'));
             if (lookupJSON(this.json, 'dst')) {
                 this.name = '' + lookupJSON(this.json, 'dst');
             } else {
-                this.showType = true;
                 this.name = '' + lookupJSON(this.json, 'var');
             }
         }
