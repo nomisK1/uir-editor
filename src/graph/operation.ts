@@ -1,23 +1,25 @@
 import * as monaco from 'monaco-editor';
 import { Type, matchType, lookupJSON } from './_node';
-import instruction, { IInstructionProps } from './_instruction';
+import _instruction, { IInstructionProps } from './_instruction';
+import _value from './_value';
 import variable from './variable';
+import constant from './constant';
 import target from './target';
 
 interface IOperationProps extends IInstructionProps {}
 
-class operation extends instruction {
+class operation extends _instruction {
     protected opcode: OpCode | null;
     protected type: Type | null;
-    protected args: variable[];
-    protected targets: target[];
+    protected values: _value[];
+    protected presentation: string;
 
     constructor(props: IOperationProps) {
         super(props);
-        this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'));
+        this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.args = [];
-        this.targets = [];
+        this.values = [];
+        this.presentation = this.opcode + ' ' + (this.type ? this.type + ' ' : '');
         this.build();
         this.name = 'operation@line:' + this.line;
         let index = 0;
@@ -25,19 +27,88 @@ class operation extends instruction {
     }
 
     private build() {
-        //TODO
+        switch (this.opcode) {
+            case OpCode.CALL:
+                {
+                    this.presentation += lookupJSON(this.json, 'fun') + ' ';
+                }
+                break;
+            case OpCode.STORE:
+                {
+                }
+                break;
+            case OpCode.BR:
+                {
+                }
+                break;
+            case OpCode.CONDBR:
+                {
+                }
+                break;
+            case OpCode.RETURN:
+                //[ "opcode", "value" ] (return 1)
+                {
+                    let value: _value | null = null;
+                    let json = lookupJSON(this.json, 'value');
+                    if (lookupJSON(json, 'type')) {
+                        value = new constant({
+                            json,
+                            line: this.line,
+                            context: this,
+                        });
+                    } else {
+                        value = new variable({
+                            json,
+                            line: this.line,
+                            context: this,
+                            parents: null,
+                        });
+                    }
+                    this.values.push(value);
+                    this.presentation += value.toString();
+                }
+                break;
+            case OpCode.PHI:
+                {
+                }
+                break;
+            case null:
+                {
+                }
+                break;
+            /* case '':
+                {
+                }
+                break; */
+            default:
+                {
+                }
+                break;
+        }
+    }
+
+    private buildValues(jsons: Object[]) {
+        jsons.forEach((json) => {});
+    }
+
+    private printValues() {
+        let str = '';
+        this.values.forEach((v) => {
+            str += v.toString() + ', ';
+        });
+        return str.slice(0, -2);
     }
 
     public getVariables() {
-        return this.args;
+        let vars: variable[] = [];
+        this.values.forEach((v) => {
+            if (v.constructor === variable) vars.push(v as variable);
+        });
+        return vars;
     }
 
     public toString() {
-        let str = this.opcode! + ' ' + (this.type ? this.type + ' ' : '');
-        this.args.forEach((a) => {
-            str += a.toString() + ' ';
-        });
-        return str.slice(0, -1);
+        return this.presentation;
     }
 }
 

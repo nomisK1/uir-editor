@@ -1,9 +1,10 @@
 import * as monaco from 'monaco-editor';
-import node, { INodeProps, lookupJSON } from './_node';
+import { lookupJSON } from './_node';
+import _value, { IValueProps } from './_value';
 
-interface ITargetProps extends INodeProps {}
+interface ITargetProps extends IValueProps {}
 
-class Target extends node {
+class target extends _value {
     constructor(props: ITargetProps) {
         super(props);
         this.name = '' + lookupJSON(this.json, 'label');
@@ -19,4 +20,4 @@ class Target extends node {
     }
 }
 
-export default Target;
+export default target;

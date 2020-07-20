@@ -1,11 +1,11 @@
 import * as monaco from 'monaco-editor';
 import { lookupJSON } from './_node';
-import component, { IComponentProps } from './_component';
+import _component, { IComponentProps } from './_component';
 import variable, { findVariableRange } from './variable';
 
 interface IGlobalProps extends IComponentProps {}
 
-class global extends component {
+class global extends _component {
     protected size: number;
     protected data: string;
     protected variable: variable;

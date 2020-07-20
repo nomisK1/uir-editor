@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import node, { INodeProps, lookupJSON } from './_node';
+import _node, { INodeProps, lookupJSON } from './_node';
 import _instruction from './_instruction';
 import assignment from './assignment';
 import operation from './operation';
@@ -11,7 +11,7 @@ export const offset = 2;
 
 interface IBlockProps extends INodeProps {}
 
-class block extends node {
+class block extends _node {
     protected target: target;
     protected instructions: _instruction[];
 

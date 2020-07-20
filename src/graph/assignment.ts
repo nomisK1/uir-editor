@@ -1,12 +1,12 @@
 import * as monaco from 'monaco-editor';
 import { offset } from './block';
-import instruction, { IInstructionProps } from './_instruction';
+import _instruction, { IInstructionProps } from './_instruction';
 import operation from './operation';
 import variable, { findVariableRange } from './variable';
 
 interface IAssignmentProps extends IInstructionProps {}
 
-class assignment extends instruction {
+class assignment extends _instruction {
     protected operation: operation;
     protected destination: variable;
 

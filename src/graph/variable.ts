@@ -1,11 +1,12 @@
 import * as monaco from 'monaco-editor';
-import _node, { INodeProps, Type, matchType, indexOfStrict, lookupJSON } from './_node';
+import { Type, matchType, indexOfStrict, lookupJSON } from './_node';
+import _value, { IValueProps } from './_value';
 
-interface IVariableProps extends INodeProps {
+interface IVariableProps extends IValueProps {
     parents: variable[] | null;
 }
 
-class variable extends _node {
+class variable extends _value {
     protected parents: variable[] | null;
     protected type: Type | null;
 
@@ -13,14 +14,17 @@ class variable extends _node {
         super(props);
         this.parents = props.parents;
         if (lookupJSON(this.json, 'isConst')) {
+            this.showType = true;
             this.type = Type.GLOBAL;
             this.name = '' + lookupJSON(this.json, 'name');
-        } else if (lookupJSON(this.json, 'dst')) {
-            this.type = null;
-            this.name = '' + lookupJSON(this.json, 'dst');
         } else {
             this.type = matchType(lookupJSON(this.json, 'type'));
-            this.name = '' + lookupJSON(this.json, 'var');
+            if (lookupJSON(this.json, 'dst')) {
+                this.name = '' + lookupJSON(this.json, 'dst');
+            } else {
+                this.showType = true;
+                this.name = '' + lookupJSON(this.json, 'var');
+            }
         }
     }
 
@@ -29,7 +33,7 @@ class variable extends _node {
     }
 
     public toString() {
-        return (this.type ? this.type + ' ' : '') + '%' + this.name;
+        return (this.showType && this.type ? this.type + ' ' : '') + '%' + this.name;
     }
 }
 
