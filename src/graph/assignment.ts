@@ -23,7 +23,7 @@ class assignment extends instruction {
             context: this,
             parents: this.operation.getVariables(),
         });
-        findVariableRange(this.destination);
+        findVariableRange(this.destination, offset);
         this.name = 'assignment@line:' + this.line;
         this.range = new monaco.Range(this.line, offset, this.line, this.toString().length);
     }

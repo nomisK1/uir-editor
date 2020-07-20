@@ -1,14 +1,6 @@
 import * as monaco from 'monaco-editor';
 import _node, { INodeProps, Type, matchType, indexOfStrict, lookupJSON } from './_node';
 
-export function findVariableRange(variable: variable) {
-    if (variable.getRange()) return variable.getRange();
-    let index = indexOfStrict('%' + variable.getName(), variable.getContext()!.toString());
-    variable.setRange(
-        new monaco.Range(variable.getLastLine(), index, variable.getLastLine(), index + variable.getName()!.length + 1),
-    );
-}
-
 interface IVariableProps extends INodeProps {
     parents: variable[] | null;
 }
@@ -42,3 +34,11 @@ class variable extends _node {
 }
 
 export default variable;
+
+export function findVariableRange(variable: variable, offset?: number) {
+    if (variable.getRange()) return variable.getRange();
+    let name = variable.getName()!;
+    let line = variable.getLastLine();
+    let index = indexOfStrict('%' + name, variable.getContext()!.toString()) + (offset ? offset : 0);
+    variable.setRange(new monaco.Range(line, index, line, index + name.length + 1));
+}

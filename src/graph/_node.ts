@@ -1,6 +1,58 @@
 import * as monaco from 'monaco-editor';
 import variable from './variable';
 
+export interface INodeProps {
+    json: Object;
+    line: number;
+    context: _node | null;
+}
+
+abstract class _node {
+    protected json: Object;
+    protected line: number;
+    protected context: _node | null;
+    protected name: string | null;
+    protected range: monaco.Range | null;
+
+    constructor(props: INodeProps) {
+        this.json = props.json;
+        this.line = props.line;
+        this.context = props.context;
+        this.name = null;
+        this.range = null;
+    }
+
+    public abstract getVariables(): variable[];
+
+    public abstract toString(): string;
+
+    public getLastLine() {
+        return this.line;
+    }
+
+    public getContext() {
+        return this.context;
+    }
+
+    public getName() {
+        return this.name;
+    }
+
+    public setName(name: string) {
+        this.name = name;
+    }
+
+    public getRange() {
+        return this.range;
+    }
+
+    public setRange(range: monaco.Range) {
+        this.range = range;
+    }
+}
+
+export default _node;
+
 export enum Type {
     VOID = 'void',
     VOID_ = 'void*',
@@ -70,55 +122,3 @@ export function lookupJSON(json: Object, key: string) {
     }
     return null;
 }
-
-export interface INodeProps {
-    json: Object;
-    line: number;
-    context: _node | null;
-}
-
-abstract class _node {
-    protected json: Object;
-    protected line: number;
-    protected context: _node | null;
-    protected name: string | null;
-    protected range: monaco.Range | null;
-
-    constructor(props: INodeProps) {
-        this.json = props.json;
-        this.line = props.line;
-        this.context = props.context;
-        this.name = null;
-        this.range = null;
-    }
-
-    public abstract getVariables(): variable[];
-
-    public abstract toString(): string;
-
-    public getLastLine() {
-        return this.line;
-    }
-
-    public getContext() {
-        return this.context;
-    }
-
-    public getName() {
-        return this.name;
-    }
-
-    public setName(name: string) {
-        this.name = name;
-    }
-
-    public getRange() {
-        return this.range;
-    }
-
-    public setRange(range: monaco.Range) {
-        this.range = range;
-    }
-}
-
-export default _node;

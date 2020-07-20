@@ -1,8 +1,47 @@
 import * as monaco from 'monaco-editor';
-import { Type } from './_node';
+import { Type, matchType, lookupJSON } from './_node';
 import instruction, { IInstructionProps } from './_instruction';
 import variable from './variable';
 import target from './target';
+
+interface IOperationProps extends IInstructionProps {}
+
+class operation extends instruction {
+    protected opcode: OpCode | null;
+    protected type: Type | null;
+    protected args: variable[];
+    protected targets: target[];
+
+    constructor(props: IOperationProps) {
+        super(props);
+        this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'));
+        this.type = matchType(lookupJSON(this.json, 'type'));
+        this.args = [];
+        this.targets = [];
+        this.build();
+        this.name = 'operation@line:' + this.line;
+        let index = 0;
+        this.range = new monaco.Range(this.line, index, this.line, index + this.toString().length);
+    }
+
+    private build() {
+        //TODO
+    }
+
+    public getVariables() {
+        return this.args;
+    }
+
+    public toString() {
+        let str = this.opcode! + ' ' + (this.type ? this.type + ' ' : '');
+        this.args.forEach((a) => {
+            str += a.toString() + ' ';
+        });
+        return str.slice(0, -1);
+    }
+}
+
+export default operation;
 
 enum OpCode {
     ADD = 'add',
@@ -14,7 +53,7 @@ enum OpCode {
     ATOMICRMWUMAX = 'atomicrmwumax',
     ATOMICRMWXCHG = 'atomicrmwxchg',
     ATOMICSTORE = 'atomicstore',
-    BR = 'br', //NULL
+    BR = 'br',
     BSWAP = 'bswap',
     BUILDDATA128 = 'builddata128',
     CALL = 'call',
@@ -30,7 +69,7 @@ enum OpCode {
     CMPSUOLT = 'cmpsuolt',
     CMPULE = 'cmpule',
     CMPULT = 'cmpult',
-    CONDBR = 'condbr', //NULL
+    CONDBR = 'condbr',
     CONST = 'const',
     CRC32 = 'crc32',
     CTLZ = 'ctlz',
@@ -55,7 +94,7 @@ enum OpCode {
     PHI = 'phi',
     POW = 'pow',
     PTRTOINT = 'ptrtoint',
-    RETURN = 'return', //NULL
+    RETURN = 'return',
     RETURNVOID = 'returnvoid',
     ROTL = 'rotl',
     ROTR = 'rotr',
@@ -75,7 +114,7 @@ enum OpCode {
     UADDOVERFLOW = 'uaddoverflow',
     UDIV = 'udiv',
     UMULOVERFLOW = 'umuloverflow',
-    UNREACHABLE = 'unreachable', //NULL
+    UNREACHABLE = 'unreachable',
     UREM = 'urem',
     USUBOVERFLOW = 'usuboverflow',
     XOR = 'xor',
@@ -90,37 +129,3 @@ function matchOpCode(str: string | null) {
     }
     return null;
 }
-
-interface IOperationProps extends IInstructionProps {}
-
-class operation extends instruction {
-    protected opcode: OpCode;
-    protected type: Type;
-    protected args: variable[];
-    protected targets: target[];
-
-    constructor(props: IOperationProps) {
-        super(props);
-        this.opcode = OpCode.CONST;
-        this.type = Type.VOID;
-        this.args = [];
-        this.targets = [];
-        this.name = 'operation@line:' + this.line;
-        let index = 0;
-        this.range = new monaco.Range(this.line, index, this.line, index + this.toString().length);
-    }
-
-    public getVariables() {
-        return this.args;
-    }
-
-    public toString() {
-        let str = this.opcode + ' ' + this.type + ' ';
-        this.args.forEach((a) => {
-            str += a.toString() + ' ';
-        });
-        return str.slice(0, -1);
-    }
-}
-
-export default operation;

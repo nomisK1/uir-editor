@@ -2,10 +2,9 @@ import * as monaco from 'monaco-editor';
 import { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 import block from './block';
-import variable from './variable';
 
 // Number of linebreaks between blocks
-const offset = 2;
+const breaks = 2;
 
 interface IDefinitionProps extends IFunctionProps {}
 
@@ -24,7 +23,7 @@ class definition extends _function {
     private buildBlocks(jsons: Object[]) {
         let line = this.line;
         jsons.forEach((json) => {
-            line += offset;
+            line += breaks;
             this.blocks.push(
                 new block({
                     json,
@@ -37,7 +36,7 @@ class definition extends _function {
     }
 
     public getVariables() {
-        let vars: variable[] = [];
+        let vars = [...this.args];
         this.blocks.forEach((b) => {
             vars.push(...b.getVariables());
         });
@@ -52,7 +51,7 @@ class definition extends _function {
         let str = '';
         this.blocks.forEach((b) => {
             str += b.toString();
-            for (let i = 0; i < offset; i++) str += '\n';
+            for (let i = 0; i < breaks; i++) str += '\n';
         });
         return str.slice(0, -1);
     }

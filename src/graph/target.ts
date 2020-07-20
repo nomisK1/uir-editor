@@ -15,7 +15,7 @@ class Target extends node {
     }
 
     public toString() {
-        return this.name + ':\n';
+        return this.name + ':';
     }
 }
 

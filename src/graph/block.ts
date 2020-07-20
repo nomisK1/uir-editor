@@ -12,7 +12,7 @@ export const offset = 2;
 interface IBlockProps extends INodeProps {}
 
 class block extends node {
-    protected target: target | null;
+    protected target: target;
     protected instructions: _instruction[];
 
     constructor(props: IBlockProps) {
@@ -78,7 +78,7 @@ class block extends node {
     }
 
     public toString() {
-        return this.target!.toString() + this.printInstructions();
+        return this.target!.toString() + '\n' + this.printInstructions();
     }
 }
 

@@ -160,7 +160,7 @@ function stringifyOperation(operation: Object) {
     let opcode = Object.values(operation)[0];
     str += '  ' + opcode;
     switch (opcode) {
-        //call void umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long) (%CompilationContext_cpp_215_0, i64 88)
+        //[ "opcode", "type", "fun", "args" ] (call void umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long) (%CompilationContext_cpp_215_0, i64 88))
         case 'call':
             {
                 let type = Object.values(operation)[1];
@@ -169,7 +169,7 @@ function stringifyOperation(operation: Object) {
                 str += ' ' + type + ' ' + fun + ' (' + stringifyOSA(args) + ')';
             }
             break;
-        //store int64 %Numeric_cpp_777_51, %MaterializationHelper_cpp_983_52
+        //[ "opcode", "type", "value", "offsets" ] (store int64 %Numeric_cpp_777_51, %MaterializationHelper_cpp_983_52)
         case 'store':
             {
                 let type = Object.values(operation)[1];
@@ -183,14 +183,14 @@ function stringifyOperation(operation: Object) {
                 } else str += ', %MISSING_OFFSET';
             }
             break;
-        //br %cont
+        //[ "opcode", "target" ] (br %cont)
         case 'br':
             {
                 let target = Object.values(operation)[1];
                 str += ' %' + target;
             }
             break;
-        //condbr %RelationMappedLogic_cpp_343_ %loopBlocks %loopDoneBlocks
+        //[ "opcode", "condition", "targetTrue", "targetFalse" ] (condbr %RelationMappedLogic_cpp_343_ %loopBlocks %loopDoneBlocks)
         case 'condbr':
             {
                 let condition = Object.values(operation)[1];
@@ -200,6 +200,7 @@ function stringifyOperation(operation: Object) {
                 str += ' ' + vrb + ' %' + targetTrue + ' %targetFalse_EQUAL';
             }
             break;
+        //[ "opcode", "value" ] (return 1)
         case 'return':
             {
                 let value = Object.values(operation)[1];
