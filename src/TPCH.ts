@@ -7,8 +7,8 @@ let strings: string[] = [];
 let graphs: Graph[] = [];
 
 function initializeQuery(json: Object) {
-    let str = '';
     let graph = new Graph({ json });
+    /* let str = '';
     // GLOBALS
     let globals = Object.values(json)[0] as Object[];
     globals.forEach((g) => {
@@ -20,10 +20,9 @@ function initializeQuery(json: Object) {
         let keys = Object.keys(f);
         if (keys.includes('blocks')) str += stringifyDefinition(f);
         else str += stringifyDeclaration(f);
-    });
+    }); */
     strings.push(graph.print());
     graphs.push(graph);
-    strings.push(str.slice(0, -1));
 }
 
 function stringifyGlobal(global: Object) {
@@ -152,7 +151,7 @@ function stringifyAssignment(assignment: Object) {
         str += stringifyOSA(Object.values(assignment)[3]);
     }
 
-    return str;
+    return str + ' // [' + Object.keys(assignment) + ']';
 }
 
 function stringifyOperation(operation: Object) {
@@ -234,6 +233,13 @@ function stringifyOSA(osa: Object[]) {
     return str.slice(0, -2);
 }
 
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+
 export function requestQueries() {
     let request = new XMLHttpRequest();
     for (let i = 1; i < 23; i++) {
@@ -246,7 +252,9 @@ export function requestQueries() {
         request.send(null);
         jsons.push(JSON.parse(request.responseText));
     }
-    initializeQuery(jsons[0]);
+    jsons.forEach((json) => {
+        initializeQuery(json);
+    });
 }
 
 export function getUir() {

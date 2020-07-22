@@ -64,9 +64,11 @@ class Graph {
         this.components.forEach((c) => {
             str += c.toString() + '\n\n';
         });
-        console.log(str);
-        console.log(this);
         return str.slice(0, -1);
+    }
+
+    public log() {
+        console.log(this);
     }
 }
 

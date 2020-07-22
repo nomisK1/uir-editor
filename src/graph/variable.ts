@@ -21,11 +21,8 @@ class variable extends _value {
             this.name = '' + lookupJSON(this.json, 'var');
         } else {
             this.type = matchType(lookupJSON(this.json, 'type'));
-            if (lookupJSON(this.json, 'dst')) {
-                this.name = '' + lookupJSON(this.json, 'dst');
-            } else {
-                this.name = '' + lookupJSON(this.json, 'var');
-            }
+            let assigned = lookupJSON(this.json, 'dst');
+            this.name = '' + (assigned ? assigned : lookupJSON(this.json, 'var'));
         }
     }
 

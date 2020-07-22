@@ -466,7 +466,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     render() {
-        //this.graph.print();
+        console.log(this.graph);
         return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '73vh' }} />;
     }
 }

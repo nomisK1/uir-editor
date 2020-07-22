@@ -4,7 +4,7 @@ import _function, { IFunctionProps } from './_function';
 import block from './block';
 
 // Number of linebreaks between blocks
-const breaks = 2;
+const linebreaks = 2;
 
 interface IDefinitionProps extends IFunctionProps {}
 
@@ -23,7 +23,7 @@ class definition extends _function {
     private buildBlocks(jsons: Object[]) {
         let line = this.line;
         jsons.forEach((json) => {
-            line += breaks;
+            line += linebreaks;
             this.blocks.push(
                 new block({
                     json,
@@ -51,7 +51,7 @@ class definition extends _function {
         let str = '';
         this.blocks.forEach((b) => {
             str += b.toString();
-            for (let i = 0; i < breaks; i++) str += '\n';
+            for (let i = 0; i < linebreaks; i++) str += '\n';
         });
         return str.slice(0, -1);
     }

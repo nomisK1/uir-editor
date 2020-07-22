@@ -39,6 +39,13 @@ class App extends React.Component<IAppProps, IAppState> {
         super(props);
         TPCH.requestQueries();
         let queries = TPCH.getStrings();
+        let graphs = TPCH.getGraphs();
+        let count = 1;
+        graphs.forEach((g) => {
+            console.log('GRAPH' + count);
+            g.log();
+            count++;
+        });
         let uir = TPCH.getUir();
         this.state = {
             data: [...queries, ...uir],

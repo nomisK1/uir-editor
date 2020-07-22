@@ -2,7 +2,7 @@ import * as monaco from 'monaco-editor';
 import _node, { INodeProps, indexOfStrict, lookupJSON } from './_node';
 
 interface ITargetProps extends INodeProps {
-    name?: string;
+    reference?: string;
 }
 
 class target extends _node {
@@ -11,7 +11,7 @@ class target extends _node {
     constructor(props: ITargetProps) {
         super(props);
         this.label = false;
-        if (props.name) this.name = lookupJSON(this.json, props.name);
+        if (props.reference) this.name = lookupJSON(this.json, props.reference);
         else if (lookupJSON(this.json, 'label')) {
             this.label = true;
             this.name = '' + lookupJSON(this.json, 'label');

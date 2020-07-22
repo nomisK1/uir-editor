@@ -7,7 +7,7 @@ import variable from './variable';
 import target from './target';
 
 // Number of whitespaces at the start of each instruction
-export const offset = 2;
+export const indentation = 2;
 
 interface IBlockProps extends INodeProps {}
 
@@ -29,7 +29,7 @@ class block extends _node {
             this.line,
             0,
             this.getLastLine(),
-            this.instructions[this.instructions.length - 1].toString().length + offset,
+            this.instructions[this.instructions.length - 1].toString().length + indentation,
         );
     }
 
@@ -71,7 +71,7 @@ class block extends _node {
     private printInstructions() {
         let str = '';
         this.instructions.forEach((i) => {
-            for (let i = 0; i < offset; i++) str += ' ';
+            for (let i = 0; i < indentation; i++) str += ' ';
             str += i.toString() + '\n';
         });
         return str.slice(0, -1);
