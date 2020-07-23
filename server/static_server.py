@@ -29,14 +29,14 @@ class StaticServer(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
         self.end_headers()
         with open(filename, 'r') as file:
-            html = bytes(fixString(file.read()), 'utf8')
+            html = bytes(file.read(), 'utf8')
             self.wfile.write(html)
 
 
-def fixString(dump):
+""" def fixString(dump):
     temp = dump.replace("\\", "\\\\").replace(
         "`", "\'").replace("}{", "},{").replace("\"]", "\"")
-    return re.sub(r"\"src\":(.*)},\n", "\"src\":\\1}],\n", temp)
+    return re.sub(r"\"src\":(.*)},\n", "\"src\":\\1}],\n", temp) """
 
 
 def run(server_class=HTTPServer, handler_class=StaticServer, port=8000):

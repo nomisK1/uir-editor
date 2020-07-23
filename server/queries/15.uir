@@ -1,6 +1,6 @@
 const %1770[33] = "\001\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
-const %2130[72] = "\012\000\000\000\012\000\000\000\000\000\000\000\000\000\000\016\000\000\000\000\000\000\000\000\000\000\000\0009V\000\000\/-,b%\000\000\000\000\000\000\000\000\000\000\000\000\000\00.b%\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+const %2130[72] = "\012\000\000\000\012\000\000\000\000\000\000\000\000\000\000\016\000\000\000\000\000\000\000\000\000\000\000\000uU\000\000\244b%\000\000\000\000\000\000\000\000\000\000\000\000\000\376b%\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
 const %2240[16] = "\002\000\000\000\005\000\000\000\006\000\000\000\012\000\000\000"
 
@@ -13,27 +13,27 @@ const %30160[1] = " "
 define int32 @_10_init(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 128
-  call void umbra::RelationMapped::Reader::init(void*) (%CompilationContext_cpp_215_)
-  %CompilationContext_cpp_215_0 = getelementptr int8 %state, i64 216
-  call void umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long) (%CompilationContext_cpp_215_0, i64 20)
-  %CompilationContext_cpp_215_2 = getelementptr int8 %state, i64 24808
-  call void umbra::TempOperator::init(umbra::TempOperator*) (%CompilationContext_cpp_215_2)
-  %CompilationContext_cpp_215_3 = getelementptr int8 %state, i64 24832
-  call void umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long) (%CompilationContext_cpp_215_3, i64 17)
-  %CompilationContext_cpp_215_4 = getelementptr int8 %state, i64 24832
-  %GroupByTranslator_cpp_438_ = call ptr umbra::AggregationTarget::createExplicitGroup(unsigned long) (%CompilationContext_cpp_215_4, i64 3749646514382295044)
-  %MaterializationHelper_cpp_726_ = getelementptr int8 %GroupByTranslator_cpp_438_, i64 16
-  store data128 d128 {0,0}, %GroupByTranslator_cpp_438_
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 128
+  call void umbra::RelationMapped::Reader::init(void*) (%CompilationContext_cpp_217_)
+  %CompilationContext_cpp_217_0 = getelementptr int8 %state, i64 216
+  call void umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long) (%CompilationContext_cpp_217_0, i64 20)
+  %CompilationContext_cpp_217_2 = getelementptr int8 %state, i64 24808
+  call void umbra::TempOperator::init(umbra::TempOperator*) (%CompilationContext_cpp_217_2)
+  %CompilationContext_cpp_217_3 = getelementptr int8 %state, i64 24832
+  call void umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long) (%CompilationContext_cpp_217_3, i64 17)
+  %CompilationContext_cpp_217_4 = getelementptr int8 %state, i64 24832
+  %GroupByTranslator_cpp_451_ = call ptr umbra::AggregationTarget::createExplicitGroup(unsigned long) (%CompilationContext_cpp_217_4, i64 3749646514382295044)
+  %MaterializationHelper_cpp_726_ = getelementptr int8 %GroupByTranslator_cpp_451_, i64 16
+  store data128 d128 {0,0}, %GroupByTranslator_cpp_451_
   store int8 i8 1, %MaterializationHelper_cpp_726_
-  %CompilationContext_cpp_215_5 = getelementptr int8 %state, i64 49424
-  call void umbra::ChainingHashTable::init(void*, unsigned int) (%CompilationContext_cpp_215_5, i32 0)
-  %CompilationContext_cpp_215_6 = getelementptr int8 %state, i64 49472
-  call void umbra::RelationMapped::Reader::init(void*) (%CompilationContext_cpp_215_6)
-  %CompilationContext_cpp_215_7 = getelementptr int8 %state, i64 49568
-  call void umbra::ChainingHashTable::init(void*, unsigned int) (%CompilationContext_cpp_215_7, i32 0)
-  %CompilationContext_cpp_215_8 = getelementptr int8 %state, i64 49616
-  call void umbra::SortOperator::init(umbra::SortOperator*, void const*, void const*) (%CompilationContext_cpp_215_8, %state, global %1770)
+  %CompilationContext_cpp_217_5 = getelementptr int8 %state, i64 49424
+  call void umbra::ChainingHashTable::init(void*, unsigned int) (%CompilationContext_cpp_217_5, i32 0)
+  %CompilationContext_cpp_217_6 = getelementptr int8 %state, i64 49472
+  call void umbra::RelationMapped::Reader::init(void*) (%CompilationContext_cpp_217_6)
+  %CompilationContext_cpp_217_7 = getelementptr int8 %state, i64 49568
+  call void umbra::ChainingHashTable::init(void*, unsigned int) (%CompilationContext_cpp_217_7, i32 0)
+  %CompilationContext_cpp_217_8 = getelementptr int8 %state, i64 49616
+  call void umbra::SortOperator::init(umbra::SortOperator*, void const*, void const*) (%CompilationContext_cpp_217_8, %state, global %1770)
   return 1
 }
 
@@ -42,12 +42,12 @@ define int32 @_10_compare(int8* %trampoline, int8* %left, int8* %right) [
 body:
   %MaterializationHelper_cpp_230_ = load int32 %left
   %MaterializationHelper_cpp_230_0 = load int32 %right
-  %Integer_cpp_90_ = cmpslt i32 %MaterializationHelper_cpp_230_, %MaterializationHelper_cpp_230_0
-  %Integer_cpp_90_2 = zext i32 %Integer_cpp_90_
-  %Integer_cpp_90_3 = cmpslt i32 %MaterializationHelper_cpp_230_0, %MaterializationHelper_cpp_230_
-  %Integer_cpp_90_4 = zext i32 %Integer_cpp_90_3
-  %Integer_cpp_90_5 = sub i32 %Integer_cpp_90_4, %Integer_cpp_90_2
-  return %Integer_cpp_90_5
+  %Integer_cpp_92_ = cmpslt i32 %MaterializationHelper_cpp_230_, %MaterializationHelper_cpp_230_0
+  %Integer_cpp_92_2 = zext i32 %Integer_cpp_92_
+  %Integer_cpp_92_3 = cmpslt i32 %MaterializationHelper_cpp_230_0, %MaterializationHelper_cpp_230_
+  %Integer_cpp_92_4 = zext i32 %Integer_cpp_92_3
+  %Integer_cpp_92_5 = sub i32 %Integer_cpp_92_4, %Integer_cpp_92_2
+  return %Integer_cpp_92_5
 }
 
 declare void @umbra::RelationMapped::Reader::init(void*)(int8* %594)
@@ -65,9 +65,9 @@ declare void @umbra::SortOperator::init(umbra::SortOperator*, void const*, void 
 define int32 @_10_planStep(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 128
-  call void umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int) (%CompilationContext_cpp_221_, %CompilationContext_cpp_215_, i64 5, global %2130, i64 1, global %2240, i32 4)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 128
+  call void umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int) (%CompilationContext_cpp_223_, %CompilationContext_cpp_217_, i64 5, global %2130, i64 1, global %2240, i32 4)
   call void umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int) (%state, i32 28736, i32 2, i32 3, i32 4)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 5)
   return 6
@@ -80,8 +80,8 @@ declare void @umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsig
 define int32 @_10_planStep0(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long) (%Pipeline_cpp_276_, i64 20)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long) (%Pipeline_cpp_277_, i64 20)
   return 0
 }
 
@@ -90,8 +90,8 @@ declare void @umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long)
 define int32 @_10_planStep1(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::Preaggregation::destroy(umbra::Preaggregation*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::Preaggregation::destroy(umbra::Preaggregation*) (%Pipeline_cpp_277_)
   return 0
 }
 
@@ -112,60 +112,60 @@ body:
   %to = load object umbra::TableScanOperator::Morsel %localState, i32 0, i32 1
   %reader = load object umbra::TableScanOperator::Morsel %localState, i32 0, i32 2
   %data = load object umbra::RelationMapped::Reader %reader, i32 0, i32 1
-  %RelationMappedLogic_cpp_343_ = cmpult i64 %from, %to
-  condbr %RelationMappedLogic_cpp_343_ %loopBlocks %loopDoneBlocks
+  %RelationMappedLogic_cpp_475_ = cmpult i64 %from, %to
+  condbr %RelationMappedLogic_cpp_475_ %loopBlocks %loopDoneBlocks
 
 loopBlocks:
-  %firstTid = phi i64 [%from, %body %RelationMappedLogic_cpp_348_1, %loopDoneTuples]
-  %RelationMappedLogic_cpp_346_ = lshr i64 %firstTid, 16
-  %RelationMappedLogic_cpp_347_ = shl i64 %RelationMappedLogic_cpp_346_, 16
-  %RelationMappedLogic_cpp_347_0 = add i64 %RelationMappedLogic_cpp_347_, 65536
-  %RelationMappedLogic_cpp_348_ = cmpult i64 %to, %RelationMappedLogic_cpp_347_0
-  %RelationMappedLogic_cpp_348_1 = select i64 %RelationMappedLogic_cpp_348_, %to, %RelationMappedLogic_cpp_347_0
-  %RelationMappedLogic_cpp_350_ = mul i64 %RelationMappedLogic_cpp_346_, 116
-  %RelationMappedLogic_cpp_350_2 = mul i64 %RelationMappedLogic_cpp_350_, 65536
-  %RelationMappedLogic_cpp_350_3 = getelementptr int8 %data, %RelationMappedLogic_cpp_350_2
-  %RelationMappedLogic_cpp_351_ = shl i64 %RelationMappedLogic_cpp_346_, 16
-  %RelationMappedLogic_cpp_352_ = sub i64 %firstTid, %RelationMappedLogic_cpp_351_
-  %RelationMappedLogic_cpp_352_4 = sub i64 %RelationMappedLogic_cpp_348_1, %RelationMappedLogic_cpp_351_
-  %RelationMappedLogic_cpp_354_ = cmpne i64 %RelationMappedLogic_cpp_352_, %RelationMappedLogic_cpp_352_4
-  condbr %RelationMappedLogic_cpp_354_ %loopTuples %loopDoneTuples
+  %firstTid = phi i64 [%from, %body %RelationMappedLogic_cpp_480_1, %loopDoneTuples]
+  %RelationMappedLogic_cpp_478_ = lshr i64 %firstTid, 16
+  %RelationMappedLogic_cpp_479_ = shl i64 %RelationMappedLogic_cpp_478_, 16
+  %RelationMappedLogic_cpp_479_0 = add i64 %RelationMappedLogic_cpp_479_, 65536
+  %RelationMappedLogic_cpp_480_ = cmpult i64 %to, %RelationMappedLogic_cpp_479_0
+  %RelationMappedLogic_cpp_480_1 = select i64 %RelationMappedLogic_cpp_480_, %to, %RelationMappedLogic_cpp_479_0
+  %RelationMappedLogic_cpp_482_ = mul i64 %RelationMappedLogic_cpp_478_, 116
+  %RelationMappedLogic_cpp_482_2 = mul i64 %RelationMappedLogic_cpp_482_, 65536
+  %RelationMappedLogic_cpp_482_3 = getelementptr int8 %data, %RelationMappedLogic_cpp_482_2
+  %RelationMappedLogic_cpp_483_ = shl i64 %RelationMappedLogic_cpp_478_, 16
+  %RelationMappedLogic_cpp_484_ = sub i64 %firstTid, %RelationMappedLogic_cpp_483_
+  %RelationMappedLogic_cpp_484_4 = sub i64 %RelationMappedLogic_cpp_480_1, %RelationMappedLogic_cpp_483_
+  %RelationMappedLogic_cpp_486_ = cmpne i64 %RelationMappedLogic_cpp_484_, %RelationMappedLogic_cpp_484_4
+  condbr %RelationMappedLogic_cpp_486_ %loopTuples %loopDoneTuples
 
 loopTuples:
-  %localTid = phi i64 [%RelationMappedLogic_cpp_352_, %loopBlocks %RelationMappedLogic_cpp_361_, %contScan]
-  %RelationMappedLogic_cpp_308_ = getelementptr int8 %RelationMappedLogic_cpp_350_3, i64 3670016
-  %RelationMappedLogic_cpp_315_ = load int32 %RelationMappedLogic_cpp_308_, %localTid
-  %Date_cpp_57_ = cmpule i32 %RelationMappedLogic_cpp_315_, 2450174
-  %Date_cpp_57_5 = cmpule i32 2450084, %RelationMappedLogic_cpp_315_
-  %TableScanTranslator_cpp_413_ = and bool %Date_cpp_57_5, %Date_cpp_57_
-  condbr %TableScanTranslator_cpp_413_ %then %contScan
+  %localTid = phi i64 [%RelationMappedLogic_cpp_484_, %loopBlocks %RelationMappedLogic_cpp_493_, %contScan]
+  %RelationMappedLogic_cpp_342_ = getelementptr int8 %RelationMappedLogic_cpp_482_3, i64 3670016
+  %RelationMappedLogic_cpp_349_ = load int32 %RelationMappedLogic_cpp_342_, %localTid
+  %Date_cpp_57_ = cmpule i32 %RelationMappedLogic_cpp_349_, 2450174
+  %Date_cpp_57_5 = cmpule i32 2450084, %RelationMappedLogic_cpp_349_
+  %TableScanTranslator_cpp_417_ = and bool %Date_cpp_57_5, %Date_cpp_57_
+  condbr %TableScanTranslator_cpp_417_ %then %contScan
 
 then:
-  %RelationMappedLogic_cpp_308_6 = getelementptr int8 %RelationMappedLogic_cpp_350_3, i64 524288
-  %RelationMappedLogic_cpp_313_ = load int32 %RelationMappedLogic_cpp_308_6, %localTid
-  %RelationMappedLogic_cpp_308_7 = getelementptr int8 %RelationMappedLogic_cpp_350_3, i64 1572864
-  %RelationMappedLogic_cpp_314_ = load int64 %RelationMappedLogic_cpp_308_7, %localTid
-  %RelationMappedLogic_cpp_308_8 = getelementptr int8 %RelationMappedLogic_cpp_350_3, i64 2097152
-  %RelationMappedLogic_cpp_314_9 = load int64 %RelationMappedLogic_cpp_308_8, %localTid
+  %RelationMappedLogic_cpp_342_6 = getelementptr int8 %RelationMappedLogic_cpp_482_3, i64 524288
+  %RelationMappedLogic_cpp_347_ = load int32 %RelationMappedLogic_cpp_342_6, %localTid
+  %RelationMappedLogic_cpp_342_7 = getelementptr int8 %RelationMappedLogic_cpp_482_3, i64 1572864
+  %RelationMappedLogic_cpp_348_ = load int64 %RelationMappedLogic_cpp_342_7, %localTid
+  %RelationMappedLogic_cpp_342_8 = getelementptr int8 %RelationMappedLogic_cpp_482_3, i64 2097152
+  %RelationMappedLogic_cpp_348_9 = load int64 %RelationMappedLogic_cpp_342_8, %localTid
   br %cont
 
 cont:
-  %Numeric_cpp_763_ = checkedssub i64 100, %RelationMappedLogic_cpp_314_9 %cont10 %overflow
+  %Numeric_cpp_763_ = checkedssub i64 100, %RelationMappedLogic_cpp_348_9 %cont10 %overflow
 
 cont10:
-  %BigNumeric_cpp_863_ = ashr i64 %RelationMappedLogic_cpp_314_, 63
-  %BigNumeric_cpp_863_11 = builddata128 d128 %RelationMappedLogic_cpp_314_ %BigNumeric_cpp_863_
+  %BigNumeric_cpp_863_ = ashr i64 %RelationMappedLogic_cpp_348_, 63
+  %BigNumeric_cpp_863_11 = builddata128 d128 %RelationMappedLogic_cpp_348_ %BigNumeric_cpp_863_
   %BigNumeric_cpp_863_12 = ashr i64 %Numeric_cpp_763_, 63
   %BigNumeric_cpp_863_13 = builddata128 d128 %Numeric_cpp_763_ %BigNumeric_cpp_863_12
   %Numeric_cpp_698_ = call d128 umbra::BigNumericRuntime::mulTrap(umbra::data128_t, umbra::data128_t) (%BigNumeric_cpp_863_11, %BigNumeric_cpp_863_13)
-  %Hash_cpp_264_ = zext i64 %RelationMappedLogic_cpp_313_
+  %Hash_cpp_264_ = zext i64 %RelationMappedLogic_cpp_347_
   %Hash_cpp_374_ = crc32 i64 5961697176435608501, %Hash_cpp_264_
   %Hash_cpp_375_ = crc32 i64 2231409791114444147, %Hash_cpp_264_
   %Hash_cpp_379_ = rotr i64 %Hash_cpp_375_, 32
   %Hash_cpp_379_14 = xor i64 %Hash_cpp_374_, %Hash_cpp_379_
   %Hash_cpp_379_15 = mul i64 %Hash_cpp_379_14, 2685821657736338717
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  %hashTable = getelementptr object umbra::Preaggregation %Pipeline_cpp_276_, i32 0, i32 0, i32 0
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  %hashTable = getelementptr object umbra::Preaggregation %Pipeline_cpp_277_, i32 0, i32 0, i32 0
   %PreaggregationLogic_cpp_20_ = and i64 %Hash_cpp_379_15, 1023
   %PreaggregationLogic_cpp_20_16 = load object umbra::Preaggregation::EntryHeader* %hashTable, %PreaggregationLogic_cpp_20_
   %hash = load object umbra::Preaggregation::EntryHeader %PreaggregationLogic_cpp_20_16, i32 0, i32 0
@@ -173,36 +173,36 @@ cont10:
   condbr %PreaggregationLogic_cpp_25_ %then17 %else
 
 then17:
-  %PreaggregationLogic_cpp_29_ = call ptr umbra::Preaggregation::addEntry(unsigned long) (%Pipeline_cpp_276_, %Hash_cpp_379_15)
-  store int32 %RelationMappedLogic_cpp_313_, %PreaggregationLogic_cpp_29_
-  %GroupByTranslator_cpp_368_ = getelementptr int8 %PreaggregationLogic_cpp_29_, i64 4
-  store data128 %Numeric_cpp_698_, %GroupByTranslator_cpp_368_
+  %PreaggregationLogic_cpp_29_ = call ptr umbra::Preaggregation::addEntry(unsigned long) (%Pipeline_cpp_277_, %Hash_cpp_379_15)
+  store int32 %RelationMappedLogic_cpp_347_, %PreaggregationLogic_cpp_29_
+  %GroupByTranslator_cpp_381_ = getelementptr int8 %PreaggregationLogic_cpp_29_, i64 4
+  store data128 %Numeric_cpp_698_, %GroupByTranslator_cpp_381_
   br %cont19
 
 else:
   %PreaggregationLogic_cpp_36_ = getelementptr object umbra::Preaggregation::EntryHeader %PreaggregationLogic_cpp_20_16, i32 1
   %MaterializationHelper_cpp_876_ = load int32 %PreaggregationLogic_cpp_36_
-  %Integer_cpp_80_ = cmpeq i32 %RelationMappedLogic_cpp_313_, %MaterializationHelper_cpp_876_
-  condbr %Integer_cpp_80_ %else18 %then17
+  %Integer_cpp_82_ = cmpeq i32 %RelationMappedLogic_cpp_347_, %MaterializationHelper_cpp_876_
+  condbr %Integer_cpp_82_ %else18 %then17
 
 else18:
-  %GroupByTranslator_cpp_378_ = getelementptr int8 %PreaggregationLogic_cpp_36_, i64 4
-  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_378_
+  %GroupByTranslator_cpp_391_ = getelementptr int8 %PreaggregationLogic_cpp_36_, i64 4
+  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_391_
   %BigNumeric_cpp_688_ = call d128 umbra::BigNumericRuntime::addTrap(umbra::data128_t, umbra::data128_t) (%MaterializationHelper_cpp_977_, %Numeric_cpp_698_)
-  store data128 %BigNumeric_cpp_688_, %GroupByTranslator_cpp_378_
+  store data128 %BigNumeric_cpp_688_, %GroupByTranslator_cpp_391_
   br %cont19
 
 cont19:
   br %contScan
 
 contScan:
-  %RelationMappedLogic_cpp_361_ = add i64 %localTid, 1
-  %RelationMappedLogic_cpp_362_ = cmpne i64 %RelationMappedLogic_cpp_361_, %RelationMappedLogic_cpp_352_4
-  condbr %RelationMappedLogic_cpp_362_ %loopTuples %loopDoneTuples
+  %RelationMappedLogic_cpp_493_ = add i64 %localTid, 1
+  %RelationMappedLogic_cpp_494_ = cmpne i64 %RelationMappedLogic_cpp_493_, %RelationMappedLogic_cpp_484_4
+  condbr %RelationMappedLogic_cpp_494_ %loopTuples %loopDoneTuples
 
 loopDoneTuples:
-  %RelationMappedLogic_cpp_364_ = cmpne i64 %RelationMappedLogic_cpp_348_1, %to
-  condbr %RelationMappedLogic_cpp_364_ %loopBlocks %loopDoneBlocks
+  %RelationMappedLogic_cpp_496_ = cmpne i64 %RelationMappedLogic_cpp_480_1, %to
+  condbr %RelationMappedLogic_cpp_496_ %loopBlocks %loopDoneBlocks
 
 loopDoneBlocks:
   br %stepDone
@@ -226,12 +226,12 @@ declare data128 @umbra::BigNumericRuntime::addTrap(umbra::data128_t, umbra::data
 define int32 @_10_planStep3(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  call void umbra::TableScanOperator::Job::destroy(void*) (%CompilationContext_cpp_221_)
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 216
-  call void umbra::AggregationTarget::exchangeTables(void*, unsigned long) (%CompilationContext_cpp_215_, %state, i64 32)
-  %CompilationContext_cpp_221_0 = getelementptr int8 %state, i64 56
-  call void umbra::AggregationTarget::setupAggregateJob(void*) (%CompilationContext_cpp_215_, %CompilationContext_cpp_221_0)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  call void umbra::TableScanOperator::Job::destroy(void*) (%CompilationContext_cpp_223_)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 216
+  call void umbra::AggregationTarget::exchangeTables(void*, unsigned long) (%CompilationContext_cpp_217_, %state, i64 32)
+  %CompilationContext_cpp_223_0 = getelementptr int8 %state, i64 56
+  call void umbra::AggregationTarget::setupAggregateJob(void*) (%CompilationContext_cpp_217_, %CompilationContext_cpp_223_0)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 8)
   return 7
 }
@@ -276,20 +276,20 @@ loopChain:
   condbr %PreaggregationLogic_cpp_75_ %then %noMatch
 
 then:
-  %GroupByTranslator_cpp_176_ = getelementptr object umbra::Preaggregation::EntryHeader %entry, i32 1
-  %MaterializationHelper_cpp_876_ = load int32 %GroupByTranslator_cpp_176_
-  %GroupByTranslator_cpp_177_ = getelementptr object umbra::Preaggregation::EntryHeader %chainEntry, i32 1
-  %MaterializationHelper_cpp_876_2 = load int32 %GroupByTranslator_cpp_177_
-  %Integer_cpp_80_ = cmpeq i32 %MaterializationHelper_cpp_876_, %MaterializationHelper_cpp_876_2
-  condbr %Integer_cpp_80_ %else %noMatch
+  %GroupByTranslator_cpp_178_ = getelementptr object umbra::Preaggregation::EntryHeader %entry, i32 1
+  %MaterializationHelper_cpp_876_ = load int32 %GroupByTranslator_cpp_178_
+  %GroupByTranslator_cpp_179_ = getelementptr object umbra::Preaggregation::EntryHeader %chainEntry, i32 1
+  %MaterializationHelper_cpp_876_2 = load int32 %GroupByTranslator_cpp_179_
+  %Integer_cpp_82_ = cmpeq i32 %MaterializationHelper_cpp_876_, %MaterializationHelper_cpp_876_2
+  condbr %Integer_cpp_82_ %else %noMatch
 
 else:
-  %GroupByTranslator_cpp_185_ = getelementptr int8 %entry, i64 20
-  %GroupByTranslator_cpp_185_3 = getelementptr int8 %chainEntry, i64 20
-  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_185_3
-  %MaterializationHelper_cpp_977_4 = load data128 %GroupByTranslator_cpp_185_
+  %GroupByTranslator_cpp_188_ = getelementptr int8 %entry, i64 20
+  %GroupByTranslator_cpp_188_3 = getelementptr int8 %chainEntry, i64 20
+  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_188_3
+  %MaterializationHelper_cpp_977_4 = load data128 %GroupByTranslator_cpp_188_
   %BigNumeric_cpp_688_ = call d128 umbra::BigNumericRuntime::addTrap(umbra::data128_t, umbra::data128_t) (%MaterializationHelper_cpp_977_, %MaterializationHelper_cpp_977_4)
-  store data128 %BigNumeric_cpp_688_, %GroupByTranslator_cpp_185_3
+  store data128 %BigNumeric_cpp_688_, %GroupByTranslator_cpp_188_3
   br %continue
 
 noMatch:
@@ -329,9 +329,9 @@ define int32 @_10_planStep4(int8* %trampoline, int8* %state, int8* %localState) 
 ] {
 body:
   call void umbra::ExecutionPlan::cleanupParallelWork(void*) (%state)
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 216
-  call void umbra::AggregationTarget::setupScanJob(void*) (%CompilationContext_cpp_215_, %CompilationContext_cpp_221_)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 216
+  call void umbra::AggregationTarget::setupScanJob(void*) (%CompilationContext_cpp_217_, %CompilationContext_cpp_223_)
   call void umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int) (%state, i32 56, i32 9, i32 10, i32 11)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 12)
   return 13
@@ -344,16 +344,16 @@ declare void @umbra::AggregationTarget::setupScanJob(void*)(object umbra::Aggreg
 define int32 @_10_planStep5(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::TempOperator::init(umbra::TempOperator*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::TempOperator::init(umbra::TempOperator*) (%Pipeline_cpp_277_)
   return 0
 }
 
 define int32 @_10_planStep6(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::TempOperator::destroy(umbra::TempOperator*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::TempOperator::destroy(umbra::TempOperator*) (%Pipeline_cpp_277_)
   return 0
 }
 
@@ -383,12 +383,12 @@ loopChain:
   %iter = phi ptr [%PreaggregationLogic_cpp_135_, %loopSlots %next, %loopChain]
   %PreaggregationLogic_cpp_140_ = getelementptr int8 %iter, i64 16
   %MaterializationHelper_cpp_876_ = load int32 %PreaggregationLogic_cpp_140_
-  %GroupByTranslator_cpp_411_ = getelementptr int8 %PreaggregationLogic_cpp_140_, i64 4
-  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_411_
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  %TempTranslator_cpp_104_ = call ptr umbra::TempOperator::storeTuple(unsigned long) (%Pipeline_cpp_276_, i64 20)
-  store data128 %MaterializationHelper_cpp_977_, %TempTranslator_cpp_104_
-  %MaterializationHelper_cpp_150_ = getelementptr int8 %TempTranslator_cpp_104_, i64 16
+  %GroupByTranslator_cpp_424_ = getelementptr int8 %PreaggregationLogic_cpp_140_, i64 4
+  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_424_
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  %TempTranslator_cpp_106_ = call ptr umbra::TempOperator::storeTuple(unsigned long) (%Pipeline_cpp_277_, i64 20)
+  store data128 %MaterializationHelper_cpp_977_, %TempTranslator_cpp_106_
+  %MaterializationHelper_cpp_150_ = getelementptr int8 %TempTranslator_cpp_106_, i64 16
   store int32 %MaterializationHelper_cpp_876_, %MaterializationHelper_cpp_150_
   %next = load object umbra::Preaggregation::EntryHeader %iter, i32 0, i32 1
   %PreaggregationLogic_cpp_143_ = isnotnull ptr %next
@@ -414,35 +414,35 @@ body:
   %currentLocalState = load object umbra::GlobalStateHeader %state, i32 0, i32 2
   %threadCount = load object umbra::LocalStateHeader %currentLocalState, i32 0, i32 2
   %localStateSize = load object umbra::LocalStateHeader %currentLocalState, i32 0, i32 0
-  %Pipeline_cpp_68_ = getelementptr int8 %currentLocalState, i64 64
-  %Pipeline_cpp_55_ = cmpult i32 0, %threadCount
-  condbr %Pipeline_cpp_55_ %loopStates %loopDoneStates
+  %Pipeline_cpp_69_ = getelementptr int8 %currentLocalState, i64 64
+  %Pipeline_cpp_56_ = cmpult i32 0, %threadCount
+  condbr %Pipeline_cpp_56_ %loopStates %loopDoneStates
 
 loopStates:
-  %Thread = phi i32 [i32 0, %body %Pipeline_cpp_96_, %continue]
-  %Pipeline_cpp_75_ = zext i64 %Thread
-  %Pipeline_cpp_75_0 = mul i64 %Pipeline_cpp_75_, %localStateSize
-  %Pipeline_cpp_75_1 = getelementptr int8 %Pipeline_cpp_68_, %Pipeline_cpp_75_0
-  %Pipeline_cpp_78_ = load int8 %Pipeline_cpp_75_1, i32 -1
-  %Pipeline_cpp_78_2 = cmpeq i8 %Pipeline_cpp_78_, 0
-  condbr %Pipeline_cpp_78_2 %continue %else
+  %Thread = phi i32 [i32 0, %body %Pipeline_cpp_97_, %continue]
+  %Pipeline_cpp_76_ = zext i64 %Thread
+  %Pipeline_cpp_76_0 = mul i64 %Pipeline_cpp_76_, %localStateSize
+  %Pipeline_cpp_76_1 = getelementptr int8 %Pipeline_cpp_69_, %Pipeline_cpp_76_0
+  %Pipeline_cpp_79_ = load int8 %Pipeline_cpp_76_1, i32 -1
+  %Pipeline_cpp_79_2 = cmpeq i8 %Pipeline_cpp_79_, 0
+  condbr %Pipeline_cpp_79_2 %continue %else
 
 else:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 24808
-  %Pipeline_cpp_276_ = getelementptr int8 %Pipeline_cpp_75_1, i64 32
-  call void umbra::TempOperator::mergeInto(umbra::TempOperator&) (%Pipeline_cpp_276_, %CompilationContext_cpp_215_)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 24808
+  %Pipeline_cpp_277_ = getelementptr int8 %Pipeline_cpp_76_1, i64 32
+  call void umbra::TempOperator::mergeInto(umbra::TempOperator&) (%Pipeline_cpp_277_, %CompilationContext_cpp_217_)
   br %continue
 
 continue:
-  %Pipeline_cpp_96_ = add i32 %Thread, 1
-  %Pipeline_cpp_97_ = cmpult i32 %Pipeline_cpp_96_, %threadCount
-  condbr %Pipeline_cpp_97_ %loopStates %loopDoneStates
+  %Pipeline_cpp_97_ = add i32 %Thread, 1
+  %Pipeline_cpp_98_ = cmpult i32 %Pipeline_cpp_97_, %threadCount
+  condbr %Pipeline_cpp_98_ %loopStates %loopDoneStates
 
 loopDoneStates:
   call void umbra::ExecutionPlan::cleanupParallelWork(void*) (%state)
-  %CompilationContext_cpp_221_3 = getelementptr int8 %state, i64 56
-  %CompilationContext_cpp_215_4 = getelementptr int8 %state, i64 24808
-  call void umbra::TempOperator::ScanJob::init(void*, umbra::TempOperator&) (%CompilationContext_cpp_221_3, %CompilationContext_cpp_215_4)
+  %CompilationContext_cpp_223_3 = getelementptr int8 %state, i64 56
+  %CompilationContext_cpp_217_4 = getelementptr int8 %state, i64 24808
+  call void umbra::TempOperator::ScanJob::init(void*, umbra::TempOperator&) (%CompilationContext_cpp_223_3, %CompilationContext_cpp_217_4)
   call void umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int) (%state, i32 28736, i32 14, i32 15, i32 16)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 17)
   return 18
@@ -455,16 +455,16 @@ declare void @umbra::TempOperator::ScanJob::init(void*, umbra::TempOperator&)(in
 define int32 @_10_planStep9(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long) (%Pipeline_cpp_276_, i64 17)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long) (%Pipeline_cpp_277_, i64 17)
   return 0
 }
 
 define int32 @_10_planStep10(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::Preaggregation::destroy(umbra::Preaggregation*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::Preaggregation::destroy(umbra::Preaggregation*) (%Pipeline_cpp_277_)
   return 0
 }
 
@@ -479,22 +479,22 @@ define int32 @_10_groupby_tempscan(int8* %trampoline, int8* %state, int8* %local
 body:
   %from = load object umbra::TupleMaterializationChunked::Morsel %localState, i32 0, i32 0
   %to = load object umbra::TupleMaterializationChunked::Morsel %localState, i32 0, i32 1
-  %TempTranslator_cpp_187_ = cmpne ptr %from, %to
-  condbr %TempTranslator_cpp_187_ %loopTuples %loopDoneTuples
+  %TempTranslator_cpp_189_ = cmpne ptr %from, %to
+  condbr %TempTranslator_cpp_189_ %loopTuples %loopDoneTuples
 
 loopTuples:
   %tuple = phi ptr [%from, %body %MaterializationHelper_cpp_233_, %cont7]
   %MaterializationHelper_cpp_230_ = load data128 %tuple
   %MaterializationHelper_cpp_233_ = getelementptr int8 %tuple, i64 20
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  %hashTable = getelementptr object umbra::Preaggregation %Pipeline_cpp_276_, i32 0, i32 0, i32 0
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  %hashTable = getelementptr object umbra::Preaggregation %Pipeline_cpp_277_, i32 0, i32 0, i32 0
   %PreaggregationLogic_cpp_20_ = load object umbra::Preaggregation::EntryHeader* %hashTable, i64 4
   %hash = load object umbra::Preaggregation::EntryHeader %PreaggregationLogic_cpp_20_, i32 0, i32 0
   %PreaggregationLogic_cpp_25_ = cmpne i64 %hash, 3749646514382295044
   condbr %PreaggregationLogic_cpp_25_ %then %else
 
 then:
-  %PreaggregationLogic_cpp_29_ = call ptr umbra::Preaggregation::addEntry(unsigned long) (%Pipeline_cpp_276_, i64 3749646514382295044)
+  %PreaggregationLogic_cpp_29_ = call ptr umbra::Preaggregation::addEntry(unsigned long) (%Pipeline_cpp_277_, i64 3749646514382295044)
   %MaterializationHelper_cpp_726_ = getelementptr int8 %PreaggregationLogic_cpp_29_, i64 16
   store data128 %MaterializationHelper_cpp_230_, %PreaggregationLogic_cpp_29_
   store int8 i8 0, %MaterializationHelper_cpp_726_
@@ -531,8 +531,8 @@ cont6:
   br %cont7
 
 cont7:
-  %TempTranslator_cpp_213_ = cmpne ptr %MaterializationHelper_cpp_233_, %to
-  condbr %TempTranslator_cpp_213_ %loopTuples %loopDoneTuples
+  %TempTranslator_cpp_215_ = cmpne ptr %MaterializationHelper_cpp_233_, %to
+  condbr %TempTranslator_cpp_215_ %loopTuples %loopDoneTuples
 
 loopDoneTuples:
   br %stepDone
@@ -546,10 +546,10 @@ declare int32 @umbra::BigNumericRuntime::compare(umbra::data128_t, umbra::data12
 define int32 @_10_planStep12(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 24832
-  call void umbra::AggregationTarget::exchangeTables(void*, unsigned long) (%CompilationContext_cpp_215_, %state, i64 32)
-  %CompilationContext_cpp_221_0 = getelementptr int8 %state, i64 56
-  call void umbra::AggregationTarget::setupAggregateJob(void*) (%CompilationContext_cpp_215_, %CompilationContext_cpp_221_0)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 24832
+  call void umbra::AggregationTarget::exchangeTables(void*, unsigned long) (%CompilationContext_cpp_217_, %state, i64 32)
+  %CompilationContext_cpp_223_0 = getelementptr int8 %state, i64 56
+  call void umbra::AggregationTarget::setupAggregateJob(void*) (%CompilationContext_cpp_217_, %CompilationContext_cpp_223_0)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 20)
   return 19
 }
@@ -588,13 +588,13 @@ loopChain:
   condbr %PreaggregationLogic_cpp_75_ %then %noMatch
 
 then:
-  %GroupByTranslator_cpp_185_ = getelementptr int8 %entry, i64 16
-  %GroupByTranslator_cpp_185_2 = getelementptr int8 %chainEntry, i64 16
-  %MaterializationHelper_cpp_726_ = getelementptr int8 %GroupByTranslator_cpp_185_2, i64 16
+  %GroupByTranslator_cpp_188_ = getelementptr int8 %entry, i64 16
+  %GroupByTranslator_cpp_188_2 = getelementptr int8 %chainEntry, i64 16
+  %MaterializationHelper_cpp_726_ = getelementptr int8 %GroupByTranslator_cpp_188_2, i64 16
   %MaterializationHelper_cpp_727_ = load int8 %MaterializationHelper_cpp_726_
   %MaterializationHelper_cpp_780_ = and i8 %MaterializationHelper_cpp_727_, 1
   %MaterializationHelper_cpp_780_3 = cmpne i8 %MaterializationHelper_cpp_780_, 0
-  %MaterializationHelper_cpp_726_4 = getelementptr int8 %GroupByTranslator_cpp_185_, i64 16
+  %MaterializationHelper_cpp_726_4 = getelementptr int8 %GroupByTranslator_cpp_188_, i64 16
   %MaterializationHelper_cpp_727_5 = load int8 %MaterializationHelper_cpp_726_4
   %MaterializationHelper_cpp_780_6 = and i8 %MaterializationHelper_cpp_727_5, 1
   %MaterializationHelper_cpp_780_7 = cmpne i8 %MaterializationHelper_cpp_780_6, 0
@@ -608,19 +608,19 @@ else:
   condbr %MaterializationHelper_cpp_780_3 %then9 %else10
 
 then9:
-  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_185_
-  store data128 %MaterializationHelper_cpp_977_, %GroupByTranslator_cpp_185_2
+  %MaterializationHelper_cpp_977_ = load data128 %GroupByTranslator_cpp_188_
+  store data128 %MaterializationHelper_cpp_977_, %GroupByTranslator_cpp_188_2
   br %cont14
 
 else10:
-  %MaterializationHelper_cpp_977_11 = load data128 %GroupByTranslator_cpp_185_2
-  %MaterializationHelper_cpp_977_12 = load data128 %GroupByTranslator_cpp_185_
+  %MaterializationHelper_cpp_977_11 = load data128 %GroupByTranslator_cpp_188_2
+  %MaterializationHelper_cpp_977_12 = load data128 %GroupByTranslator_cpp_188_
   %BigNumeric_cpp_448_ = call i32 umbra::BigNumericRuntime::compare(umbra::data128_t, umbra::data128_t) (%MaterializationHelper_cpp_977_11, %MaterializationHelper_cpp_977_12)
   %BigNumeric_cpp_436_ = cmpslt i32 %BigNumeric_cpp_448_, 0
   condbr %BigNumeric_cpp_436_ %then13 %cont
 
 then13:
-  store data128 %MaterializationHelper_cpp_977_12, %GroupByTranslator_cpp_185_2
+  store data128 %MaterializationHelper_cpp_977_12, %GroupByTranslator_cpp_188_2
   br %cont
 
 cont:
@@ -669,9 +669,9 @@ define int32 @_10_planStep13(int8* %trampoline, int8* %state, int8* %localState)
 ] {
 body:
   call void umbra::ExecutionPlan::cleanupParallelWork(void*) (%state)
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 24832
-  call void umbra::AggregationTarget::setupScanJob(void*) (%CompilationContext_cpp_215_, %CompilationContext_cpp_221_)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 24832
+  call void umbra::AggregationTarget::setupScanJob(void*) (%CompilationContext_cpp_217_, %CompilationContext_cpp_223_)
   call void umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int) (%state, i32 112, i32 21, i32 22, i32 23)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 24)
   return 25
@@ -680,8 +680,8 @@ body:
 define int32 @_10_planStep14(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::ChainingHashTable::Collector::init(void*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::ChainingHashTable::Collector::init(void*) (%Pipeline_cpp_277_)
   return 0
 }
 
@@ -690,8 +690,8 @@ declare void @umbra::ChainingHashTable::Collector::init(void*)(int8* %16518)
 define int32 @_10_planStep15(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::ChainingHashTable::Collector::destroy(void*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::ChainingHashTable::Collector::destroy(void*) (%Pipeline_cpp_277_)
   return 0
 }
 
@@ -735,7 +735,7 @@ else:
 
 cont:
   %Aggregate_cpp_132_ = phi d128 [d128 {0,0}, %then %MaterializationHelper_cpp_977_, %else]
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
   condbr %MaterializationHelper_cpp_780_0 %then1 %else2
 
 then1:
@@ -751,7 +751,7 @@ else2:
   %Hash_cpp_379_ = rotr i64 %Hash_cpp_375_4, 32
   %Hash_cpp_379_5 = xor i64 %Hash_cpp_374_3, %Hash_cpp_379_
   %Hash_cpp_379_6 = mul i64 %Hash_cpp_379_5, 2685821657736338717
-  %ChainingHashTableLogic_cpp_78_ = call ptr umbra::ChainingHashTable::Collector::collect(unsigned long, unsigned long) (%Pipeline_cpp_276_, %Hash_cpp_379_6, i64 16)
+  %ChainingHashTableLogic_cpp_78_ = call ptr umbra::ChainingHashTable::Collector::collect(unsigned long, unsigned long) (%Pipeline_cpp_277_, %Hash_cpp_379_6, i64 16)
   store data128 %Aggregate_cpp_132_, %ChainingHashTableLogic_cpp_78_
   br %cont7
 
@@ -777,8 +777,8 @@ declare int8* @umbra::ChainingHashTable::Collector::collect(unsigned long, unsig
 define int32 @_10_planStep17(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49424
-  call void umbra::ChainingHashTable::prepareForInsertEntries(void*, unsigned int) (%CompilationContext_cpp_215_, %state, i32 32)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49424
+  call void umbra::ChainingHashTable::prepareForInsertEntries(void*, unsigned int) (%CompilationContext_cpp_217_, %state, i32 32)
   call void umbra::ExecutionPlan::preparePerObjectWork(void*, unsigned int) (%state, i32 32)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 27)
   return 26
@@ -791,9 +791,9 @@ declare void @umbra::ExecutionPlan::preparePerObjectWork(void*, unsigned int)(in
 define int32 @_10_join_groupby_extra(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_470_ = load int8* %localState
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49424
-  call void umbra::ChainingHashTable::insertEntries(umbra::ChainingHashTable::Collector&) (%CompilationContext_cpp_215_, %Pipeline_cpp_470_)
+  %Pipeline_cpp_471_ = load int8* %localState
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49424
+  call void umbra::ChainingHashTable::insertEntries(umbra::ChainingHashTable::Collector&) (%CompilationContext_cpp_217_, %Pipeline_cpp_471_)
   br %stepDone
 
 stepDone:
@@ -807,9 +807,9 @@ define int32 @_10_planStep18(int8* %trampoline, int8* %state, int8* %localState)
 body:
   call void umbra::ExecutionPlan::finishPerObjectWork(void*) (%state)
   call void umbra::ExecutionPlan::cleanupParallelWork(void*) (%state)
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 24808
-  call void umbra::TempOperator::ScanJob::init(void*, umbra::TempOperator&) (%CompilationContext_cpp_221_, %CompilationContext_cpp_215_)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 24808
+  call void umbra::TempOperator::ScanJob::init(void*, umbra::TempOperator&) (%CompilationContext_cpp_223_, %CompilationContext_cpp_217_)
   call void umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int) (%state, i32 112, i32 28, i32 29, i32 30)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 31)
   return 32
@@ -820,16 +820,16 @@ declare void @umbra::ExecutionPlan::finishPerObjectWork(void*)(int8* %18973)
 define int32 @_10_planStep19(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::ChainingHashTable::Collector::init(void*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::ChainingHashTable::Collector::init(void*) (%Pipeline_cpp_277_)
   return 0
 }
 
 define int32 @_10_planStep20(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::ChainingHashTable::Collector::destroy(void*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::ChainingHashTable::Collector::destroy(void*) (%Pipeline_cpp_277_)
   return 0
 }
 
@@ -844,8 +844,8 @@ define int32 @_10_join_join_tempscan(int8* %trampoline, int8* %state, int8* %loc
 body:
   %from = load object umbra::TupleMaterializationChunked::Morsel %localState, i32 0, i32 0
   %to = load object umbra::TupleMaterializationChunked::Morsel %localState, i32 0, i32 1
-  %TempTranslator_cpp_187_ = cmpne ptr %from, %to
-  condbr %TempTranslator_cpp_187_ %loopTuples %loopDoneTuples
+  %TempTranslator_cpp_189_ = cmpne ptr %from, %to
+  condbr %TempTranslator_cpp_189_ %loopTuples %loopDoneTuples
 
 loopTuples:
   %tuple = phi ptr [%from, %body %MaterializationHelper_cpp_233_, %loopDoneloopHashChain]
@@ -853,7 +853,7 @@ loopTuples:
   %MaterializationHelper_cpp_229_ = getelementptr int8 %tuple, i64 16
   %MaterializationHelper_cpp_230_0 = load int32 %MaterializationHelper_cpp_229_
   %MaterializationHelper_cpp_233_ = getelementptr int8 %tuple, i64 20
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49424
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49424
   %Hash_cpp_343_ = extractdata128 i64 %MaterializationHelper_cpp_230_
   %Hash_cpp_344_ = extractdata128 i64 %MaterializationHelper_cpp_230_
   %Hash_cpp_374_ = crc32 i64 5961697176435608501, %Hash_cpp_343_
@@ -863,7 +863,7 @@ loopTuples:
   %Hash_cpp_379_ = rotr i64 %Hash_cpp_375_2, 32
   %Hash_cpp_379_3 = xor i64 %Hash_cpp_374_1, %Hash_cpp_379_
   %Hash_cpp_379_4 = mul i64 %Hash_cpp_379_3, 2685821657736338717
-  %ChainingHashTableLogic_cpp_108_ = call ptr umbra::ChainingHashTable::lookup(unsigned long) (%CompilationContext_cpp_215_, %Hash_cpp_379_4)
+  %ChainingHashTableLogic_cpp_108_ = call ptr umbra::ChainingHashTable::lookup(unsigned long) (%CompilationContext_cpp_217_, %Hash_cpp_379_4)
   %ChainingHashTableLogic_cpp_110_ = isnotnull ptr %ChainingHashTableLogic_cpp_108_
   condbr %ChainingHashTableLogic_cpp_110_ %looploopHashChain %loopDoneloopHashChain
 
@@ -876,27 +876,27 @@ looploopHashChain:
   condbr %BigNumeric_cpp_433_ %else %continueProbe
 
 else:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
   %Hash_cpp_264_ = zext i64 %MaterializationHelper_cpp_230_0
   %Hash_cpp_374_7 = crc32 i64 5961697176435608501, %Hash_cpp_264_
   %Hash_cpp_375_8 = crc32 i64 2231409791114444147, %Hash_cpp_264_
   %Hash_cpp_379_9 = rotr i64 %Hash_cpp_375_8, 32
   %Hash_cpp_379_10 = xor i64 %Hash_cpp_374_7, %Hash_cpp_379_9
   %Hash_cpp_379_11 = mul i64 %Hash_cpp_379_10, 2685821657736338717
-  %ChainingHashTableLogic_cpp_78_ = call ptr umbra::ChainingHashTable::Collector::collect(unsigned long, unsigned long) (%Pipeline_cpp_276_, %Hash_cpp_379_11, i64 20)
+  %ChainingHashTableLogic_cpp_78_ = call ptr umbra::ChainingHashTable::Collector::collect(unsigned long, unsigned long) (%Pipeline_cpp_277_, %Hash_cpp_379_11, i64 20)
   store int32 %MaterializationHelper_cpp_230_0, %ChainingHashTableLogic_cpp_78_
   %MaterializationHelper_cpp_161_ = getelementptr int8 %ChainingHashTableLogic_cpp_78_, i64 4
   store data128 %MaterializationHelper_cpp_230_, %MaterializationHelper_cpp_161_
   br %loopDoneloopHashChain
 
 continueProbe:
-  %ChainingHashTableLogic_cpp_136_ = call ptr umbra::ChainingHashTable::lookupNext(void*) (%CompilationContext_cpp_215_, %hashEntry)
+  %ChainingHashTableLogic_cpp_136_ = call ptr umbra::ChainingHashTable::lookupNext(void*) (%CompilationContext_cpp_217_, %hashEntry)
   %ChainingHashTableLogic_cpp_137_ = isnotnull ptr %ChainingHashTableLogic_cpp_136_
   condbr %ChainingHashTableLogic_cpp_137_ %looploopHashChain %loopDoneloopHashChain
 
 loopDoneloopHashChain:
-  %TempTranslator_cpp_213_ = cmpne ptr %MaterializationHelper_cpp_233_, %to
-  condbr %TempTranslator_cpp_213_ %loopTuples %loopDoneTuples
+  %TempTranslator_cpp_215_ = cmpne ptr %MaterializationHelper_cpp_233_, %to
+  condbr %TempTranslator_cpp_215_ %loopTuples %loopDoneTuples
 
 loopDoneTuples:
   br %stepDone
@@ -912,8 +912,8 @@ declare int8* @umbra::ChainingHashTable::lookupNext(void*)(object umbra::Chainin
 define int32 @_10_planStep22(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49568
-  call void umbra::ChainingHashTable::prepareForInsertEntries(void*, unsigned int) (%CompilationContext_cpp_215_, %state, i32 32)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49568
+  call void umbra::ChainingHashTable::prepareForInsertEntries(void*, unsigned int) (%CompilationContext_cpp_217_, %state, i32 32)
   call void umbra::ExecutionPlan::preparePerObjectWork(void*, unsigned int) (%state, i32 32)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 34)
   return 33
@@ -922,9 +922,9 @@ body:
 define int32 @_10_join_join_tempscan_extra(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_470_ = load int8* %localState
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49568
-  call void umbra::ChainingHashTable::insertEntries(umbra::ChainingHashTable::Collector&) (%CompilationContext_cpp_215_, %Pipeline_cpp_470_)
+  %Pipeline_cpp_471_ = load int8* %localState
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49568
+  call void umbra::ChainingHashTable::insertEntries(umbra::ChainingHashTable::Collector&) (%CompilationContext_cpp_217_, %Pipeline_cpp_471_)
   br %stepDone
 
 stepDone:
@@ -936,9 +936,9 @@ define int32 @_10_planStep23(int8* %trampoline, int8* %state, int8* %localState)
 body:
   call void umbra::ExecutionPlan::finishPerObjectWork(void*) (%state)
   call void umbra::ExecutionPlan::cleanupParallelWork(void*) (%state)
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49472
-  call void umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int) (%CompilationContext_cpp_221_, %CompilationContext_cpp_215_, i64 1, global %22067, i64 0, global %22106, i32 4)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49472
+  call void umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int) (%CompilationContext_cpp_223_, %CompilationContext_cpp_217_, i64 1, global %22067, i64 0, global %22106, i32 4)
   call void umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int) (%state, i32 232, i32 35, i32 36, i32 37)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 38)
   return 39
@@ -947,16 +947,16 @@ body:
 define int32 @_10_planStep24(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::SortOperator::init(umbra::SortOperator*, void const*, void const*) (%Pipeline_cpp_276_, %state, global %1770)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::SortOperator::init(umbra::SortOperator*, void const*, void const*) (%Pipeline_cpp_277_, %state, global %1770)
   return 0
 }
 
 define int32 @_10_planStep25(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  call void umbra::SortOperator::destroy(umbra::SortOperator*) (%Pipeline_cpp_276_)
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  call void umbra::SortOperator::destroy(umbra::SortOperator*) (%Pipeline_cpp_277_)
   return 0
 }
 
@@ -976,37 +976,37 @@ body:
   %reader = load object umbra::TableScanOperator::Morsel %localState, i32 0, i32 2
   %data = load object umbra::RelationMapped::Reader %reader, i32 0, i32 1
   %strings = load object umbra::RelationMapped::Reader %reader, i32 0, i32 2
-  %RelationMappedLogic_cpp_341_ = ptrtoint i64 %strings
-  %RelationMappedLogic_cpp_343_ = cmpult i64 %from, %to
-  condbr %RelationMappedLogic_cpp_343_ %loopBlocks %loopDoneBlocks
+  %RelationMappedLogic_cpp_473_ = ptrtoint i64 %strings
+  %RelationMappedLogic_cpp_475_ = cmpult i64 %from, %to
+  condbr %RelationMappedLogic_cpp_475_ %loopBlocks %loopDoneBlocks
 
 loopBlocks:
-  %firstTid = phi i64 [%from, %body %RelationMappedLogic_cpp_348_1, %loopDoneTuples]
-  %RelationMappedLogic_cpp_346_ = lshr i64 %firstTid, 16
-  %RelationMappedLogic_cpp_347_ = shl i64 %RelationMappedLogic_cpp_346_, 16
-  %RelationMappedLogic_cpp_347_0 = add i64 %RelationMappedLogic_cpp_347_, 65536
-  %RelationMappedLogic_cpp_348_ = cmpult i64 %to, %RelationMappedLogic_cpp_347_0
-  %RelationMappedLogic_cpp_348_1 = select i64 %RelationMappedLogic_cpp_348_, %to, %RelationMappedLogic_cpp_347_0
-  %RelationMappedLogic_cpp_350_ = mul i64 %RelationMappedLogic_cpp_346_, 80
-  %RelationMappedLogic_cpp_350_2 = mul i64 %RelationMappedLogic_cpp_350_, 65536
-  %RelationMappedLogic_cpp_350_3 = getelementptr int8 %data, %RelationMappedLogic_cpp_350_2
-  %RelationMappedLogic_cpp_351_ = shl i64 %RelationMappedLogic_cpp_346_, 16
-  %RelationMappedLogic_cpp_352_ = sub i64 %firstTid, %RelationMappedLogic_cpp_351_
-  %RelationMappedLogic_cpp_352_4 = sub i64 %RelationMappedLogic_cpp_348_1, %RelationMappedLogic_cpp_351_
-  %RelationMappedLogic_cpp_354_ = cmpne i64 %RelationMappedLogic_cpp_352_, %RelationMappedLogic_cpp_352_4
-  condbr %RelationMappedLogic_cpp_354_ %loopTuples %loopDoneTuples
+  %firstTid = phi i64 [%from, %body %RelationMappedLogic_cpp_480_1, %loopDoneTuples]
+  %RelationMappedLogic_cpp_478_ = lshr i64 %firstTid, 16
+  %RelationMappedLogic_cpp_479_ = shl i64 %RelationMappedLogic_cpp_478_, 16
+  %RelationMappedLogic_cpp_479_0 = add i64 %RelationMappedLogic_cpp_479_, 65536
+  %RelationMappedLogic_cpp_480_ = cmpult i64 %to, %RelationMappedLogic_cpp_479_0
+  %RelationMappedLogic_cpp_480_1 = select i64 %RelationMappedLogic_cpp_480_, %to, %RelationMappedLogic_cpp_479_0
+  %RelationMappedLogic_cpp_482_ = mul i64 %RelationMappedLogic_cpp_478_, 80
+  %RelationMappedLogic_cpp_482_2 = mul i64 %RelationMappedLogic_cpp_482_, 65536
+  %RelationMappedLogic_cpp_482_3 = getelementptr int8 %data, %RelationMappedLogic_cpp_482_2
+  %RelationMappedLogic_cpp_483_ = shl i64 %RelationMappedLogic_cpp_478_, 16
+  %RelationMappedLogic_cpp_484_ = sub i64 %firstTid, %RelationMappedLogic_cpp_483_
+  %RelationMappedLogic_cpp_484_4 = sub i64 %RelationMappedLogic_cpp_480_1, %RelationMappedLogic_cpp_483_
+  %RelationMappedLogic_cpp_486_ = cmpne i64 %RelationMappedLogic_cpp_484_, %RelationMappedLogic_cpp_484_4
+  condbr %RelationMappedLogic_cpp_486_ %loopTuples %loopDoneTuples
 
 loopTuples:
-  %localTid = phi i64 [%RelationMappedLogic_cpp_352_, %loopBlocks %RelationMappedLogic_cpp_361_, %contScan]
-  %RelationMappedLogic_cpp_313_ = load int32 %RelationMappedLogic_cpp_350_3, %localTid
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49568
-  %Hash_cpp_264_ = zext i64 %RelationMappedLogic_cpp_313_
+  %localTid = phi i64 [%RelationMappedLogic_cpp_484_, %loopBlocks %RelationMappedLogic_cpp_493_, %contScan]
+  %RelationMappedLogic_cpp_347_ = load int32 %RelationMappedLogic_cpp_482_3, %localTid
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49568
+  %Hash_cpp_264_ = zext i64 %RelationMappedLogic_cpp_347_
   %Hash_cpp_374_ = crc32 i64 5961697176435608501, %Hash_cpp_264_
   %Hash_cpp_375_ = crc32 i64 2231409791114444147, %Hash_cpp_264_
   %Hash_cpp_379_ = rotr i64 %Hash_cpp_375_, 32
   %Hash_cpp_379_5 = xor i64 %Hash_cpp_374_, %Hash_cpp_379_
   %Hash_cpp_379_6 = mul i64 %Hash_cpp_379_5, 2685821657736338717
-  %ChainingHashTableLogic_cpp_108_ = call ptr umbra::ChainingHashTable::lookup(unsigned long) (%CompilationContext_cpp_215_, %Hash_cpp_379_6)
+  %ChainingHashTableLogic_cpp_108_ = call ptr umbra::ChainingHashTable::lookup(unsigned long) (%CompilationContext_cpp_217_, %Hash_cpp_379_6)
   %ChainingHashTableLogic_cpp_110_ = isnotnull ptr %ChainingHashTableLogic_cpp_108_
   condbr %ChainingHashTableLogic_cpp_110_ %looploopHashChain %loopDoneloopHashChain
 
@@ -1016,52 +1016,52 @@ looploopHashChain:
   %MaterializationHelper_cpp_230_ = load int32 %ChainingHashTableLogic_cpp_115_
   %MaterializationHelper_cpp_233_ = getelementptr int8 %ChainingHashTableLogic_cpp_115_, i64 4
   %MaterializationHelper_cpp_230_7 = load data128 %MaterializationHelper_cpp_233_
-  %Integer_cpp_80_ = cmpeq i32 %RelationMappedLogic_cpp_313_, %MaterializationHelper_cpp_230_
-  condbr %Integer_cpp_80_ %else %continueProbe
+  %Integer_cpp_82_ = cmpeq i32 %RelationMappedLogic_cpp_347_, %MaterializationHelper_cpp_230_
+  condbr %Integer_cpp_82_ %else %continueProbe
 
 else:
-  %RelationMappedLogic_cpp_308_ = getelementptr int8 %RelationMappedLogic_cpp_350_3, i64 1310720
-  %RelationMappedLogic_cpp_324_ = getelementptr data128 %RelationMappedLogic_cpp_308_, %localTid
-  %RelationMappedLogic_cpp_325_ = load int64 %RelationMappedLogic_cpp_324_
-  %RelationMappedLogic_cpp_325_9 = load int64 %RelationMappedLogic_cpp_324_, i32 1
-  %RelationMappedLogic_cpp_326_ = trunc i32 %RelationMappedLogic_cpp_325_
-  %RelationMappedLogic_cpp_327_ = cmpult i32 12, %RelationMappedLogic_cpp_326_
-  %RelationMappedLogic_cpp_327_10 = add i64 %RelationMappedLogic_cpp_325_9, %RelationMappedLogic_cpp_341_
-  %RelationMappedLogic_cpp_327_11 = select i64 %RelationMappedLogic_cpp_327_, %RelationMappedLogic_cpp_327_10, %RelationMappedLogic_cpp_325_9
-  %RelationMappedLogic_cpp_329_ = builddata128 d128 %RelationMappedLogic_cpp_325_ %RelationMappedLogic_cpp_327_11
-  %RelationMappedLogic_cpp_308_12 = getelementptr int8 %RelationMappedLogic_cpp_350_3, i64 2621440
-  %RelationMappedLogic_cpp_324_13 = getelementptr data128 %RelationMappedLogic_cpp_308_12, %localTid
-  %RelationMappedLogic_cpp_325_14 = load int64 %RelationMappedLogic_cpp_324_13
-  %RelationMappedLogic_cpp_325_15 = load int64 %RelationMappedLogic_cpp_324_13, i32 1
-  %RelationMappedLogic_cpp_326_16 = trunc i32 %RelationMappedLogic_cpp_325_14
-  %RelationMappedLogic_cpp_327_17 = cmpult i32 12, %RelationMappedLogic_cpp_326_16
-  %RelationMappedLogic_cpp_327_18 = add i64 %RelationMappedLogic_cpp_325_15, %RelationMappedLogic_cpp_341_
-  %RelationMappedLogic_cpp_327_19 = select i64 %RelationMappedLogic_cpp_327_17, %RelationMappedLogic_cpp_327_18, %RelationMappedLogic_cpp_325_15
-  %RelationMappedLogic_cpp_329_20 = builddata128 d128 %RelationMappedLogic_cpp_325_14 %RelationMappedLogic_cpp_327_19
-  %RelationMappedLogic_cpp_308_21 = getelementptr int8 %RelationMappedLogic_cpp_350_3, i64 262144
-  %RelationMappedLogic_cpp_324_22 = getelementptr data128 %RelationMappedLogic_cpp_308_21, %localTid
-  %RelationMappedLogic_cpp_325_23 = load int64 %RelationMappedLogic_cpp_324_22
-  %RelationMappedLogic_cpp_325_24 = load int64 %RelationMappedLogic_cpp_324_22, i32 1
-  %RelationMappedLogic_cpp_326_25 = trunc i32 %RelationMappedLogic_cpp_325_23
-  %RelationMappedLogic_cpp_327_26 = cmpult i32 12, %RelationMappedLogic_cpp_326_25
-  %RelationMappedLogic_cpp_327_27 = add i64 %RelationMappedLogic_cpp_325_24, %RelationMappedLogic_cpp_341_
-  %RelationMappedLogic_cpp_327_28 = select i64 %RelationMappedLogic_cpp_327_26, %RelationMappedLogic_cpp_327_27, %RelationMappedLogic_cpp_325_24
-  %RelationMappedLogic_cpp_329_29 = builddata128 d128 %RelationMappedLogic_cpp_325_23 %RelationMappedLogic_cpp_327_28
-  %Pipeline_cpp_276_ = getelementptr int8 %localState, i64 32
-  %SortTranslator_cpp_492_ = call ptr umbra::SortOperator::storeTuple(unsigned long) (%Pipeline_cpp_276_, i64 68)
-  store int32 %RelationMappedLogic_cpp_313_, %SortTranslator_cpp_492_
-  %MaterializationHelper_cpp_161_ = getelementptr int8 %SortTranslator_cpp_492_, i64 4
-  call void umbra::TextRuntime::storeOwning(umbra::data128_t*, umbra::data128_t) (%MaterializationHelper_cpp_161_, %RelationMappedLogic_cpp_329_)
+  %RelationMappedLogic_cpp_342_ = getelementptr int8 %RelationMappedLogic_cpp_482_3, i64 262144
+  %RelationMappedLogic_cpp_358_ = getelementptr data128 %RelationMappedLogic_cpp_342_, %localTid
+  %RelationMappedLogic_cpp_359_ = load int64 %RelationMappedLogic_cpp_358_
+  %RelationMappedLogic_cpp_359_9 = load int64 %RelationMappedLogic_cpp_358_, i32 1
+  %RelationMappedLogic_cpp_360_ = trunc i32 %RelationMappedLogic_cpp_359_
+  %RelationMappedLogic_cpp_361_ = cmpult i32 12, %RelationMappedLogic_cpp_360_
+  %RelationMappedLogic_cpp_361_10 = add i64 %RelationMappedLogic_cpp_359_9, %RelationMappedLogic_cpp_473_
+  %RelationMappedLogic_cpp_361_11 = select i64 %RelationMappedLogic_cpp_361_, %RelationMappedLogic_cpp_361_10, %RelationMappedLogic_cpp_359_9
+  %RelationMappedLogic_cpp_363_ = builddata128 d128 %RelationMappedLogic_cpp_359_ %RelationMappedLogic_cpp_361_11
+  %RelationMappedLogic_cpp_342_12 = getelementptr int8 %RelationMappedLogic_cpp_482_3, i64 1310720
+  %RelationMappedLogic_cpp_358_13 = getelementptr data128 %RelationMappedLogic_cpp_342_12, %localTid
+  %RelationMappedLogic_cpp_359_14 = load int64 %RelationMappedLogic_cpp_358_13
+  %RelationMappedLogic_cpp_359_15 = load int64 %RelationMappedLogic_cpp_358_13, i32 1
+  %RelationMappedLogic_cpp_360_16 = trunc i32 %RelationMappedLogic_cpp_359_14
+  %RelationMappedLogic_cpp_361_17 = cmpult i32 12, %RelationMappedLogic_cpp_360_16
+  %RelationMappedLogic_cpp_361_18 = add i64 %RelationMappedLogic_cpp_359_15, %RelationMappedLogic_cpp_473_
+  %RelationMappedLogic_cpp_361_19 = select i64 %RelationMappedLogic_cpp_361_17, %RelationMappedLogic_cpp_361_18, %RelationMappedLogic_cpp_359_15
+  %RelationMappedLogic_cpp_363_20 = builddata128 d128 %RelationMappedLogic_cpp_359_14 %RelationMappedLogic_cpp_361_19
+  %RelationMappedLogic_cpp_342_21 = getelementptr int8 %RelationMappedLogic_cpp_482_3, i64 2621440
+  %RelationMappedLogic_cpp_358_22 = getelementptr data128 %RelationMappedLogic_cpp_342_21, %localTid
+  %RelationMappedLogic_cpp_359_23 = load int64 %RelationMappedLogic_cpp_358_22
+  %RelationMappedLogic_cpp_359_24 = load int64 %RelationMappedLogic_cpp_358_22, i32 1
+  %RelationMappedLogic_cpp_360_25 = trunc i32 %RelationMappedLogic_cpp_359_23
+  %RelationMappedLogic_cpp_361_26 = cmpult i32 12, %RelationMappedLogic_cpp_360_25
+  %RelationMappedLogic_cpp_361_27 = add i64 %RelationMappedLogic_cpp_359_24, %RelationMappedLogic_cpp_473_
+  %RelationMappedLogic_cpp_361_28 = select i64 %RelationMappedLogic_cpp_361_26, %RelationMappedLogic_cpp_361_27, %RelationMappedLogic_cpp_359_24
+  %RelationMappedLogic_cpp_363_29 = builddata128 d128 %RelationMappedLogic_cpp_359_23 %RelationMappedLogic_cpp_361_28
+  %Pipeline_cpp_277_ = getelementptr int8 %localState, i64 32
+  %SortTranslator_cpp_494_ = call ptr umbra::SortOperator::storeTuple(unsigned long) (%Pipeline_cpp_277_, i64 68)
+  store int32 %RelationMappedLogic_cpp_347_, %SortTranslator_cpp_494_
+  %MaterializationHelper_cpp_161_ = getelementptr int8 %SortTranslator_cpp_494_, i64 4
+  call void umbra::TextRuntime::storeOwning(umbra::data128_t*, umbra::data128_t) (%MaterializationHelper_cpp_161_, %RelationMappedLogic_cpp_363_)
   %MaterializationHelper_cpp_150_ = getelementptr int8 %MaterializationHelper_cpp_161_, i64 16
-  store data128 %MaterializationHelper_cpp_230_7, %MaterializationHelper_cpp_150_
+  call void umbra::TextRuntime::storeOwning(umbra::data128_t*, umbra::data128_t) (%MaterializationHelper_cpp_150_, %RelationMappedLogic_cpp_363_20)
   %MaterializationHelper_cpp_150_30 = getelementptr int8 %MaterializationHelper_cpp_161_, i64 32
-  call void umbra::TextRuntime::storeOwning(umbra::data128_t*, umbra::data128_t) (%MaterializationHelper_cpp_150_30, %RelationMappedLogic_cpp_329_20)
+  call void umbra::TextRuntime::storeOwning(umbra::data128_t*, umbra::data128_t) (%MaterializationHelper_cpp_150_30, %RelationMappedLogic_cpp_363_29)
   %MaterializationHelper_cpp_150_31 = getelementptr int8 %MaterializationHelper_cpp_161_, i64 48
-  call void umbra::TextRuntime::storeOwning(umbra::data128_t*, umbra::data128_t) (%MaterializationHelper_cpp_150_31, %RelationMappedLogic_cpp_329_29)
+  store data128 %MaterializationHelper_cpp_230_7, %MaterializationHelper_cpp_150_31
   br %loopDoneloopHashChain
 
 continueProbe:
-  %ChainingHashTableLogic_cpp_136_ = call ptr umbra::ChainingHashTable::lookupNext(void*) (%CompilationContext_cpp_215_, %hashEntry)
+  %ChainingHashTableLogic_cpp_136_ = call ptr umbra::ChainingHashTable::lookupNext(void*) (%CompilationContext_cpp_217_, %hashEntry)
   %ChainingHashTableLogic_cpp_137_ = isnotnull ptr %ChainingHashTableLogic_cpp_136_
   condbr %ChainingHashTableLogic_cpp_137_ %looploopHashChain %loopDoneloopHashChain
 
@@ -1069,13 +1069,13 @@ loopDoneloopHashChain:
   br %contScan
 
 contScan:
-  %RelationMappedLogic_cpp_361_ = add i64 %localTid, 1
-  %RelationMappedLogic_cpp_362_ = cmpne i64 %RelationMappedLogic_cpp_361_, %RelationMappedLogic_cpp_352_4
-  condbr %RelationMappedLogic_cpp_362_ %loopTuples %loopDoneTuples
+  %RelationMappedLogic_cpp_493_ = add i64 %localTid, 1
+  %RelationMappedLogic_cpp_494_ = cmpne i64 %RelationMappedLogic_cpp_493_, %RelationMappedLogic_cpp_484_4
+  condbr %RelationMappedLogic_cpp_494_ %loopTuples %loopDoneTuples
 
 loopDoneTuples:
-  %RelationMappedLogic_cpp_364_ = cmpne i64 %RelationMappedLogic_cpp_348_1, %to
-  condbr %RelationMappedLogic_cpp_364_ %loopBlocks %loopDoneBlocks
+  %RelationMappedLogic_cpp_496_ = cmpne i64 %RelationMappedLogic_cpp_480_1, %to
+  condbr %RelationMappedLogic_cpp_496_ %loopBlocks %loopDoneBlocks
 
 loopDoneBlocks:
   br %stepDone
@@ -1091,8 +1091,8 @@ declare void @umbra::TextRuntime::storeOwning(umbra::data128_t*, umbra::data128_
 define int32 @_10_planStep27(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  call void umbra::TableScanOperator::Job::destroy(void*) (%CompilationContext_cpp_221_)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  call void umbra::TableScanOperator::Job::destroy(void*) (%CompilationContext_cpp_223_)
   call void umbra::ExecutionPlan::preparePerObjectWork(void*, unsigned int) (%state, i32 32)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 41)
   return 40
@@ -1101,8 +1101,8 @@ body:
 define int32 @_10_sort_join_tablescan_supplier_extra(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %Pipeline_cpp_470_ = load int8* %localState
-  call void umbra::SortOperator::sortLocal() (%Pipeline_cpp_470_)
+  %Pipeline_cpp_471_ = load int8* %localState
+  call void umbra::SortOperator::sortLocal() (%Pipeline_cpp_471_)
   br %stepDone
 
 stepDone:
@@ -1118,36 +1118,36 @@ body:
   %currentLocalState = load object umbra::GlobalStateHeader %state, i32 0, i32 2
   %threadCount = load object umbra::LocalStateHeader %currentLocalState, i32 0, i32 2
   %localStateSize = load object umbra::LocalStateHeader %currentLocalState, i32 0, i32 0
-  %Pipeline_cpp_68_ = getelementptr int8 %currentLocalState, i64 64
-  %Pipeline_cpp_55_ = cmpult i32 0, %threadCount
-  condbr %Pipeline_cpp_55_ %loopStates %loopDoneStates
+  %Pipeline_cpp_69_ = getelementptr int8 %currentLocalState, i64 64
+  %Pipeline_cpp_56_ = cmpult i32 0, %threadCount
+  condbr %Pipeline_cpp_56_ %loopStates %loopDoneStates
 
 loopStates:
-  %Thread = phi i32 [i32 0, %body %Pipeline_cpp_96_, %continue]
-  %Pipeline_cpp_75_ = zext i64 %Thread
-  %Pipeline_cpp_75_0 = mul i64 %Pipeline_cpp_75_, %localStateSize
-  %Pipeline_cpp_75_1 = getelementptr int8 %Pipeline_cpp_68_, %Pipeline_cpp_75_0
-  %Pipeline_cpp_78_ = load int8 %Pipeline_cpp_75_1, i32 -1
-  %Pipeline_cpp_78_2 = cmpeq i8 %Pipeline_cpp_78_, 0
-  condbr %Pipeline_cpp_78_2 %continue %else
+  %Thread = phi i32 [i32 0, %body %Pipeline_cpp_97_, %continue]
+  %Pipeline_cpp_76_ = zext i64 %Thread
+  %Pipeline_cpp_76_0 = mul i64 %Pipeline_cpp_76_, %localStateSize
+  %Pipeline_cpp_76_1 = getelementptr int8 %Pipeline_cpp_69_, %Pipeline_cpp_76_0
+  %Pipeline_cpp_79_ = load int8 %Pipeline_cpp_76_1, i32 -1
+  %Pipeline_cpp_79_2 = cmpeq i8 %Pipeline_cpp_79_, 0
+  condbr %Pipeline_cpp_79_2 %continue %else
 
 else:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49616
-  %Pipeline_cpp_276_ = getelementptr int8 %Pipeline_cpp_75_1, i64 32
-  call void umbra::SortOperator::donateTupleMemory(umbra::SortOperator&) (%Pipeline_cpp_276_, %CompilationContext_cpp_215_)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49616
+  %Pipeline_cpp_277_ = getelementptr int8 %Pipeline_cpp_76_1, i64 32
+  call void umbra::SortOperator::donateTupleMemory(umbra::SortOperator&) (%Pipeline_cpp_277_, %CompilationContext_cpp_217_)
   br %continue
 
 continue:
-  %Pipeline_cpp_96_ = add i32 %Thread, 1
-  %Pipeline_cpp_97_ = cmpult i32 %Pipeline_cpp_96_, %threadCount
-  condbr %Pipeline_cpp_97_ %loopStates %loopDoneStates
+  %Pipeline_cpp_97_ = add i32 %Thread, 1
+  %Pipeline_cpp_98_ = cmpult i32 %Pipeline_cpp_97_, %threadCount
+  condbr %Pipeline_cpp_98_ %loopStates %loopDoneStates
 
 loopDoneStates:
-  %CompilationContext_cpp_215_3 = getelementptr int8 %state, i64 49616
-  call void umbra::SortOperator::prepareSortGlobal() (%CompilationContext_cpp_215_3)
-  %CompilationContext_cpp_215_4 = getelementptr int8 %state, i64 49616
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  call void umbra::SortOperator::setupGlobalSortJob(void*, umbra::SortOperator&) (%CompilationContext_cpp_221_, %CompilationContext_cpp_215_4)
+  %CompilationContext_cpp_217_3 = getelementptr int8 %state, i64 49616
+  call void umbra::SortOperator::prepareSortGlobal() (%CompilationContext_cpp_217_3)
+  %CompilationContext_cpp_217_4 = getelementptr int8 %state, i64 49616
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  call void umbra::SortOperator::setupGlobalSortJob(void*, umbra::SortOperator&) (%CompilationContext_cpp_223_, %CompilationContext_cpp_217_4)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 43)
   return 42
 }
@@ -1161,9 +1161,9 @@ declare void @umbra::SortOperator::setupGlobalSortJob(void*, umbra::SortOperator
 define int32 @_10_sort_join_tablescan_supplier_extra29(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %SortTranslator_cpp_431_ = load int32 %localState
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49616
-  call void umbra::SortOperator::sortGlobal(unsigned int) (%CompilationContext_cpp_215_, %SortTranslator_cpp_431_)
+  %SortTranslator_cpp_433_ = load int32 %localState
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49616
+  call void umbra::SortOperator::sortGlobal(unsigned int) (%CompilationContext_cpp_217_, %SortTranslator_cpp_433_)
   br %stepDone
 
 stepDone:
@@ -1175,12 +1175,12 @@ declare void @umbra::SortOperator::sortGlobal(unsigned int)(object umbra::SortOp
 define int32 @_10_planStep30(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 49616
-  call void umbra::SortOperator::finishSortGlobal() (%CompilationContext_cpp_215_)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 49616
+  call void umbra::SortOperator::finishSortGlobal() (%CompilationContext_cpp_217_)
   call void umbra::ExecutionPlan::cleanupParallelWork(void*) (%state)
-  %CompilationContext_cpp_221_ = getelementptr int8 %state, i64 56
-  %CompilationContext_cpp_215_0 = getelementptr int8 %state, i64 49616
-  call void umbra::SortOperator::Job::init(void*, umbra::SortOperator&, bool) (%CompilationContext_cpp_221_, %CompilationContext_cpp_215_0, bool true)
+  %CompilationContext_cpp_223_ = getelementptr int8 %state, i64 56
+  %CompilationContext_cpp_217_0 = getelementptr int8 %state, i64 49616
+  call void umbra::SortOperator::Job::init(void*, umbra::SortOperator&, bool) (%CompilationContext_cpp_223_, %CompilationContext_cpp_217_0, bool true)
   call void umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int) (%state, i32 32, i32 44, i32 45, i32 46)
   call void umbra::ExecutionPlan::setupParallelStep(void*, unsigned int) (%state, i32 47)
   return 48
@@ -1213,14 +1213,14 @@ define int32 @_10_map_sort(int8* %trampoline, int8* %state, int8* %localState) [
 body:
   %from = load object umbra::SortOperator::Morsel %localState, i32 0, i32 0
   %to = load object umbra::SortOperator::Morsel %localState, i32 0, i32 1
-  %SortTranslator_cpp_511_ = cmpne ptr %from, %to
-  condbr %SortTranslator_cpp_511_ %loopTuples %loopDoneTuples
+  %SortTranslator_cpp_513_ = cmpne ptr %from, %to
+  condbr %SortTranslator_cpp_513_ %loopTuples %loopDoneTuples
 
 loopTuples:
-  %tuple = phi ptr [%from, %body %SortTranslator_cpp_523_, %cont8]
-  %CodeGen_hpp_1150_ = load int8* %tuple
-  %MaterializationHelper_cpp_230_ = load int32 %CodeGen_hpp_1150_
-  %MaterializationHelper_cpp_233_ = getelementptr int8 %CodeGen_hpp_1150_, i64 4
+  %tuple = phi ptr [%from, %body %SortTranslator_cpp_525_, %cont8]
+  %CodeGen_hpp_1151_ = load int8* %tuple
+  %MaterializationHelper_cpp_230_ = load int32 %CodeGen_hpp_1151_
+  %MaterializationHelper_cpp_233_ = getelementptr int8 %CodeGen_hpp_1151_, i64 4
   %MaterializationHelper_cpp_230_0 = load data128 %MaterializationHelper_cpp_233_
   %MaterializationHelper_cpp_229_ = getelementptr int8 %MaterializationHelper_cpp_233_, i64 16
   %MaterializationHelper_cpp_230_1 = load data128 %MaterializationHelper_cpp_229_
@@ -1228,39 +1228,39 @@ loopTuples:
   %MaterializationHelper_cpp_230_3 = load data128 %MaterializationHelper_cpp_229_2
   %MaterializationHelper_cpp_229_4 = getelementptr int8 %MaterializationHelper_cpp_233_, i64 48
   %MaterializationHelper_cpp_230_5 = load data128 %MaterializationHelper_cpp_229_4
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 120
-  %sql_cpp_125_ = atomicrmwxchg int8 i8 1, %CompilationContext_cpp_215_
-  %CodeGen_cpp_441_ = cmpule i8 1, %sql_cpp_125_
-  condbr %CodeGen_cpp_441_ %then %cont
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 120
+  %sql_cpp_129_ = atomicrmwxchg int8 i8 1, %CompilationContext_cpp_217_
+  %CodeGen_cpp_442_ = cmpule i8 1, %sql_cpp_129_
+  condbr %CodeGen_cpp_442_ %then %cont
 
 then:
-  call void umbra::RuntimeFunctions::lockSpinlock(void*, unsigned char, unsigned char) (%CompilationContext_cpp_215_, i8 1, %sql_cpp_125_)
+  call void umbra::RuntimeFunctions::lockSpinlock(void*, unsigned char, unsigned char) (%CompilationContext_cpp_217_, i8 1, %sql_cpp_129_)
   br %cont
 
 cont:
-  call void umbra::IntegerRuntime::output(umbra::OutputTarget&, umbra::Type, int) (ptr 0x563954734220, i64 288230376151711744, %MaterializationHelper_cpp_230_)
+  call void umbra::IntegerRuntime::output(umbra::OutputTarget&, umbra::Type, int) (ptr 0x5575f2c23700, i64 288230376151711744, %MaterializationHelper_cpp_230_)
   call void umbra::RuntimeFunctions::printStringResult(char const*, unsigned int) (global %30160, i32 1)
-  call void umbra::CharRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x563954734220, i64 720575940798709760, %MaterializationHelper_cpp_230_5)
+  call void umbra::CharRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x5575f2c23700, i64 720575940798709760, %MaterializationHelper_cpp_230_0)
   call void umbra::RuntimeFunctions::printStringResult(char const*, unsigned int) (global %30160, i32 1)
-  call void umbra::TextRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x563954734220, i64 792633535088295936, %MaterializationHelper_cpp_230_0)
+  call void umbra::TextRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x5575f2c23700, i64 792633535088295936, %MaterializationHelper_cpp_230_1)
   call void umbra::RuntimeFunctions::printStringResult(char const*, unsigned int) (global %30160, i32 1)
-  call void umbra::CharRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x563954734220, i64 720575940630937600, %MaterializationHelper_cpp_230_3)
+  call void umbra::CharRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x5575f2c23700, i64 720575940630937600, %MaterializationHelper_cpp_230_3)
   call void umbra::RuntimeFunctions::printStringResult(char const*, unsigned int) (global %30160, i32 1)
-  call void umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x563954734220, i64 504403158903030784, %MaterializationHelper_cpp_230_1)
+  call void umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t) (ptr 0x5575f2c23700, i64 504403158903030784, %MaterializationHelper_cpp_230_5)
   call void umbra::RuntimeFunctions::printNlResult() ()
-  %sql_cpp_135_ = atomicrmwxchg int8 i8 0, %CompilationContext_cpp_215_
-  %CodeGen_cpp_450_ = cmpult i8 1, %sql_cpp_135_
-  condbr %CodeGen_cpp_450_ %then7 %cont8
+  %sql_cpp_139_ = atomicrmwxchg int8 i8 0, %CompilationContext_cpp_217_
+  %CodeGen_cpp_451_ = cmpult i8 1, %sql_cpp_139_
+  condbr %CodeGen_cpp_451_ %then7 %cont8
 
 then7:
-  call void umbra::RuntimeFunctions::unlockedSpinlock(void*) (%CompilationContext_cpp_215_)
+  call void umbra::RuntimeFunctions::unlockedSpinlock(void*) (%CompilationContext_cpp_217_)
   br %cont8
 
 cont8:
   call void umbra::RuntimeFunctions::bumpResultValue(void*) (%state)
-  %SortTranslator_cpp_523_ = getelementptr int8* %tuple, i32 1
-  %SortTranslator_cpp_524_ = cmpne ptr %SortTranslator_cpp_523_, %to
-  condbr %SortTranslator_cpp_524_ %loopTuples %loopDoneTuples
+  %SortTranslator_cpp_525_ = getelementptr int8* %tuple, i32 1
+  %SortTranslator_cpp_526_ = cmpne ptr %SortTranslator_cpp_525_, %to
+  condbr %SortTranslator_cpp_526_ %loopTuples %loopDoneTuples
 
 loopDoneTuples:
   br %stepDone
@@ -1297,22 +1297,22 @@ body:
 define int32 @_10_cleanup(int8* %trampoline, int8* %state, int8* %localState) [
 ] {
 body:
-  %CompilationContext_cpp_215_ = getelementptr int8 %state, i64 128
-  call void umbra::RelationMapped::Reader::destroy(void*) (%CompilationContext_cpp_215_)
-  %CompilationContext_cpp_215_0 = getelementptr int8 %state, i64 216
-  call void umbra::AggregationTarget::destroy(umbra::AggregationTarget*) (%CompilationContext_cpp_215_0)
-  %CompilationContext_cpp_215_1 = getelementptr int8 %state, i64 24808
-  call void umbra::TempOperator::destroy(umbra::TempOperator*) (%CompilationContext_cpp_215_1)
-  %CompilationContext_cpp_215_2 = getelementptr int8 %state, i64 24832
-  call void umbra::AggregationTarget::destroy(umbra::AggregationTarget*) (%CompilationContext_cpp_215_2)
-  %CompilationContext_cpp_215_3 = getelementptr int8 %state, i64 49424
-  call void umbra::ChainingHashTable::destroy(void*) (%CompilationContext_cpp_215_3)
-  %CompilationContext_cpp_215_4 = getelementptr int8 %state, i64 49472
-  call void umbra::RelationMapped::Reader::destroy(void*) (%CompilationContext_cpp_215_4)
-  %CompilationContext_cpp_215_5 = getelementptr int8 %state, i64 49568
-  call void umbra::ChainingHashTable::destroy(void*) (%CompilationContext_cpp_215_5)
-  %CompilationContext_cpp_215_6 = getelementptr int8 %state, i64 49616
-  call void umbra::SortOperator::destroy(umbra::SortOperator*) (%CompilationContext_cpp_215_6)
+  %CompilationContext_cpp_217_ = getelementptr int8 %state, i64 128
+  call void umbra::RelationMapped::Reader::destroy(void*) (%CompilationContext_cpp_217_)
+  %CompilationContext_cpp_217_0 = getelementptr int8 %state, i64 216
+  call void umbra::AggregationTarget::destroy(umbra::AggregationTarget*) (%CompilationContext_cpp_217_0)
+  %CompilationContext_cpp_217_1 = getelementptr int8 %state, i64 24808
+  call void umbra::TempOperator::destroy(umbra::TempOperator*) (%CompilationContext_cpp_217_1)
+  %CompilationContext_cpp_217_2 = getelementptr int8 %state, i64 24832
+  call void umbra::AggregationTarget::destroy(umbra::AggregationTarget*) (%CompilationContext_cpp_217_2)
+  %CompilationContext_cpp_217_3 = getelementptr int8 %state, i64 49424
+  call void umbra::ChainingHashTable::destroy(void*) (%CompilationContext_cpp_217_3)
+  %CompilationContext_cpp_217_4 = getelementptr int8 %state, i64 49472
+  call void umbra::RelationMapped::Reader::destroy(void*) (%CompilationContext_cpp_217_4)
+  %CompilationContext_cpp_217_5 = getelementptr int8 %state, i64 49568
+  call void umbra::ChainingHashTable::destroy(void*) (%CompilationContext_cpp_217_5)
+  %CompilationContext_cpp_217_6 = getelementptr int8 %state, i64 49616
+  call void umbra::SortOperator::destroy(umbra::SortOperator*) (%CompilationContext_cpp_217_6)
   return 0
 }
 

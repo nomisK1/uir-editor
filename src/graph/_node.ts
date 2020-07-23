@@ -94,11 +94,12 @@ export default _node;
 
 export function matchType(str: string | null) {
     if (!str) return null;
+    if (str.toUpperCase().startsWith(Type.OBJECT.toUpperCase()))
+        if (str.endsWith('*')) return Type.OBJECT_;
+        else return Type.OBJECT;
     let types = Object.values(Type);
     for (let i = 0; i < types.length; i++) {
-        let object = str.split(' ')[0] + str.slice(str.length - 1);
-        if (str.toUpperCase() === types[i].toUpperCase() || object.toUpperCase() === types[i].toUpperCase())
-            return types[i];
+        if (str.toUpperCase() === types[i].toUpperCase()) return types[i];
     }
     return null;
 }

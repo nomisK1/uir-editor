@@ -3,17 +3,17 @@
   "isConst":true,
   "name":1342,
   "size":33,
-  "data":"\001\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+  "data":"\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
  }, {
   "isConst":true,
   "name":1702,
   "size":72,
-  "data":"\012\000\000\000\007\000\000\000\000\000\000\000\000\000\000\016\000\000\000\000\000\000\000\000\000\000\000\000\/.,U\000\000sf%\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+  "data":"\u0012\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0016\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0227U\u0000\u0000sf%\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
  }, {
   "isConst":true,
   "name":1812,
   "size":28,
-  "data":"\004\000\000\000\005\000\000\000\006\000\000\000\007\000\000\000\010\000\000\000\011\000\000\000\012\000\000\000"
+  "data":"\u0004\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0011\u0000\u0000\u0000\u0012\u0000\u0000\u0000"
  }, {
   "isConst":true,
   "name":22094,
@@ -28,7 +28,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -37,9 +37,9 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::RelationMapped::Reader::init(void*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}]
    }, {
-    "dst":"CompilationContext_cpp_215_0",
+    "dst":"CompilationContext_cpp_217_0",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -48,9 +48,9 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_0"}, {"type":"i64", "const":88}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_0"}, {"type":"i64", "const":88}]
    }, {
-    "dst":"CompilationContext_cpp_215_2",
+    "dst":"CompilationContext_cpp_217_2",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -59,13 +59,13 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::init(umbra::SortOperator*, void const*, void const*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_2"}, {"global":false, "var":"state"}, {"global":true, "var":1342}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_2"}, {"global":false, "var":"state"}, {"global":true, "var":1342}]
    }, {
     "opcode":"return",
     "value":{"type":"i32", "const":1}
    }]
   }]
- }{
+ }, {
   "name":"_10_compare",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"left", "type":"int8*"}, {"var":"right", "type":"int8*"}],
@@ -159,43 +159,43 @@
     "type":"i32",
     "src":[{"global":false, "var":"Char1_cpp_85_12"}, {"global":false, "var":"Char1_cpp_85_10"}]
    }, {
-    "dst":"SortTranslator_cpp_113_",
+    "dst":"SortTranslator_cpp_115_",
     "opcode":"cmpeq",
     "type":"i32",
     "src":[{"global":false, "var":"Char1_cpp_85_8"}, {"type":"i32", "const":0}]
    }, {
-    "dst":"SortTranslator_cpp_113_14",
+    "dst":"SortTranslator_cpp_115_14",
     "opcode":"SExt",
     "type":"i32",
-    "src":[{"global":false, "var":"SortTranslator_cpp_113_"}]
+    "src":[{"global":false, "var":"SortTranslator_cpp_115_"}]
    }, {
-    "dst":"SortTranslator_cpp_113_15",
+    "dst":"SortTranslator_cpp_115_15",
     "opcode":"and",
     "type":"i32",
-    "src":[{"global":false, "var":"Char1_cpp_85_13"}, {"global":false, "var":"SortTranslator_cpp_113_14"}]
+    "src":[{"global":false, "var":"Char1_cpp_85_13"}, {"global":false, "var":"SortTranslator_cpp_115_14"}]
    }, {
-    "dst":"SortTranslator_cpp_113_16",
+    "dst":"SortTranslator_cpp_115_16",
     "opcode":"or",
     "type":"i32",
-    "src":[{"global":false, "var":"Char1_cpp_85_8"}, {"global":false, "var":"SortTranslator_cpp_113_15"}]
+    "src":[{"global":false, "var":"Char1_cpp_85_8"}, {"global":false, "var":"SortTranslator_cpp_115_15"}]
    }, {
     "opcode":"return",
-    "value":{"var":"SortTranslator_cpp_113_16"}
+    "value":{"var":"SortTranslator_cpp_115_16"}
    }]
   }]
- }{
+ }, {
   "name":"umbra::RelationMapped::Reader::init(void*)",
   "returnType":"void",
   "args":[{"var":1120, "type":"int8*"}]
- }{
+ }, {
   "name":"umbra::AggregationTarget::init(umbra::AggregationTarget*, unsigned long)",
   "returnType":"void",
   "args":[{"var":1241, "type":"object umbra::AggregationTarget*"}, {"var":1255, "type":"int64"}]
- }{
+ }, {
   "name":"umbra::SortOperator::init(umbra::SortOperator*, void const*, void const*)",
   "returnType":"void",
   "args":[{"var":1480, "type":"object umbra::SortOperator*"}, {"var":1494, "type":"int8*"}, {"var":1508, "type":"int8*"}]
- }{
+ }, {
   "name":"_10_planStep",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -203,13 +203,13 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"CompilationContext_cpp_221_",
+    "dst":"CompilationContext_cpp_223_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -218,7 +218,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_221_"}, {"global":false, "var":"CompilationContext_cpp_215_"}, {"type":"i64", "const":5}, {"global":true, "var":1702}, {"type":"i64", "const":1}, {"global":true, "var":1812}, {"type":"i32", "const":7}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_223_"}, {"global":false, "var":"CompilationContext_cpp_217_"}, {"type":"i64", "const":5}, {"global":true, "var":1702}, {"type":"i64", "const":1}, {"global":true, "var":1812}, {"type":"i32", "const":7}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -234,15 +234,15 @@
     "value":{"type":"i32", "const":6}
    }]
   }]
- }{
+ }, {
   "name":"umbra::TableScanOperator::Job::init(void*, void*, unsigned long, umbra::Relation::RestrictionInfo*, unsigned long, unsigned int*, unsigned int)",
   "returnType":"void",
   "args":[{"var":1959, "type":"int8*"}, {"var":1973, "type":"int8*"}, {"var":1987, "type":"int64"}, {"var":2001, "type":"object umbra::Relation::RestrictionInfo*"}, {"var":2015, "type":"int64"}, {"var":2029, "type":"int32*"}, {"var":2043, "type":"int32"}]
- }{
+ }, {
   "name":"umbra::ExecutionPlan::setupParallelWork(void*, unsigned int, unsigned int, unsigned int, unsigned int)",
   "returnType":"void",
   "args":[{"var":2129, "type":"int8*"}, {"var":2143, "type":"int32"}, {"var":2157, "type":"int32"}, {"var":2171, "type":"int32"}, {"var":2185, "type":"int32"}]
- }{
+ }, {
   "name":"_10_planStep0",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -250,7 +250,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"Pipeline_cpp_276_",
+    "dst":"Pipeline_cpp_277_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"localState"},
@@ -259,17 +259,17 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long)",
-    "args":[{"global":false, "var":"Pipeline_cpp_276_"}, {"type":"i64", "const":88}]
+    "args":[{"global":false, "var":"Pipeline_cpp_277_"}, {"type":"i64", "const":88}]
    }, {
     "opcode":"return",
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"umbra::Preaggregation::init(umbra::Preaggregation*, unsigned long)",
   "returnType":"void",
   "args":[{"var":2367, "type":"object umbra::Preaggregation*"}, {"var":2381, "type":"int64"}]
- }{
+ }, {
   "name":"_10_planStep1",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -277,7 +277,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"Pipeline_cpp_276_",
+    "dst":"Pipeline_cpp_277_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"localState"},
@@ -286,17 +286,17 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::Preaggregation::destroy(umbra::Preaggregation*)",
-    "args":[{"global":false, "var":"Pipeline_cpp_276_"}]
+    "args":[{"global":false, "var":"Pipeline_cpp_277_"}]
    }, {
     "opcode":"return",
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"umbra::Preaggregation::destroy(umbra::Preaggregation*)",
   "returnType":"void",
   "args":[{"var":2537, "type":"object umbra::Preaggregation*"}]
- }{
+ }, {
   "name":"_10_planStep2",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -308,11 +308,11 @@
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"umbra::ExecutionPlan::setupParallelStep(void*, unsigned int)",
   "returnType":"void",
   "args":[{"var":2669, "type":"int8*"}, {"var":2683, "type":"int32"}]
- }{
+ }, {
   "name":"_10_groupby_tablescan_lineitem",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -344,15 +344,15 @@
     "pointer":{"var":"reader"},
     "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
    }, {
-    "dst":"RelationMappedLogic_cpp_343_",
+    "dst":"RelationMappedLogic_cpp_475_",
     "opcode":"cmpult",
     "type":"i64",
     "src":[{"global":false, "var":"from"}, {"global":false, "var":"to"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"RelationMappedLogic_cpp_343_"},
+    "condition":{"var":"RelationMappedLogic_cpp_475_"},
     "targetTrue":"loopBlocks",
-    "targetFalse":"loopBlocks"
+    "targetFalse":"loopDoneBlocks"
    }]
   }, {
    "label":"loopBlocks",
@@ -360,74 +360,74 @@
     "dst":"firstTid",
     "opcode":"phi",
     "type":"i64",
-    "incoming":[{"value":{"var":"from"}, "block":"body"}, {"value":{"var":"RelationMappedLogic_cpp_348_1"}, "block":"loopDoneTuples"}]
+    "incoming":[{"value":{"var":"from"}, "block":"body"}, {"value":{"var":"RelationMappedLogic_cpp_480_1"}, "block":"loopDoneTuples"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_346_",
+    "dst":"RelationMappedLogic_cpp_478_",
     "opcode":"lshr",
     "type":"i64",
     "src":[{"global":false, "var":"firstTid"}, {"type":"i64", "const":16}]
    }, {
-    "dst":"RelationMappedLogic_cpp_347_",
+    "dst":"RelationMappedLogic_cpp_479_",
     "opcode":"shl",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_346_"}, {"type":"i64", "const":16}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_478_"}, {"type":"i64", "const":16}]
    }, {
-    "dst":"RelationMappedLogic_cpp_347_0",
+    "dst":"RelationMappedLogic_cpp_479_0",
     "opcode":"add",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_347_"}, {"type":"i64", "const":65536}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_479_"}, {"type":"i64", "const":65536}]
    }, {
-    "dst":"RelationMappedLogic_cpp_348_",
+    "dst":"RelationMappedLogic_cpp_480_",
     "opcode":"cmpult",
     "type":"i64",
-    "src":[{"global":false, "var":"to"}, {"global":false, "var":"RelationMappedLogic_cpp_347_0"}]
+    "src":[{"global":false, "var":"to"}, {"global":false, "var":"RelationMappedLogic_cpp_479_0"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_348_1",
+    "dst":"RelationMappedLogic_cpp_480_1",
     "opcode":"select",
     "type":"i64",
-    "condition":{"var":"RelationMappedLogic_cpp_348_"},
-    "src":[{"global":false, "var":"to"}, {"global":false, "var":"RelationMappedLogic_cpp_347_0"}]
+    "condition":{"var":"RelationMappedLogic_cpp_480_"},
+    "src":[{"global":false, "var":"to"}, {"global":false, "var":"RelationMappedLogic_cpp_479_0"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_350_",
+    "dst":"RelationMappedLogic_cpp_482_",
     "opcode":"mul",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_346_"}, {"type":"i64", "const":116}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_478_"}, {"type":"i64", "const":116}]
    }, {
-    "dst":"RelationMappedLogic_cpp_350_2",
+    "dst":"RelationMappedLogic_cpp_482_2",
     "opcode":"mul",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_350_"}, {"type":"i64", "const":65536}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_482_"}, {"type":"i64", "const":65536}]
    }, {
-    "dst":"RelationMappedLogic_cpp_350_3",
+    "dst":"RelationMappedLogic_cpp_482_3",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"data"},
-    "offsets":[{"global":false, "var":"RelationMappedLogic_cpp_350_2"}]
+    "offsets":[{"global":false, "var":"RelationMappedLogic_cpp_482_2"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_351_",
+    "dst":"RelationMappedLogic_cpp_483_",
     "opcode":"shl",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_346_"}, {"type":"i64", "const":16}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_478_"}, {"type":"i64", "const":16}]
    }, {
-    "dst":"RelationMappedLogic_cpp_352_",
+    "dst":"RelationMappedLogic_cpp_484_",
     "opcode":"sub",
     "type":"i64",
-    "src":[{"global":false, "var":"firstTid"}, {"global":false, "var":"RelationMappedLogic_cpp_351_"}]
+    "src":[{"global":false, "var":"firstTid"}, {"global":false, "var":"RelationMappedLogic_cpp_483_"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_352_4",
+    "dst":"RelationMappedLogic_cpp_484_4",
     "opcode":"sub",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_1"}, {"global":false, "var":"RelationMappedLogic_cpp_351_"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_480_1"}, {"global":false, "var":"RelationMappedLogic_cpp_483_"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_354_",
+    "dst":"RelationMappedLogic_cpp_486_",
     "opcode":"cmpne",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_352_"}, {"global":false, "var":"RelationMappedLogic_cpp_352_4"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_484_"}, {"global":false, "var":"RelationMappedLogic_cpp_484_4"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"RelationMappedLogic_cpp_354_"},
+    "condition":{"var":"RelationMappedLogic_cpp_486_"},
     "targetTrue":"loopTuples",
-    "targetFalse":"loopTuples"
+    "targetFalse":"loopDoneTuples"
    }]
   }, {
    "label":"loopTuples",
@@ -435,91 +435,91 @@
     "dst":"localTid",
     "opcode":"phi",
     "type":"i64",
-    "incoming":[{"value":{"var":"RelationMappedLogic_cpp_352_"}, "block":"loopBlocks"}, {"value":{"var":"RelationMappedLogic_cpp_361_"}, "block":"contScan"}]
+    "incoming":[{"value":{"var":"RelationMappedLogic_cpp_484_"}, "block":"loopBlocks"}, {"value":{"var":"RelationMappedLogic_cpp_493_"}, "block":"contScan"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_308_",
+    "dst":"RelationMappedLogic_cpp_342_",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "pointer":{"var":"RelationMappedLogic_cpp_482_3"},
     "offsets":[{"type":"i64", "const":3670016}]
    }, {
-    "dst":"RelationMappedLogic_cpp_315_",
+    "dst":"RelationMappedLogic_cpp_349_",
     "opcode":"load",
     "type":"int32",
-    "pointer":{"var":"RelationMappedLogic_cpp_308_"},
+    "pointer":{"var":"RelationMappedLogic_cpp_342_"},
     "offsets":[{"global":false, "var":"localTid"}]
    }, {
     "dst":"Date_cpp_57_",
     "opcode":"cmpule",
     "type":"i32",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_315_"}, {"type":"i32", "const":2451059}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_349_"}, {"type":"i32", "const":2451059}]
    }, {
     "opcode":"condbr",
     "condition":{"var":"Date_cpp_57_"},
     "targetTrue":"then",
-    "targetFalse":"then"
+    "targetFalse":"contScan"
    }]
   }, {
    "label":"then",
    "instructions":[{
-    "dst":"RelationMappedLogic_cpp_308_5",
+    "dst":"RelationMappedLogic_cpp_342_5",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "pointer":{"var":"RelationMappedLogic_cpp_482_3"},
     "offsets":[{"type":"i64", "const":3145728}]
    }, {
-    "dst":"RelationMappedLogic_cpp_315_6",
+    "dst":"RelationMappedLogic_cpp_349_6",
     "opcode":"load",
     "type":"int32",
-    "pointer":{"var":"RelationMappedLogic_cpp_308_5"},
+    "pointer":{"var":"RelationMappedLogic_cpp_342_5"},
     "offsets":[{"global":false, "var":"localTid"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_308_7",
+    "dst":"RelationMappedLogic_cpp_342_7",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "pointer":{"var":"RelationMappedLogic_cpp_482_3"},
     "offsets":[{"type":"i64", "const":3407872}]
    }, {
-    "dst":"RelationMappedLogic_cpp_315_8",
+    "dst":"RelationMappedLogic_cpp_349_8",
     "opcode":"load",
     "type":"int32",
-    "pointer":{"var":"RelationMappedLogic_cpp_308_7"},
+    "pointer":{"var":"RelationMappedLogic_cpp_342_7"},
     "offsets":[{"global":false, "var":"localTid"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_308_9",
+    "dst":"RelationMappedLogic_cpp_342_9",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "pointer":{"var":"RelationMappedLogic_cpp_482_3"},
     "offsets":[{"type":"i64", "const":1048576}]
    }, {
-    "dst":"RelationMappedLogic_cpp_314_",
+    "dst":"RelationMappedLogic_cpp_348_",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"RelationMappedLogic_cpp_308_9"},
+    "pointer":{"var":"RelationMappedLogic_cpp_342_9"},
     "offsets":[{"global":false, "var":"localTid"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_308_10",
+    "dst":"RelationMappedLogic_cpp_342_10",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "pointer":{"var":"RelationMappedLogic_cpp_482_3"},
     "offsets":[{"type":"i64", "const":1572864}]
    }, {
-    "dst":"RelationMappedLogic_cpp_314_11",
+    "dst":"RelationMappedLogic_cpp_348_11",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"RelationMappedLogic_cpp_308_10"},
+    "pointer":{"var":"RelationMappedLogic_cpp_342_10"},
     "offsets":[{"global":false, "var":"localTid"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_308_12",
+    "dst":"RelationMappedLogic_cpp_342_12",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "pointer":{"var":"RelationMappedLogic_cpp_482_3"},
     "offsets":[{"type":"i64", "const":2097152}]
    }, {
-    "dst":"RelationMappedLogic_cpp_314_13",
+    "dst":"RelationMappedLogic_cpp_348_13",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"RelationMappedLogic_cpp_308_12"},
+    "pointer":{"var":"RelationMappedLogic_cpp_342_12"},
     "offsets":[{"global":false, "var":"localTid"}]
    }, {
     "opcode":"br",
@@ -531,9 +531,9 @@
     "dst":"Numeric_cpp_763_",
     "opcode":"checkedssub",
     "type":"i64",
-    "src":[{"type":"i64", "const":100}, {"global":false, "var":"RelationMappedLogic_cpp_314_13"},
+    "src":[{"type":"i64", "const":100}, {"global":false, "var":"RelationMappedLogic_cpp_348_13"}],
     "targetSuccess":"cont14",
-    "targetFailure":"cont14"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont14",
@@ -541,12 +541,12 @@
     "dst":"BigNumeric_cpp_863_",
     "opcode":"ashr",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_11"}, {"type":"i64", "const":63}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_11"}, {"type":"i64", "const":63}]
    }, {
     "dst":"BigNumeric_cpp_863_15",
     "opcode":"builddata128",
     "type":"d128",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_11"}, {"global":false, "var":"BigNumeric_cpp_863_"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_11"}, {"global":false, "var":"BigNumeric_cpp_863_"}]
    }, {
     "dst":"BigNumeric_cpp_863_16",
     "opcode":"ashr",
@@ -573,9 +573,9 @@
     "dst":"Numeric_cpp_763_20",
     "opcode":"checkedssub",
     "type":"i64",
-    "src":[{"type":"i64", "const":100}, {"global":false, "var":"RelationMappedLogic_cpp_314_13"},
+    "src":[{"type":"i64", "const":100}, {"global":false, "var":"RelationMappedLogic_cpp_348_13"}],
     "targetSuccess":"cont19",
-    "targetFailure":"cont19"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont19",
@@ -583,12 +583,12 @@
     "dst":"BigNumeric_cpp_863_21",
     "opcode":"ashr",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_11"}, {"type":"i64", "const":63}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_11"}, {"type":"i64", "const":63}]
    }, {
     "dst":"BigNumeric_cpp_863_22",
     "opcode":"builddata128",
     "type":"d128",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_314_11"}, {"global":false, "var":"BigNumeric_cpp_863_21"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_11"}, {"global":false, "var":"BigNumeric_cpp_863_21"}]
    }, {
     "dst":"BigNumeric_cpp_863_23",
     "opcode":"ashr",
@@ -606,16 +606,16 @@
     "fun":"umbra::BigNumericRuntime::mulTrap(umbra::data128_t, umbra::data128_t)",
     "args":[{"global":false, "var":"BigNumeric_cpp_863_22"}, {"global":false, "var":"BigNumeric_cpp_863_24"}]
    }, {
-    "dst":"RelationMappedLogic_cpp_308_26",
+    "dst":"RelationMappedLogic_cpp_342_26",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"RelationMappedLogic_cpp_350_3"},
+    "pointer":{"var":"RelationMappedLogic_cpp_482_3"},
     "offsets":[{"type":"i64", "const":2621440}]
    }, {
-    "dst":"RelationMappedLogic_cpp_314_27",
+    "dst":"RelationMappedLogic_cpp_348_27",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"RelationMappedLogic_cpp_308_26"},
+    "pointer":{"var":"RelationMappedLogic_cpp_342_26"},
     "offsets":[{"global":false, "var":"localTid"}]
    }, {
     "opcode":"br",
@@ -627,9 +627,9 @@
     "dst":"Numeric_cpp_600_",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"type":"i64", "const":100}, {"global":false, "var":"RelationMappedLogic_cpp_314_27"},
+    "src":[{"type":"i64", "const":100}, {"global":false, "var":"RelationMappedLogic_cpp_348_27"}],
     "targetSuccess":"cont29",
-    "targetFailure":"cont29"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont29",
@@ -653,12 +653,12 @@
     "dst":"Hash_cpp_264_",
     "opcode":"zext",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_315_6"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_349_6"}]
    }, {
     "dst":"Hash_cpp_264_32",
     "opcode":"zext",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_315_8"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_349_8"}]
    }, {
     "dst":"Hash_cpp_268_",
     "opcode":"shl",
@@ -695,7 +695,7 @@
     "type":"i64",
     "src":[{"global":false, "var":"Hash_cpp_379_34"}, {"type":"i64", "const":2685821657736338717}]
    }, {
-    "dst":"Pipeline_cpp_276_",
+    "dst":"Pipeline_cpp_277_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"localState"},
@@ -704,7 +704,7 @@
     "dst":"hashTable",
     "opcode":"getelementptr",
     "type":"object umbra::Preaggregation",
-    "pointer":{"var":"Pipeline_cpp_276_"},
+    "pointer":{"var":"Pipeline_cpp_277_"},
     "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}, {"type":"i32", "const":0}]
    }, {
     "dst":"PreaggregationLogic_cpp_20_",
@@ -732,7 +732,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_25_"},
     "targetTrue":"then37",
-    "targetFalse":"then37"
+    "targetFalse":"else"
    }]
   }, {
    "label":"then37",
@@ -741,11 +741,12 @@
     "opcode":"call",
     "type":"ptr",
     "fun":"umbra::Preaggregation::addEntry(unsigned long)",
-    "args":[{"global":false, "var":"Pipeline_cpp_276_"}, {"global":false, "var":"Hash_cpp_379_35"}]
+    "args":[{"global":false, "var":"Pipeline_cpp_277_"}, {"global":false, "var":"Hash_cpp_379_35"}]
    }, {
     "opcode":"store",
     "type":"int32",
-    "value":{"var":"RelationMappedLogic_cpp_315_6"},
+    "value":{"var":"RelationMappedLogic_cpp_349_6"},
+    "pointer":{"var":"PreaggregationLogic_cpp_29_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_",
@@ -756,10 +757,11 @@
    }, {
     "opcode":"store",
     "type":"int32",
-    "value":{"var":"RelationMappedLogic_cpp_315_8"},
+    "value":{"var":"RelationMappedLogic_cpp_349_8"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_"},
     "offsets":[]
    }, {
-    "dst":"GroupByTranslator_cpp_368_",
+    "dst":"GroupByTranslator_cpp_381_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"PreaggregationLogic_cpp_29_"},
@@ -767,84 +769,92 @@
    }, {
     "opcode":"store",
     "type":"int64",
-    "value":{"var":"RelationMappedLogic_cpp_314_"},
+    "value":{"var":"RelationMappedLogic_cpp_348_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_38",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_368_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "opcode":"store",
     "type":"int64",
-    "value":{"var":"RelationMappedLogic_cpp_314_11"},
+    "value":{"var":"RelationMappedLogic_cpp_348_11"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_38"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_39",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_368_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[{"type":"i64", "const":16}]
    }, {
     "opcode":"store",
     "type":"data128",
     "value":{"var":"Numeric_cpp_698_"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_39"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_40",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_368_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "opcode":"store",
     "type":"data128",
     "value":{"var":"BigNumeric_cpp_630_"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_40"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_41",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_368_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[{"type":"i64", "const":48}]
    }, {
     "opcode":"store",
     "type":"int64",
-    "value":{"var":"RelationMappedLogic_cpp_314_"},
+    "value":{"var":"RelationMappedLogic_cpp_348_"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_41"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_42",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_368_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"type":"i64", "const":1},
+    "pointer":{"var":"MaterializationHelper_cpp_983_42"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_43",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_368_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
     "opcode":"store",
     "type":"int64",
-    "value":{"var":"RelationMappedLogic_cpp_314_11"},
+    "value":{"var":"RelationMappedLogic_cpp_348_11"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_43"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_983_44",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_368_"},
+    "pointer":{"var":"GroupByTranslator_cpp_381_"},
     "offsets":[{"type":"i64", "const":72}]
    }, {
     "opcode":"store",
     "type":"int64",
-    "value":{"var":"RelationMappedLogic_cpp_314_13"},
+    "value":{"var":"RelationMappedLogic_cpp_348_13"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_44"},
     "offsets":[]
    }, {
     "opcode":"br",
@@ -880,27 +890,27 @@
     "dst":"Char1_cpp_75_",
     "opcode":"cmpeq",
     "type":"i32",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_315_6"}, {"global":false, "var":"MaterializationHelper_cpp_876_"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_349_6"}, {"global":false, "var":"MaterializationHelper_cpp_876_"}]
    }, {
     "dst":"Char1_cpp_75_47",
     "opcode":"cmpeq",
     "type":"i32",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_315_8"}, {"global":false, "var":"MaterializationHelper_cpp_876_46"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_349_8"}, {"global":false, "var":"MaterializationHelper_cpp_876_46"}]
    }, {
-    "dst":"ConsumerContext_cpp_405_",
+    "dst":"ConsumerContext_cpp_406_",
     "opcode":"and",
     "type":"bool",
     "src":[{"global":false, "var":"Char1_cpp_75_"}, {"global":false, "var":"Char1_cpp_75_47"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"ConsumerContext_cpp_405_"},
+    "condition":{"var":"ConsumerContext_cpp_406_"},
     "targetTrue":"else48",
-    "targetFalse":"else48"
+    "targetFalse":"then37"
    }]
   }, {
    "label":"else48",
    "instructions":[{
-    "dst":"GroupByTranslator_cpp_378_",
+    "dst":"GroupByTranslator_cpp_391_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"PreaggregationLogic_cpp_36_"},
@@ -909,15 +919,15 @@
     "dst":"MaterializationHelper_cpp_977_",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[]
    }, {
     "dst":"Numeric_cpp_777_",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_"}, {"global":false, "var":"RelationMappedLogic_cpp_314_"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_"}, {"global":false, "var":"RelationMappedLogic_cpp_348_"}],
     "targetSuccess":"cont49",
-    "targetFailure":"cont49"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont49",
@@ -925,12 +935,13 @@
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_50",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "dst":"MaterializationHelper_cpp_977_51",
@@ -942,9 +953,9 @@
     "dst":"Numeric_cpp_777_53",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_51"}, {"global":false, "var":"RelationMappedLogic_cpp_314_11"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_51"}, {"global":false, "var":"RelationMappedLogic_cpp_348_11"}],
     "targetSuccess":"cont52",
-    "targetFailure":"cont52"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont52",
@@ -952,18 +963,19 @@
     "dst":"MaterializationHelper_cpp_983_54",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_53"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_54"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_55",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":16}]
    }, {
     "dst":"MaterializationHelper_cpp_977_56",
@@ -981,18 +993,19 @@
     "dst":"MaterializationHelper_cpp_983_57",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":16}]
    }, {
     "opcode":"store",
     "type":"data128",
     "value":{"var":"BigNumeric_cpp_688_"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_57"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_58",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "dst":"MaterializationHelper_cpp_977_59",
@@ -1010,18 +1023,19 @@
     "dst":"MaterializationHelper_cpp_983_61",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "opcode":"store",
     "type":"data128",
     "value":{"var":"BigNumeric_cpp_688_60"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_61"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_62",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":48}]
    }, {
     "dst":"MaterializationHelper_cpp_977_63",
@@ -1033,9 +1047,9 @@
     "dst":"Numeric_cpp_777_65",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_63"}, {"global":false, "var":"RelationMappedLogic_cpp_314_"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_63"}, {"global":false, "var":"RelationMappedLogic_cpp_348_"}],
     "targetSuccess":"cont64",
-    "targetFailure":"cont64"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont64",
@@ -1043,18 +1057,19 @@
     "dst":"MaterializationHelper_cpp_983_66",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":48}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_65"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_66"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_67",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
     "dst":"MaterializationHelper_cpp_977_68",
@@ -1071,18 +1086,19 @@
     "dst":"MaterializationHelper_cpp_983_69",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Aggregate_cpp_173_"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_69"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_70",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
     "dst":"MaterializationHelper_cpp_977_71",
@@ -1094,9 +1110,9 @@
     "dst":"Numeric_cpp_777_73",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_71"}, {"global":false, "var":"RelationMappedLogic_cpp_314_11"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_71"}, {"global":false, "var":"RelationMappedLogic_cpp_348_11"}],
     "targetSuccess":"cont72",
-    "targetFailure":"cont72"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont72",
@@ -1104,18 +1120,19 @@
     "dst":"MaterializationHelper_cpp_983_74",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_73"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_74"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_75",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":72}]
    }, {
     "dst":"MaterializationHelper_cpp_977_76",
@@ -1127,9 +1144,9 @@
     "dst":"Numeric_cpp_777_78",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_76"}, {"global":false, "var":"RelationMappedLogic_cpp_314_13"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_76"}, {"global":false, "var":"RelationMappedLogic_cpp_348_13"}],
     "targetSuccess":"cont77",
-    "targetFailure":"cont77"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont77",
@@ -1137,12 +1154,13 @@
     "dst":"MaterializationHelper_cpp_983_79",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_378_"},
+    "pointer":{"var":"GroupByTranslator_cpp_391_"},
     "offsets":[{"type":"i64", "const":72}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_78"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_79"},
     "offsets":[]
    }, {
     "opcode":"br",
@@ -1157,33 +1175,33 @@
   }, {
    "label":"contScan",
    "instructions":[{
-    "dst":"RelationMappedLogic_cpp_361_",
+    "dst":"RelationMappedLogic_cpp_493_",
     "opcode":"add",
     "type":"i64",
     "src":[{"global":false, "var":"localTid"}, {"type":"i64", "const":1}]
    }, {
-    "dst":"RelationMappedLogic_cpp_362_",
+    "dst":"RelationMappedLogic_cpp_494_",
     "opcode":"cmpne",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_361_"}, {"global":false, "var":"RelationMappedLogic_cpp_352_4"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_493_"}, {"global":false, "var":"RelationMappedLogic_cpp_484_4"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"RelationMappedLogic_cpp_362_"},
+    "condition":{"var":"RelationMappedLogic_cpp_494_"},
     "targetTrue":"loopTuples",
-    "targetFalse":"loopTuples"
+    "targetFalse":"loopDoneTuples"
    }]
   }, {
    "label":"loopDoneTuples",
    "instructions":[{
-    "dst":"RelationMappedLogic_cpp_364_",
+    "dst":"RelationMappedLogic_cpp_496_",
     "opcode":"cmpne",
     "type":"i64",
-    "src":[{"global":false, "var":"RelationMappedLogic_cpp_348_1"}, {"global":false, "var":"to"}]
+    "src":[{"global":false, "var":"RelationMappedLogic_cpp_480_1"}, {"global":false, "var":"to"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"RelationMappedLogic_cpp_364_"},
+    "condition":{"var":"RelationMappedLogic_cpp_496_"},
     "targetTrue":"loopBlocks",
-    "targetFalse":"loopBlocks"
+    "targetFalse":"loopDoneBlocks"
    }]
   }, {
    "label":"loopDoneBlocks",
@@ -1208,23 +1226,23 @@
     "opcode":"unreachable"
    }]
   }]
- }{
+ }, {
   "name":"umbra::RuntimeFunctions::throwOverflow()",
   "returnType":"void",
   "args":[]
- }{
+ }, {
   "name":"umbra::BigNumericRuntime::mulTrap(umbra::data128_t, umbra::data128_t)",
   "returnType":"data128",
   "args":[{"var":4776, "type":"data128"}, {"var":4790, "type":"data128"}]
- }{
+ }, {
   "name":"umbra::Preaggregation::addEntry(unsigned long)",
   "returnType":"int8*",
   "args":[{"var":5935, "type":"object umbra::Preaggregation*"}, {"var":5949, "type":"int64"}]
- }{
+ }, {
   "name":"umbra::BigNumericRuntime::addTrap(umbra::data128_t, umbra::data128_t)",
   "returnType":"data128",
   "args":[{"var":7680, "type":"data128"}, {"var":7694, "type":"data128"}]
- }{
+ }, {
   "name":"_10_planStep3",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -1232,7 +1250,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"CompilationContext_cpp_221_",
+    "dst":"CompilationContext_cpp_223_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -1241,9 +1259,9 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::TableScanOperator::Job::destroy(void*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_221_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_223_"}]
    }, {
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -1252,9 +1270,9 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::AggregationTarget::exchangeTables(void*, unsigned long)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"global":false, "var":"state"}, {"type":"i64", "const":32}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}, {"global":false, "var":"state"}, {"type":"i64", "const":32}]
    }, {
-    "dst":"CompilationContext_cpp_221_0",
+    "dst":"CompilationContext_cpp_223_0",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -1263,7 +1281,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::AggregationTarget::setupAggregateJob(void*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"global":false, "var":"CompilationContext_cpp_221_0"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}, {"global":false, "var":"CompilationContext_cpp_223_0"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -1274,19 +1292,19 @@
     "value":{"type":"i32", "const":7}
    }]
   }]
- }{
+ }, {
   "name":"umbra::TableScanOperator::Job::destroy(void*)",
   "returnType":"void",
   "args":[{"var":9267, "type":"int8*"}]
- }{
+ }, {
   "name":"umbra::AggregationTarget::exchangeTables(void*, unsigned long)",
   "returnType":"void",
   "args":[{"var":9349, "type":"object umbra::AggregationTarget*"}, {"var":9363, "type":"int8*"}, {"var":9377, "type":"int64"}]
- }{
+ }, {
   "name":"umbra::AggregationTarget::setupAggregateJob(void*)",
   "returnType":"void",
   "args":[{"var":9468, "type":"object umbra::AggregationTarget*"}, {"var":9482, "type":"int8*"}]
- }{
+ }, {
   "name":"_10_groupby_tablescan_lineitem_extra",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -1314,7 +1332,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_50_"},
     "targetTrue":"loopChunk",
-    "targetFalse":"loopChunk"
+    "targetFalse":"loopDoneChunk"
    }]
   }, {
    "label":"loopChunk",
@@ -1361,7 +1379,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_62_"},
     "targetTrue":"loopChunkEntries",
-    "targetFalse":"loopChunkEntries"
+    "targetFalse":"loopDoneChunkEntries"
    }]
   }, {
    "label":"loopChunkEntries",
@@ -1402,7 +1420,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_71_"},
     "targetTrue":"loopChain",
-    "targetFalse":"loopChain"
+    "targetFalse":"loopDoneChain"
    }]
   }, {
    "label":"loopChain",
@@ -1426,12 +1444,12 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_75_"},
     "targetTrue":"then",
-    "targetFalse":"then"
+    "targetFalse":"noMatch"
    }]
   }, {
    "label":"then",
    "instructions":[{
-    "dst":"GroupByTranslator_cpp_176_",
+    "dst":"GroupByTranslator_cpp_178_",
     "opcode":"getelementptr",
     "type":"object umbra::Preaggregation::EntryHeader",
     "pointer":{"var":"entry"},
@@ -1440,13 +1458,13 @@
     "dst":"MaterializationHelper_cpp_876_",
     "opcode":"load",
     "type":"int32",
-    "pointer":{"var":"GroupByTranslator_cpp_176_"},
+    "pointer":{"var":"GroupByTranslator_cpp_178_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_876_2",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_176_"},
+    "pointer":{"var":"GroupByTranslator_cpp_178_"},
     "offsets":[{"type":"i64", "const":4}]
    }, {
     "dst":"MaterializationHelper_cpp_876_3",
@@ -1455,7 +1473,7 @@
     "pointer":{"var":"MaterializationHelper_cpp_876_2"},
     "offsets":[]
    }, {
-    "dst":"GroupByTranslator_cpp_177_",
+    "dst":"GroupByTranslator_cpp_179_",
     "opcode":"getelementptr",
     "type":"object umbra::Preaggregation::EntryHeader",
     "pointer":{"var":"chainEntry"},
@@ -1464,13 +1482,13 @@
     "dst":"MaterializationHelper_cpp_876_4",
     "opcode":"load",
     "type":"int32",
-    "pointer":{"var":"GroupByTranslator_cpp_177_"},
+    "pointer":{"var":"GroupByTranslator_cpp_179_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_876_5",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_177_"},
+    "pointer":{"var":"GroupByTranslator_cpp_179_"},
     "offsets":[{"type":"i64", "const":4}]
    }, {
     "dst":"MaterializationHelper_cpp_876_6",
@@ -1489,26 +1507,26 @@
     "type":"i32",
     "src":[{"global":false, "var":"MaterializationHelper_cpp_876_3"}, {"global":false, "var":"MaterializationHelper_cpp_876_6"}]
    }, {
-    "dst":"ConsumerContext_cpp_405_",
+    "dst":"ConsumerContext_cpp_406_",
     "opcode":"and",
     "type":"bool",
     "src":[{"global":false, "var":"Char1_cpp_75_"}, {"global":false, "var":"Char1_cpp_75_7"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"ConsumerContext_cpp_405_"},
+    "condition":{"var":"ConsumerContext_cpp_406_"},
     "targetTrue":"else",
-    "targetFalse":"else"
+    "targetFalse":"noMatch"
    }]
   }, {
    "label":"else",
    "instructions":[{
-    "dst":"GroupByTranslator_cpp_185_",
+    "dst":"GroupByTranslator_cpp_188_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"entry"},
     "offsets":[{"type":"i64", "const":24}]
    }, {
-    "dst":"GroupByTranslator_cpp_185_8",
+    "dst":"GroupByTranslator_cpp_188_8",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"chainEntry"},
@@ -1517,21 +1535,21 @@
     "dst":"MaterializationHelper_cpp_977_",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_9",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[]
    }, {
     "dst":"Numeric_cpp_777_",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_"}, {"global":false, "var":"MaterializationHelper_cpp_977_9"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_"}, {"global":false, "var":"MaterializationHelper_cpp_977_9"}],
     "targetSuccess":"cont",
-    "targetFailure":"cont"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont",
@@ -1539,12 +1557,13 @@
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_10",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "dst":"MaterializationHelper_cpp_977_11",
@@ -1556,7 +1575,7 @@
     "dst":"MaterializationHelper_cpp_977_12",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "dst":"MaterializationHelper_cpp_977_13",
@@ -1568,9 +1587,9 @@
     "dst":"Numeric_cpp_777_15",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_11"}, {"global":false, "var":"MaterializationHelper_cpp_977_13"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_11"}, {"global":false, "var":"MaterializationHelper_cpp_977_13"}],
     "targetSuccess":"cont14",
-    "targetFailure":"cont14"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont14",
@@ -1578,18 +1597,19 @@
     "dst":"MaterializationHelper_cpp_983_",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_15"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_16",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":16}]
    }, {
     "dst":"MaterializationHelper_cpp_977_17",
@@ -1601,7 +1621,7 @@
     "dst":"MaterializationHelper_cpp_977_18",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[{"type":"i64", "const":16}]
    }, {
     "dst":"MaterializationHelper_cpp_977_19",
@@ -1619,18 +1639,19 @@
     "dst":"MaterializationHelper_cpp_983_20",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":16}]
    }, {
     "opcode":"store",
     "type":"data128",
     "value":{"var":"BigNumeric_cpp_688_"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_20"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_21",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "dst":"MaterializationHelper_cpp_977_22",
@@ -1642,7 +1663,7 @@
     "dst":"MaterializationHelper_cpp_977_23",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "dst":"MaterializationHelper_cpp_977_24",
@@ -1660,18 +1681,19 @@
     "dst":"MaterializationHelper_cpp_983_26",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "opcode":"store",
     "type":"data128",
     "value":{"var":"BigNumeric_cpp_688_25"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_26"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_27",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":48}]
    }, {
     "dst":"MaterializationHelper_cpp_977_28",
@@ -1683,7 +1705,7 @@
     "dst":"MaterializationHelper_cpp_977_29",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[{"type":"i64", "const":48}]
    }, {
     "dst":"MaterializationHelper_cpp_977_30",
@@ -1695,9 +1717,9 @@
     "dst":"Numeric_cpp_777_32",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_28"}, {"global":false, "var":"MaterializationHelper_cpp_977_30"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_28"}, {"global":false, "var":"MaterializationHelper_cpp_977_30"}],
     "targetSuccess":"cont31",
-    "targetFailure":"cont31"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont31",
@@ -1705,18 +1727,19 @@
     "dst":"MaterializationHelper_cpp_983_33",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":48}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_32"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_33"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_34",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
     "dst":"MaterializationHelper_cpp_977_35",
@@ -1728,7 +1751,7 @@
     "dst":"MaterializationHelper_cpp_977_36",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
     "dst":"MaterializationHelper_cpp_977_37",
@@ -1745,18 +1768,19 @@
     "dst":"MaterializationHelper_cpp_983_38",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Aggregate_cpp_182_"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_38"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_39",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
     "dst":"MaterializationHelper_cpp_977_40",
@@ -1768,7 +1792,7 @@
     "dst":"MaterializationHelper_cpp_977_41",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
     "dst":"MaterializationHelper_cpp_977_42",
@@ -1780,9 +1804,9 @@
     "dst":"Numeric_cpp_777_44",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_40"}, {"global":false, "var":"MaterializationHelper_cpp_977_42"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_40"}, {"global":false, "var":"MaterializationHelper_cpp_977_42"}],
     "targetSuccess":"cont43",
-    "targetFailure":"cont43"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont43",
@@ -1790,18 +1814,19 @@
     "dst":"MaterializationHelper_cpp_983_45",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_44"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_45"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_46",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":72}]
    }, {
     "dst":"MaterializationHelper_cpp_977_47",
@@ -1813,7 +1838,7 @@
     "dst":"MaterializationHelper_cpp_977_48",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_"},
     "offsets":[{"type":"i64", "const":72}]
    }, {
     "dst":"MaterializationHelper_cpp_977_49",
@@ -1825,9 +1850,9 @@
     "dst":"Numeric_cpp_777_51",
     "opcode":"checkedsadd",
     "type":"i64",
-    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_47"}, {"global":false, "var":"MaterializationHelper_cpp_977_49"},
+    "src":[{"global":false, "var":"MaterializationHelper_cpp_977_47"}, {"global":false, "var":"MaterializationHelper_cpp_977_49"}],
     "targetSuccess":"cont50",
-    "targetFailure":"cont50"]
+    "targetFailure":"overflow"
    }]
   }, {
    "label":"cont50",
@@ -1835,12 +1860,13 @@
     "dst":"MaterializationHelper_cpp_983_52",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_185_8"},
+    "pointer":{"var":"GroupByTranslator_cpp_188_8"},
     "offsets":[{"type":"i64", "const":72}]
    }, {
     "opcode":"store",
     "type":"int64",
     "value":{"var":"Numeric_cpp_777_51"},
+    "pointer":{"var":"MaterializationHelper_cpp_983_52"},
     "offsets":[]
    }, {
     "opcode":"br",
@@ -1863,7 +1889,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_83_"},
     "targetTrue":"loopChain",
-    "targetFalse":"loopChain"
+    "targetFalse":"loopDoneChain"
    }]
   }, {
    "label":"loopDoneChain",
@@ -1871,11 +1897,13 @@
     "opcode":"store",
     "type":"object umbra::Preaggregation::EntryHeader",
     "value":{"var":"PreaggregationLogic_cpp_69_"},
+    "pointer":{"var":"entry"},
     "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
    }, {
     "opcode":"store",
     "type":"object umbra::Preaggregation::EntryHeader*",
     "value":{"var":"entry"},
+    "pointer":{"var":"PreaggregationLogic_cpp_67_0"},
     "offsets":[]
    }, {
     "dst":"count",
@@ -1892,6 +1920,7 @@
     "opcode":"store",
     "type":"object umbra::AggregationTarget::Fragment",
     "value":{"var":"PreaggregationLogic_cpp_90_"},
+    "pointer":{"var":"PreaggregationLogic_cpp_47_"},
     "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":2}]
    }, {
     "opcode":"br",
@@ -1914,7 +1943,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_111_"},
     "targetTrue":"loopChunkEntries",
-    "targetFalse":"loopChunkEntries"
+    "targetFalse":"loopDoneChunkEntries"
    }]
   }, {
    "label":"loopDoneChunkEntries",
@@ -1933,7 +1962,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_116_"},
     "targetTrue":"loopChunk",
-    "targetFalse":"loopChunk"
+    "targetFalse":"loopDoneChunk"
    }]
   }, {
    "label":"loopDoneChunk",
@@ -1941,6 +1970,7 @@
     "opcode":"store",
     "type":"object umbra::AggregationTarget::Fragment",
     "value":{"type":"ptr", "const":0},
+    "pointer":{"var":"PreaggregationLogic_cpp_47_"},
     "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":3}]
    }, {
     "opcode":"br",
@@ -1963,11 +1993,11 @@
     "opcode":"unreachable"
    }]
   }]
- }{
+ }, {
   "name":"umbra::AggregationTarget::Fragment::checkSize()",
   "returnType":"void",
   "args":[{"var":9787, "type":"object umbra::AggregationTarget::Fragment*"}]
- }{
+ }, {
   "name":"_10_planStep4",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -1980,13 +2010,13 @@
     "fun":"umbra::ExecutionPlan::cleanupParallelWork(void*)",
     "args":[{"global":false, "var":"state"}]
    }, {
-    "dst":"CompilationContext_cpp_221_",
+    "dst":"CompilationContext_cpp_223_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -1995,7 +2025,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::AggregationTarget::setupScanJob(void*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"global":false, "var":"CompilationContext_cpp_221_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}, {"global":false, "var":"CompilationContext_cpp_223_"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -2011,15 +2041,15 @@
     "value":{"type":"i32", "const":13}
    }]
   }]
- }{
+ }, {
   "name":"umbra::ExecutionPlan::cleanupParallelWork(void*)",
   "returnType":"void",
   "args":[{"var":14189, "type":"int8*"}]
- }{
+ }, {
   "name":"umbra::AggregationTarget::setupScanJob(void*)",
   "returnType":"void",
   "args":[{"var":14321, "type":"object umbra::AggregationTarget*"}, {"var":14335, "type":"int8*"}]
- }{
+ }, {
   "name":"_10_planStep5",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2027,7 +2057,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"Pipeline_cpp_276_",
+    "dst":"Pipeline_cpp_277_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"localState"},
@@ -2036,13 +2066,13 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::init(umbra::SortOperator*, void const*, void const*)",
-    "args":[{"global":false, "var":"Pipeline_cpp_276_"}, {"global":false, "var":"state"}, {"global":true, "var":1342}]
+    "args":[{"global":false, "var":"Pipeline_cpp_277_"}, {"global":false, "var":"state"}, {"global":true, "var":1342}]
    }, {
     "opcode":"return",
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"_10_planStep6",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2050,7 +2080,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"Pipeline_cpp_276_",
+    "dst":"Pipeline_cpp_277_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"localState"},
@@ -2059,17 +2089,17 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::destroy(umbra::SortOperator*)",
-    "args":[{"global":false, "var":"Pipeline_cpp_276_"}]
+    "args":[{"global":false, "var":"Pipeline_cpp_277_"}]
    }, {
     "opcode":"return",
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"umbra::SortOperator::destroy(umbra::SortOperator*)",
   "returnType":"void",
   "args":[{"var":14701, "type":"object umbra::SortOperator*"}]
- }{
+ }, {
   "name":"_10_planStep7",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2081,7 +2111,7 @@
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"_10_sort_groupby",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2109,7 +2139,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_130_"},
     "targetTrue":"loopSlots",
-    "targetFalse":"loopSlots"
+    "targetFalse":"loopDoneSlots"
    }]
   }, {
    "label":"loopSlots",
@@ -2133,7 +2163,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_136_"},
     "targetTrue":"loopChain",
-    "targetFalse":"loopChain"
+    "targetFalse":"loopDoneChain"
    }]
   }, {
    "label":"loopChain",
@@ -2167,7 +2197,7 @@
     "pointer":{"var":"MaterializationHelper_cpp_876_0"},
     "offsets":[]
    }, {
-    "dst":"GroupByTranslator_cpp_411_",
+    "dst":"GroupByTranslator_cpp_424_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"PreaggregationLogic_cpp_140_"},
@@ -2176,13 +2206,13 @@
     "dst":"MaterializationHelper_cpp_977_",
     "opcode":"load",
     "type":"int64",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_977_2",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "dst":"MaterializationHelper_cpp_977_3",
@@ -2194,7 +2224,7 @@
     "dst":"MaterializationHelper_cpp_977_4",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[{"type":"i64", "const":16}]
    }, {
     "dst":"MaterializationHelper_cpp_977_5",
@@ -2206,7 +2236,7 @@
     "dst":"MaterializationHelper_cpp_977_6",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "dst":"MaterializationHelper_cpp_977_7",
@@ -2218,7 +2248,7 @@
     "dst":"MaterializationHelper_cpp_977_8",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[{"type":"i64", "const":48}]
    }, {
     "dst":"MaterializationHelper_cpp_977_9",
@@ -2230,7 +2260,7 @@
     "dst":"MaterializationHelper_cpp_876_10",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
     "dst":"MaterializationHelper_cpp_876_11",
@@ -2242,7 +2272,7 @@
     "dst":"MaterializationHelper_cpp_977_12",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
     "dst":"MaterializationHelper_cpp_977_13",
@@ -2254,7 +2284,7 @@
     "dst":"MaterializationHelper_cpp_977_14",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"GroupByTranslator_cpp_411_"},
+    "pointer":{"var":"GroupByTranslator_cpp_424_"},
     "offsets":[{"type":"i64", "const":72}]
    }, {
     "dst":"MaterializationHelper_cpp_977_15",
@@ -2341,43 +2371,46 @@
     "fun":"umbra::BigNumericRuntime::divTrap(umbra::data128_t, umbra::data128_t, unsigned int)",
     "args":[{"global":false, "var":"BigNumeric_cpp_863_25"}, {"global":false, "var":"BigNumeric_cpp_863_27"}, {"type":"i32", "const":19}]
    }, {
-    "dst":"Pipeline_cpp_276_",
+    "dst":"Pipeline_cpp_277_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"localState"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
-    "dst":"SortTranslator_cpp_492_",
+    "dst":"SortTranslator_cpp_494_",
     "opcode":"call",
     "type":"ptr",
     "fun":"umbra::SortOperator::storeTuple(unsigned long)",
-    "args":[{"global":false, "var":"Pipeline_cpp_276_"}, {"type":"i64", "const":112}]
+    "args":[{"global":false, "var":"Pipeline_cpp_277_"}, {"type":"i64", "const":112}]
    }, {
     "opcode":"store",
     "type":"int32",
     "value":{"var":"MaterializationHelper_cpp_876_"},
+    "pointer":{"var":"SortTranslator_cpp_494_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"SortTranslator_cpp_492_"},
+    "pointer":{"var":"SortTranslator_cpp_494_"},
     "offsets":[{"type":"i64", "const":4}]
    }, {
     "opcode":"store",
     "type":"int32",
     "value":{"var":"MaterializationHelper_cpp_876_1"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_161_",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"SortTranslator_cpp_492_"},
+    "pointer":{"var":"SortTranslator_cpp_494_"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "opcode":"store",
     "type":"data128",
     "value":{"var":"MaterializationHelper_cpp_977_5"},
+    "pointer":{"var":"MaterializationHelper_cpp_161_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_29",
@@ -2389,6 +2422,7 @@
     "opcode":"store",
     "type":"data128",
     "value":{"var":"MaterializationHelper_cpp_977_7"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_29"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_30",
@@ -2400,6 +2434,7 @@
     "opcode":"store",
     "type":"data128",
     "value":{"var":"Numeric_cpp_627_"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_30"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_31",
@@ -2411,6 +2446,7 @@
     "opcode":"store",
     "type":"data128",
     "value":{"var":"Numeric_cpp_627_23"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_31"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_32",
@@ -2422,6 +2458,7 @@
     "opcode":"store",
     "type":"data128",
     "value":{"var":"Numeric_cpp_627_28"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_32"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_33",
@@ -2433,6 +2470,7 @@
     "opcode":"store",
     "type":"int64",
     "value":{"var":"MaterializationHelper_cpp_977_"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_33"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_34",
@@ -2444,6 +2482,7 @@
     "opcode":"store",
     "type":"int64",
     "value":{"var":"MaterializationHelper_cpp_977_3"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_34"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_150_35",
@@ -2455,6 +2494,7 @@
     "opcode":"store",
     "type":"int64",
     "value":{"var":"MaterializationHelper_cpp_876_11"},
+    "pointer":{"var":"MaterializationHelper_cpp_150_35"},
     "offsets":[]
    }, {
     "dst":"next",
@@ -2471,7 +2511,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_143_"},
     "targetTrue":"loopChain",
-    "targetFalse":"loopChain"
+    "targetFalse":"loopDoneChain"
    }]
   }, {
    "label":"loopDoneChain",
@@ -2490,7 +2530,7 @@
     "opcode":"condbr",
     "condition":{"var":"PreaggregationLogic_cpp_147_"},
     "targetTrue":"loopSlots",
-    "targetFalse":"loopSlots"
+    "targetFalse":"loopDoneSlots"
    }]
   }, {
    "label":"loopDoneSlots",
@@ -2505,15 +2545,15 @@
     "value":{"type":"i32", "const":12}
    }]
   }]
- }{
+ }, {
   "name":"umbra::BigNumericRuntime::divTrap(umbra::data128_t, umbra::data128_t, unsigned int)",
   "returnType":"data128",
   "args":[{"var":16420, "type":"data128"}, {"var":16434, "type":"data128"}, {"var":16448, "type":"int32"}]
- }{
+ }, {
   "name":"umbra::SortOperator::storeTuple(unsigned long)",
   "returnType":"int8*",
   "args":[{"var":16968, "type":"object umbra::SortOperator*"}, {"var":16982, "type":"int64"}]
- }{
+ }, {
   "name":"_10_planStep8",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2535,11 +2575,11 @@
     "value":{"type":"i32", "const":14}
    }]
   }]
- }{
+ }, {
   "name":"umbra::ExecutionPlan::preparePerObjectWork(void*, unsigned int)",
   "returnType":"void",
   "args":[{"var":18216, "type":"int8*"}, {"var":18230, "type":"int32"}]
- }{
+ }, {
   "name":"_10_sort_groupby_extra",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2547,7 +2587,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"Pipeline_cpp_470_",
+    "dst":"Pipeline_cpp_471_",
     "opcode":"load",
     "type":"int8*",
     "pointer":{"var":"localState"},
@@ -2556,7 +2596,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::sortLocal()",
-    "args":[{"global":false, "var":"Pipeline_cpp_470_"}]
+    "args":[{"global":false, "var":"Pipeline_cpp_471_"}]
    }, {
     "opcode":"br",
     "target":"stepDone"
@@ -2568,11 +2608,11 @@
     "value":{"type":"i32", "const":15}
    }]
   }]
- }{
+ }, {
   "name":"umbra::SortOperator::sortLocal()",
   "returnType":"void",
   "args":[{"var":18424, "type":"object umbra::SortOperator*"}]
- }{
+ }, {
   "name":"_10_planStep9",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2603,21 +2643,21 @@
     "pointer":{"var":"currentLocalState"},
     "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":0}]
    }, {
-    "dst":"Pipeline_cpp_68_",
+    "dst":"Pipeline_cpp_69_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"currentLocalState"},
     "offsets":[{"type":"i64", "const":64}]
    }, {
-    "dst":"Pipeline_cpp_55_",
+    "dst":"Pipeline_cpp_56_",
     "opcode":"cmpult",
     "type":"i32",
     "src":[{"type":"i32", "const":0}, {"global":false, "var":"threadCount"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"Pipeline_cpp_55_"},
+    "condition":{"var":"Pipeline_cpp_56_"},
     "targetTrue":"loopStates",
-    "targetFalse":"loopStates"
+    "targetFalse":"loopDoneStates"
    }]
   }, {
    "label":"loopStates",
@@ -2625,59 +2665,59 @@
     "dst":"Thread",
     "opcode":"phi",
     "type":"i32",
-    "incoming":[{"value":{"type":"i32", "const":0}, "block":"body"}, {"value":{"var":"Pipeline_cpp_96_"}, "block":"continue"}]
+    "incoming":[{"value":{"type":"i32", "const":0}, "block":"body"}, {"value":{"var":"Pipeline_cpp_97_"}, "block":"continue"}]
    }, {
-    "dst":"Pipeline_cpp_75_",
+    "dst":"Pipeline_cpp_76_",
     "opcode":"zext",
     "type":"i64",
     "src":[{"global":false, "var":"Thread"}]
    }, {
-    "dst":"Pipeline_cpp_75_0",
+    "dst":"Pipeline_cpp_76_0",
     "opcode":"mul",
     "type":"i64",
-    "src":[{"global":false, "var":"Pipeline_cpp_75_"}, {"global":false, "var":"localStateSize"}]
+    "src":[{"global":false, "var":"Pipeline_cpp_76_"}, {"global":false, "var":"localStateSize"}]
    }, {
-    "dst":"Pipeline_cpp_75_1",
+    "dst":"Pipeline_cpp_76_1",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"Pipeline_cpp_68_"},
-    "offsets":[{"global":false, "var":"Pipeline_cpp_75_0"}]
+    "pointer":{"var":"Pipeline_cpp_69_"},
+    "offsets":[{"global":false, "var":"Pipeline_cpp_76_0"}]
    }, {
-    "dst":"Pipeline_cpp_78_",
+    "dst":"Pipeline_cpp_79_",
     "opcode":"load",
     "type":"int8",
-    "pointer":{"var":"Pipeline_cpp_75_1"},
+    "pointer":{"var":"Pipeline_cpp_76_1"},
     "offsets":[{"type":"i32", "const":-1}]
    }, {
-    "dst":"Pipeline_cpp_78_2",
+    "dst":"Pipeline_cpp_79_2",
     "opcode":"cmpeq",
     "type":"i8",
-    "src":[{"global":false, "var":"Pipeline_cpp_78_"}, {"type":"i8", "const":0}]
+    "src":[{"global":false, "var":"Pipeline_cpp_79_"}, {"type":"i8", "const":0}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"Pipeline_cpp_78_2"},
+    "condition":{"var":"Pipeline_cpp_79_2"},
     "targetTrue":"continue",
-    "targetFalse":"continue"
+    "targetFalse":"else"
    }]
   }, {
    "label":"else",
    "instructions":[{
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
     "offsets":[{"type":"i64", "const":24808}]
    }, {
-    "dst":"Pipeline_cpp_276_",
+    "dst":"Pipeline_cpp_277_",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"Pipeline_cpp_75_1"},
+    "pointer":{"var":"Pipeline_cpp_76_1"},
     "offsets":[{"type":"i64", "const":32}]
    }, {
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::donateTupleMemory(umbra::SortOperator&)",
-    "args":[{"global":false, "var":"Pipeline_cpp_276_"}, {"global":false, "var":"CompilationContext_cpp_215_"}]
+    "args":[{"global":false, "var":"Pipeline_cpp_277_"}, {"global":false, "var":"CompilationContext_cpp_217_"}]
    }, {
     "opcode":"br",
     "target":"continue"
@@ -2685,25 +2725,25 @@
   }, {
    "label":"continue",
    "instructions":[{
-    "dst":"Pipeline_cpp_96_",
+    "dst":"Pipeline_cpp_97_",
     "opcode":"add",
     "type":"i32",
     "src":[{"global":false, "var":"Thread"}, {"type":"i32", "const":1}]
    }, {
-    "dst":"Pipeline_cpp_97_",
+    "dst":"Pipeline_cpp_98_",
     "opcode":"cmpult",
     "type":"i32",
-    "src":[{"global":false, "var":"Pipeline_cpp_96_"}, {"global":false, "var":"threadCount"}]
+    "src":[{"global":false, "var":"Pipeline_cpp_97_"}, {"global":false, "var":"threadCount"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"Pipeline_cpp_97_"},
+    "condition":{"var":"Pipeline_cpp_98_"},
     "targetTrue":"loopStates",
-    "targetFalse":"loopStates"
+    "targetFalse":"loopDoneStates"
    }]
   }, {
    "label":"loopDoneStates",
    "instructions":[{
-    "dst":"CompilationContext_cpp_215_3",
+    "dst":"CompilationContext_cpp_217_3",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -2712,15 +2752,15 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::prepareSortGlobal()",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_3"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_3"}]
    }, {
-    "dst":"CompilationContext_cpp_215_4",
+    "dst":"CompilationContext_cpp_217_4",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
     "offsets":[{"type":"i64", "const":24808}]
    }, {
-    "dst":"CompilationContext_cpp_221_",
+    "dst":"CompilationContext_cpp_223_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -2729,7 +2769,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::setupGlobalSortJob(void*, umbra::SortOperator&)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_221_"}, {"global":false, "var":"CompilationContext_cpp_215_4"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_223_"}, {"global":false, "var":"CompilationContext_cpp_217_4"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -2740,23 +2780,23 @@
     "value":{"type":"i32", "const":16}
    }]
   }]
- }{
+ }, {
   "name":"umbra::ExecutionPlan::finishPerObjectWork(void*)",
   "returnType":"void",
   "args":[{"var":18546, "type":"int8*"}]
- }{
+ }, {
   "name":"umbra::SortOperator::donateTupleMemory(umbra::SortOperator&)",
   "returnType":"void",
   "args":[{"var":19117, "type":"object umbra::SortOperator*"}, {"var":19131, "type":"object umbra::SortOperator*"}]
- }{
+ }, {
   "name":"umbra::SortOperator::prepareSortGlobal()",
   "returnType":"void",
   "args":[{"var":19308, "type":"object umbra::SortOperator*"}]
- }{
+ }, {
   "name":"umbra::SortOperator::setupGlobalSortJob(void*, umbra::SortOperator&)",
   "returnType":"void",
   "args":[{"var":19441, "type":"int8*"}, {"var":19455, "type":"object umbra::SortOperator*"}]
- }{
+ }, {
   "name":"_10_sort_groupby_extra10",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2764,13 +2804,13 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"SortTranslator_cpp_431_",
+    "dst":"SortTranslator_cpp_433_",
     "opcode":"load",
     "type":"int32",
     "pointer":{"var":"localState"},
     "offsets":[]
    }, {
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -2779,7 +2819,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::sortGlobal(unsigned int)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"global":false, "var":"SortTranslator_cpp_431_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}, {"global":false, "var":"SortTranslator_cpp_433_"}]
    }, {
     "opcode":"br",
     "target":"stepDone"
@@ -2791,11 +2831,11 @@
     "value":{"type":"i32", "const":17}
    }]
   }]
- }{
+ }, {
   "name":"umbra::SortOperator::sortGlobal(unsigned int)",
   "returnType":"void",
   "args":[{"var":19695, "type":"object umbra::SortOperator*"}, {"var":19709, "type":"int32"}]
- }{
+ }, {
   "name":"_10_planStep11",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2803,7 +2843,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -2812,20 +2852,20 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::finishSortGlobal()",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}]
    }, {
     "opcode":"call",
     "type":"void",
     "fun":"umbra::ExecutionPlan::cleanupParallelWork(void*)",
     "args":[{"global":false, "var":"state"}]
    }, {
-    "dst":"CompilationContext_cpp_221_",
+    "dst":"CompilationContext_cpp_223_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
     "offsets":[{"type":"i64", "const":56}]
    }, {
-    "dst":"CompilationContext_cpp_215_0",
+    "dst":"CompilationContext_cpp_217_0",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -2834,7 +2874,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::Job::init(void*, umbra::SortOperator&, bool)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_221_"}, {"global":false, "var":"CompilationContext_cpp_215_0"}, {"type":"bool", "const":true}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_223_"}, {"global":false, "var":"CompilationContext_cpp_217_0"}, {"type":"bool", "const":true}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -2850,15 +2890,15 @@
     "value":{"type":"i32", "const":22}
    }]
   }]
- }{
+ }, {
   "name":"umbra::SortOperator::finishSortGlobal()",
   "returnType":"void",
   "args":[{"var":19885, "type":"object umbra::SortOperator*"}]
- }{
+ }, {
   "name":"umbra::SortOperator::Job::init(void*, umbra::SortOperator&, bool)",
   "returnType":"void",
   "args":[{"var":20043, "type":"int8*"}, {"var":20057, "type":"object umbra::SortOperator*"}, {"var":20071, "type":"bool"}]
- }{
+ }, {
   "name":"_10_planStep12",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2870,7 +2910,7 @@
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"_10_planStep13",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2882,7 +2922,7 @@
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"_10_planStep14",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2894,7 +2934,7 @@
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"_10_map_sort",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -2914,15 +2954,15 @@
     "pointer":{"var":"localState"},
     "offsets":[{"type":"i32", "const":0}, {"type":"i32", "const":1}]
    }, {
-    "dst":"SortTranslator_cpp_511_",
+    "dst":"SortTranslator_cpp_513_",
     "opcode":"cmpne",
     "type":"ptr",
     "src":[{"global":false, "var":"from"}, {"global":false, "var":"to"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"SortTranslator_cpp_511_"},
+    "condition":{"var":"SortTranslator_cpp_513_"},
     "targetTrue":"loopTuples",
-    "targetFalse":"loopTuples"
+    "targetFalse":"loopDoneTuples"
    }]
   }, {
    "label":"loopTuples",
@@ -2930,9 +2970,9 @@
     "dst":"tuple",
     "opcode":"phi",
     "type":"ptr",
-    "incoming":[{"value":{"var":"from"}, "block":"body"}, {"value":{"var":"SortTranslator_cpp_523_"}, "block":"cont18"}]
+    "incoming":[{"value":{"var":"from"}, "block":"body"}, {"value":{"var":"SortTranslator_cpp_525_"}, "block":"cont18"}]
    }, {
-    "dst":"CodeGen_hpp_1150_",
+    "dst":"CodeGen_hpp_1151_",
     "opcode":"load",
     "type":"int8*",
     "pointer":{"var":"tuple"},
@@ -2941,13 +2981,13 @@
     "dst":"MaterializationHelper_cpp_230_",
     "opcode":"load",
     "type":"int32",
-    "pointer":{"var":"CodeGen_hpp_1150_"},
+    "pointer":{"var":"CodeGen_hpp_1151_"},
     "offsets":[]
    }, {
     "dst":"MaterializationHelper_cpp_229_",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"CodeGen_hpp_1150_"},
+    "pointer":{"var":"CodeGen_hpp_1151_"},
     "offsets":[{"type":"i64", "const":4}]
    }, {
     "dst":"MaterializationHelper_cpp_230_0",
@@ -2959,7 +2999,7 @@
     "dst":"MaterializationHelper_cpp_233_",
     "opcode":"getelementptr",
     "type":"int8",
-    "pointer":{"var":"CodeGen_hpp_1150_"},
+    "pointer":{"var":"CodeGen_hpp_1151_"},
     "offsets":[{"type":"i64", "const":8}]
    }, {
     "dst":"MaterializationHelper_cpp_230_1",
@@ -3052,27 +3092,28 @@
     "pointer":{"var":"MaterializationHelper_cpp_229_14"},
     "offsets":[]
    }, {
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
     "offsets":[{"type":"i64", "const":120}]
    }, {
-    "dst":"sql_cpp_125_",
+    "dst":"sql_cpp_129_",
     "opcode":"atomicrmwxchg",
     "type":"int8",
     "value":{"type":"i8", "const":1},
+    "pointer":{"var":"CompilationContext_cpp_217_"},
     "offsets":[]
    }, {
-    "dst":"CodeGen_cpp_441_",
+    "dst":"CodeGen_cpp_442_",
     "opcode":"cmpule",
     "type":"i8",
-    "src":[{"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_125_"}]
+    "src":[{"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_129_"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"CodeGen_cpp_441_"},
+    "condition":{"var":"CodeGen_cpp_442_"},
     "targetTrue":"then",
-    "targetFalse":"then"
+    "targetFalse":"cont"
    }]
   }, {
    "label":"then",
@@ -3080,7 +3121,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::RuntimeFunctions::lockSpinlock(void*, unsigned char, unsigned char)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}, {"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_125_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}, {"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_129_"}]
    }, {
     "opcode":"br",
     "target":"cont"
@@ -3091,7 +3132,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::Char1Runtime::output(umbra::OutputTarget&, umbra::Type, unsigned int)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":648518346341351424}, {"global":false, "var":"MaterializationHelper_cpp_230_"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":648518346341351424}, {"global":false, "var":"MaterializationHelper_cpp_230_"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3101,7 +3142,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::Char1Runtime::output(umbra::OutputTarget&, umbra::Type, unsigned int)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":648518346341351424}, {"global":false, "var":"MaterializationHelper_cpp_230_0"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":648518346341351424}, {"global":false, "var":"MaterializationHelper_cpp_230_0"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3111,7 +3152,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::NumericRuntime::output(umbra::OutputTarget&, umbra::Type, long)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":432345564529558016}, {"global":false, "var":"MaterializationHelper_cpp_230_11"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":432345564529558016}, {"global":false, "var":"MaterializationHelper_cpp_230_11"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3121,7 +3162,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::NumericRuntime::output(umbra::OutputTarget&, umbra::Type, long)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":432345564529558016}, {"global":false, "var":"MaterializationHelper_cpp_230_13"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":432345564529558016}, {"global":false, "var":"MaterializationHelper_cpp_230_13"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3131,7 +3172,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":504403158903030784}, {"global":false, "var":"MaterializationHelper_cpp_230_1"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":504403158903030784}, {"global":false, "var":"MaterializationHelper_cpp_230_1"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3141,7 +3182,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":504403158903031296}, {"global":false, "var":"MaterializationHelper_cpp_230_3"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":504403158903031296}, {"global":false, "var":"MaterializationHelper_cpp_230_3"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3151,7 +3192,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":504403158785594624}, {"global":false, "var":"MaterializationHelper_cpp_230_5"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":504403158785594624}, {"global":false, "var":"MaterializationHelper_cpp_230_5"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3161,7 +3202,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":504403158785594624}, {"global":false, "var":"MaterializationHelper_cpp_230_7"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":504403158785594624}, {"global":false, "var":"MaterializationHelper_cpp_230_7"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3171,7 +3212,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":504403158785594624}, {"global":false, "var":"MaterializationHelper_cpp_230_9"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":504403158785594624}, {"global":false, "var":"MaterializationHelper_cpp_230_9"}]
    }, {
     "opcode":"call",
     "type":"void",
@@ -3181,28 +3222,29 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::BigIntRuntime::output(umbra::OutputTarget&, umbra::Type, long)",
-    "args":[{"type":"ptr", "const":94199278748192}, {"type":"i64", "const":360287970189639680}, {"global":false, "var":"MaterializationHelper_cpp_230_15"}]
+    "args":[{"type":"ptr", "const":94111250884352}, {"type":"i64", "const":360287970189639680}, {"global":false, "var":"MaterializationHelper_cpp_230_15"}]
    }, {
     "opcode":"call",
     "type":"void",
     "fun":"umbra::RuntimeFunctions::printNlResult()",
     "args":[]
    }, {
-    "dst":"sql_cpp_135_",
+    "dst":"sql_cpp_139_",
     "opcode":"atomicrmwxchg",
     "type":"int8",
     "value":{"type":"i8", "const":0},
+    "pointer":{"var":"CompilationContext_cpp_217_"},
     "offsets":[]
    }, {
-    "dst":"CodeGen_cpp_450_",
+    "dst":"CodeGen_cpp_451_",
     "opcode":"cmpult",
     "type":"i8",
-    "src":[{"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_135_"}]
+    "src":[{"type":"i8", "const":1}, {"global":false, "var":"sql_cpp_139_"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"CodeGen_cpp_450_"},
+    "condition":{"var":"CodeGen_cpp_451_"},
     "targetTrue":"then17",
-    "targetFalse":"then17"
+    "targetFalse":"cont18"
    }]
   }, {
    "label":"then17",
@@ -3210,7 +3252,7 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::RuntimeFunctions::unlockedSpinlock(void*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}]
    }, {
     "opcode":"br",
     "target":"cont18"
@@ -3223,21 +3265,21 @@
     "fun":"umbra::RuntimeFunctions::bumpResultValue(void*)",
     "args":[{"global":false, "var":"state"}]
    }, {
-    "dst":"SortTranslator_cpp_523_",
+    "dst":"SortTranslator_cpp_525_",
     "opcode":"getelementptr",
     "type":"int8*",
     "pointer":{"var":"tuple"},
     "offsets":[{"type":"i32", "const":1}]
    }, {
-    "dst":"SortTranslator_cpp_524_",
+    "dst":"SortTranslator_cpp_526_",
     "opcode":"cmpne",
     "type":"ptr",
-    "src":[{"global":false, "var":"SortTranslator_cpp_523_"}, {"global":false, "var":"to"}]
+    "src":[{"global":false, "var":"SortTranslator_cpp_525_"}, {"global":false, "var":"to"}]
    }, {
     "opcode":"condbr",
-    "condition":{"var":"SortTranslator_cpp_524_"},
+    "condition":{"var":"SortTranslator_cpp_526_"},
     "targetTrue":"loopTuples",
-    "targetFalse":"loopTuples"
+    "targetFalse":"loopDoneTuples"
    }]
   }, {
    "label":"loopDoneTuples",
@@ -3252,43 +3294,43 @@
     "value":{"type":"i32", "const":21}
    }]
   }]
- }{
+ }, {
   "name":"umbra::RuntimeFunctions::lockSpinlock(void*, unsigned char, unsigned char)",
   "returnType":"void",
   "args":[{"var":21920, "type":"int8*"}, {"var":21934, "type":"int8"}, {"var":21948, "type":"int8"}]
- }{
+ }, {
   "name":"umbra::Char1Runtime::output(umbra::OutputTarget&, umbra::Type, unsigned int)",
   "returnType":"void",
   "args":[{"var":22026, "type":"object umbra::OutputTarget*"}, {"var":22040, "type":"int64"}, {"var":22054, "type":"int32"}]
- }{
+ }, {
   "name":"umbra::RuntimeFunctions::printStringResult(char const*, unsigned int)",
   "returnType":"void",
   "args":[{"var":22116, "type":"int8*"}, {"var":22130, "type":"int32"}]
- }{
+ }, {
   "name":"umbra::NumericRuntime::output(umbra::OutputTarget&, umbra::Type, long)",
   "returnType":"void",
   "args":[{"var":22228, "type":"object umbra::OutputTarget*"}, {"var":22242, "type":"int64"}, {"var":22256, "type":"int64"}]
- }{
+ }, {
   "name":"umbra::BigNumericRuntime::output(umbra::OutputTarget&, umbra::Type, umbra::data128_t)",
   "returnType":"void",
   "args":[{"var":22380, "type":"object umbra::OutputTarget*"}, {"var":22394, "type":"int64"}, {"var":22408, "type":"data128"}]
- }{
+ }, {
   "name":"umbra::BigIntRuntime::output(umbra::OutputTarget&, umbra::Type, long)",
   "returnType":"void",
   "args":[{"var":22704, "type":"object umbra::OutputTarget*"}, {"var":22718, "type":"int64"}, {"var":22732, "type":"int64"}]
- }{
+ }, {
   "name":"umbra::RuntimeFunctions::printNlResult()",
   "returnType":"void",
   "args":[]
- }{
+ }, {
   "name":"umbra::RuntimeFunctions::unlockedSpinlock(void*)",
   "returnType":"void",
   "args":[{"var":22870, "type":"int8*"}]
- }{
+ }, {
   "name":"umbra::RuntimeFunctions::bumpResultValue(void*)",
   "returnType":"void",
   "args":[{"var":22912, "type":"int8*"}]
- }{
+ }, {
   "name":"_10_planStep15",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -3305,7 +3347,7 @@
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"_10_cleanup",
   "returnType":"int32",
   "args":[{"var":"trampoline", "type":"int8*"}, {"var":"state", "type":"int8*"}, {"var":"localState", "type":"int8*"}],
@@ -3313,7 +3355,7 @@
   "blocks":[{
    "label":"body",
    "instructions":[{
-    "dst":"CompilationContext_cpp_215_",
+    "dst":"CompilationContext_cpp_217_",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -3322,9 +3364,9 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::RelationMapped::Reader::destroy(void*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_"}]
    }, {
-    "dst":"CompilationContext_cpp_215_0",
+    "dst":"CompilationContext_cpp_217_0",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -3333,9 +3375,9 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::AggregationTarget::destroy(umbra::AggregationTarget*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_0"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_0"}]
    }, {
-    "dst":"CompilationContext_cpp_215_1",
+    "dst":"CompilationContext_cpp_217_1",
     "opcode":"getelementptr",
     "type":"int8",
     "pointer":{"var":"state"},
@@ -3344,17 +3386,17 @@
     "opcode":"call",
     "type":"void",
     "fun":"umbra::SortOperator::destroy(umbra::SortOperator*)",
-    "args":[{"global":false, "var":"CompilationContext_cpp_215_1"}]
+    "args":[{"global":false, "var":"CompilationContext_cpp_217_1"}]
    }, {
     "opcode":"return",
     "value":{"type":"i32", "const":0}
    }]
   }]
- }{
+ }, {
   "name":"umbra::RelationMapped::Reader::destroy(void*)",
   "returnType":"void",
   "args":[{"var":23334, "type":"int8*"}]
- }{
+ }, {
   "name":"umbra::AggregationTarget::destroy(umbra::AggregationTarget*)",
   "returnType":"void",
   "args":[{"var":23417, "type":"object umbra::AggregationTarget*"}]

@@ -146,11 +146,12 @@ class operation extends _instruction {
             this.buildValues(lookupJSON(this.json, 'args'));
             this.presentation += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
         } else if (
-            //[opcode,type,value,offsets]
+            //[opcode,type,value,pointer,offsets]
             this.opcode === OpCode.STORE ||
             this.opcode === OpCode.ATOMICRMWXCHG
         ) {
             this.buildValues(lookupJSON(this.json, 'value'));
+            this.buildValues(lookupJSON(this.json, 'pointer'));
             this.buildValues(lookupJSON(this.json, 'offsets'));
             this.presentation += this.printOperands();
         } else if (
@@ -350,7 +351,7 @@ class operation extends _instruction {
     }
 
     public toString() {
-        return this.presentation;
+        return this.presentation /*  + '//[' + Object.keys(this.json) + ']' */;
     }
 }
 

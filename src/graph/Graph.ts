@@ -13,11 +13,21 @@ class Graph {
     private json: Object;
     private components: _component[];
     private variables: variable[];
+    private current: variable | null;
+    private next: variable | undefined;
+    private currentParents: variable[];
+    private currentChildren: variable[];
+    private ancestors: variable[];
 
     constructor(props: IGraphProps) {
         this.json = props.json;
         this.components = [];
         this.variables = [];
+        this.current = null;
+        this.next = undefined;
+        this.currentParents = [];
+        this.currentChildren = [];
+        this.ancestors = [];
         this.build();
     }
 

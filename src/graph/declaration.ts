@@ -20,7 +20,7 @@ class declaration extends _function {
     }
 
     public toString() {
-        return 'declare ' + this.type + ' @' + this.fullName + ' (' + this.printArgs() + ')';
+        return 'declare ' + this.type + ' @' + this.fullName + '(' + this.printArgs() + ')';
     }
 }
 
