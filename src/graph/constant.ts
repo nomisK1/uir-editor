@@ -24,8 +24,8 @@ export default constant;
 
 export function findConstantRange(constant: constant, offset?: number) {
     if (constant.getRange()) return constant.getRange();
-    let presentation = constant.toString();
+    let name = constant.getName()!;
     let line = constant.getLastLine();
-    let index = indexOfStrict(presentation, constant.getContext()!.toString()) + (offset ? offset : 0);
-    constant.setRange(new monaco.Range(line, index, line, index + presentation.length));
+    let index = indexOfStrict(name, constant.getContext()!.toString()) + (offset ? offset : 0);
+    constant.setRange(new monaco.Range(line, index, line, index + name.length));
 }

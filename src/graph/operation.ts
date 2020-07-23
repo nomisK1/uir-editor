@@ -114,53 +114,114 @@ class operation extends _instruction {
     }
 
     private build() {
-        if (this.opcode === OpCode.BR) {
-            //[ "opcode", "target" ] (br %cont)
+        if (
+            //[opcode]
+            this.opcode === OpCode.UNREACHABLE
+        ) {
+            this.presentation = this.opcode;
+        } else if (
+            //[opcode,value]
+            this.opcode === OpCode.RETURN
+        ) {
+            this.buildValuesHideType(lookupJSON(this.json, 'value'));
+            this.presentation += this.printOperands();
+        } else if (
+            //[opcode,target]
+            this.opcode === OpCode.BR
+        ) {
             this.buildTarget(this.json);
             this.presentation += this.printOperands();
-        } else if (this.opcode === OpCode.CALL) {
-            //[opcode,type,fun,args]
-            this.buildValues(lookupJSON(this.json, 'args'));
-            this.presentation += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
-        } else if (this.opcode === OpCode.CONDBR) {
-            //[ "opcode", "condition", "targetTrue", "targetFalse" ] (condbr %RelationMappedLogic_cpp_343_ %loopBlocks %loopDoneBlocks)
-            this.buildValue(lookupJSON(this.json, 'condition'));
+        } else if (
+            //[opcode,condition,targetTrue,targetFalse]
+            this.opcode === OpCode.CONDBR
+        ) {
+            this.buildValues(lookupJSON(this.json, 'condition'));
             this.buildTarget(this.json, 'targetTrue');
             this.buildTarget(this.json, 'targetFalse');
-            this.presentation += this.printOperands2();
-        } else if (this.opcode === OpCode.RETURN) {
-            //[opcode,value]
-            this.buildValue(lookupJSON(this.json, 'value'));
             this.presentation += this.printOperands();
-        } else if (this.opcode === OpCode.STORE) {
-            //[ "opcode", "type", "value", "offsets" ] (store int64 %Numeric_cpp_777_51, %MaterializationHelper_cpp_983_52)
-            this.buildValue(lookupJSON(this.json, 'value'));
-            this.buildValues(lookupJSON(this.json, 'offsets'));
-            this.presentation += this.printOperands();
-        } else if (this.opcode === OpCode.GETELEMENTPTR || this.opcode === OpCode.LOAD) {
-            //[dst,opcode,type,pointer,offsets]
-            this.buildValue(lookupJSON(this.json, 'pointer'));
+        } else if (
+            //[opcode,type,fun,args]
+            this.opcode === OpCode.CALL
+        ) {
+            this.buildValues(lookupJSON(this.json, 'args'));
+            this.presentation += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
+        } else if (
+            //[opcode,type,value,offsets]
+            this.opcode === OpCode.STORE ||
+            this.opcode === OpCode.ATOMICRMWXCHG
+        ) {
+            this.buildValues(lookupJSON(this.json, 'value'));
             this.buildValues(lookupJSON(this.json, 'offsets'));
             this.presentation += this.printOperands();
         } else if (
+            //[dst,opcode,type,pointer,offsets]
+            this.opcode === OpCode.ATOMICLOAD ||
+            this.opcode === OpCode.GETELEMENTPTR ||
+            this.opcode === OpCode.LOAD
+        ) {
+            this.buildValues(lookupJSON(this.json, 'pointer'));
+            this.buildValues(lookupJSON(this.json, 'offsets'));
+            this.presentation += this.printOperands();
+        } else if (
+            //[dst,opcode,type,condition,src]
+            this.opcode === OpCode.SELECT
+        ) {
+            this.buildValues(lookupJSON(this.json, 'condition'));
+            this.buildValues(lookupJSON(this.json, 'src'));
+            this.presentation += this.printOperands();
+        } else if (
+            //[dst,opcode,type,src,targetSuccess,targetFailure]
+            this.opcode === OpCode.CHECKEDSADD ||
+            this.opcode === OpCode.CHECKEDSMUL ||
+            this.opcode === OpCode.CHECKEDSSUB
+        ) {
+            this.buildValuesHideType(lookupJSON(this.json, 'src'));
+            this.buildTarget(this.json, 'targetSuccess');
+            this.buildTarget(this.json, 'targetFailure');
+            this.presentation += this.printOperands();
+        } else if (
+            //[dst,opcode,type,incoming]
+            this.opcode === OpCode.PHI
+        ) {
+            this.buildPhi(lookupJSON(this.json, 'incoming'));
+            this.presentation += '[' + this.printOperands() + ']';
+        } else if (
+            //[dst,opcode,type,src]
             this.opcode === OpCode.AND ||
             this.opcode === OpCode.ADD ||
+            this.opcode === OpCode.ASHR ||
+            this.opcode === OpCode.BUILDDATA128 ||
             this.opcode === OpCode.CMPEQ ||
+            this.opcode === OpCode.CMPNE ||
+            this.opcode === OpCode.CMPSLE ||
+            this.opcode === OpCode.CMPULE ||
             this.opcode === OpCode.CMPULT ||
+            this.opcode === OpCode.CMPSLT ||
+            this.opcode === OpCode.CRC32 ||
+            this.opcode === OpCode.EXTRACTDATA128 ||
+            this.opcode === OpCode.INTTOPTR ||
+            this.opcode === OpCode.ISNOTNULL ||
+            this.opcode === OpCode.ISNULL ||
             this.opcode === OpCode.LSHR ||
+            this.opcode === OpCode.MUL ||
+            this.opcode === OpCode.NOT ||
             this.opcode === OpCode.OR ||
+            this.opcode === OpCode.PTRTOINT ||
+            this.opcode === OpCode.ROTL ||
+            this.opcode === OpCode.ROTR ||
+            this.opcode === OpCode.SDIV ||
             this.opcode === OpCode.SEXT ||
             this.opcode === OpCode.SHL ||
             this.opcode === OpCode.SUB ||
+            this.opcode === OpCode.TRUNC ||
+            this.opcode === OpCode.XOR ||
             this.opcode === OpCode.ZEXT
         ) {
-            //[dst,opcode,type,src]
-            this.buildValues(lookupJSON(this.json, 'src'));
+            this.buildValuesHideType(lookupJSON(this.json, 'src'));
             this.presentation += this.printOperands();
-        } else if (false) {
-        } else if (false) {
-        } else if (false) {
-        } else if (this.opcode === OpCode.PHI) {
+        } else {
+            this.presentation += '%UNKNOWN_OPERATION //[' + Object.keys(this.json) + ']';
+            //TODO - unknown OpCodes!
         }
         this.operands.forEach((o) => {
             if (o.constructor === variable) findVariableRange(o as variable, indentation);
@@ -180,30 +241,9 @@ class operation extends _instruction {
         );
     }
 
-    private buildValue(json: Object) {
-        if (lookupJSON(json, 'type')) {
-            this.operands.push(
-                new constant({
-                    json,
-                    line: this.line,
-                    context: this,
-                }),
-            );
-        } else {
-            this.operands.push(
-                new variable({
-                    json,
-                    line: this.line,
-                    context: this,
-                    parents: null,
-                }),
-            );
-        }
-    }
-
-    private buildValues(jsons: Object[]) {
-        jsons.forEach((json) => {
-            if (lookupJSON(json, 'type')) {
+    private buildValues(json: Object | Object[]) {
+        if (!Array.isArray(json))
+            if (lookupJSON(json, 'type'))
                 this.operands.push(
                     new constant({
                         json,
@@ -212,7 +252,7 @@ class operation extends _instruction {
                         showType: true,
                     }),
                 );
-            } else {
+            else
                 this.operands.push(
                     new variable({
                         json,
@@ -221,24 +261,84 @@ class operation extends _instruction {
                         parents: null,
                     }),
                 );
-            }
+        else
+            json.forEach((json) => {
+                if (lookupJSON(json, 'type'))
+                    this.operands.push(
+                        new constant({
+                            json,
+                            line: this.line,
+                            context: this,
+                            showType: true,
+                        }),
+                    );
+                else
+                    this.operands.push(
+                        new variable({
+                            json,
+                            line: this.line,
+                            context: this,
+                            parents: null,
+                        }),
+                    );
+            });
+    }
+
+    private buildValuesHideType(json: Object | Object[]) {
+        if (!Array.isArray(json))
+            if (lookupJSON(json, 'type'))
+                this.operands.push(
+                    new constant({
+                        json,
+                        line: this.line,
+                        context: this,
+                    }),
+                );
+            else
+                this.operands.push(
+                    new variable({
+                        json,
+                        line: this.line,
+                        context: this,
+                        parents: null,
+                    }),
+                );
+        else
+            json.forEach((json) => {
+                if (lookupJSON(json, 'type'))
+                    this.operands.push(
+                        new constant({
+                            json,
+                            line: this.line,
+                            context: this,
+                        }),
+                    );
+                else
+                    this.operands.push(
+                        new variable({
+                            json,
+                            line: this.line,
+                            context: this,
+                            parents: null,
+                        }),
+                    );
+            });
+    }
+
+    private buildPhi(json: Object[]) {
+        json.forEach((json) => {
+            this.buildValues(lookupJSON(json, 'value'));
+            this.buildTarget(json, 'block');
         });
     }
 
     private printOperands() {
+        if (this.operands.length === 0) return '';
         let str = '';
         this.operands.forEach((o) => {
-            str += o.toString() + ', ';
+            str += o.toString() + (o.constructor === target ? ' ' : ', ');
         });
-        return str.slice(0, -2);
-    }
-
-    private printOperands2() {
-        let str = '';
-        this.operands.forEach((o) => {
-            str += o.toString() + ' ';
-        });
-        return str.slice(0, -1);
+        return this.operands[this.operands.length - 1].constructor === target ? str.slice(0, -1) : str.slice(0, -2);
     }
 
     public getVariables() {
@@ -250,7 +350,7 @@ class operation extends _instruction {
     }
 
     public toString() {
-        return this.presentation + '//[' + Object.keys(this.json) + ']';
+        return this.presentation;
     }
 }
 
