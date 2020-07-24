@@ -35,18 +35,6 @@ class definition extends _function {
         });
     }
 
-    public getVariables() {
-        let vars = [...this.args];
-        this.blocks.forEach((b) => {
-            vars.push(...b.getVariables());
-        });
-        return vars;
-    }
-
-    public getLastLine() {
-        return this.blocks[this.blocks.length - 1].getLastLine() + 1;
-    }
-
     private printBlocks() {
         let str = '';
         this.blocks.forEach((b) => {
@@ -60,6 +48,18 @@ class definition extends _function {
         return (
             'define ' + this.type + ' @' + this.name + '(' + this.printArgs() + ') [\n] {\n' + this.printBlocks() + '}'
         );
+    }
+
+    public getVariables() {
+        let vars = [...this.args];
+        this.blocks.forEach((b) => {
+            vars.push(...b.getVariables());
+        });
+        return vars;
+    }
+
+    public getLastLine() {
+        return this.blocks[this.blocks.length - 1].getLastLine() + 1;
     }
 }
 

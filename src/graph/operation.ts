@@ -148,6 +148,7 @@ class operation extends _instruction {
         } else if (
             //[opcode,type,value,pointer,offsets]
             this.opcode === OpCode.STORE ||
+            //[dst,opcode,type,value,pointer,offsets]
             this.opcode === OpCode.ATOMICRMWXCHG
         ) {
             this.buildValues(lookupJSON(this.json, 'value'));
@@ -342,16 +343,16 @@ class operation extends _instruction {
         return this.operands[this.operands.length - 1].constructor === target ? str.slice(0, -1) : str.slice(0, -2);
     }
 
+    public toString() {
+        return this.presentation /* + '//[' + Object.keys(this.json) + ']' */;
+    }
+
     public getVariables() {
         let vars: variable[] = [];
         this.operands.forEach((o) => {
             if (o.constructor === variable) vars.push(o as variable);
         });
         return vars;
-    }
-
-    public toString() {
-        return this.presentation /*  + '//[' + Object.keys(this.json) + ']' */;
     }
 }
 

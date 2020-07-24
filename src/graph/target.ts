@@ -19,13 +19,13 @@ class target extends _node {
         } else this.name = '' + lookupJSON(this.json, 'target');
     }
 
-    public getVariables() {
-        return [];
-    }
-
     public toString() {
         if (this.label) return this.name + ':';
         return '%' + this.name;
+    }
+
+    public getVariables() {
+        return [];
     }
 }
 

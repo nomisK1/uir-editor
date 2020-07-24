@@ -25,12 +25,12 @@ class global extends _component {
         this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 
-    public getVariables() {
-        return [this.variable];
-    }
-
     public toString() {
         return 'const %' + this.variable.getName() + '[' + this.size + '] = "' + this.data + '"';
+    }
+
+    public getVariables() {
+        return [this.variable];
     }
 }
 

@@ -80,6 +80,10 @@ class Graph {
     public log() {
         console.log(this);
     }
+
+    /*     private findVariableParents(variable: variable) {
+        return variable.getParents();
+    } */
 }
 
 export default Graph;

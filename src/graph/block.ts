@@ -56,18 +56,6 @@ class block extends _node {
         });
     }
 
-    public getVariables() {
-        let vars: variable[] = [];
-        this.instructions.forEach((i) => {
-            vars.push(...i.getVariables());
-        });
-        return vars;
-    }
-
-    public getLastLine() {
-        return this.line + this.instructions.length;
-    }
-
     private printInstructions() {
         let str = '';
         this.instructions.forEach((i) => {
@@ -79,6 +67,17 @@ class block extends _node {
 
     public toString() {
         return this.target!.toString() + '\n' + this.printInstructions();
+    }
+    public getVariables() {
+        let vars: variable[] = [];
+        this.instructions.forEach((i) => {
+            vars.push(...i.getVariables());
+        });
+        return vars;
+    }
+
+    public getLastLine() {
+        return this.line + this.instructions.length;
     }
 }
 

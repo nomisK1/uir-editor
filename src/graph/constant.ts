@@ -11,12 +11,12 @@ class constant extends _value {
         this.name = '' + lookupJSON(this.json, 'const');
     }
 
-    public getVariables() {
-        return [];
-    }
-
     public toString() {
         return (this.showType && this.type ? this.type + ' ' : '') + this.name;
+    }
+
+    public getVariables() {
+        return [];
     }
 }
 

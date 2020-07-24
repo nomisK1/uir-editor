@@ -15,12 +15,12 @@ class declaration extends _function {
         this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 
-    public getVariables() {
-        return this.args;
-    }
-
     public toString() {
         return 'declare ' + this.type + ' @' + this.fullName + '(' + this.printArgs() + ')';
+    }
+
+    public getVariables() {
+        return this.args;
     }
 }
 

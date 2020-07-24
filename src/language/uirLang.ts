@@ -27,7 +27,7 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
     },
 };
 
-export const hoverProvider: monaco.languages.HoverProvider = {
+/* export const hoverProvider: monaco.languages.HoverProvider = {
     provideHover: function (_model, position) {
         return new Promise(function (resolve, _reject) {
             const editor = S.getInstance().getEditor();
@@ -60,4 +60,4 @@ export const foldingProvider: monaco.languages.FoldingRangeProvider = {
             reject(null);
         });
     },
-};
+}; */

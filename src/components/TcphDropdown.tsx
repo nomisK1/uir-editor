@@ -1,27 +1,28 @@
 import React from 'react';
 
 interface ITcphDropdownProps {
-    data: string[];
-    query: string;
+    size: number;
+    index: number;
     onDropdownChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 class TcphDropdown extends React.Component<ITcphDropdownProps> {
     renderOptions() {
-        return this.props.data.map((e, i) => {
-            return (
-                <option key={i} value={e}>
+        let options: JSX.Element[] = [];
+        for (let i = 0; i < this.props.size; i++)
+            options.push(
+                <option key={i} value={i}>
                     TCP-H {i + 1}
-                </option>
+                </option>,
             );
-        });
+        return options;
     }
 
     render() {
         return (
             <label>
                 <b>Query: </b>
-                <select value={this.props.query} onChange={this.props.onDropdownChange}>
+                <select value={this.props.index} onChange={this.props.onDropdownChange}>
                     {this.renderOptions()}
                 </select>
                 <br />

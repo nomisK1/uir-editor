@@ -30,12 +30,12 @@ class assignment extends _instruction {
         this.range = new monaco.Range(this.line, indentation, this.line, this.toString().length);
     }
 
-    public getVariables() {
-        return [this.destination, ...this.operation.getVariables()];
-    }
-
     public toString() {
         return this.destination.toString() + ' = ' + this.operation.toString();
+    }
+
+    public getVariables() {
+        return [this.destination, ...this.operation.getVariables()];
     }
 }
 

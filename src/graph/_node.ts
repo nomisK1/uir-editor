@@ -61,9 +61,9 @@ abstract class _node {
         this.range = null;
     }
 
-    public abstract getVariables(): variable[];
-
     public abstract toString(): string;
+
+    public abstract getVariables(): variable[];
 
     public getLastLine() {
         return this.line;

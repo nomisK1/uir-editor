@@ -26,12 +26,12 @@ class variable extends _value {
         }
     }
 
-    public getVariables() {
-        return [this];
-    }
-
     public toString() {
         return (this.showType && this.type ? this.type + ' ' : '') + '%' + this.name;
+    }
+
+    public getVariables() {
+        return [this];
     }
 }
 

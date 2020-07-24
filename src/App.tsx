@@ -3,10 +3,10 @@ import TcphDropdown from './components/TcphDropdown';
 import FeatureChecker from './components/FeatureChecker';
 import VariableInput from './components/VariableInput';
 import Editor from './components/Editor';
-import Graph from './content/Graph';
+import Graph from './graph/Graph';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
-import * as TPCH from './TPCH';
+import { getData } from './TPCH';
 import './App.css';
 
 enum Feature {
@@ -19,44 +19,29 @@ enum Feature {
 interface IAppProps {}
 
 interface IAppState {
-    data: string[];
-    query: string;
-    graph: Graph;
-    selection: string;
-    backup: string;
+    index: number;
     activateNodeHighlighting: boolean;
     activateVariableDecoration: boolean;
     activateChildDecoration: boolean;
     activateParentDecoration: boolean;
+    selection: string;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
     private editor: Editor | null = null;
-    private input: VariableInput | null = null;
+    private data: Graph[] = getData();
     private features: string[] = Object.values(Feature);
+    private input: VariableInput | null = null;
 
     constructor(props: IAppProps) {
         super(props);
-        TPCH.requestQueries();
-        let queries = TPCH.getStrings();
-        let graphs = TPCH.getGraphs();
-        let count = 1;
-        graphs.forEach((g) => {
-            console.log('GRAPH' + count);
-            g.log();
-            count++;
-        });
-        let uir = TPCH.getUir();
         this.state = {
-            data: [...queries, ...uir],
-            query: queries[0],
-            graph: new Graph({ query: queries[0] }),
-            selection: '',
-            backup: '',
+            index: 0,
             activateNodeHighlighting: true,
             activateVariableDecoration: true,
             activateChildDecoration: true,
             activateParentDecoration: true,
+            selection: '',
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleCheckerChange = this.handleCheckerChange.bind(this);
@@ -67,9 +52,9 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        let index = parseInt(event.target.value);
         this.setState({
-            query: event.target.value,
-            graph: new Graph({ query: event.target.value }),
+            index,
         });
         if (this.editor) this.editor.getInstance().focus();
     }
@@ -96,7 +81,7 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public handleSelectionChange(event: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({ selection: event.target.value, backup: this.state.selection });
+        this.setState({ selection: event.target.value });
     }
 
     public handleSelectionKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -104,17 +89,13 @@ class App extends React.Component<IAppProps, IAppState> {
             event.preventDefault();
             if (this.editor) {
                 this.editor.getInstance().focus();
-                this.editor.handleKeypressEnter();
+                //this.editor.handleKeypressEnter();
             }
-        }
-        if (event.ctrlKey && event.key === 'z') {
-            event.preventDefault();
-            this.setState({ selection: this.state.backup });
         }
     }
 
     public passSelection(selection: string) {
-        this.setState({ selection, backup: this.state.selection });
+        this.setState({ selection });
     }
 
     public focusInput() {
@@ -125,8 +106,8 @@ class App extends React.Component<IAppProps, IAppState> {
         setupLanguage();
         let dropdown = (
             <TcphDropdown
-                data={this.state.data}
-                query={this.state.query}
+                size={this.data.length}
+                index={this.state.index}
                 onDropdownChange={this.handleDropdownChange}
             />
         );
@@ -151,15 +132,14 @@ class App extends React.Component<IAppProps, IAppState> {
         let editor = (
             <Editor
                 language={languageID}
-                value={this.state.query}
-                graph={this.state.graph}
-                selection={this.state.selection}
-                passSelection={this.passSelection}
-                focusInput={this.focusInput}
+                graph={this.data[this.state.index]}
                 activateNodeHighlighting={this.state.activateNodeHighlighting}
                 activateVariableDecoration={this.state.activateVariableDecoration}
                 activateChildDecoration={this.state.activateChildDecoration}
                 activateParentDecoration={this.state.activateParentDecoration}
+                selection={this.state.selection}
+                passSelection={this.passSelection}
+                focusInput={this.focusInput}
                 ref={(ref) => (this.editor = ref)}
             />
         );
