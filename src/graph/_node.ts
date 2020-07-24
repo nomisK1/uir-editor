@@ -50,20 +50,28 @@ abstract class _node {
     protected json: Object;
     protected line: number;
     protected context: _node | null;
-    protected name: string | null;
-    protected range: monaco.Range | null;
+    protected name: string | null = null;
+    protected range: monaco.Range | null = null;
 
     constructor(props: INodeProps) {
         this.json = props.json;
         this.line = props.line;
         this.context = props.context;
-        this.name = null;
-        this.range = null;
     }
 
     public abstract toString(): string;
 
     public abstract getVariables(): variable[];
+
+    public abstract getNodeAt(position: monaco.Position): _node | null;
+
+    public getVariablesCalled(name: string) {
+        let vars: variable[] = [];
+        this.getVariables().forEach((v) => {
+            if (v.getName() === name) vars.push(v);
+        });
+        return vars;
+    }
 
     public getLastLine() {
         return this.line;
@@ -73,16 +81,30 @@ abstract class _node {
         return this.context;
     }
 
-    public getName() {
-        return this.name;
+    public getOuterContext(): _node {
+        if (this.context) {
+            return this.context.getOuterContext();
+        }
+        return this;
     }
 
-    public setName(name: string) {
-        this.name = name;
+    public getName() {
+        return this.name!;
     }
+
+    /* public setName(name: string) {
+        this.name = name;
+    } */
 
     public getRange() {
-        return this.range;
+        return this.range!;
+    }
+
+    public getRangeShifted() {
+        return this.range!.setStartPosition(this.range!.startLineNumber, this.range!.startColumn + 1).setEndPosition(
+            this.range!.endLineNumber,
+            this.range!.endColumn + 1,
+        );
     }
 
     public setRange(range: monaco.Range) {

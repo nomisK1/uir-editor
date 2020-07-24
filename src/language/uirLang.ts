@@ -27,7 +27,7 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
     },
 };
 
-/* export const hoverProvider: monaco.languages.HoverProvider = {
+export const hoverProvider: monaco.languages.HoverProvider = {
     provideHover: function (_model, position) {
         return new Promise(function (resolve, _reject) {
             const editor = S.getInstance().getEditor();
@@ -41,7 +41,7 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
     },
 };
 
-export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
+/* export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (_model, position, _token) {
         //let iWord = model.getWordAtPosition(position);
         return new Promise(function (resolve, reject) {
@@ -50,9 +50,9 @@ export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
             reject(null);
         });
     },
-};
+}; */
 
-export const foldingProvider: monaco.languages.FoldingRangeProvider = {
+/* export const foldingProvider: monaco.languages.FoldingRangeProvider = {
     provideFoldingRanges: function (_model, _context, _token) {
         return new Promise(function (resolve, reject) {
             const editor = S.getInstance().getEditor();

@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { lookupJSON } from './_node';
+import _node, { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 
 interface IDeclarationProps extends IFunctionProps {}
@@ -21,6 +21,13 @@ class declaration extends _function {
 
     public getVariables() {
         return this.args;
+    }
+
+    public getNodeAt(position: monaco.Position): _node | null {
+        for (let i = 0; i < this.args.length; i++) {
+            if (this.args[i].getRange().containsPosition(position)) return this.args[i].getNodeAt(position);
+        }
+        return this;
     }
 }
 

@@ -5,12 +5,11 @@ export interface IValueProps extends INodeProps {
 }
 
 abstract class _value extends _node {
-    protected type: Type | null;
+    protected type: Type | null = null;
     protected showType?: true;
 
     constructor(props: IValueProps) {
         super(props);
-        this.type = null;
         this.showType = props.showType;
     }
 }

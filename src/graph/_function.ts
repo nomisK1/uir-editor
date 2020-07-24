@@ -5,11 +5,10 @@ import variable, { findVariableRange } from './variable';
 export interface IFunctionProps extends IComponentProps {}
 
 abstract class _function extends _component {
-    protected args: variable[];
+    protected args: variable[] = [];
 
     constructor(props: IFunctionProps) {
         super(props);
-        this.args = [];
         this.type = matchType(lookupJSON(this.json, 'returnType'));
     }
 

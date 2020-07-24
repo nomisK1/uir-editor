@@ -1,6 +1,6 @@
 import * as monaco from 'monaco-editor';
 import { languageExtensionPoint, languageID } from './config';
-import { monarchLanguage /* hoverProvider, highlightProvider, foldingProvider  */ } from './uirLang';
+import { monarchLanguage, hoverProvider /* , highlightProvider, foldingProvider */ } from './uirLang';
 import * as EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker'; // eslint-disable-line import/no-webpack-loader-syntax
 
 export function setupLanguage() {
@@ -12,8 +12,8 @@ export function setupLanguage() {
     monaco.languages.register(languageExtensionPoint);
     monaco.languages.onLanguage(languageID, () => {
         monaco.languages.setMonarchTokensProvider(languageID, monarchLanguage);
-        /* monaco.languages.registerHoverProvider(languageID, hoverProvider);
-        monaco.languages.registerDocumentHighlightProvider(languageID, highlightProvider);
-        monaco.languages.registerFoldingRangeProvider(languageID, foldingProvider); */
+        monaco.languages.registerHoverProvider(languageID, hoverProvider);
+        //monaco.languages.registerDocumentHighlightProvider(languageID, highlightProvider);
+        //monaco.languages.registerFoldingRangeProvider(languageID, foldingProvider);
     });
 }

@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { lookupJSON } from './_node';
+import _node, { lookupJSON } from './_node';
 import _component, { IComponentProps } from './_component';
 import variable, { findVariableRange } from './variable';
 
@@ -30,7 +30,12 @@ class global extends _component {
     }
 
     public getVariables() {
-        return [this.variable];
+        return this.variable.getVariables();
+    }
+
+    public getNodeAt(position: monaco.Position): _node | null {
+        if (this.variable.getRange().containsPosition(position)) return this.variable.getNodeAt(position);
+        return this;
     }
 }
 

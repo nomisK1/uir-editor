@@ -1,7 +1,8 @@
 import * as monaco from 'monaco-editor';
-import { lookupJSON } from './_node';
+import _node, { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 import block from './block';
+import assignment from './assignment';
 
 // Number of linebreaks between blocks
 const linebreaks = 2;
@@ -9,11 +10,10 @@ const linebreaks = 2;
 interface IDefinitionProps extends IFunctionProps {}
 
 class definition extends _function {
-    protected blocks: block[];
+    protected blocks: block[] = [];
 
     constructor(props: IDefinitionProps) {
         super(props);
-        this.blocks = [];
         this.name = '' + lookupJSON(this.json, 'name');
         this.buildArgs(lookupJSON(this.json, 'args'));
         this.buildBlocks(lookupJSON(this.json, 'blocks'));
@@ -58,8 +58,26 @@ class definition extends _function {
         return vars;
     }
 
+    public getNodeAt(position: monaco.Position): _node | null {
+        for (let i = 0; i < this.args.length; i++) {
+            if (this.args[i].getRange().containsPosition(position)) return this.args[i].getNodeAt(position);
+        }
+        for (let i = 0; i < this.blocks.length; i++) {
+            if (this.blocks[i].getRange().containsPosition(position)) return this.blocks[i].getNodeAt(position);
+        }
+        return this;
+    }
+
     public getLastLine() {
         return this.blocks[this.blocks.length - 1].getLastLine() + 1;
+    }
+
+    public getAssignments() {
+        let assignments: assignment[] = [];
+        this.blocks.forEach((b) => {
+            assignments.push(...b.getAssignments());
+        });
+        return assignments;
     }
 }
 

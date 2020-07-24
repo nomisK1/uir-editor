@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { Type, matchType, indexOfStrict, lookupJSON } from './_node';
+import _node, { Type, matchType, indexOfStrict, lookupJSON } from './_node';
 import _value, { IValueProps } from './_value';
 
 interface IVariableProps extends IValueProps {
@@ -33,13 +33,26 @@ class variable extends _value {
     public getVariables() {
         return [this];
     }
+
+    public getNodeAt(position: monaco.Position): _node | null {
+        return this;
+    }
+
+    public isGlobal() {
+        return this.type === Type.GLOBAL || this.type === Type.GLOBAL_;
+    }
+
+    public getParents() {
+        if (this.parents === null) return [];
+        return this.parents;
+    }
 }
 
 export default variable;
 
 export function findVariableRange(variable: variable, offset?: number) {
     if (variable.getRange()) return variable.getRange();
-    let name = variable.getName()!;
+    let name = variable.getName();
     let line = variable.getLastLine();
     let index = indexOfStrict('%' + name, variable.getContext()!.toString()) + (offset ? offset : 0);
     variable.setRange(new monaco.Range(line, index, line, index + name.length + 1));

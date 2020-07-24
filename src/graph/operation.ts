@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { Type, matchType, lookupJSON } from './_node';
+import _node, { Type, matchType, lookupJSON } from './_node';
 import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import _value from './_value';
@@ -92,7 +92,7 @@ interface IOperationProps extends IInstructionProps {
 class operation extends _instruction {
     protected opcode: OpCode | null;
     protected type: Type | null;
-    protected operands: (_value | target)[];
+    protected operands: (_value | target)[] = [];
     protected presentation: string;
     protected assignmentOffset: number;
 
@@ -100,11 +100,10 @@ class operation extends _instruction {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.operands = [];
         this.presentation = this.opcode + ' ' + (this.type ? this.type + ' ' : '');
+        this.assignmentOffset = (props.assignmentOffset ? props.assignmentOffset : 0) + indentation;
         this.build();
         this.name = 'operation@line:' + this.line;
-        this.assignmentOffset = (props.assignmentOffset ? props.assignmentOffset : 0) + indentation;
         this.range = new monaco.Range(
             this.line,
             this.assignmentOffset,
@@ -226,9 +225,9 @@ class operation extends _instruction {
             //TODO - unknown OpCodes!
         }
         this.operands.forEach((o) => {
-            if (o.constructor === variable) findVariableRange(o as variable, indentation);
-            if (o.constructor === constant) findConstantRange(o as constant, indentation);
-            if (o.constructor === target) findTargetRange(o as target, indentation);
+            if (o.constructor === variable) findVariableRange(o as variable, this.assignmentOffset);
+            if (o.constructor === constant) findConstantRange(o as constant, this.assignmentOffset);
+            if (o.constructor === target) findTargetRange(o as target, this.assignmentOffset);
         });
     }
 
@@ -353,6 +352,21 @@ class operation extends _instruction {
             if (o.constructor === variable) vars.push(o as variable);
         });
         return vars;
+    }
+
+    public getNodeAt(position: monaco.Position): _node | null {
+        for (let i = 0; i < this.operands.length; i++) {
+            if (this.operands[i].getRange().containsPosition(position)) return this.operands[i].getNodeAt(position);
+        }
+        return this;
+    }
+
+    public hasVariable(name: string) {
+        let vars = this.getVariables();
+        for (let i = 0; i < vars.length; i++) {
+            if (vars[i].getName() === name) return true;
+        }
+        return false;
     }
 }
 

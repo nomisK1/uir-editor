@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { matchType, indexOfStrict, lookupJSON } from './_node';
+import _node, { matchType, indexOfStrict, lookupJSON } from './_node';
 import _value, { IValueProps } from './_value';
 
 interface IConstantProps extends IValueProps {}
@@ -18,13 +18,17 @@ class constant extends _value {
     public getVariables() {
         return [];
     }
+
+    public getNodeAt(position: monaco.Position): _node | null {
+        return this;
+    }
 }
 
 export default constant;
 
 export function findConstantRange(constant: constant, offset?: number) {
     if (constant.getRange()) return constant.getRange();
-    let name = constant.getName()!;
+    let name = constant.getName();
     let line = constant.getLastLine();
     let index = indexOfStrict(name, constant.getContext()!.toString()) + (offset ? offset : 0);
     constant.setRange(new monaco.Range(line, index, line, index + name.length));

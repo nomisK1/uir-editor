@@ -108,9 +108,63 @@ class Editor extends React.Component<IEditorProps> {
         return this.editor!;
     }
 
+    /**
+     * getVariableDecorationsAt:
+     *
+     */
+    private getVariableDecorationsAt(position: monaco.Position) {
+        let variable = this.graph.getVariableAt(position);
+        let vars = this.graph.getSiblings(variable);
+        let ranges = vars.map((v) => v.getRangeShifted());
+        return ranges;
+    }
+
+    /**
+     * setVariableDecoration:
+     *
+     */
+    private setVariableDecoration(range: monaco.Range) {
+        this.variableDecorations.push({
+            range,
+            options: {
+                isWholeLine: false,
+                className: 'contentVariable',
+                glyphMarginClassName: 'glyphVariable',
+            },
+        });
+    }
+
+    /**
+     * decorateVariable:
+     *
+     */
+    public decorateVariable(position: monaco.Position) {
+        this.variableDecorations = [];
+        if (this.activateVariableDecoration) {
+            let ranges = this.getVariableDecorationsAt(position);
+            ranges.forEach((r) => this.setVariableDecoration(r));
+            this.updateDecorations();
+            return ranges;
+        }
+        this.updateDecorations();
+        return [];
+    }
+
+    /**
+     * updateDecorations:
+     * Adds the Decorations to the editor for display
+     */
+    public updateDecorations() {
+        if (this.editor !== null) {
+            this.decorations = this.editor.deltaDecorations(this.decorations, [
+                ...this.variableDecorations,
+                ...this.treeDecorations,
+            ]);
+        }
+    }
+
     render() {
         console.log(this.graph);
-        console.log(this.value);
         return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '73vh' }} />;
     }
 }

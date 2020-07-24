@@ -13,7 +13,7 @@ interface IBlockProps extends INodeProps {}
 
 class block extends _node {
     protected target: target;
-    protected instructions: _instruction[];
+    protected instructions: _instruction[] = [];
 
     constructor(props: IBlockProps) {
         super(props);
@@ -22,7 +22,6 @@ class block extends _node {
             line: this.line,
             context: this,
         });
-        this.instructions = [];
         this.buildInstructions(lookupJSON(this.json, 'instructions'));
         this.name = 'block$' + this.target.getName() + '@line:' + this.line;
         this.range = new monaco.Range(
@@ -76,8 +75,25 @@ class block extends _node {
         return vars;
     }
 
+    public getNodeAt(position: monaco.Position): _node | null {
+        if (this.target.getRange().containsPosition(position)) return this.target.getNodeAt(position);
+        for (let i = 0; i < this.instructions.length; i++) {
+            if (this.instructions[i].getRange().containsPosition(position))
+                return this.instructions[i].getNodeAt(position);
+        }
+        return this;
+    }
+
     public getLastLine() {
         return this.line + this.instructions.length;
+    }
+
+    public getAssignments() {
+        let assignments: assignment[] = [];
+        this.instructions.forEach((i) => {
+            if (i instanceof assignment) assignments.push(i);
+        });
+        return assignments;
     }
 }
 
