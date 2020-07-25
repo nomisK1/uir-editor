@@ -24,9 +24,8 @@ class declaration extends _function {
     }
 
     public getNodeAt(position: monaco.Position): _node | null {
-        for (let i = 0; i < this.args.length; i++) {
+        for (let i = 0; i < this.args.length; i++)
             if (this.args[i].getRange().containsPosition(position)) return this.args[i].getNodeAt(position);
-        }
         return this;
     }
 }

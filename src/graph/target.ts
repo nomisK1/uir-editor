@@ -6,20 +6,20 @@ interface ITargetProps extends INodeProps {
 }
 
 class target extends _node {
-    protected label: boolean = false;
+    protected isLabel: boolean = false;
 
     constructor(props: ITargetProps) {
         super(props);
         if (props.reference) this.name = lookupJSON(this.json, props.reference);
         else if (lookupJSON(this.json, 'label')) {
-            this.label = true;
+            this.isLabel = true;
             this.name = '' + lookupJSON(this.json, 'label');
             this.range = new monaco.Range(this.line, 0, this.line, this.name.length);
         } else this.name = '' + lookupJSON(this.json, 'target');
     }
 
     public toString() {
-        if (this.label) return this.name + ':';
+        if (this.isLabel) return this.name + ':';
         return '%' + this.name;
     }
 

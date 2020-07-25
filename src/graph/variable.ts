@@ -46,6 +46,10 @@ class variable extends _value {
         if (this.parents === null) return [];
         return this.parents;
     }
+
+    public setParents(parents: variable[] | null) {
+        this.parents = parents;
+    }
 }
 
 export default variable;

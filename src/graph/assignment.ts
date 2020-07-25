@@ -48,6 +48,10 @@ class assignment extends _instruction {
         return this.destination;
     }
 
+    public getOperation() {
+        return this.operation;
+    }
+
     public hasParent(name: string) {
         return this.operation.hasVariable(name);
     }

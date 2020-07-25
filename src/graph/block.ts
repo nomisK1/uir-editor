@@ -12,18 +12,18 @@ export const indentation = 2;
 interface IBlockProps extends INodeProps {}
 
 class block extends _node {
-    protected target: target;
+    protected label: target;
     protected instructions: _instruction[] = [];
 
     constructor(props: IBlockProps) {
         super(props);
-        this.target = new target({
+        this.label = new target({
             json: this.json,
             line: this.line,
             context: this,
         });
         this.buildInstructions(lookupJSON(this.json, 'instructions'));
-        this.name = 'block$' + this.target.getName() + '@line:' + this.line;
+        this.name = 'block$' + this.label.getName() + '@line:' + this.line;
         this.range = new monaco.Range(
             this.line,
             0,
@@ -65,7 +65,7 @@ class block extends _node {
     }
 
     public toString() {
-        return this.target!.toString() + '\n' + this.printInstructions();
+        return this.label!.toString() + '\n' + this.printInstructions();
     }
     public getVariables() {
         let vars: variable[] = [];
@@ -76,16 +76,19 @@ class block extends _node {
     }
 
     public getNodeAt(position: monaco.Position): _node | null {
-        if (this.target.getRange().containsPosition(position)) return this.target.getNodeAt(position);
-        for (let i = 0; i < this.instructions.length; i++) {
+        if (this.label.getRange().containsPosition(position)) return this.label.getNodeAt(position);
+        for (let i = 0; i < this.instructions.length; i++)
             if (this.instructions[i].getRange().containsPosition(position))
                 return this.instructions[i].getNodeAt(position);
-        }
         return this;
     }
 
     public getLastLine() {
         return this.line + this.instructions.length;
+    }
+
+    public getLabel() {
+        return this.label;
     }
 
     public getAssignments() {
@@ -94,6 +97,31 @@ class block extends _node {
             if (i instanceof assignment) assignments.push(i);
         });
         return assignments;
+    }
+
+    public getOperations() {
+        let operations: operation[] = [];
+        this.instructions.forEach((i) => {
+            if (i instanceof assignment) operations.push(i.getOperation());
+            else operations.push(i as operation);
+        });
+        return operations;
+    }
+
+    public getTargets() {
+        let targets: target[] = [];
+        this.getOperations().forEach((o) => {
+            targets.push(...o.getTargets());
+        });
+        return [this.label, ...targets];
+    }
+
+    public getRelatedFunctions(fun: string) {
+        let nodes: _node[] = [];
+        this.getOperations().forEach((o) => {
+            if (o.getFunctionName() === fun) nodes.push(o);
+        });
+        return nodes;
     }
 }
 

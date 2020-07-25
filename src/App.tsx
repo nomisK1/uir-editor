@@ -60,23 +60,22 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public handleCheckerChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.id === Feature.NODEHIGHLIGHTING) {
+        if (event.target.id === Feature.NODEHIGHLIGHTING)
             this.setState({
                 activateNodeHighlighting: event.target.checked,
             });
-        } else if (event.target.id === Feature.VARIABLEDECORATION) {
+        else if (event.target.id === Feature.VARIABLEDECORATION)
             this.setState({
                 activateVariableDecoration: event.target.checked,
             });
-        } else if (event.target.id === Feature.CHILDDECORATION) {
+        else if (event.target.id === Feature.CHILDDECORATION)
             this.setState({
                 activateChildDecoration: event.target.checked,
             });
-        } else if (event.target.id === Feature.PARENTDECORATION) {
+        else if (event.target.id === Feature.PARENTDECORATION)
             this.setState({
                 activateParentDecoration: event.target.checked,
             });
-        }
         if (this.editor) this.editor.getInstance().focus();
     }
 
@@ -89,7 +88,7 @@ class App extends React.Component<IAppProps, IAppState> {
             event.preventDefault();
             if (this.editor) {
                 this.editor.getInstance().focus();
-                //this.editor.handleKeypressEnter();
+                this.editor.handleKeypressNextOccurrence();
             }
         }
     }

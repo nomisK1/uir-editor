@@ -127,13 +127,12 @@ class Graph {
 
     private findVariableOrigin(variable: variable) {
         let context = variable.getOuterContext();
-        if (context.constructor === definition) {
-            let def = context as definition;
-            let args = def.getArgs().map((a) => a.getName());
-            if (args.includes(variable.getName())) return def.getArgs()[args.indexOf(variable.getName())];
-            let allocations = def.getAllocations().map((a) => a.getChild()!.getName());
+        if (context instanceof definition) {
+            let args = context.getArgs().map((a) => a.getName());
+            if (args.includes(variable.getName())) return context.getArgs()[args.indexOf(variable.getName())];
+            let allocations = context.getAllocations().map((a) => a.getChild()!.getName());
             if (allocations.includes(variable.getName()))
-                return def.getAllocations()[allocations.indexOf(variable.getName())].getChild();
+                return context.getAllocations()[allocations.indexOf(variable.getName())].getChild();
         }
         return null;
     }

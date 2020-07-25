@@ -96,15 +96,16 @@ abstract class _node {
         this.name = name;
     } */
 
-    public getRange() {
-        return this.range!;
+    private getRangeShifted() {
+        return this.range
+            ? this.range
+                  .setStartPosition(this.range.startLineNumber, this.range.startColumn + 1)
+                  .setEndPosition(this.range.endLineNumber, this.range.endColumn + 1)
+            : null;
     }
 
-    public getRangeShifted() {
-        return this.range!.setStartPosition(this.range!.startLineNumber, this.range!.startColumn + 1).setEndPosition(
-            this.range!.endLineNumber,
-            this.range!.endColumn + 1,
-        );
+    public getRange() {
+        return this.getRangeShifted()!;
     }
 
     public setRange(range: monaco.Range) {

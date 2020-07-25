@@ -1,10 +1,13 @@
 import * as monaco from 'monaco-editor';
-import { lookupJSON } from './_node';
+import _node, { lookupJSON } from './_node';
 import _component from './_component';
 import global from './global';
 import declaration from './declaration';
 import definition from './definition';
+import block from './block';
+import operation from './operation';
 import variable from './variable';
+import target from './target';
 
 interface IGraphProps {
     json: Object;
@@ -15,7 +18,7 @@ class Graph {
     private components: _component[] = [];
     private variables: variable[] = [];
     private current: variable | null = null;
-    private next?: variable;
+    private next: variable | undefined = undefined;
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
@@ -61,6 +64,14 @@ class Graph {
         this.components.forEach((c) => {
             this.variables.push(...c.getVariables());
         });
+        this.getDefinitions().forEach((d) => {
+            d.getVariables().forEach((v) => {
+                if (v.getParents().length === 0) {
+                    let orig = this.getVariableOrigin(v);
+                    v.setParents(orig ? orig.getParents() : null);
+                }
+            });
+        });
     }
 
     public print() {
@@ -69,6 +80,26 @@ class Graph {
             str += c.toString() + '\n\n';
         });
         return str.slice(0, -1);
+    }
+
+    private getDeclarations() {
+        let declarations: declaration[] = [];
+        this.components.forEach((c) => {
+            if (c instanceof declaration) declarations.push(c);
+        });
+        return declarations;
+    }
+
+    private getDefinitions() {
+        let definitions: definition[] = [];
+        this.components.forEach((c) => {
+            if (c instanceof definition) definitions.push(c);
+        });
+        return definitions;
+    }
+
+    public getDefinitionRanges() {
+        return this.getDefinitions().map((d) => d.getRange());
     }
 
     private getVariablesCalled(name: string) {
@@ -98,43 +129,81 @@ class Graph {
         return null;
     }
 
-    public getSiblings(variable: variable | null) {
-        let vars: variable[] = [];
-        if (variable !== null && variable.getContext() !== null) {
-            if (variable.isGlobal()) {
-                vars.push(...this.getVariablesCalled(variable.getName()));
-            } else {
-                vars.push(...variable.getOuterContext().getVariablesCalled(variable.getName()));
-            }
+    public getRelatedNodes(node: _node | null) {
+        let nodes: _node[] = [];
+        if (node !== null)
+            if (node instanceof global) nodes.push(...this.getVariablesCalled(node.getVariables()[0].getName()));
+            else if (node instanceof declaration) nodes.push(...this.getRelatedFunctions(node.getName()));
+            else if (node instanceof block) nodes.push(...this.getRelatedTargets(node.getLabel()));
+            else if (node instanceof operation) nodes.push(...this.getRelatedFunctions(node.getFunctionName()));
+            else if (node instanceof target) nodes.push(...this.getRelatedTargets(node));
+            else nodes.push(node);
+        return nodes;
+    }
+
+    private getRelatedTargets(target: target) {
+        let targets: target[] = [];
+        let context = target.getOuterContext() as definition;
+        context.getTargets().forEach((t) => {
+            if (t.getName() === target.getName()) targets.push(t);
+        });
+        return targets;
+    }
+
+    private getRelatedFunctions(fun: string | null) {
+        let nodes: _node[] = [];
+        if (fun) {
+            this.getDeclarations().forEach((d) => {
+                if (d.getName() === fun) nodes.push(d);
+            });
+            this.getDefinitions().forEach((d) => {
+                nodes.push(...d.getRelatedFunctions(fun));
+            });
         }
+        return nodes;
+    }
+
+    public getVariableSiblings(variable: variable | null) {
+        let vars: variable[] = [];
+        if (variable !== null && variable.getContext() !== null)
+            if (variable.isGlobal()) vars.push(...this.getVariablesCalled(variable.getName()));
+            else vars.push(...variable.getOuterContext().getVariablesCalled(variable.getName()));
         return vars;
     }
 
-    private getParents(variable: variable) {
+    private getVariableOrigin(variable: variable) {
+        let context = variable.getOuterContext();
+        if (context instanceof definition) {
+            let args = context.getArgs().map((a) => a.getName());
+            if (args.includes(variable.getName())) return context.getArgs()[args.indexOf(variable.getName())];
+            let assignments = context.getAssignments().map((a) => a.getDestination().getName());
+            if (assignments.includes(variable.getName()))
+                return context.getAssignments()[assignments.indexOf(variable.getName())].getDestination();
+        }
+        return null;
+    }
+
+    private getVariableParents(variable: variable) {
         return variable.getParents();
     }
 
-    private getChildren(variable: variable) {
+    private getVariableChildren(variable: variable) {
         let children: variable[] = [];
         let context = variable.getOuterContext();
-        if (context.constructor === definition) {
-            let def = context as definition;
-            def.getAssignments().forEach((a) => {
-                if (a.hasParent(variable.getName())) {
-                    children.push(a.getDestination());
-                }
+        if (context instanceof definition)
+            context.getAssignments().forEach((a) => {
+                if (a.hasParent(variable.getName())) children.push(a.getDestination());
             });
-        }
         return children;
     }
 
     public getParentTree(variable: variable) {
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
-        this.getSiblings(variable).forEach((v) => {
+        this.getVariableSiblings(variable).forEach((v) => {
             tree.push({ variable: v, depth });
         });
-        let parents = this.getParents(variable);
+        let parents = this.getVariableParents(variable);
         while (parents.length > 0) {
             let grandparents: variable[] = [];
             depth++;
@@ -142,10 +211,10 @@ class Graph {
             parents.forEach((p) => {
                 let vars = tree.map((t) => t.variable);
                 if (vars.includes(p) === false) {
-                    /* let orig = this.findVariableOrigin(p);
-                    if (orig) tree.push({ variable: orig, depth }); */
+                    let orig = this.getVariableOrigin(p);
+                    if (orig) tree.push({ variable: orig, depth });
                     tree.push({ variable: p, depth });
-                    grandparents.push(...this.getParents(p));
+                    grandparents.push(...this.getVariableParents(p));
                 }
             });
             parents = grandparents;
@@ -156,10 +225,10 @@ class Graph {
     public getChildTree(variable: variable) {
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
-        this.getSiblings(variable).forEach((v) => {
+        this.getVariableSiblings(variable).forEach((v) => {
             tree.push({ variable: v, depth });
         });
-        let children = this.getChildren(variable);
+        let children = this.getVariableChildren(variable);
         while (children.length > 0) {
             let grandchildren: variable[] = [];
             depth--;
@@ -167,16 +236,116 @@ class Graph {
             children.forEach((c) => {
                 let vars = tree.map((t) => t.variable);
                 if (vars.includes(c) === false) {
-                    this.getSiblings(c).forEach((v) => {
+                    this.getVariableSiblings(c).forEach((v) => {
                         tree.push({ variable: v, depth });
                     });
-                    grandchildren.push(...this.getChildren(c));
+                    grandchildren.push(...this.getVariableChildren(c));
                 }
             });
             children = grandchildren;
         }
         return tree;
     }
+
+    public setCurrentNextOccurrence(selection: string) {
+        if (this.current && this.current.getName() === selection) {
+            let vars = this.getVariablesCalled(this.current.getName());
+            for (let i = 0; i < vars.length; i++) {
+                if (
+                    !vars[i].getRange().getStartPosition().isBeforeOrEqual(this.current.getRange().getStartPosition())
+                ) {
+                    this.setCurrentVariable(vars[i]);
+                    return;
+                }
+            }
+            this.setCurrentVariable(vars[0]);
+        } else {
+            let next = this.getVariablesCalled(selection)[0];
+            this.setCurrentVariable(next ? next : null);
+        }
+    }
+
+    public setCurrentPrevOccurrence(selection: string) {
+        if (this.current && this.current.getName() === selection) {
+            let vars = this.getVariablesCalled(this.current.getName());
+            for (let i = vars.length - 1; i >= 0; i--) {
+                if (vars[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
+                    this.setCurrentVariable(vars[i]);
+                    return;
+                }
+            }
+            this.setCurrentVariable(vars[vars.length - 1]);
+        } else {
+            let next = this.getVariablesCalled(selection)[0];
+            this.setCurrentVariable(next ? next : null);
+        }
+    }
+
+    public getCurrentParent() {
+        if (this.next === undefined) return this.currentParents[0];
+        return this.currentParents[this.currentParents.length - 1];
+    }
+
+    public getCurrentChild() {
+        if (this.next === undefined) return this.currentChildren[0];
+        return this.currentChildren[this.currentChildren.length - 1];
+    }
+
+    public updateNextParent() {
+        let temp = [...this.currentParents];
+        this.next = temp.shift();
+        if (this.next) temp.push(this.next);
+        this.currentParents = temp;
+        return this.next;
+    }
+
+    public updateNextChild() {
+        let temp = [...this.currentChildren];
+        this.next = temp.shift();
+        if (this.next) temp.push(this.next);
+        this.currentChildren = temp;
+        return this.next;
+    }
+
+    public getCurrentVariable() {
+        return this.current;
+    }
+
+    public setCurrentToPrevious() {
+        let previous = this.ancestors.pop();
+        this.current = previous ? previous : null;
+        this.next = undefined;
+        if (this.current) {
+            this.currentParents = this.getVariableParents(this.current);
+            this.currentChildren = this.getVariableChildren(this.current);
+        } else {
+            this.currentParents = [];
+            this.currentChildren = [];
+        }
+    }
+
+    public setCurrentVariable(variable: variable | null) {
+        if (this.current && this.current !== variable && !this.ancestors.includes(this.current))
+            this.ancestors.push(this.current);
+        this.current = variable;
+        this.next = undefined;
+        if (this.current) {
+            this.currentParents = this.getVariableParents(this.current);
+            this.currentChildren = this.getVariableChildren(this.current);
+        } else {
+            this.currentParents = [];
+            this.currentChildren = [];
+        }
+    }
 }
 
 export default Graph;
+
+/**
+ * removeDuplicates:
+ *
+ */
+// eslint-disable-next-line
+function removeDuplicates(array: any[]) {
+    return array.filter((a, b) => array.indexOf(a) === b);
+}

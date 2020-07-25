@@ -41,7 +41,7 @@ export const hoverProvider: monaco.languages.HoverProvider = {
     },
 };
 
-/* export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
+export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (_model, position, _token) {
         //let iWord = model.getWordAtPosition(position);
         return new Promise(function (resolve, reject) {
@@ -50,9 +50,9 @@ export const hoverProvider: monaco.languages.HoverProvider = {
             reject(null);
         });
     },
-}; */
+};
 
-/* export const foldingProvider: monaco.languages.FoldingRangeProvider = {
+export const foldingProvider: monaco.languages.FoldingRangeProvider = {
     provideFoldingRanges: function (_model, _context, _token) {
         return new Promise(function (resolve, reject) {
             const editor = S.getInstance().getEditor();
@@ -60,4 +60,4 @@ export const hoverProvider: monaco.languages.HoverProvider = {
             reject(null);
         });
     },
-}; */
+};

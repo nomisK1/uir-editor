@@ -3,6 +3,7 @@ import _node, { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 import block from './block';
 import assignment from './assignment';
+import target from './target';
 
 // Number of linebreaks between blocks
 const linebreaks = 2;
@@ -59,17 +60,27 @@ class definition extends _function {
     }
 
     public getNodeAt(position: monaco.Position): _node | null {
-        for (let i = 0; i < this.args.length; i++) {
+        for (let i = 0; i < this.args.length; i++)
             if (this.args[i].getRange().containsPosition(position)) return this.args[i].getNodeAt(position);
-        }
-        for (let i = 0; i < this.blocks.length; i++) {
+        for (let i = 0; i < this.blocks.length; i++)
             if (this.blocks[i].getRange().containsPosition(position)) return this.blocks[i].getNodeAt(position);
-        }
         return this;
     }
 
     public getLastLine() {
         return this.blocks[this.blocks.length - 1].getLastLine() + 1;
+    }
+
+    public getArgs() {
+        return this.args;
+    }
+
+    public getTargets() {
+        let targets: target[] = [];
+        this.blocks.forEach((b) => {
+            targets.push(...b.getTargets());
+        });
+        return targets;
     }
 
     public getAssignments() {
@@ -78,6 +89,14 @@ class definition extends _function {
             assignments.push(...b.getAssignments());
         });
         return assignments;
+    }
+
+    public getRelatedFunctions(fun: string) {
+        let nodes: _node[] = [];
+        this.blocks.forEach((b) => {
+            nodes.push(...b.getRelatedFunctions(fun));
+        });
+        return nodes;
     }
 }
 

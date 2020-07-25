@@ -225,9 +225,9 @@ class operation extends _instruction {
             //TODO - unknown OpCodes!
         }
         this.operands.forEach((o) => {
-            if (o.constructor === variable) findVariableRange(o as variable, this.assignmentOffset);
-            if (o.constructor === constant) findConstantRange(o as constant, this.assignmentOffset);
-            if (o.constructor === target) findTargetRange(o as target, this.assignmentOffset);
+            if (o instanceof variable) findVariableRange(o, this.assignmentOffset);
+            if (o instanceof constant) findConstantRange(o, this.assignmentOffset);
+            if (o instanceof target) findTargetRange(o, this.assignmentOffset);
         });
     }
 
@@ -337,9 +337,9 @@ class operation extends _instruction {
         if (this.operands.length === 0) return '';
         let str = '';
         this.operands.forEach((o) => {
-            str += o.toString() + (o.constructor === target ? ' ' : ', ');
+            str += o.toString() + (o instanceof target ? ' ' : ', ');
         });
-        return this.operands[this.operands.length - 1].constructor === target ? str.slice(0, -1) : str.slice(0, -2);
+        return this.operands[this.operands.length - 1] instanceof target ? str.slice(0, -1) : str.slice(0, -2);
     }
 
     public toString() {
@@ -349,24 +349,34 @@ class operation extends _instruction {
     public getVariables() {
         let vars: variable[] = [];
         this.operands.forEach((o) => {
-            if (o.constructor === variable) vars.push(o as variable);
+            if (o instanceof variable) vars.push(o);
         });
         return vars;
     }
 
     public getNodeAt(position: monaco.Position): _node | null {
-        for (let i = 0; i < this.operands.length; i++) {
+        for (let i = 0; i < this.operands.length; i++)
             if (this.operands[i].getRange().containsPosition(position)) return this.operands[i].getNodeAt(position);
-        }
         return this;
     }
 
     public hasVariable(name: string) {
         let vars = this.getVariables();
-        for (let i = 0; i < vars.length; i++) {
-            if (vars[i].getName() === name) return true;
-        }
+        for (let i = 0; i < vars.length; i++) if (vars[i].getName() === name) return true;
         return false;
+    }
+
+    public getTargets() {
+        let targets: target[] = [];
+        this.operands.forEach((o) => {
+            if (o instanceof target) targets.push(o);
+        });
+        return targets;
+    }
+
+    public getFunctionName() {
+        if (this.opcode === OpCode.CALL) return '' + lookupJSON(this.json, 'fun').split('(')[0];
+        else return null;
     }
 }
 
@@ -375,8 +385,6 @@ export default operation;
 function matchOpCode(str: string | null) {
     if (!str) return null;
     let codes = Object.values(OpCode);
-    for (let i = 0; i < codes.length; i++) {
-        if (str.toUpperCase() === codes[i].toUpperCase()) return codes[i];
-    }
+    for (let i = 0; i < codes.length; i++) if (str.toUpperCase() === codes[i].toUpperCase()) return codes[i];
     return null;
 }
