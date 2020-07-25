@@ -1,66 +1,32 @@
 import * as monaco from 'monaco-editor';
-import node, { Type } from './_node';
-import component, { IComponentProps } from './_component';
-import variable from './variable';
+import _node, { lookupJSON } from './_node';
+import _function, { IFunctionProps } from './_function';
 
-interface IDeclarationProps extends IComponentProps {}
+interface IDeclarationProps extends IFunctionProps {}
 
-class declaration extends component {
-    protected type: Type;
-    protected args: variable[];
+class declaration extends _function {
+    protected fullName: string;
 
     constructor(props: IDeclarationProps) {
         super(props);
-        this.type = Type.NULL;
-        this.args = [];
+        this.fullName = '' + lookupJSON(this.json, 'name');
+        this.name = this.fullName.split('(')[0];
+        this.buildArgs(lookupJSON(this.json, 'args'));
+        this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 
-    public build() {
-        // match type
-        let type = this.data.match(/declare(.*?)@/)![1].trim();
-        let types = Object.values(Type);
-        types.forEach((t) => {
-            let str = '' + t;
-            if (str === type) {
-                this.type = t;
-            }
-        });
-        // match args
-        let line = this.range.startLineNumber;
-        let matches = this.data.match(/%[\w]*/g);
-        matches?.forEach((m) => {
-            this.args.push(
-                new variable({
-                    name: m,
-                    data: 'Variable:' + m + '@l:' + line,
-                    range: new monaco.Range(
-                        line,
-                        node.indexOfStrict(m, this.data),
-                        line,
-                        node.indexOfStrict(m, this.data) + m.length,
-                    ),
-                    prev: null,
-                    next: null,
-                    parents: null,
-                    context: this,
-                }),
-            );
-        });
-    }
-
-    public findNodeAt(position: monaco.Position): component | null {
-        for (let i = 0; i < this.args.length; i++) {
-            if (this.args[i].getRange().containsPosition(position)) return this.args[i].findNodeAt(position);
-        }
-        return this;
+    public toString() {
+        return 'declare ' + this.type + ' @' + this.fullName + '(' + this.printArgs() + ')';
     }
 
     public getVariables() {
-        let vars: variable[] = [];
-        this.args.forEach((a) => {
-            vars.push(...a.getVariables());
-        });
-        return vars;
+        return this.args;
+    }
+
+    public getNodeAt(position: monaco.Position): _node | null {
+        for (let i = 0; i < this.args.length; i++)
+            if (this.args[i].getRange().containsPosition(position)) return this.args[i].getNodeAt(position);
+        return this;
     }
 }
 

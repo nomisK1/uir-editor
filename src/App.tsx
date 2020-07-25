@@ -3,10 +3,10 @@ import TcphDropdown from './components/TcphDropdown';
 import FeatureChecker from './components/FeatureChecker';
 import VariableInput from './components/VariableInput';
 import Editor from './components/Editor';
-import Graph from './graph/Graph';
+import Graph from './content/Graph';
+import { getData } from './content/TPCH';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
-import { getData } from './TPCH';
 import './App.css';
 
 enum Feature {

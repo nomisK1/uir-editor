@@ -1,26 +1,45 @@
 import * as monaco from 'monaco-editor';
-import node, { INodeProps } from './_node';
+import _node, { Type, matchType, indexOfStrict, lookupJSON } from './_node';
+import _value, { IValueProps } from './_value';
 
-interface IVariableProps extends INodeProps {
+interface IVariableProps extends IValueProps {
     parents: variable[] | null;
 }
 
-class variable extends node {
+class variable extends _value {
     protected parents: variable[] | null;
 
     constructor(props: IVariableProps) {
         super(props);
         this.parents = props.parents;
+        if (lookupJSON(this.json, 'isConst')) {
+            this.type = Type.GLOBAL;
+            this.name = '' + lookupJSON(this.json, 'name');
+        } else if (lookupJSON(this.json, 'global')) {
+            this.type = Type.GLOBAL;
+            this.showType = true;
+            this.name = '' + lookupJSON(this.json, 'var');
+        } else {
+            this.type = matchType(lookupJSON(this.json, 'type'));
+            let assigned = lookupJSON(this.json, 'dst');
+            this.name = '' + (assigned ? assigned : lookupJSON(this.json, 'var'));
+        }
     }
 
-    public build() {}
-
-    public findNodeAt(position: monaco.Position): node | null {
-        return this;
+    public toString() {
+        return (this.showType && this.type ? this.type + ' ' : '') + '%' + this.name;
     }
 
     public getVariables() {
         return [this];
+    }
+
+    public getNodeAt(position: monaco.Position): _node | null {
+        return this;
+    }
+
+    public isGlobal() {
+        return this.type === Type.GLOBAL || this.type === Type.GLOBAL_;
     }
 
     public getParents() {
@@ -34,3 +53,11 @@ class variable extends node {
 }
 
 export default variable;
+
+export function findVariableRange(variable: variable, offset?: number) {
+    if (variable.getRange()) return variable.getRange();
+    let name = variable.getName();
+    let line = variable.getLastLine();
+    let index = indexOfStrict('%' + name, variable.getContext()!.toString()) + (offset ? offset : 0);
+    variable.setRange(new monaco.Range(line, index, line, index + name.length + 1));
+}

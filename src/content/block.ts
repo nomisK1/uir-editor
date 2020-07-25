@@ -1,87 +1,72 @@
 import * as monaco from 'monaco-editor';
-import node, { INodeProps } from './_node';
-import instruction from './_instruction';
-import allocation from './allocation';
+import _node, { INodeProps, lookupJSON } from './_node';
+import _instruction from './_instruction';
+import assignment from './assignment';
 import operation from './operation';
 import variable from './variable';
 import target from './target';
 
-interface IBlockProps extends INodeProps {
-    target: target;
-}
+// Number of whitespaces at the start of each instruction
+export const indentation = 2;
 
-class block extends node {
-    static offset = 2;
+interface IBlockProps extends INodeProps {}
 
-    protected target: target;
-    protected instructions: instruction[];
+class block extends _node {
+    protected label: target;
+    protected instructions: _instruction[] = [];
 
     constructor(props: IBlockProps) {
         super(props);
-        this.target = props.target;
-        this.instructions = [];
-    }
-
-    public build() {
-        let line = this.range.startLineNumber;
-        // split block into lines
-        let lines = this.data.split(/\n/).slice(1);
-        for (let i = 0; i < lines.length; i++) {
-            lines[i] = lines[i].trim();
-        }
-        // define instructions
-        lines.forEach((l) => {
-            line += 1;
-            if (l.includes('=')) {
-                this.instructions.push(
-                    new allocation({
-                        name: 'Allocation@l:' + line,
-                        data: l,
-                        range: new monaco.Range(line, block.offset, line, block.offset + l.length),
-                        prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
-                        next: null,
-                        context: this,
-                    }),
-                );
-            } else {
-                this.instructions.push(
-                    new operation({
-                        name: 'Operation@l:' + line,
-                        data: l,
-                        range: new monaco.Range(line, block.offset, line, block.offset + l.length),
-                        prev: this.instructions.length > 0 ? this.instructions[this.instructions.length - 1] : null,
-                        next: null,
-                        context: this,
-                    }),
-                );
-            }
+        this.label = new target({
+            json: this.json,
+            line: this.line,
+            context: this,
         });
-        // add references to next instruction
-        for (let i = 0; i < this.instructions.length - 1; i++) {
-            this.instructions[i].setNext(this.instructions[i + 1]);
-        }
-        // build instructions
-        this.instructions.forEach((i) => {
-            i.build();
-        });
-        // set range
+        this.buildInstructions(lookupJSON(this.json, 'instructions'));
+        this.name = 'block$' + this.label.getName() + '@line:' + this.line;
         this.range = new monaco.Range(
-            this.range.startLineNumber,
+            this.line,
             0,
-            this.getLastLineNumber(),
-            this.instructions[this.instructions.length - 1].getData().length + block.offset,
+            this.getLastLine(),
+            this.instructions[this.instructions.length - 1].toString().length + indentation,
         );
     }
 
-    public findNodeAt(position: monaco.Position): node | null {
-        if (this.target!.getRange().containsPosition(position)) return this.target.findNodeAt(position);
-        for (let i = 0; i < this.instructions.length; i++) {
-            if (this.instructions[i].getRange().containsPosition(position))
-                return this.instructions[i].findNodeAt(position);
-        }
-        return this;
+    private buildInstructions(jsons: Object[]) {
+        let line = this.line;
+        jsons.forEach((json) => {
+            line += 1;
+            if (lookupJSON(json, 'dst'))
+                this.instructions.push(
+                    new assignment({
+                        json,
+                        line,
+                        context: this,
+                    }),
+                );
+            else
+                this.instructions.push(
+                    new operation({
+                        json,
+                        line,
+                        context: this,
+                    }),
+                );
+        });
     }
 
+    private printInstructions() {
+        let str = '';
+        this.instructions.forEach((i) => {
+            for (let i = 0; i < indentation; i++) str += ' ';
+            str += i.toString() + '\n';
+        });
+        return str.slice(0, -1);
+    }
+
+    public toString() {
+        return this.label!.toString() + '\n' + this.printInstructions();
+    }
     public getVariables() {
         let vars: variable[] = [];
         this.instructions.forEach((i) => {
@@ -90,18 +75,35 @@ class block extends node {
         return vars;
     }
 
-    public getAllocations() {
-        let allocations: allocation[] = [];
+    public getNodeAt(position: monaco.Position): _node | null {
+        if (this.label.getRange().containsPosition(position)) return this.label.getNodeAt(position);
+        for (let i = 0; i < this.instructions.length; i++)
+            if (this.instructions[i].getRange().containsPosition(position))
+                return this.instructions[i].getNodeAt(position);
+        return this;
+    }
+
+    public getLastLine() {
+        return this.line + this.instructions.length;
+    }
+
+    public getLabel() {
+        return this.label;
+    }
+
+    public getAssignments() {
+        let assignments: assignment[] = [];
         this.instructions.forEach((i) => {
-            if (i instanceof allocation) allocations.push(i);
+            if (i instanceof assignment) assignments.push(i);
         });
-        return allocations;
+        return assignments;
     }
 
     public getOperations() {
         let operations: operation[] = [];
         this.instructions.forEach((i) => {
-            if (i instanceof operation) operations.push(i);
+            if (i instanceof assignment) operations.push(i.getOperation());
+            else operations.push(i as operation);
         });
         return operations;
     }
@@ -111,12 +113,15 @@ class block extends node {
         this.getOperations().forEach((o) => {
             targets.push(...o.getTargets());
         });
-        return [this.target, ...targets];
+        return [this.label, ...targets];
     }
 
-    private getLastLineNumber() {
-        if (this.next === null) return this.range.endLineNumber - 1;
-        return this.next.getRange().startLineNumber - 2;
+    public getRelatedFunctions(fun: string) {
+        let nodes: _node[] = [];
+        this.getOperations().forEach((o) => {
+            if (o.getFunctionName() === fun) nodes.push(o);
+        });
+        return nodes;
     }
 }
 

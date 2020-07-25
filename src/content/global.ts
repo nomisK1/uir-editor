@@ -1,41 +1,40 @@
 import * as monaco from 'monaco-editor';
-import { Type } from './_node';
-import component, { IComponentProps } from './_component';
-import variable from './variable';
+import _node, { lookupJSON } from './_node';
+import _component, { IComponentProps } from './_component';
+import variable, { findVariableRange } from './variable';
 
 interface IGlobalProps extends IComponentProps {}
 
-class global extends component {
-    protected type: Type;
-    protected variable: variable | null;
+class global extends _component {
+    protected size: number;
+    protected data: string;
+    protected variable: variable;
 
     constructor(props: IGlobalProps) {
         super(props);
-        this.type = Type.GLOBAL;
-        this.variable = null;
+        this.name = 'const:' + lookupJSON(this.json, 'name');
+        this.size = lookupJSON(this.json, 'size');
+        this.data = lookupJSON(this.json, 'data');
+        this.variable = new variable({
+            json: this.json,
+            line: this.line,
+            context: this,
+            parents: null,
+        });
+        findVariableRange(this.variable);
+        this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 
-    public build() {
-        let name = this.name.match(/%[\w]*/)![0];
-        let line = this.range.startLineNumber;
-        let index = this.range.startColumn;
-        this.variable = new variable({
-            name,
-            data: 'Variable:' + name + '@l:' + line,
-            range: new monaco.Range(line, index + 6, line, index + 6 + name.length),
-            prev: null,
-            next: null,
-            parents: null,
-            context: this,
-        });
+    public toString() {
+        return 'const %' + this.variable.getName() + '[' + this.size + '] = "' + this.data + '"';
     }
 
     public getVariables() {
-        return [this.variable!];
+        return this.variable.getVariables();
     }
 
-    public findNodeAt(position: monaco.Position): component | null {
-        if (this.variable!.getRange().containsPosition(position)) return this.variable!.findNodeAt(position);
+    public getNodeAt(position: monaco.Position): _node | null {
+        if (this.variable.getRange().containsPosition(position)) return this.variable.getNodeAt(position);
         return this;
     }
 }

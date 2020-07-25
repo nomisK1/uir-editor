@@ -1,4 +1,4 @@
-import Graph from './graph/Graph';
+import Graph from './Graph';
 
 const url: string = 'http://localhost:8000/';
 let jsons: Object[] = [];

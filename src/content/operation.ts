@@ -1,9 +1,11 @@
 import * as monaco from 'monaco-editor';
-import node, { Type } from './_node';
-import definition from './definition';
-import instruction, { IInstructionProps } from './_instruction';
-import target from './target';
-import variable from './variable';
+import _node, { Type, matchType, lookupJSON } from './_node';
+import { indentation } from './block';
+import _instruction, { IInstructionProps } from './_instruction';
+import _value from './_value';
+import variable, { findVariableRange } from './variable';
+import constant, { findConstantRange } from './constant';
+import target, { findTargetRange } from './target';
 
 enum OpCode {
     ADD = 'add',
@@ -15,7 +17,7 @@ enum OpCode {
     ATOMICRMWUMAX = 'atomicrmwumax',
     ATOMICRMWXCHG = 'atomicrmwxchg',
     ATOMICSTORE = 'atomicstore',
-    BR = 'br', //NULL
+    BR = 'br',
     BSWAP = 'bswap',
     BUILDDATA128 = 'builddata128',
     CALL = 'call',
@@ -31,7 +33,7 @@ enum OpCode {
     CMPSUOLT = 'cmpsuolt',
     CMPULE = 'cmpule',
     CMPULT = 'cmpult',
-    CONDBR = 'condbr', //NULL
+    CONDBR = 'condbr',
     CONST = 'const',
     CRC32 = 'crc32',
     CTLZ = 'ctlz',
@@ -56,7 +58,7 @@ enum OpCode {
     PHI = 'phi',
     POW = 'pow',
     PTRTOINT = 'ptrtoint',
-    RETURN = 'return', //NULL
+    RETURN = 'return',
     RETURNVOID = 'returnvoid',
     ROTL = 'rotl',
     ROTR = 'rotr',
@@ -76,124 +78,313 @@ enum OpCode {
     UADDOVERFLOW = 'uaddoverflow',
     UDIV = 'udiv',
     UMULOVERFLOW = 'umuloverflow',
-    UNREACHABLE = 'unreachable', //NULL
+    UNREACHABLE = 'unreachable',
     UREM = 'urem',
     USUBOVERFLOW = 'usuboverflow',
     XOR = 'xor',
     ZEXT = 'zext',
 }
 
-interface IOperationProps extends IInstructionProps {}
+interface IOperationProps extends IInstructionProps {
+    assignmentOffset?: number;
+}
 
-class operation extends instruction {
-    protected opcode: OpCode;
-    protected type: Type;
-    protected args: variable[];
-    protected targets: target[];
+class operation extends _instruction {
+    protected opcode: OpCode | null;
+    protected type: Type | null;
+    protected operands: (_value | target)[] = [];
+    protected presentation: string;
+    protected assignmentOffset: number;
 
     constructor(props: IOperationProps) {
         super(props);
-        this.opcode = OpCode.CONST;
-        this.type = Type.NULL;
-        this.args = [];
-        this.targets = [];
+        this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
+        this.type = matchType(lookupJSON(this.json, 'type'));
+        this.presentation = this.opcode + ' ' + (this.type ? this.type + ' ' : '');
+        this.assignmentOffset = (props.assignmentOffset ? props.assignmentOffset : 0) + indentation;
+        this.build();
+        this.name = 'operation@line:' + this.line;
+        this.range = new monaco.Range(
+            this.line,
+            this.assignmentOffset,
+            this.line,
+            this.assignmentOffset + this.toString().length,
+        );
     }
 
-    public build() {
-        // match opcode
-        let opc = this.data.match(
-            /ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext|return|returnvoid|br|condbr|unreachable/,
-        );
-        if (opc) {
-            let opcodes = Object.values(OpCode);
-            opcodes.forEach((o) => {
-                let str = '' + o;
-                if (str === opc![0]) {
-                    this.opcode = o;
-                }
-            });
+    private build() {
+        if (
+            //[opcode]
+            this.opcode === OpCode.UNREACHABLE
+        ) {
+            this.presentation = this.opcode;
+        } else if (
+            //[opcode,value]
+            this.opcode === OpCode.RETURN
+        ) {
+            this.buildValuesHideType(lookupJSON(this.json, 'value'));
+            this.presentation += this.printOperands();
+        } else if (
+            //[opcode,target]
+            this.opcode === OpCode.BR
+        ) {
+            this.buildTarget(this.json);
+            this.presentation += this.printOperands();
+        } else if (
+            //[opcode,condition,targetTrue,targetFalse]
+            this.opcode === OpCode.CONDBR
+        ) {
+            this.buildValues(lookupJSON(this.json, 'condition'));
+            this.buildTarget(this.json, 'targetTrue');
+            this.buildTarget(this.json, 'targetFalse');
+            this.presentation += this.printOperands();
+        } else if (
+            //[opcode,type,fun,args]
+            this.opcode === OpCode.CALL
+        ) {
+            this.buildValues(lookupJSON(this.json, 'args'));
+            this.presentation += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
+        } else if (
+            //[opcode,type,value,pointer,offsets]
+            this.opcode === OpCode.STORE ||
+            //[dst,opcode,type,value,pointer,offsets]
+            this.opcode === OpCode.ATOMICRMWXCHG
+        ) {
+            this.buildValues(lookupJSON(this.json, 'value'));
+            this.buildValues(lookupJSON(this.json, 'pointer'));
+            this.buildValues(lookupJSON(this.json, 'offsets'));
+            this.presentation += this.printOperands();
+        } else if (
+            //[dst,opcode,type,pointer,offsets]
+            this.opcode === OpCode.ATOMICLOAD ||
+            this.opcode === OpCode.GETELEMENTPTR ||
+            this.opcode === OpCode.LOAD
+        ) {
+            this.buildValues(lookupJSON(this.json, 'pointer'));
+            this.buildValues(lookupJSON(this.json, 'offsets'));
+            this.presentation += this.printOperands();
+        } else if (
+            //[dst,opcode,type,condition,src]
+            this.opcode === OpCode.SELECT
+        ) {
+            this.buildValues(lookupJSON(this.json, 'condition'));
+            this.buildValues(lookupJSON(this.json, 'src'));
+            this.presentation += this.printOperands();
+        } else if (
+            //[dst,opcode,type,src,targetSuccess,targetFailure]
+            this.opcode === OpCode.CHECKEDSADD ||
+            this.opcode === OpCode.CHECKEDSMUL ||
+            this.opcode === OpCode.CHECKEDSSUB
+        ) {
+            this.buildValuesHideType(lookupJSON(this.json, 'src'));
+            this.buildTarget(this.json, 'targetSuccess');
+            this.buildTarget(this.json, 'targetFailure');
+            this.presentation += this.printOperands();
+        } else if (
+            //[dst,opcode,type,incoming]
+            this.opcode === OpCode.PHI
+        ) {
+            this.buildPhi(lookupJSON(this.json, 'incoming'));
+            this.presentation += '[' + this.printOperands() + ']';
+        } else if (
+            //[dst,opcode,type,src]
+            this.opcode === OpCode.AND ||
+            this.opcode === OpCode.ADD ||
+            this.opcode === OpCode.ASHR ||
+            this.opcode === OpCode.BUILDDATA128 ||
+            this.opcode === OpCode.CMPEQ ||
+            this.opcode === OpCode.CMPNE ||
+            this.opcode === OpCode.CMPSLE ||
+            this.opcode === OpCode.CMPULE ||
+            this.opcode === OpCode.CMPULT ||
+            this.opcode === OpCode.CMPSLT ||
+            this.opcode === OpCode.CRC32 ||
+            this.opcode === OpCode.EXTRACTDATA128 ||
+            this.opcode === OpCode.INTTOPTR ||
+            this.opcode === OpCode.ISNOTNULL ||
+            this.opcode === OpCode.ISNULL ||
+            this.opcode === OpCode.LSHR ||
+            this.opcode === OpCode.MUL ||
+            this.opcode === OpCode.NOT ||
+            this.opcode === OpCode.OR ||
+            this.opcode === OpCode.PTRTOINT ||
+            this.opcode === OpCode.ROTL ||
+            this.opcode === OpCode.ROTR ||
+            this.opcode === OpCode.SDIV ||
+            this.opcode === OpCode.SEXT ||
+            this.opcode === OpCode.SHL ||
+            this.opcode === OpCode.SUB ||
+            this.opcode === OpCode.TRUNC ||
+            this.opcode === OpCode.XOR ||
+            this.opcode === OpCode.ZEXT
+        ) {
+            this.buildValuesHideType(lookupJSON(this.json, 'src'));
+            this.presentation += this.printOperands();
+        } else {
+            this.presentation += '%UNKNOWN_OPERATION //[' + Object.keys(this.json) + ']';
+            //TODO - unknown OpCodes!
         }
-        // match type
-        let type = this.data.match(/\b(i(nt)?(8|32|64)|d(ata)?128|bool|global|ptr|void|object)/);
-        if (type) {
-            let types = Object.values(Type);
-            types.forEach((t) => {
-                let str = '' + t;
-                if (str === type![0]) {
-                    this.type = t;
-                }
-            });
-        }
-        // match args / targets
-        let line = this.range.startLineNumber;
-        let index = this.range.startColumn;
-        let context = this.getOuterContext() as definition;
-        let tgts = context.getTargets();
-        let labels = tgts.map((t) => t.getName());
-        let matches = this.data.match(/%[\w]*/g);
-        matches?.forEach((m) => {
-            if (labels.includes(m)) {
-                this.targets.push(
-                    new target({
-                        name: m,
-                        data: 'Target:' + m + '@l:' + line,
-                        range: new monaco.Range(
-                            line,
-                            index + node.indexOfStrict(m, this.data),
-                            line,
-                            index + node.indexOfStrict(m, this.data) + m.length,
-                        ),
-                        prev: this.args[1] ? this.args[1] : this.args[0] ? this.args[0] : null,
-                        next: tgts[labels.indexOf(m)],
-                        context: this,
-                    }),
-                );
-            } else {
-                this.args.push(
-                    new variable({
-                        name: m,
-                        data: 'Variable:' + m + '@l:' + line,
-                        range: new monaco.Range(
-                            line,
-                            index + node.indexOfStrict(m, this.data),
-                            line,
-                            index + node.indexOfStrict(m, this.data) + m.length,
-                        ),
-                        prev: null,
-                        next: null,
-                        parents: null,
-                        context: this,
-                    }),
-                );
-            }
-            index += 0;
+        this.operands.forEach((o) => {
+            if (o instanceof variable) findVariableRange(o, this.assignmentOffset);
+            if (o instanceof constant) findConstantRange(o, this.assignmentOffset);
+            if (o instanceof target) findTargetRange(o, this.assignmentOffset);
         });
     }
 
-    public findNodeAt(position: monaco.Position): instruction | null {
-        for (let i = 0; i < this.targets.length; i++) {
-            if (this.targets[i].getRange().containsPosition(position)) return this.targets[i].findNodeAt(position);
-        }
-        for (let i = 0; i < this.args.length; i++) {
-            if (this.args[i].getRange().containsPosition(position)) return this.args[i].findNodeAt(position);
-        }
-        return this;
+    private buildTarget(json: Object, reference?: string) {
+        this.operands.push(
+            new target({
+                json,
+                line: this.line,
+                context: this,
+                reference,
+            }),
+        );
+    }
+
+    private buildValues(json: Object | Object[]) {
+        if (!Array.isArray(json))
+            if (lookupJSON(json, 'type'))
+                this.operands.push(
+                    new constant({
+                        json,
+                        line: this.line,
+                        context: this,
+                        showType: true,
+                    }),
+                );
+            else
+                this.operands.push(
+                    new variable({
+                        json,
+                        line: this.line,
+                        context: this,
+                        parents: null,
+                    }),
+                );
+        else
+            json.forEach((json) => {
+                if (lookupJSON(json, 'type'))
+                    this.operands.push(
+                        new constant({
+                            json,
+                            line: this.line,
+                            context: this,
+                            showType: true,
+                        }),
+                    );
+                else
+                    this.operands.push(
+                        new variable({
+                            json,
+                            line: this.line,
+                            context: this,
+                            parents: null,
+                        }),
+                    );
+            });
+    }
+
+    private buildValuesHideType(json: Object | Object[]) {
+        if (!Array.isArray(json))
+            if (lookupJSON(json, 'type'))
+                this.operands.push(
+                    new constant({
+                        json,
+                        line: this.line,
+                        context: this,
+                    }),
+                );
+            else
+                this.operands.push(
+                    new variable({
+                        json,
+                        line: this.line,
+                        context: this,
+                        parents: null,
+                    }),
+                );
+        else
+            json.forEach((json) => {
+                if (lookupJSON(json, 'type'))
+                    this.operands.push(
+                        new constant({
+                            json,
+                            line: this.line,
+                            context: this,
+                        }),
+                    );
+                else
+                    this.operands.push(
+                        new variable({
+                            json,
+                            line: this.line,
+                            context: this,
+                            parents: null,
+                        }),
+                    );
+            });
+    }
+
+    private buildPhi(json: Object[]) {
+        json.forEach((json) => {
+            this.buildValues(lookupJSON(json, 'value'));
+            this.buildTarget(json, 'block');
+        });
+    }
+
+    private printOperands() {
+        if (this.operands.length === 0) return '';
+        let str = '';
+        this.operands.forEach((o) => {
+            str += o.toString() + (o instanceof target ? ' ' : ', ');
+        });
+        return this.operands[this.operands.length - 1] instanceof target ? str.slice(0, -1) : str.slice(0, -2);
+    }
+
+    public toString() {
+        return this.presentation /* + '//[' + Object.keys(this.json) + ']' */;
     }
 
     public getVariables() {
-        return this.args;
+        let vars: variable[] = [];
+        this.operands.forEach((o) => {
+            if (o instanceof variable) vars.push(o);
+        });
+        return vars;
     }
 
-    public getTargets() {
-        return this.targets;
+    public getNodeAt(position: monaco.Position): _node | null {
+        for (let i = 0; i < this.operands.length; i++)
+            if (this.operands[i].getRange().containsPosition(position)) return this.operands[i].getNodeAt(position);
+        return this;
     }
 
     public hasVariable(name: string) {
-        for (let i = 0; i < this.args.length; i++) {
-            if (this.args[i].getName() === name) return true;
-        }
+        let vars = this.getVariables();
+        for (let i = 0; i < vars.length; i++) if (vars[i].getName() === name) return true;
         return false;
+    }
+
+    public getTargets() {
+        let targets: target[] = [];
+        this.operands.forEach((o) => {
+            if (o instanceof target) targets.push(o);
+        });
+        return targets;
+    }
+
+    public getFunctionName() {
+        if (this.opcode === OpCode.CALL) return '' + lookupJSON(this.json, 'fun').split('(')[0];
+        else return null;
     }
 }
 
 export default operation;
+
+function matchOpCode(str: string | null) {
+    if (!str) return null;
+    let codes = Object.values(OpCode);
+    for (let i = 0; i < codes.length; i++) if (str.toUpperCase() === codes[i].toUpperCase()) return codes[i];
+    return null;
+}
