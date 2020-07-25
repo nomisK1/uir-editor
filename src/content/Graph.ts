@@ -131,13 +131,16 @@ class Graph {
 
     public getRelatedNodes(node: _node | null) {
         let nodes: _node[] = [];
-        if (node !== null)
+        if (node !== null) {
+            nodes.push(node);
             if (node instanceof global) nodes.push(...this.getVariablesCalled(node.getVariables()[0].getName()));
             else if (node instanceof declaration) nodes.push(...this.getRelatedFunctions(node.getName()));
             else if (node instanceof block) nodes.push(...this.getRelatedTargets(node.getLabel()));
             else if (node instanceof operation) nodes.push(...this.getRelatedFunctions(node.getFunctionName()));
             else if (node instanceof target) nodes.push(...this.getRelatedTargets(node));
-            else nodes.push(node);
+            else {
+            }
+        }
         return nodes;
     }
 
