@@ -19,7 +19,6 @@ abstract class _function extends _component {
                     json,
                     line: this.line,
                     context: this,
-                    parents: null,
                     showType: true,
                 }),
             );

@@ -376,6 +376,11 @@ class Graph {
     public resetComments() {
         this.comments = [];
     }
+
+    public renameVariableAt(alias: string, position: monaco.Position) {
+        let variable = this.getVariableAt(position);
+        if (variable) variable.setAlias(alias);
+    }
 }
 
 export default Graph;

@@ -86,7 +86,7 @@ enum OpCode {
 }
 
 interface IOperationProps extends IInstructionProps {
-    assignmentOffset?: number;
+    presentation?: string;
 }
 
 class operation extends _instruction {
@@ -94,22 +94,17 @@ class operation extends _instruction {
     protected type: Type | null;
     protected operands: (_value | target)[] = [];
     protected presentation: string;
-    protected assignmentOffset: number;
 
     constructor(props: IOperationProps) {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.presentation = this.opcode + ' ' + (this.type ? this.type + ' ' : '');
-        this.assignmentOffset = (props.assignmentOffset ? props.assignmentOffset : 0) + indentation;
+        this.presentation =
+            (props.presentation ? props.presentation : '') + this.opcode + ' ' + (this.type ? this.type + ' ' : '');
         this.build();
         this.name = 'operation@line:' + this.line;
-        this.range = new monaco.Range(
-            this.line,
-            this.assignmentOffset,
-            this.line,
-            this.assignmentOffset + this.toString().length,
-        );
+        let offset = (props.presentation ? props.presentation.length : 0) + indentation;
+        this.range = new monaco.Range(this.line, offset, this.line, offset + this.toString().length);
     }
 
     private build() {
@@ -225,9 +220,9 @@ class operation extends _instruction {
             //TODO - unknown OpCodes!
         }
         this.operands.forEach((o) => {
-            if (o instanceof variable) findVariableRange(o, this.assignmentOffset);
-            if (o instanceof constant) findConstantRange(o, this.assignmentOffset);
-            if (o instanceof target) findTargetRange(o, this.assignmentOffset);
+            if (o instanceof variable) findVariableRange(o, indentation);
+            if (o instanceof constant) findConstantRange(o, indentation);
+            if (o instanceof target) findTargetRange(o, indentation);
         });
     }
 
@@ -259,7 +254,6 @@ class operation extends _instruction {
                         json,
                         line: this.line,
                         context: this,
-                        parents: null,
                     }),
                 );
         else
@@ -279,7 +273,6 @@ class operation extends _instruction {
                             json,
                             line: this.line,
                             context: this,
-                            parents: null,
                         }),
                     );
             });
@@ -301,7 +294,6 @@ class operation extends _instruction {
                         json,
                         line: this.line,
                         context: this,
-                        parents: null,
                     }),
                 );
         else
@@ -320,7 +312,6 @@ class operation extends _instruction {
                             json,
                             line: this.line,
                             context: this,
-                            parents: null,
                         }),
                     );
             });

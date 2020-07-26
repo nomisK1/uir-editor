@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { lookupJSON } from './_node';
+import _node from './_node';
 import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import operation from './operation';
@@ -13,25 +13,25 @@ class assignment extends _instruction {
 
     constructor(props: IAssignmentProps) {
         super(props);
-        this.operation = new operation({
-            json: this.json,
-            line: this.line,
-            context: this,
-            assignmentOffset: ('%' + lookupJSON(this.json, 'dst') + ' = ').length,
-        });
         this.destination = new variable({
             json: this.json,
             line: this.line,
             context: this,
-            parents: this.operation.getVariables(),
         });
+        this.operation = new operation({
+            json: this.json,
+            line: this.line,
+            context: this,
+            presentation: '%' + this.destination.getAlias() + ' = ',
+        });
+        this.destination.setParents(this.operation.getVariables());
         findVariableRange(this.destination, indentation);
         this.name = 'assignment@line:' + this.line;
         this.range = new monaco.Range(this.line, indentation, this.line, this.toString().length + indentation);
     }
 
     public toString() {
-        return this.destination.toString() + ' = ' + this.operation.toString();
+        return this.operation.toString();
     }
 
     public getVariables() {

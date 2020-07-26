@@ -19,14 +19,13 @@ class global extends _component {
             json: this.json,
             line: this.line,
             context: this,
-            parents: null,
         });
         findVariableRange(this.variable);
         this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 
     public toString() {
-        return 'const %' + this.variable.getName() + '[' + this.size + '] = "' + this.data + '"';
+        return 'const ' + this.variable.toString() + '[' + this.size + '] = "' + this.data + '"';
     }
 
     public getVariables() {

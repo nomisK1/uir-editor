@@ -108,7 +108,6 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J, this.handleKeypressChild);
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressParent);
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressHoverParent);
-            this.editor.setPosition(new monaco.Position(0, 0));
             this.editor.focus();
         }
         monaco.editor.defineTheme(themeID, monarchTheme);

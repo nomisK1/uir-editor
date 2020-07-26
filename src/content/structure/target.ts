@@ -6,7 +6,7 @@ interface ITargetProps extends INodeProps {
 }
 
 class target extends _node {
-    protected isLabel: boolean = false;
+    protected isLabel?: boolean;
 
     constructor(props: ITargetProps) {
         super(props);
