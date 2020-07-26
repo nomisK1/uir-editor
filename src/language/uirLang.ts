@@ -31,19 +31,27 @@ export const hoverProvider: monaco.languages.HoverProvider = {
     provideHover: function (_model, position) {
         return new Promise(function (resolve, _reject) {
             const editor = S.getInstance().getEditor();
-            let dummy = {
+            if (editor) {
+                editor.decorateVariable(position);
+                let comments = editor.getComments();
+                for (let i = 0; i < comments.length; i++)
+                    if (comments[i].range.containsPosition(position))
+                        resolve({
+                            range: comments[i].range,
+                            contents: [{ value: comments[i].text }],
+                        });
+            }
+            resolve({
                 range: new monaco.Range(0, 0, 0, 0),
                 contents: [{ value: '' }],
-            };
-            if (editor) editor.decorateVariable(position);
-            resolve(dummy);
+            });
         });
     },
 };
 
 export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (_model, position, _token) {
-        //let iWord = model.getWordAtPosition(position);
+        //console.log(_model.getWordAtPosition(position));
         return new Promise(function (resolve, reject) {
             const editor = S.getInstance().getEditor();
             if (editor) resolve(editor.highlightNodes(position));

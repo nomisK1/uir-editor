@@ -38,6 +38,6 @@ export function findTargetRange(target: target, offset?: number) {
     if (target.getRange()) return target.getRange();
     let name = target.getName();
     let line = target.getLastLine();
-    let index = indexOfStrict('%' + name, target.getContext()!.toString()) + (offset ? offset : 0);
-    target.setRange(new monaco.Range(line, index, line, index + name.length + 1));
+    let coloumn = indexOfStrict('%' + name, target.getContext()!.toString()) + (offset ? offset : 0);
+    target.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length + 1));
 }

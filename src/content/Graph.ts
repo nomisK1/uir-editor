@@ -1,13 +1,13 @@
 import * as monaco from 'monaco-editor';
-import _node, { lookupJSON } from './_node';
-import _component from './_component';
-import global from './global';
-import declaration from './declaration';
-import definition from './definition';
-import block from './block';
-import operation from './operation';
-import variable from './variable';
-import target from './target';
+import _node, { lookupJSON } from './structure/_node';
+import _component from './structure/_component';
+import global from './structure/global';
+import declaration from './structure/declaration';
+import definition from './structure/definition';
+import block from './structure/block';
+import operation from './structure/operation';
+import variable from './structure/variable';
+import target from './structure/target';
 
 interface IGraphProps {
     json: Object;
@@ -18,10 +18,11 @@ class Graph {
     private components: _component[] = [];
     private variables: variable[] = [];
     private current: variable | null = null;
-    private next: variable | undefined = undefined;
+    private next?: variable;
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
+    private comments: { text: string; range: monaco.Range; isWholeLine: boolean }[] = [];
 
     constructor(props: IGraphProps) {
         this.json = props.json;
@@ -72,6 +73,8 @@ class Graph {
                 }
             });
         });
+        // for testing
+        this.addComment('THIS IS A TEST!!!!', 30, 20);
     }
 
     public print() {
@@ -339,6 +342,39 @@ class Graph {
             this.currentParents = [];
             this.currentChildren = [];
         }
+    }
+
+    public addComment(text: string, line: number, coloumn: number) {
+        let position = new monaco.Position(line, coloumn + 1);
+        let node = this.getNodeAt(position);
+        if (node) {
+            let range = node.getRange();
+            if (range.startLineNumber !== range.endLineNumber)
+                this.comments.push({
+                    text,
+                    range: range.setEndPosition(range.startLineNumber + 1, 0),
+                    isWholeLine: false,
+                });
+            else
+                this.comments.push({
+                    text,
+                    range,
+                    isWholeLine: false,
+                });
+        } else
+            this.comments.push({
+                text,
+                range: new monaco.Range(position.lineNumber, position.column, position.lineNumber, 0),
+                isWholeLine: true,
+            });
+    }
+
+    public getComments() {
+        return this.comments;
+    }
+
+    public resetComments() {
+        this.comments = [];
     }
 }
 

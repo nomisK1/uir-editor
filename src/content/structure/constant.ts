@@ -30,6 +30,6 @@ export function findConstantRange(constant: constant, offset?: number) {
     if (constant.getRange()) return constant.getRange();
     let name = constant.getName();
     let line = constant.getLastLine();
-    let index = indexOfStrict(name, constant.getContext()!.toString()) + (offset ? offset : 0);
-    constant.setRange(new monaco.Range(line, index, line, index + name.length));
+    let coloumn = indexOfStrict(name, constant.getContext()!.toString()) + (offset ? offset : 0);
+    constant.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length));
 }

@@ -12,6 +12,7 @@ interface IEditorProps {
     activateVariableDecoration: boolean;
     activateChildDecoration: boolean;
     activateParentDecoration: boolean;
+    activateCommentDecoration: boolean;
     selection: string;
     passSelection: (selection: string) => void;
     focusInput: () => void;
@@ -26,10 +27,12 @@ class Editor extends React.Component<IEditorProps> {
     private activateVariableDecoration: boolean;
     private activateChildDecoration: boolean;
     private activateParentDecoration: boolean;
+    private activateCommentDecoration: boolean;
     private selection: string;
     private decorations: string[] = [];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private treeDecorations: monaco.editor.IModelDeltaDecoration[] = [];
+    private commentDecorations: monaco.editor.IModelDeltaDecoration[] = [];
 
     constructor(props: IEditorProps) {
         super(props);
@@ -39,6 +42,7 @@ class Editor extends React.Component<IEditorProps> {
         this.activateVariableDecoration = this.props.activateVariableDecoration;
         this.activateChildDecoration = this.props.activateChildDecoration;
         this.activateParentDecoration = this.props.activateParentDecoration;
+        this.activateCommentDecoration = this.props.activateCommentDecoration;
         this.selection = this.props.selection;
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
@@ -109,6 +113,7 @@ class Editor extends React.Component<IEditorProps> {
         }
         monaco.editor.defineTheme(themeID, monarchTheme);
         monaco.editor.setTheme(themeID);
+        this.decorateComments();
     }
 
     public shouldComponentUpdate(nextProps: IEditorProps) {
@@ -141,15 +146,24 @@ class Editor extends React.Component<IEditorProps> {
             let variable = this.graph.getCurrentVariable();
             if (variable) this.decorateTree(variable.getRange().getStartPosition());
         }
+        if (this.props.activateCommentDecoration !== nextProps.activateCommentDecoration) {
+            this.activateCommentDecoration = nextProps.activateCommentDecoration;
+            if (nextProps.activateCommentDecoration) this.decorateComments();
+            else {
+                this.commentDecorations = [];
+                this.updateDecorations();
+            }
+        }
         return false;
     }
 
     public componentDidUpdate() {
-        if (this.editor !== null) this.editor.setValue(this.value);
+        if (this.editor) this.editor.setValue(this.value);
+        this.decorateComments();
     }
 
     public componentWillUnmount() {
-        if (this.editor !== null) this.editor.dispose();
+        if (this.editor) this.editor.dispose();
     }
 
     public getInstance() {
@@ -419,6 +433,41 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     /**
+     * setCommentDecoration:
+     *
+     */
+    private setCommentDecoration(comment: { text: string; range: monaco.Range; isWholeLine: boolean }) {
+        this.commentDecorations.push({
+            range: comment.range,
+            options: {
+                isWholeLine: comment.isWholeLine,
+                className: 'contentComment',
+                glyphMarginClassName: 'glyphComment',
+            },
+        });
+    }
+
+    /**
+     * decorateComments:
+     *
+     */
+    private decorateComments() {
+        this.commentDecorations = [];
+        if (this.activateCommentDecoration) {
+            let comments = this.graph.getComments();
+            comments.forEach((d) => this.setCommentDecoration(d));
+            this.updateDecorations();
+            return comments;
+        }
+        this.updateDecorations();
+        return [];
+    }
+
+    public getComments() {
+        return this.graph.getComments();
+    }
+
+    /**
      * updateDecorations:
      * Adds the Decorations to the editor for display
      */
@@ -427,6 +476,7 @@ class Editor extends React.Component<IEditorProps> {
             this.decorations = this.editor.deltaDecorations(this.decorations, [
                 ...this.variableDecorations,
                 ...this.treeDecorations,
+                ...this.commentDecorations,
             ]);
     }
 

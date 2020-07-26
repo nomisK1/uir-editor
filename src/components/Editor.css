@@ -10,6 +10,12 @@
 .contentSelect {
     background: rgba(120, 79, 38);
 }
+.glyphComment {
+    background: rgb(120, 120, 38, 0.5); /* #787826 */
+}
+.contentComment {
+    background: rgb(120, 120, 38, 0.5);
+}
 /* .glyphChild-5 {
     background: rgba(38, 120, 120, 0.2);
 }

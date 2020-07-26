@@ -14,6 +14,7 @@ enum Feature {
     VARIABLEDECORATION = 'Hover: Decorate Variable',
     CHILDDECORATION = 'Select: Decorate Variable Children',
     PARENTDECORATION = 'Select: Decorate Variable Parents',
+    COMMENTDECORATION = 'Hover: Show Comments',
 }
 
 interface IAppProps {}
@@ -24,6 +25,7 @@ interface IAppState {
     activateVariableDecoration: boolean;
     activateChildDecoration: boolean;
     activateParentDecoration: boolean;
+    activateCommentDecoration: boolean;
     selection: string;
 }
 
@@ -41,6 +43,7 @@ class App extends React.Component<IAppProps, IAppState> {
             activateVariableDecoration: true,
             activateChildDecoration: true,
             activateParentDecoration: true,
+            activateCommentDecoration: true,
             selection: '',
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
@@ -75,6 +78,10 @@ class App extends React.Component<IAppProps, IAppState> {
         else if (event.target.id === Feature.PARENTDECORATION)
             this.setState({
                 activateParentDecoration: event.target.checked,
+            });
+        else if (event.target.id === Feature.COMMENTDECORATION)
+            this.setState({
+                activateCommentDecoration: event.target.checked,
             });
         if (this.editor) this.editor.getInstance().focus();
     }
@@ -117,6 +124,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 activateVariableDecoration={this.state.activateVariableDecoration}
                 activateChildDecoration={this.state.activateChildDecoration}
                 activateParentDecoration={this.state.activateParentDecoration}
+                activateCommentDecoration={this.state.activateCommentDecoration}
                 onCheckerChange={this.handleCheckerChange}
             />
         );
@@ -136,6 +144,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 activateVariableDecoration={this.state.activateVariableDecoration}
                 activateChildDecoration={this.state.activateChildDecoration}
                 activateParentDecoration={this.state.activateParentDecoration}
+                activateCommentDecoration={this.state.activateCommentDecoration}
                 selection={this.state.selection}
                 passSelection={this.passSelection}
                 focusInput={this.focusInput}

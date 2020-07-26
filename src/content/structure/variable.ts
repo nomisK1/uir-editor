@@ -58,6 +58,6 @@ export function findVariableRange(variable: variable, offset?: number) {
     if (variable.getRange()) return variable.getRange();
     let name = variable.getName();
     let line = variable.getLastLine();
-    let index = indexOfStrict('%' + name, variable.getContext()!.toString()) + (offset ? offset : 0);
-    variable.setRange(new monaco.Range(line, index, line, index + name.length + 1));
+    let coloumn = indexOfStrict('%' + name, variable.getContext()!.toString()) + (offset ? offset : 0);
+    variable.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length + 1));
 }

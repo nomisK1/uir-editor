@@ -6,6 +6,7 @@ interface IFeatureCheckerProps {
     activateVariableDecoration: boolean;
     activateChildDecoration: boolean;
     activateParentDecoration: boolean;
+    activateCommentDecoration: boolean;
     onCheckerChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -16,6 +17,7 @@ class FeatureChecker extends React.Component<IFeatureCheckerProps> {
             this.props.activateVariableDecoration,
             this.props.activateChildDecoration,
             this.props.activateParentDecoration,
+            this.props.activateCommentDecoration,
         ];
         return this.props.features.map((e, i) => {
             return (
