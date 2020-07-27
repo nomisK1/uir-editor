@@ -33,13 +33,9 @@ export const hoverProvider: monaco.languages.HoverProvider = {
             const editor = S.getInstance().getEditor();
             if (editor) {
                 editor.decorateVariable(position);
-                let comments = editor.getComments();
-                for (let i = 0; i < comments.length; i++)
-                    if (comments[i].range.containsPosition(position))
-                        resolve({
-                            range: comments[i].range,
-                            contents: [{ value: comments[i].text }],
-                        });
+                editor.getCommentHovers().forEach((h) => {
+                    if ((h.range as monaco.Range).containsPosition(position)) resolve(h);
+                });
             }
             resolve({
                 range: new monaco.Range(0, 0, 0, 0),

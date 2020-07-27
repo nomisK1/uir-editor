@@ -63,9 +63,7 @@ class definition extends _function {
 
     public getVariables() {
         let vars = [...this.args];
-        this.blocks.forEach((b) => {
-            vars.push(...b.getVariables());
-        });
+        this.blocks.forEach((b) => vars.push(...b.getVariables()));
         return vars;
     }
 
@@ -83,25 +81,19 @@ class definition extends _function {
 
     public getTargets() {
         let targets: target[] = [];
-        this.blocks.forEach((b) => {
-            targets.push(...b.getTargets());
-        });
+        this.blocks.forEach((b) => targets.push(...b.getTargets()));
         return targets;
     }
 
     public getAssignments() {
         let assignments: assignment[] = [];
-        this.blocks.forEach((b) => {
-            assignments.push(...b.getAssignments());
-        });
+        this.blocks.forEach((b) => assignments.push(...b.getAssignments()));
         return assignments;
     }
 
     public getRelatedFunctions(fun: string) {
         let nodes: _node[] = [];
-        this.blocks.forEach((b) => {
-            nodes.push(...b.getRelatedFunctions(fun));
-        });
+        this.blocks.forEach((b) => nodes.push(...b.getRelatedFunctions(fun)));
         return nodes;
     }
 }

@@ -66,23 +66,19 @@ class Graph {
         this.components.forEach((c) => {
             this.variables.push(...c.getVariables());
         });
-        this.getDefinitions().forEach((d) => {
+        this.getDefinitions().forEach((d) =>
             d.getVariables().forEach((v) => {
                 if (v.getParents().length === 0) {
                     let orig = this.getVariableOrigin(v);
                     v.setParents(orig ? orig.getParents() : null);
                 }
-            });
-        });
-        // for testing
-        this.addComment('THIS IS A TEST!!!!', 30, 20);
+            }),
+        );
     }
 
     public print() {
         let str = '';
-        this.components.forEach((c) => {
-            str += c.toString() + '\n\n';
-        });
+        this.components.forEach((c) => (str += c.toString() + '\n\n'));
         return str.slice(0, -1);
     }
 
@@ -162,9 +158,7 @@ class Graph {
             this.getDeclarations().forEach((d) => {
                 if (d.getName() === fun) nodes.push(d);
             });
-            this.getDefinitions().forEach((d) => {
-                nodes.push(...d.getRelatedFunctions(fun));
-            });
+            this.getDefinitions().forEach((d) => nodes.push(...d.getRelatedFunctions(fun)));
         }
         return nodes;
     }
@@ -360,8 +354,7 @@ class Graph {
         });
     }
 
-    public addComment(text: string, line: number, coloumn: number) {
-        let position = new monaco.Position(line, coloumn + 1);
+    public addCommentAt(text: string, position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (node) {
             let range = node.getRange();
@@ -383,6 +376,14 @@ class Graph {
                 range: new monaco.Range(position.lineNumber, position.column, position.lineNumber, 0),
                 isWholeLine: true,
             });
+    }
+
+    public removeCommentAt(position: monaco.Position) {
+        for (let i = 0; i < this.comments.length; i++)
+            if (this.comments[i].range.containsPosition(position)) {
+                this.comments.splice(i, 1);
+                return;
+            }
     }
 
     public getComments() {

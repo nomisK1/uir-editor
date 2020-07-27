@@ -13,7 +13,7 @@ abstract class _function extends _component {
     }
 
     protected buildArgs(jsons: Object[]) {
-        jsons.forEach((json) => {
+        jsons.forEach((json) =>
             this.args.push(
                 new variable({
                     json,
@@ -21,15 +21,13 @@ abstract class _function extends _component {
                     context: this,
                     showType: true,
                 }),
-            );
-        });
+            ),
+        );
     }
 
     protected printArgs() {
         let str = '';
-        this.args.forEach((a) => {
-            str += a.toString() + ', ';
-        });
+        this.args.forEach((a) => (str += a.toString() + ', '));
         return str.slice(0, -2);
     }
 }

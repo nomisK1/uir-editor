@@ -62,6 +62,9 @@ class Editor extends React.Component<IEditorProps> {
         this.handleKeypressPrevious = this.handleKeypressPrevious.bind(this);
         this.handleKeypressRename = this.handleKeypressRename.bind(this);
         this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
+        this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
+        this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
+        this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
     }
 
     public componentDidMount() {
@@ -115,6 +118,27 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J, this.handleKeypressChild);
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressParent);
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressHoverParent);
+            this.editor.addAction({
+                id: 'AddComment',
+                label: 'Add Comment here',
+                keybindings: [],
+                contextMenuGroupId: '2_comment',
+                run: this.handleKeypressAddComment,
+            });
+            this.editor.addAction({
+                id: 'RemoveComment',
+                label: 'Remove this Comment',
+                keybindings: [],
+                contextMenuGroupId: '2_comment',
+                run: this.handleKeypressRemoveComment,
+            });
+            this.editor.addAction({
+                id: 'ResetComments',
+                label: 'Reset all Comments',
+                keybindings: [],
+                contextMenuGroupId: '2_comment',
+                run: this.handleKeypressResetComments,
+            });
             this.editor.focus();
         }
         monaco.editor.defineTheme(themeID, monarchTheme);
@@ -183,7 +207,6 @@ class Editor extends React.Component<IEditorProps> {
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
         if (event.target.position !== null) {
             this.updateInputAt(event.target.position);
-            this.decorateTree(event.target.position);
         }
     }
 
@@ -276,6 +299,21 @@ class Editor extends React.Component<IEditorProps> {
         this.focusCurrentVariable();
     }
 
+    public handleKeypressAddComment() {
+        this.graph.addCommentAt(this.selection, this.editor!.getPosition()!);
+        this.decorateComments();
+    }
+
+    public handleKeypressRemoveComment() {
+        this.graph.removeCommentAt(this.editor!.getPosition()!);
+        this.decorateComments();
+    }
+
+    public handleKeypressResetComments() {
+        this.graph.resetComments();
+        this.decorateComments();
+    }
+
     /**
      * updateInput:
      * Updates the App Input field with the currently selected Variable name
@@ -285,13 +323,13 @@ class Editor extends React.Component<IEditorProps> {
         this.selection = variable ? variable.getName() : '';
         this.graph.setCurrentVariable(variable);
         this.props.passSelection(this.selection);
+        this.decorateTree(position);
     }
 
     private updatePosition(position: monaco.Position) {
         this.editor!.setPosition(position);
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.updateInputAt(position);
-        this.decorateTree(position);
     }
 
     public focusCurrentVariable() {
@@ -378,9 +416,7 @@ class Editor extends React.Component<IEditorProps> {
         let variable = this.graph.getVariableAt(position);
         let vars = variable ? this.graph.getChildTree(variable) : [];
         let decorations: { range: monaco.Range; depth: number }[] = [];
-        vars.forEach((v) => {
-            decorations.push({ range: v.variable.getRange(), depth: v.depth });
-        });
+        vars.forEach((v) => decorations.push({ range: v.variable.getRange(), depth: v.depth }));
         return decorations;
     }
 
@@ -392,9 +428,7 @@ class Editor extends React.Component<IEditorProps> {
         let variable = this.graph.getVariableAt(position);
         let vars = variable ? this.graph.getParentTree(variable) : [];
         let decorations: { range: monaco.Range; depth: number }[] = [];
-        vars.forEach((v) => {
-            decorations.push({ range: v.variable.getRange(), depth: v.depth });
-        });
+        vars.forEach((v) => decorations.push({ range: v.variable.getRange(), depth: v.depth }));
         return decorations;
     }
 
@@ -482,7 +516,7 @@ class Editor extends React.Component<IEditorProps> {
         this.commentDecorations = [];
         if (this.activateCommentDecoration) {
             let comments = this.graph.getComments();
-            comments.forEach((d) => this.setCommentDecoration(d));
+            comments.forEach((c) => this.setCommentDecoration(c));
             this.updateDecorations();
             return comments;
         }
@@ -490,8 +524,21 @@ class Editor extends React.Component<IEditorProps> {
         return [];
     }
 
-    public getComments() {
-        return this.graph.getComments();
+    public getCommentHovers() {
+        let hovers: monaco.languages.Hover[] = [];
+        this.graph.getComments().forEach((c) =>
+            hovers.push({
+                range: c.range,
+                contents: [
+                    { value: c.text },
+                    {
+                        value: '![monaco-img-preview](https://analytics.db.in.tum.de/give_sql.svg)',
+                        isTrusted: true,
+                    },
+                ],
+            }),
+        );
+        return hovers;
     }
 
     /**

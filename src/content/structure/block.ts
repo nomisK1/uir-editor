@@ -75,11 +75,10 @@ class block extends _node {
     public toString() {
         return this.label!.toString() + '\n' + this.printInstructions();
     }
+
     public getVariables() {
         let vars: variable[] = [];
-        this.instructions.forEach((i) => {
-            vars.push(...i.getVariables());
-        });
+        this.instructions.forEach((i) => vars.push(...i.getVariables()));
         return vars;
     }
 
@@ -105,18 +104,15 @@ class block extends _node {
 
     public getOperations() {
         let operations: operation[] = [];
-        this.instructions.forEach((i) => {
-            if (i instanceof assignment) operations.push(i.getOperation());
-            else operations.push(i as operation);
-        });
+        this.instructions.forEach((i) =>
+            operations.push(i instanceof assignment ? i.getOperation() : (i as operation)),
+        );
         return operations;
     }
 
     public getTargets() {
         let targets: target[] = [];
-        this.getOperations().forEach((o) => {
-            targets.push(...o.getTargets());
-        });
+        this.getOperations().forEach((o) => targets.push(...o.getTargets()));
         return [this.label, ...targets];
     }
 

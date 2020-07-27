@@ -316,9 +316,7 @@ class operation extends _instruction {
     private printOperands() {
         if (this.operands.length === 0) return '';
         let str = '';
-        this.operands.forEach((o) => {
-            str += o.toString() + (o instanceof target ? ' ' : ', ');
-        });
+        this.operands.forEach((o) => (str += o.toString() + (o instanceof target ? ' ' : ', ')));
         return this.operands[this.operands.length - 1] instanceof target ? str.slice(0, -1) : str.slice(0, -2);
     }
 
