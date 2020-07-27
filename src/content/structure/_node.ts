@@ -59,6 +59,8 @@ abstract class _node {
         this.context = props.context;
     }
 
+    public abstract findRanges(): void;
+
     public abstract toString(): string;
 
     public abstract getVariables(): variable[];
@@ -132,9 +134,8 @@ export function matchType(str: string | null) {
  * Strict version of "string.indexOf"
  */
 export function indexOfStrict(string: string, text: string) {
-    let regexp = new RegExp(string + '\\b');
-    let index = text.search(regexp);
-    return index;
+    let regexp = new RegExp('[\\s|\\(|\\[]' + string + '\\b');
+    return text.search(regexp) + 1;
 }
 
 export function lookupJSON(json: Object, key: string) {

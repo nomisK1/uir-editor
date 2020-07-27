@@ -22,6 +22,7 @@ class Graph {
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
+    private aliases: string[] = [];
     private comments: { text: string; range: monaco.Range; isWholeLine: boolean }[] = [];
 
     constructor(props: IGraphProps) {
@@ -140,9 +141,8 @@ class Graph {
             else if (node instanceof declaration) nodes.push(...this.getRelatedFunctions(node.getName()));
             else if (node instanceof block) nodes.push(...this.getRelatedTargets(node.getLabel()));
             else if (node instanceof operation) nodes.push(...this.getRelatedFunctions(node.getFunctionName()));
+            else if (node instanceof variable) nodes.push(...this.getVariablesCalled(node.getName()));
             else if (node instanceof target) nodes.push(...this.getRelatedTargets(node));
-            else {
-            }
         }
         return nodes;
     }
@@ -344,6 +344,22 @@ class Graph {
         }
     }
 
+    public renameCurrentVariable(alias: string) {
+        if (this.current && alias !== '%' && !alias.includes(' ') && !this.aliases.includes(alias)) {
+            this.aliases.push(alias);
+            this.current.setAlias(alias);
+            this.current.getContext()!.findRanges();
+        }
+    }
+
+    public resetAliases() {
+        this.aliases = [];
+        this.variables.forEach((v) => {
+            v.resetAlias();
+            v.getContext()!.findRanges();
+        });
+    }
+
     public addComment(text: string, line: number, coloumn: number) {
         let position = new monaco.Position(line, coloumn + 1);
         let node = this.getNodeAt(position);
@@ -376,20 +392,6 @@ class Graph {
     public resetComments() {
         this.comments = [];
     }
-
-    public renameVariableAt(alias: string, position: monaco.Position) {
-        let variable = this.getVariableAt(position);
-        if (variable) variable.setAlias(alias);
-    }
 }
 
 export default Graph;
-
-/**
- * removeDuplicates:
- *
- */
-// eslint-disable-next-line
-function removeDuplicates(array: any[]) {
-    return array.filter((a, b) => array.indexOf(a) === b);
-}

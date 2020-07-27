@@ -56,12 +56,15 @@ class variable extends _value {
     public setAlias(alias: string) {
         this.alias = alias;
     }
+
+    public resetAlias() {
+        this.alias = undefined;
+    }
 }
 
 export default variable;
 
 export function findVariableRange(variable: variable, offset?: number) {
-    if (variable.getRange()) return variable.getRange();
     let name = variable.getAlias();
     let line = variable.getLastLine();
     let coloumn = indexOfStrict('%' + name, variable.getContext()!.toString()) + (offset ? offset : 0);

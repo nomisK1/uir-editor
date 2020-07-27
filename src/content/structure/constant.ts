@@ -27,7 +27,6 @@ class constant extends _value {
 export default constant;
 
 export function findConstantRange(constant: constant, offset?: number) {
-    if (constant.getRange()) return constant.getRange();
     let name = constant.getName();
     let line = constant.getLastLine();
     let coloumn = indexOfStrict(name, constant.getContext()!.toString()) + (offset ? offset : 0);

@@ -1,6 +1,6 @@
 import { matchType, lookupJSON } from './_node';
 import _component, { IComponentProps } from './_component';
-import variable, { findVariableRange } from './variable';
+import variable from './variable';
 
 export interface IFunctionProps extends IComponentProps {}
 
@@ -22,7 +22,6 @@ abstract class _function extends _component {
                     showType: true,
                 }),
             );
-            this.args.forEach((a) => findVariableRange(a));
         });
     }
 

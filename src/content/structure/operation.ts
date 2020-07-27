@@ -2,6 +2,7 @@ import * as monaco from 'monaco-editor';
 import _node, { Type, matchType, lookupJSON } from './_node';
 import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
+import assignment from './assignment';
 import _value from './_value';
 import variable, { findVariableRange } from './variable';
 import constant, { findConstantRange } from './constant';
@@ -85,26 +86,20 @@ enum OpCode {
     ZEXT = 'zext',
 }
 
-interface IOperationProps extends IInstructionProps {
-    presentation?: string;
-}
+interface IOperationProps extends IInstructionProps {}
 
 class operation extends _instruction {
     protected opcode: OpCode | null;
     protected type: Type | null;
     protected operands: (_value | target)[] = [];
-    protected presentation: string;
 
     constructor(props: IOperationProps) {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.presentation =
-            (props.presentation ? props.presentation : '') + this.opcode + ' ' + (this.type ? this.type + ' ' : '');
-        this.build();
         this.name = 'operation@line:' + this.line;
-        let offset = (props.presentation ? props.presentation.length : 0) + indentation;
-        this.range = new monaco.Range(this.line, offset, this.line, offset + this.toString().length);
+        this.build();
+        this.findRanges();
     }
 
     private build() {
@@ -112,19 +107,16 @@ class operation extends _instruction {
             //[opcode]
             this.opcode === OpCode.UNREACHABLE
         ) {
-            this.presentation = this.opcode;
         } else if (
             //[opcode,value]
             this.opcode === OpCode.RETURN
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'value'));
-            this.presentation += this.printOperands();
         } else if (
             //[opcode,target]
             this.opcode === OpCode.BR
         ) {
             this.buildTarget(this.json);
-            this.presentation += this.printOperands();
         } else if (
             //[opcode,condition,targetTrue,targetFalse]
             this.opcode === OpCode.CONDBR
@@ -132,13 +124,11 @@ class operation extends _instruction {
             this.buildValues(lookupJSON(this.json, 'condition'));
             this.buildTarget(this.json, 'targetTrue');
             this.buildTarget(this.json, 'targetFalse');
-            this.presentation += this.printOperands();
         } else if (
             //[opcode,type,fun,args]
             this.opcode === OpCode.CALL
         ) {
             this.buildValues(lookupJSON(this.json, 'args'));
-            this.presentation += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
         } else if (
             //[opcode,type,value,pointer,offsets]
             this.opcode === OpCode.STORE ||
@@ -148,7 +138,6 @@ class operation extends _instruction {
             this.buildValues(lookupJSON(this.json, 'value'));
             this.buildValues(lookupJSON(this.json, 'pointer'));
             this.buildValues(lookupJSON(this.json, 'offsets'));
-            this.presentation += this.printOperands();
         } else if (
             //[dst,opcode,type,pointer,offsets]
             this.opcode === OpCode.ATOMICLOAD ||
@@ -157,14 +146,12 @@ class operation extends _instruction {
         ) {
             this.buildValues(lookupJSON(this.json, 'pointer'));
             this.buildValues(lookupJSON(this.json, 'offsets'));
-            this.presentation += this.printOperands();
         } else if (
             //[dst,opcode,type,condition,src]
             this.opcode === OpCode.SELECT
         ) {
             this.buildValues(lookupJSON(this.json, 'condition'));
             this.buildValues(lookupJSON(this.json, 'src'));
-            this.presentation += this.printOperands();
         } else if (
             //[dst,opcode,type,src,targetSuccess,targetFailure]
             this.opcode === OpCode.CHECKEDSADD ||
@@ -174,13 +161,11 @@ class operation extends _instruction {
             this.buildValuesHideType(lookupJSON(this.json, 'src'));
             this.buildTarget(this.json, 'targetSuccess');
             this.buildTarget(this.json, 'targetFailure');
-            this.presentation += this.printOperands();
         } else if (
             //[dst,opcode,type,incoming]
             this.opcode === OpCode.PHI
         ) {
             this.buildPhi(lookupJSON(this.json, 'incoming'));
-            this.presentation += '[' + this.printOperands() + ']';
         } else if (
             //[dst,opcode,type,src]
             this.opcode === OpCode.AND ||
@@ -214,16 +199,9 @@ class operation extends _instruction {
             this.opcode === OpCode.ZEXT
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'src'));
-            this.presentation += this.printOperands();
         } else {
-            this.presentation += '%UNKNOWN_OPERATION //[' + Object.keys(this.json) + ']';
             //TODO - unknown OpCodes!
         }
-        this.operands.forEach((o) => {
-            if (o instanceof variable) findVariableRange(o, indentation);
-            if (o instanceof constant) findConstantRange(o, indentation);
-            if (o instanceof target) findTargetRange(o, indentation);
-        });
     }
 
     private buildTarget(json: Object, reference?: string) {
@@ -324,6 +302,17 @@ class operation extends _instruction {
         });
     }
 
+    public findRanges() {
+        let offset =
+            (this.context instanceof assignment ? this.context.toString().split('=')[0].length + 2 : 0) + indentation;
+        this.operands.forEach((o) => {
+            if (o instanceof variable) findVariableRange(o, offset);
+            else if (o instanceof constant) findConstantRange(o, offset);
+            else if (o instanceof target) findTargetRange(o, offset);
+        });
+        this.range = new monaco.Range(this.line, offset, this.line, offset + this.toString().length);
+    }
+
     private printOperands() {
         if (this.operands.length === 0) return '';
         let str = '';
@@ -334,7 +323,11 @@ class operation extends _instruction {
     }
 
     public toString() {
-        return this.presentation /* + '//[' + Object.keys(this.json) + ']' */;
+        let str = this.opcode! + ' ' + (this.type ? this.type + ' ' : '');
+        if (this.opcode === OpCode.CALL) str += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
+        else if (this.opcode === OpCode.PHI) str += '[' + this.printOperands() + ']';
+        else str += this.printOperands();
+        return str /* + '//[' + Object.keys(this.json) + ']' */;
     }
 
     public getVariables() {

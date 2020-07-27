@@ -22,16 +22,20 @@ class assignment extends _instruction {
             json: this.json,
             line: this.line,
             context: this,
-            presentation: '%' + this.destination.getAlias() + ' = ',
         });
         this.destination.setParents(this.operation.getVariables());
-        findVariableRange(this.destination, indentation);
         this.name = 'assignment@line:' + this.line;
+        this.findRanges();
+    }
+
+    public findRanges() {
+        findVariableRange(this.destination, indentation);
+        this.operation.findRanges();
         this.range = new monaco.Range(this.line, indentation, this.line, this.toString().length + indentation);
     }
 
     public toString() {
-        return this.operation.toString();
+        return '%' + this.destination.getAlias() + ' = ' + (this.operation ? this.operation.toString() : '');
     }
 
     public getVariables() {

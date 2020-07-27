@@ -48,6 +48,7 @@ class Editor extends React.Component<IEditorProps> {
         this.handleMouseclick = this.handleMouseclick.bind(this);
         this.handleKeypressToInput = this.handleKeypressToInput.bind(this);
         this.handleKeypressJumpRight = this.handleKeypressJumpRight.bind(this);
+        this.handleKeypressJumpLeft = this.handleKeypressJumpLeft.bind(this);
         this.handleKeypressNextOccurrence = this.handleKeypressNextOccurrence.bind(this);
         this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
         this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
@@ -59,6 +60,8 @@ class Editor extends React.Component<IEditorProps> {
         this.handleKeypressParent = this.handleKeypressParent.bind(this);
         this.handleKeypressHoverParent = this.handleKeypressHoverParent.bind(this);
         this.handleKeypressPrevious = this.handleKeypressPrevious.bind(this);
+        this.handleKeypressRename = this.handleKeypressRename.bind(this);
+        this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
     }
 
     public componentDidMount() {
@@ -85,6 +88,7 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.onMouseDown(this.handleMouseclick);
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput);
             this.editor.addCommand(monaco.KeyCode.Tab, this.handleKeypressJumpRight);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Tab, this.handleKeypressJumpLeft);
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, this.handleKeypressPrevOccurrence);
             this.editor.addCommand(monaco.KeyCode.LeftArrow, this.handleKeypressLeft);
@@ -98,8 +102,11 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput);
             this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressPrevious);
             this.editor.addCommand(monaco.KeyCode.KEY_M, this.handleKeypressJumpRight);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_M, this.handleKeypressJumpLeft);
             this.editor.addCommand(monaco.KeyCode.KEY_N, this.handleKeypressNextOccurrence);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_N, this.handleKeypressPrevOccurrence);
+            this.editor.addCommand(monaco.KeyCode.KEY_R, this.handleKeypressRename);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_R, this.handleKeypressResetNames);
             this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft);
             this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressDown);
             this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressUp);
@@ -115,11 +122,15 @@ class Editor extends React.Component<IEditorProps> {
         this.decorateComments();
     }
 
+    private updateValue() {
+        let query = this.graph.print();
+        if (query !== this.value) this.value = query;
+        if (this.editor) this.editor.setValue(this.value);
+    }
+
     public shouldComponentUpdate(nextProps: IEditorProps) {
         if (this.props.graph !== nextProps.graph) {
             this.graph = nextProps.graph;
-            let query = this.graph.print();
-            if (query !== this.value) this.value = query;
             this.resetPosition();
             return true;
         }
@@ -157,7 +168,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public componentDidUpdate() {
-        if (this.editor) this.editor.setValue(this.value);
+        this.updateValue();
         this.decorateComments();
     }
 
@@ -182,7 +193,12 @@ class Editor extends React.Component<IEditorProps> {
 
     public handleKeypressJumpRight() {
         let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column + 10));
+        this.updatePosition(position.with(undefined, position.column + 15));
+    }
+
+    public handleKeypressJumpLeft() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(undefined, position.column - 15));
     }
 
     public handleKeypressNextOccurrence() {
@@ -245,6 +261,18 @@ class Editor extends React.Component<IEditorProps> {
 
     public handleKeypressPrevious() {
         this.graph.setCurrentToPrevious();
+        this.focusCurrentVariable();
+    }
+
+    public handleKeypressRename() {
+        this.graph.renameCurrentVariable(this.selection);
+        this.updateValue();
+        this.focusCurrentVariable();
+    }
+
+    public handleKeypressResetNames() {
+        this.graph.resetAliases();
+        this.updateValue();
         this.focusCurrentVariable();
     }
 

@@ -22,14 +22,9 @@ class block extends _node {
             line: this.line,
             context: this,
         });
-        this.buildInstructions(lookupJSON(this.json, 'instructions'));
         this.name = 'block$' + this.label.getName() + '@line:' + this.line;
-        this.range = new monaco.Range(
-            this.line,
-            0,
-            this.getLastLine(),
-            this.instructions[this.instructions.length - 1].toString().length + indentation,
-        );
+        this.buildInstructions(lookupJSON(this.json, 'instructions'));
+        this.findRanges();
     }
 
     private buildInstructions(jsons: Object[]) {
@@ -53,6 +48,19 @@ class block extends _node {
                     }),
                 );
         });
+    }
+
+    public findRanges() {
+        this.range = new monaco.Range(
+            this.line,
+            0,
+            this.getLastLine(),
+            this.instructions[this.instructions.length - 1].toString().length + indentation,
+        );
+    }
+
+    public getLastLine() {
+        return this.line + this.instructions.length;
     }
 
     private printInstructions() {
@@ -81,10 +89,6 @@ class block extends _node {
             if (this.instructions[i].getRange().containsPosition(position))
                 return this.instructions[i].getNodeAt(position);
         return this;
-    }
-
-    public getLastLine() {
-        return this.line + this.instructions.length;
     }
 
     public getLabel() {

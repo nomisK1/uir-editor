@@ -12,6 +12,9 @@ abstract class _value extends _node {
         super(props);
         this.showType = props.showType;
     }
+
+    // Should always be called in the context
+    public findRanges() {}
 }
 
 export default _value;

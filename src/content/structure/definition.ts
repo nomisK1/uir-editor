@@ -3,6 +3,7 @@ import _node, { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 import block from './block';
 import assignment from './assignment';
+import { findVariableRange } from './variable';
 import target from './target';
 
 // Number of linebreaks between blocks
@@ -18,7 +19,7 @@ class definition extends _function {
         this.name = '' + lookupJSON(this.json, 'name');
         this.buildArgs(lookupJSON(this.json, 'args'));
         this.buildBlocks(lookupJSON(this.json, 'blocks'));
-        this.range = new monaco.Range(this.line, 0, this.getLastLine(), 1);
+        this.findRanges();
     }
 
     private buildBlocks(jsons: Object[]) {
@@ -34,6 +35,15 @@ class definition extends _function {
             );
             line = this.blocks[this.blocks.length - 1].getLastLine();
         });
+    }
+
+    public findRanges() {
+        this.args.forEach((a) => findVariableRange(a));
+        this.range = new monaco.Range(this.line, 0, this.getLastLine(), 1);
+    }
+
+    public getLastLine() {
+        return this.blocks[this.blocks.length - 1].getLastLine() + 1;
     }
 
     private printBlocks() {
@@ -65,10 +75,6 @@ class definition extends _function {
         for (let i = 0; i < this.blocks.length; i++)
             if (this.blocks[i].getRange().containsPosition(position)) return this.blocks[i].getNodeAt(position);
         return this;
-    }
-
-    public getLastLine() {
-        return this.blocks[this.blocks.length - 1].getLastLine() + 1;
     }
 
     public getArgs() {

@@ -18,6 +18,9 @@ class target extends _node {
         } else this.name = '' + lookupJSON(this.json, 'target');
     }
 
+    // Should always be called in the context
+    public findRanges() {}
+
     public toString() {
         if (this.isLabel) return this.name + ':';
         return '%' + this.name;
@@ -35,7 +38,6 @@ class target extends _node {
 export default target;
 
 export function findTargetRange(target: target, offset?: number) {
-    if (target.getRange()) return target.getRange();
     let name = target.getName();
     let line = target.getLastLine();
     let coloumn = indexOfStrict('%' + name, target.getContext()!.toString()) + (offset ? offset : 0);

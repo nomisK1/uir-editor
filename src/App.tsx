@@ -98,6 +98,14 @@ class App extends React.Component<IAppProps, IAppState> {
                 this.editor.handleKeypressNextOccurrence();
             }
         }
+        // TODO!!!
+        if (event.key === 'r') {
+            event.preventDefault();
+            if (this.editor) {
+                this.editor.getInstance().focus();
+                this.editor.handleKeypressRename();
+            }
+        }
     }
 
     public passSelection(selection: string) {

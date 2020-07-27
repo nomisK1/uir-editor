@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor';
 import _node, { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
+import { findVariableRange } from './variable';
 
 interface IDeclarationProps extends IFunctionProps {}
 
@@ -12,6 +13,11 @@ class declaration extends _function {
         this.fullName = '' + lookupJSON(this.json, 'name');
         this.name = this.fullName.split('(')[0];
         this.buildArgs(lookupJSON(this.json, 'args'));
+        this.findRanges();
+    }
+
+    public findRanges() {
+        this.args.forEach((a) => findVariableRange(a));
         this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 

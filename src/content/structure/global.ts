@@ -20,6 +20,10 @@ class global extends _component {
             line: this.line,
             context: this,
         });
+        this.findRanges();
+    }
+
+    public findRanges() {
         findVariableRange(this.variable);
         this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
