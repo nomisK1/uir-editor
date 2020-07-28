@@ -348,17 +348,17 @@ class operation extends _instruction {
         return false;
     }
 
+    public getFunctionName() {
+        if (this.opcode === OpCode.CALL) return '' + lookupJSON(this.json, 'fun').split('(')[0];
+        else return null;
+    }
+
     public getTargets() {
         let targets: target[] = [];
         this.operands.forEach((o) => {
             if (o instanceof target) targets.push(o);
         });
         return targets;
-    }
-
-    public getFunctionName() {
-        if (this.opcode === OpCode.CALL) return '' + lookupJSON(this.json, 'fun').split('(')[0];
-        else return null;
     }
 }
 

@@ -13,6 +13,7 @@ interface IBlockProps extends INodeProps {}
 
 class block extends _node {
     protected label: target;
+    protected targets: target[] = [];
     protected instructions: _instruction[] = [];
 
     constructor(props: IBlockProps) {
@@ -48,6 +49,7 @@ class block extends _node {
                     }),
                 );
         });
+        this.getOperations().forEach((o) => this.targets.push(...o.getTargets()));
     }
 
     public findRanges() {
@@ -90,10 +92,6 @@ class block extends _node {
         return this;
     }
 
-    public getLabel() {
-        return this.label;
-    }
-
     public getAssignments() {
         let assignments: assignment[] = [];
         this.instructions.forEach((i) => {
@@ -110,18 +108,20 @@ class block extends _node {
         return operations;
     }
 
-    public getTargets() {
-        let targets: target[] = [];
-        this.getOperations().forEach((o) => targets.push(...o.getTargets()));
-        return [this.label, ...targets];
-    }
-
     public getRelatedFunctions(fun: string) {
         let nodes: _node[] = [];
         this.getOperations().forEach((o) => {
             if (o.getFunctionName() === fun) nodes.push(o);
         });
         return nodes;
+    }
+
+    public getLabel() {
+        return this.label;
+    }
+
+    public getTargets() {
+        return this.targets;
     }
 }
 

@@ -17,6 +17,7 @@ class Graph {
     private json: Object;
     private components: _component[] = [];
     private variables: variable[] = [];
+    private targets: target[] = [];
     private current: variable | null = null;
     private next?: variable;
     private currentParents: variable[] = [];
@@ -65,6 +66,7 @@ class Graph {
         });
         this.components.forEach((c) => {
             this.variables.push(...c.getVariables());
+            if (c instanceof definition) this.targets.push(...c.getTargets());
         });
         this.getDefinitions().forEach((d) =>
             d.getVariables().forEach((v) => {
@@ -143,15 +145,6 @@ class Graph {
         return nodes;
     }
 
-    private getRelatedTargets(target: target) {
-        let targets: target[] = [];
-        let context = target.getOuterContext() as definition;
-        context.getTargets().forEach((t) => {
-            if (t.getName() === target.getName()) targets.push(t);
-        });
-        return targets;
-    }
-
     private getRelatedFunctions(fun: string | null) {
         let nodes: _node[] = [];
         if (fun) {
@@ -161,6 +154,15 @@ class Graph {
             this.getDefinitions().forEach((d) => nodes.push(...d.getRelatedFunctions(fun)));
         }
         return nodes;
+    }
+
+    private getRelatedTargets(target: target) {
+        let targets: target[] = [];
+        let context = target.getOuterContext() as definition;
+        context.getTargets().forEach((t) => {
+            if (t.getName() === target.getName()) targets.push(t);
+        });
+        return targets;
     }
 
     public getVariableSiblings(variable: variable | null) {

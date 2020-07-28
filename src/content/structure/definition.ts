@@ -79,12 +79,6 @@ class definition extends _function {
         return this.args;
     }
 
-    public getTargets() {
-        let targets: target[] = [];
-        this.blocks.forEach((b) => targets.push(...b.getTargets()));
-        return targets;
-    }
-
     public getAssignments() {
         let assignments: assignment[] = [];
         this.blocks.forEach((b) => assignments.push(...b.getAssignments()));
@@ -95,6 +89,12 @@ class definition extends _function {
         let nodes: _node[] = [];
         this.blocks.forEach((b) => nodes.push(...b.getRelatedFunctions(fun)));
         return nodes;
+    }
+
+    public getTargets() {
+        let targets: target[] = [];
+        this.blocks.forEach((b) => targets.push(b.getLabel(), ...b.getTargets()));
+        return targets;
     }
 }
 

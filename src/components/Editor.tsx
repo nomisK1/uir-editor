@@ -121,21 +121,21 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addAction({
                 id: 'AddComment',
                 label: 'Add Comment here',
-                keybindings: [],
+                keybindings: [monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
                 run: this.handleKeypressAddComment,
             });
             this.editor.addAction({
                 id: 'RemoveComment',
                 label: 'Remove this Comment',
-                keybindings: [],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
                 run: this.handleKeypressRemoveComment,
             });
             this.editor.addAction({
                 id: 'ResetComments',
                 label: 'Reset all Comments',
-                keybindings: [],
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
                 run: this.handleKeypressResetComments,
             });
@@ -320,9 +320,11 @@ class Editor extends React.Component<IEditorProps> {
      */
     private updateInputAt(position: monaco.Position) {
         let variable = this.graph.getVariableAt(position);
-        this.selection = variable ? variable.getName() : '';
-        this.graph.setCurrentVariable(variable);
-        this.props.passSelection(this.selection);
+        if (variable && variable !== this.graph.getCurrentVariable()) {
+            this.graph.setCurrentVariable(variable);
+            this.selection = variable.getName();
+            this.props.passSelection(this.selection);
+        }
         this.decorateTree(position);
     }
 

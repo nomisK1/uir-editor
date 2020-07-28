@@ -14,7 +14,7 @@ enum Feature {
     VARIABLEDECORATION = 'Hover: Decorate Variable',
     CHILDDECORATION = 'Select: Decorate Variable Children',
     PARENTDECORATION = 'Select: Decorate Variable Parents',
-    COMMENTDECORATION = 'Hover: Show Comments',
+    COMMENTDECORATION = 'Hover: Display Comments',
 }
 
 interface IAppProps {}
