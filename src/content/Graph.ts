@@ -23,8 +23,7 @@ class Graph {
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
-    private aliases: string[] = [];
-    private comments: { text: string; range: monaco.Range; isWholeLine: boolean }[] = [];
+    private comments: { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node }[] = [];
 
     constructor(props: IGraphProps) {
         this.json = props.json;
@@ -340,22 +339,6 @@ class Graph {
         }
     }
 
-    public renameCurrentVariable(alias: string) {
-        if (this.current && alias !== '%' && !alias.includes(' ') && !this.aliases.includes(alias)) {
-            this.aliases.push(alias);
-            this.current.setAlias(alias);
-            this.current.getContext()!.findRanges();
-        }
-    }
-
-    public resetAliases() {
-        this.aliases = [];
-        this.variables.forEach((v) => {
-            v.resetAlias();
-            v.getContext()!.findRanges();
-        });
-    }
-
     public addCommentAt(text: string, position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (node) {
@@ -371,6 +354,7 @@ class Graph {
                     text,
                     range,
                     isWholeLine: false,
+                    node,
                 });
         } else
             this.comments.push({
@@ -394,6 +378,27 @@ class Graph {
 
     public resetComments() {
         this.comments = [];
+    }
+
+    private updateComments(reference: _node) {
+        for (let i = 0; i < this.comments.length; i++)
+            if (this.comments[i].node === reference) this.comments[i].range = reference.getRange();
+    }
+
+    public renameCurrentVariable(alias: string) {
+        if (this.current && !alias.includes('%') && !alias.includes(' ')) {
+            this.current.setAlias(alias);
+            this.current.getContext()!.findRanges();
+            this.updateComments(this.current);
+        }
+    }
+
+    public resetAliases() {
+        this.variables.forEach((v) => v.resetAlias());
+        this.variables.forEach((v) => {
+            v.getContext()!.findRanges();
+            this.updateComments(v);
+        });
     }
 }
 

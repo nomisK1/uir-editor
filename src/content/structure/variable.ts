@@ -64,9 +64,10 @@ class variable extends _value {
 
 export default variable;
 
-export function findVariableRange(variable: variable, offset?: number) {
-    let name = variable.getAlias();
+export function findVariableRangeIn(variable: variable, text: string, offset?: number) {
+    let name = '%' + variable.getAlias();
     let line = variable.getLastLine();
-    let coloumn = indexOfStrict('%' + name, variable.getContext()!.toString()) + (offset ? offset : 0);
-    variable.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length + 1));
+    let coloumn = indexOfStrict(name, text) + (offset ? offset : 0);
+    variable.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length));
+    return text.replace(name, '%'.repeat(name.length));
 }

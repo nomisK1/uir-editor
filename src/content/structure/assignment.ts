@@ -3,7 +3,7 @@ import _node from './_node';
 import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import operation from './operation';
-import variable, { findVariableRange } from './variable';
+import variable, { findVariableRangeIn } from './variable';
 
 interface IAssignmentProps extends IInstructionProps {}
 
@@ -29,7 +29,7 @@ class assignment extends _instruction {
     }
 
     public findRanges() {
-        findVariableRange(this.destination, indentation);
+        findVariableRangeIn(this.destination, this.toString(), indentation);
         this.operation.findRanges();
         this.range = new monaco.Range(this.line, indentation, this.line, this.toString().length + indentation);
     }

@@ -3,7 +3,7 @@ import _node, { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 import block from './block';
 import assignment from './assignment';
-import { findVariableRange } from './variable';
+import { findVariableRangeIn } from './variable';
 import target from './target';
 
 // Number of linebreaks between blocks
@@ -38,7 +38,8 @@ class definition extends _function {
     }
 
     public findRanges() {
-        this.args.forEach((a) => findVariableRange(a));
+        let compare = this.toString();
+        this.args.forEach((a) => (compare = findVariableRangeIn(a, compare)));
         this.range = new monaco.Range(this.line, 0, this.getLastLine(), 1);
     }
 
@@ -95,6 +96,10 @@ class definition extends _function {
         let targets: target[] = [];
         this.blocks.forEach((b) => targets.push(b.getLabel(), ...b.getTargets()));
         return targets;
+    }
+
+    public getTargetTree() {
+        //TODO
     }
 }
 

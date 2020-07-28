@@ -37,9 +37,10 @@ class target extends _node {
 
 export default target;
 
-export function findTargetRange(target: target, offset?: number) {
-    let name = target.getName();
+export function findTargetRangeIn(target: target, text: string, offset?: number) {
+    let name = '%' + target.getName();
     let line = target.getLastLine();
-    let coloumn = indexOfStrict('%' + name, target.getContext()!.toString()) + (offset ? offset : 0);
-    target.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length + 1));
+    let coloumn = indexOfStrict(name, text) + (offset ? offset : 0);
+    target.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length));
+    return text.replace(name, '%'.repeat(name.length));
 }

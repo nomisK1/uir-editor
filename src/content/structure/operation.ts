@@ -4,9 +4,9 @@ import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import assignment from './assignment';
 import _value from './_value';
-import variable, { findVariableRange } from './variable';
-import constant, { findConstantRange } from './constant';
-import target, { findTargetRange } from './target';
+import variable, { findVariableRangeIn } from './variable';
+import constant, { findConstantRangeIn } from './constant';
+import target, { findTargetRangeIn } from './target';
 
 enum OpCode {
     ADD = 'add',
@@ -303,12 +303,13 @@ class operation extends _instruction {
     }
 
     public findRanges() {
+        let compare = this.toString();
         let offset =
             (this.context instanceof assignment ? this.context.toString().split('=')[0].length + 2 : 0) + indentation;
         this.operands.forEach((o) => {
-            if (o instanceof variable) findVariableRange(o, offset);
-            else if (o instanceof constant) findConstantRange(o, offset);
-            else if (o instanceof target) findTargetRange(o, offset);
+            if (o instanceof variable) compare = findVariableRangeIn(o, compare, offset);
+            else if (o instanceof constant) compare = findConstantRangeIn(o, compare, offset);
+            else if (o instanceof target) compare = findTargetRangeIn(o, compare, offset);
         });
         this.range = new monaco.Range(this.line, offset, this.line, offset + this.toString().length);
     }

@@ -78,7 +78,7 @@ class Editor extends React.Component<IEditorProps> {
                 fontWeight: '100',
                 letterSpacing: 0,
                 automaticLayout: true,
-                roundedSelection: true,
+                roundedSelection: false,
                 scrollBeyondLastLine: true,
                 minimap: { enabled: true },
                 autoIndent: 'none',
@@ -150,6 +150,7 @@ class Editor extends React.Component<IEditorProps> {
         let query = this.graph.print();
         if (query !== this.value) this.value = query;
         if (this.editor) this.editor.setValue(this.value);
+        this.decorateComments();
     }
 
     public shouldComponentUpdate(nextProps: IEditorProps) {
@@ -193,7 +194,6 @@ class Editor extends React.Component<IEditorProps> {
 
     public componentDidUpdate() {
         this.updateValue();
-        this.decorateComments();
     }
 
     public componentWillUnmount() {
@@ -287,18 +287,6 @@ class Editor extends React.Component<IEditorProps> {
         this.focusCurrentVariable();
     }
 
-    public handleKeypressRename() {
-        this.graph.renameCurrentVariable(this.selection);
-        this.updateValue();
-        this.focusCurrentVariable();
-    }
-
-    public handleKeypressResetNames() {
-        this.graph.resetAliases();
-        this.updateValue();
-        this.focusCurrentVariable();
-    }
-
     public handleKeypressAddComment() {
         this.graph.addCommentAt(this.selection, this.editor!.getPosition()!);
         this.decorateComments();
@@ -312,6 +300,18 @@ class Editor extends React.Component<IEditorProps> {
     public handleKeypressResetComments() {
         this.graph.resetComments();
         this.decorateComments();
+    }
+
+    public handleKeypressRename() {
+        this.graph.renameCurrentVariable(this.selection);
+        this.updateValue();
+        this.focusCurrentVariable();
+    }
+
+    public handleKeypressResetNames() {
+        this.graph.resetAliases();
+        this.updateValue();
+        this.focusCurrentVariable();
     }
 
     /**

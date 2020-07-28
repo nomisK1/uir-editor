@@ -26,9 +26,10 @@ class constant extends _value {
 
 export default constant;
 
-export function findConstantRange(constant: constant, offset?: number) {
+export function findConstantRangeIn(constant: constant, text: string, offset?: number) {
     let name = constant.getName();
     let line = constant.getLastLine();
-    let coloumn = indexOfStrict(name, constant.getContext()!.toString()) + (offset ? offset : 0);
+    let coloumn = indexOfStrict(name, text) + (offset ? offset : 0);
     constant.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length));
+    return text.replace(name, '%'.repeat(name.length));
 }

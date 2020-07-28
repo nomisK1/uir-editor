@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor';
 import _node, { lookupJSON } from './_node';
 import _component, { IComponentProps } from './_component';
-import variable, { findVariableRange } from './variable';
+import variable, { findVariableRangeIn } from './variable';
 
 interface IGlobalProps extends IComponentProps {}
 
@@ -24,7 +24,7 @@ class global extends _component {
     }
 
     public findRanges() {
-        findVariableRange(this.variable);
+        findVariableRangeIn(this.variable, this.toString());
         this.range = new monaco.Range(this.line, 0, this.line, this.toString().length);
     }
 
