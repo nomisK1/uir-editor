@@ -397,7 +397,7 @@ class Graph {
 
     public setCurrentVariableAlias(alias: string) {
         if (this.current)
-            if (!alias || this.current.getName() === alias) this.resetCurrentVariableAlias();
+            if (!alias || this.current.getName() === alias) return this.resetCurrentVariableAlias();
             else if (alias && !alias.includes(' ') && !alias.includes('%') && !this.aliases.includes(alias)) {
                 this.aliases.push(alias);
                 this.current.setAlias(alias);
@@ -407,7 +407,9 @@ class Graph {
                     s.getContext()!.findRanges();
                 });
                 this.updateComments();
+                return true;
             }
+        return false;
     }
 
     public resetCurrentVariableAlias() {
@@ -420,7 +422,9 @@ class Graph {
                 s.getContext()!.findRanges();
             });
             this.updateComments();
+            return true;
         }
+        return false;
     }
 
     public resetAliases() {

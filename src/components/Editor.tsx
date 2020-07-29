@@ -314,20 +314,25 @@ class Editor extends React.Component<IEditorProps> {
                 this.props.passSelection(this.selection);
             }
             if (this.selection === current.getAlias()) return;
-            this.graph.setCurrentVariableAlias(this.selection);
-            this.updateValue();
-            this.focusCurrentVariable();
+            if (this.graph.setCurrentVariableAlias(this.selection)) {
+                this.updateValue();
+                this.focusCurrentVariable();
+            } else {
+                this.selection = current.getAlias();
+                this.props.passSelection(this.selection);
+            }
         }
     }
 
     public handleKeypressUndoRename() {
         let current = this.graph.getCurrentVariable();
-        if (current && current.hasAlias()) {
+        if (current) {
             this.selection = current.getName();
             this.props.passSelection(this.selection);
-            this.graph.resetCurrentVariableAlias();
-            this.updateValue();
-            this.focusCurrentVariable();
+            if (this.graph.resetCurrentVariableAlias()) {
+                this.updateValue();
+                this.focusCurrentVariable();
+            }
         }
     }
 
