@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { Type, matchType, indexOfStrict, lookupJSON } from './_node';
+import _node, { Type, compareType, matchType, indexOfStrict, lookupJSON } from './_node';
 import _value, { IValueProps } from './_value';
 
 interface IVariableProps extends IValueProps {}
@@ -37,7 +37,7 @@ class variable extends _value {
     }
 
     public isGlobal() {
-        return this.type === Type.GLOBAL;
+        return compareType(Type.GLOBAL, this.type);
     }
 
     public getParents() {

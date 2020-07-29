@@ -94,6 +94,11 @@ abstract class _node {
 
 export default _node;
 
+export function compareType(type: Type | null, str: string | null) {
+    if (!type || !str) return false;
+    return str.toUpperCase().includes(type.toUpperCase());
+}
+
 export function matchType(str: string | null) {
     if (!str) return null;
     let types = Object.values(Type);

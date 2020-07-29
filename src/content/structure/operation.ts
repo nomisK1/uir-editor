@@ -103,100 +103,101 @@ class operation extends _instruction {
     }
 
     private build() {
+        // Condition order! (compareOpCode)
         if (
             //[opcode]
-            this.opcode === OpCode.UNREACHABLE
+            compareOpCode(OpCode.UNREACHABLE, this.opcode)
         ) {
         } else if (
             //[opcode,value]
-            this.opcode === OpCode.RETURN
+            compareOpCode(OpCode.RETURN, this.opcode)
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'value'));
         } else if (
-            //[opcode,target]
-            this.opcode === OpCode.BR
-        ) {
-            this.buildTarget(this.json);
-        } else if (
             //[opcode,condition,targetTrue,targetFalse]
-            this.opcode === OpCode.CONDBR
+            compareOpCode(OpCode.CONDBR, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'condition'));
             this.buildTarget(this.json, 'targetTrue');
             this.buildTarget(this.json, 'targetFalse');
         } else if (
+            //[opcode,target]
+            compareOpCode(OpCode.BR, this.opcode)
+        ) {
+            this.buildTarget(this.json);
+        } else if (
             //[opcode,type,fun,args]
-            this.opcode === OpCode.CALL
+            compareOpCode(OpCode.CALL, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'args'));
         } else if (
             //[opcode,type,value,pointer,offsets]
-            this.opcode === OpCode.STORE ||
+            compareOpCode(OpCode.STORE, this.opcode) ||
             //[dst,opcode,type,value,pointer,offsets]
-            this.opcode === OpCode.ATOMICRMWXCHG
+            compareOpCode(OpCode.ATOMICRMWXCHG, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'value'));
             this.buildValues(lookupJSON(this.json, 'pointer'));
             this.buildValues(lookupJSON(this.json, 'offsets'));
         } else if (
             //[dst,opcode,type,pointer,offsets]
-            this.opcode === OpCode.ATOMICLOAD ||
-            this.opcode === OpCode.GETELEMENTPTR ||
-            this.opcode === OpCode.LOAD
+            compareOpCode(OpCode.ATOMICLOAD, this.opcode) ||
+            compareOpCode(OpCode.GETELEMENTPTR, this.opcode) ||
+            compareOpCode(OpCode.LOAD, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'pointer'));
             this.buildValues(lookupJSON(this.json, 'offsets'));
         } else if (
             //[dst,opcode,type,condition,src]
-            this.opcode === OpCode.SELECT
+            compareOpCode(OpCode.SELECT, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'condition'));
             this.buildValues(lookupJSON(this.json, 'src'));
         } else if (
             //[dst,opcode,type,src,targetSuccess,targetFailure]
-            this.opcode === OpCode.CHECKEDSADD ||
-            this.opcode === OpCode.CHECKEDSMUL ||
-            this.opcode === OpCode.CHECKEDSSUB
+            compareOpCode(OpCode.CHECKEDSADD, this.opcode) ||
+            compareOpCode(OpCode.CHECKEDSMUL, this.opcode) ||
+            compareOpCode(OpCode.CHECKEDSSUB, this.opcode)
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'src'));
             this.buildTarget(this.json, 'targetSuccess');
             this.buildTarget(this.json, 'targetFailure');
         } else if (
             //[dst,opcode,type,incoming]
-            this.opcode === OpCode.PHI
+            compareOpCode(OpCode.PHI, this.opcode)
         ) {
             this.buildPhi(lookupJSON(this.json, 'incoming'));
         } else if (
             //[dst,opcode,type,src]
-            this.opcode === OpCode.AND ||
-            this.opcode === OpCode.ADD ||
-            this.opcode === OpCode.ASHR ||
-            this.opcode === OpCode.BUILDDATA128 ||
-            this.opcode === OpCode.CMPEQ ||
-            this.opcode === OpCode.CMPNE ||
-            this.opcode === OpCode.CMPSLE ||
-            this.opcode === OpCode.CMPULE ||
-            this.opcode === OpCode.CMPULT ||
-            this.opcode === OpCode.CMPSLT ||
-            this.opcode === OpCode.CRC32 ||
-            this.opcode === OpCode.EXTRACTDATA128 ||
-            this.opcode === OpCode.INTTOPTR ||
-            this.opcode === OpCode.ISNOTNULL ||
-            this.opcode === OpCode.ISNULL ||
-            this.opcode === OpCode.LSHR ||
-            this.opcode === OpCode.MUL ||
-            this.opcode === OpCode.NOT ||
-            this.opcode === OpCode.OR ||
-            this.opcode === OpCode.PTRTOINT ||
-            this.opcode === OpCode.ROTL ||
-            this.opcode === OpCode.ROTR ||
-            this.opcode === OpCode.SDIV ||
-            this.opcode === OpCode.SEXT ||
-            this.opcode === OpCode.SHL ||
-            this.opcode === OpCode.SUB ||
-            this.opcode === OpCode.TRUNC ||
-            this.opcode === OpCode.XOR ||
-            this.opcode === OpCode.ZEXT
+            compareOpCode(OpCode.AND, this.opcode) ||
+            compareOpCode(OpCode.ADD, this.opcode) ||
+            compareOpCode(OpCode.ASHR, this.opcode) ||
+            compareOpCode(OpCode.BUILDDATA128, this.opcode) ||
+            compareOpCode(OpCode.CMPEQ, this.opcode) ||
+            compareOpCode(OpCode.CMPNE, this.opcode) ||
+            compareOpCode(OpCode.CMPSLE, this.opcode) ||
+            compareOpCode(OpCode.CMPULE, this.opcode) ||
+            compareOpCode(OpCode.CMPULT, this.opcode) ||
+            compareOpCode(OpCode.CMPSLT, this.opcode) ||
+            compareOpCode(OpCode.CRC32, this.opcode) ||
+            compareOpCode(OpCode.EXTRACTDATA128, this.opcode) ||
+            compareOpCode(OpCode.INTTOPTR, this.opcode) ||
+            compareOpCode(OpCode.ISNOTNULL, this.opcode) ||
+            compareOpCode(OpCode.ISNULL, this.opcode) ||
+            compareOpCode(OpCode.LSHR, this.opcode) ||
+            compareOpCode(OpCode.MUL, this.opcode) ||
+            compareOpCode(OpCode.NOT, this.opcode) ||
+            compareOpCode(OpCode.OR, this.opcode) ||
+            compareOpCode(OpCode.PTRTOINT, this.opcode) ||
+            compareOpCode(OpCode.ROTL, this.opcode) ||
+            compareOpCode(OpCode.ROTR, this.opcode) ||
+            compareOpCode(OpCode.SDIV, this.opcode) ||
+            compareOpCode(OpCode.SEXT, this.opcode) ||
+            compareOpCode(OpCode.SHL, this.opcode) ||
+            compareOpCode(OpCode.SUB, this.opcode) ||
+            compareOpCode(OpCode.TRUNC, this.opcode) ||
+            compareOpCode(OpCode.XOR, this.opcode) ||
+            compareOpCode(OpCode.ZEXT, this.opcode)
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'src'));
         } else {
@@ -324,9 +325,10 @@ class operation extends _instruction {
 
     public toString() {
         let str = this.opcode! + ' ' + (this.type ? this.type + ' ' : '');
-        if (this.opcode === OpCode.CALL) str += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
-        else if (this.opcode === OpCode.PHI) str += '[' + this.printOperands() + ']';
-        else if (this.opcode === OpCode.UNREACHABLE) str = str.slice(0, -1);
+        if (compareOpCode(OpCode.CALL, this.opcode))
+            str += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
+        else if (compareOpCode(OpCode.PHI, this.opcode)) str += '[' + this.printOperands() + ']';
+        else if (compareOpCode(OpCode.UNREACHABLE, this.opcode)) str = str.slice(0, -1);
         else str += this.printOperands();
         return str /* + '//[' + Object.keys(this.json) + ']' */;
     }
@@ -352,7 +354,7 @@ class operation extends _instruction {
     }
 
     public getFunctionName() {
-        if (this.opcode === OpCode.CALL) return '' + lookupJSON(this.json, 'fun').split('(')[0];
+        if (compareOpCode(OpCode.CALL, this.opcode)) return '' + lookupJSON(this.json, 'fun').split('(')[0];
         else return null;
     }
 
@@ -367,9 +369,14 @@ class operation extends _instruction {
 
 export default operation;
 
+function compareOpCode(opcode: OpCode | null, str: string | null) {
+    if (!opcode || !str) return false;
+    return str.toUpperCase().includes(opcode.toUpperCase());
+}
+
 function matchOpCode(str: string | null) {
     if (!str) return null;
     let codes = Object.values(OpCode);
-    for (let i = 0; i < codes.length; i++) if (str.toUpperCase().includes(codes[i].toUpperCase())) return str;
+    for (let i = 0; i < codes.length; i++) if (compareOpCode(codes[i], str)) return str;
     return null;
 }
