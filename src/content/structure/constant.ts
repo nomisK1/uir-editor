@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { matchType, indexOfStrict, lookupJSON } from './_node';
+import _node, { Type, matchType, indexOfStrict, lookupJSON } from './_node';
 import _value, { IValueProps } from './_value';
 
 interface IConstantProps extends IValueProps {}
@@ -8,7 +8,9 @@ class constant extends _value {
     constructor(props: IConstantProps) {
         super(props);
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.name = '' + lookupJSON(this.json, 'const');
+        let number = lookupJSON(this.json, 'const');
+        if (this.type === Type.PTR && number > 15) this.name = '0x' + number.toString(16);
+        else this.name = '' + number;
     }
 
     public toString() {

@@ -143,7 +143,6 @@ class Editor extends React.Component<IEditorProps> {
         }
         monaco.editor.defineTheme(themeID, monarchTheme);
         monaco.editor.setTheme(themeID);
-        this.decorateComments();
     }
 
     private updateValue() {

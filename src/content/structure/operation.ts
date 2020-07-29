@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { Type, matchType, lookupJSON } from './_node';
+import _node, { matchType, lookupJSON } from './_node';
 import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import assignment from './assignment';
@@ -89,8 +89,8 @@ enum OpCode {
 interface IOperationProps extends IInstructionProps {}
 
 class operation extends _instruction {
-    protected opcode: OpCode | null;
-    protected type: Type | null;
+    protected opcode: string | null;
+    protected type: string | null;
     protected operands: (_value | target)[] = [];
 
     constructor(props: IOperationProps) {
@@ -317,6 +317,7 @@ class operation extends _instruction {
     private printOperands() {
         if (this.operands.length === 0) return '';
         let str = '';
+        // TODO - handle "," for OpCode.CONDBR / OpCode.CHECKEDSADD / OpCode.BUILDDATA128 etc.
         this.operands.forEach((o) => (str += o.toString() + (o instanceof target ? ' ' : ', ')));
         return this.operands[this.operands.length - 1] instanceof target ? str.slice(0, -1) : str.slice(0, -2);
     }
@@ -325,6 +326,7 @@ class operation extends _instruction {
         let str = this.opcode! + ' ' + (this.type ? this.type + ' ' : '');
         if (this.opcode === OpCode.CALL) str += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
         else if (this.opcode === OpCode.PHI) str += '[' + this.printOperands() + ']';
+        else if (this.opcode === OpCode.UNREACHABLE) str = str.slice(0, -1);
         else str += this.printOperands();
         return str /* + '//[' + Object.keys(this.json) + ']' */;
     }
@@ -368,6 +370,6 @@ export default operation;
 function matchOpCode(str: string | null) {
     if (!str) return null;
     let codes = Object.values(OpCode);
-    for (let i = 0; i < codes.length; i++) if (str.toUpperCase() === codes[i].toUpperCase()) return codes[i];
+    for (let i = 0; i < codes.length; i++) if (str.toUpperCase().includes(codes[i].toUpperCase())) return str;
     return null;
 }

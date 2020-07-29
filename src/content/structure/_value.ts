@@ -1,11 +1,11 @@
-import _node, { INodeProps, Type } from './_node';
+import _node, { INodeProps } from './_node';
 
 export interface IValueProps extends INodeProps {
     showType?: true;
 }
 
 abstract class _value extends _node {
-    protected type: Type | null = null;
+    protected type: string | null = null;
     protected showType?: true;
 
     constructor(props: IValueProps) {

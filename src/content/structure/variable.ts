@@ -37,7 +37,7 @@ class variable extends _value {
     }
 
     public isGlobal() {
-        return this.type === Type.GLOBAL || this.type === Type.GLOBAL_;
+        return this.type === Type.GLOBAL;
     }
 
     public getParents() {
