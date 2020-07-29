@@ -48,7 +48,7 @@ abstract class _node {
 
     public abstract getNodeAt(position: monaco.Position): _node | null;
 
-    public getVariablesCalled(name: string) {
+    public getVariablesByName(name: string) {
         let vars: variable[] = [];
         this.getVariables().forEach((v) => {
             if (v.getName() === name) vars.push(v);

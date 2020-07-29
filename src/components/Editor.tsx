@@ -61,6 +61,7 @@ class Editor extends React.Component<IEditorProps> {
         this.handleKeypressHoverParent = this.handleKeypressHoverParent.bind(this);
         this.handleKeypressPrevious = this.handleKeypressPrevious.bind(this);
         this.handleKeypressRename = this.handleKeypressRename.bind(this);
+        this.handleKeypressUndoRename = this.handleKeypressUndoRename.bind(this);
         this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
         this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
@@ -109,7 +110,11 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(monaco.KeyCode.KEY_N, this.handleKeypressNextOccurrence);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_N, this.handleKeypressPrevOccurrence);
             this.editor.addCommand(monaco.KeyCode.KEY_R, this.handleKeypressRename);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_R, this.handleKeypressResetNames);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_R, this.handleKeypressUndoRename);
+            this.editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R,
+                this.handleKeypressResetNames,
+            );
             this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft);
             this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressDown);
             this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressUp);
@@ -302,9 +307,28 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public handleKeypressRename() {
-        this.graph.renameCurrentVariable(this.selection);
-        this.updateValue();
-        this.focusCurrentVariable();
+        let current = this.graph.getCurrentVariable();
+        if (current) {
+            if (!this.selection) {
+                this.selection = current.getName();
+                this.props.passSelection(this.selection);
+            }
+            if (this.selection === current.getAlias()) return;
+            this.graph.setCurrentVariableAlias(this.selection);
+            this.updateValue();
+            this.focusCurrentVariable();
+        }
+    }
+
+    public handleKeypressUndoRename() {
+        let current = this.graph.getCurrentVariable();
+        if (current && current.hasAlias()) {
+            this.selection = current.getName();
+            this.props.passSelection(this.selection);
+            this.graph.resetCurrentVariableAlias();
+            this.updateValue();
+            this.focusCurrentVariable();
+        }
     }
 
     public handleKeypressResetNames() {
@@ -321,7 +345,7 @@ class Editor extends React.Component<IEditorProps> {
         let variable = this.graph.getVariableAt(position);
         if (variable && variable !== this.graph.getCurrentVariable()) {
             this.graph.setCurrentVariable(variable);
-            this.selection = variable.getName();
+            this.selection = variable.getAlias();
             this.props.passSelection(this.selection);
         }
         this.decorateTree(position);

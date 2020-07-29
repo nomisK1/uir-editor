@@ -60,6 +60,10 @@ class variable extends _value {
     public resetAlias() {
         this.alias = undefined;
     }
+
+    public hasAlias() {
+        return this.alias ? true : false;
+    }
 }
 
 export default variable;

@@ -24,6 +24,7 @@ class Graph {
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
     private comments: { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node }[] = [];
+    private aliases: string[] = [];
 
     constructor(props: IGraphProps) {
         this.json = props.json;
@@ -67,6 +68,7 @@ class Graph {
             this.variables.push(...c.getVariables());
             if (c instanceof definition) this.targets.push(...c.getTargets());
         });
+        this.aliases = removeDuplicates(this.variables.map((v) => v.getName()));
         this.getDefinitions().forEach((d) =>
             d.getVariables().forEach((v) => {
                 if (v.getParents().length === 0) {
@@ -103,10 +105,18 @@ class Graph {
         return this.getDefinitions().map((d) => d.getRange());
     }
 
-    private getVariablesCalled(name: string) {
+    private getVariablesByName(name: string) {
         let vars: variable[] = [];
         this.variables.forEach((v) => {
             if (v.getName() === name) vars.push(v);
+        });
+        return vars;
+    }
+
+    private getVariablesByAlias(alias: string) {
+        let vars: variable[] = [];
+        this.variables.forEach((v) => {
+            if (v.getAlias() === alias) vars.push(v);
         });
         return vars;
     }
@@ -134,11 +144,11 @@ class Graph {
         let nodes: _node[] = [];
         if (node !== null) {
             nodes.push(node);
-            if (node instanceof global) nodes.push(...this.getVariablesCalled(node.getVariables()[0].getName()));
+            if (node instanceof global) nodes.push(...this.getVariablesByName(node.getVariables()[0].getName()));
             else if (node instanceof declaration) nodes.push(...this.getRelatedFunctions(node.getName()));
             else if (node instanceof block) nodes.push(...this.getRelatedTargets(node.getLabel()));
             else if (node instanceof operation) nodes.push(...this.getRelatedFunctions(node.getFunctionName()));
-            else if (node instanceof variable) nodes.push(...this.getVariablesCalled(node.getName()));
+            else if (node instanceof variable) nodes.push(...this.getVariablesByName(node.getName()));
             else if (node instanceof target) nodes.push(...this.getRelatedTargets(node));
         }
         return nodes;
@@ -167,8 +177,8 @@ class Graph {
     public getVariableSiblings(variable: variable | null) {
         let vars: variable[] = [];
         if (variable !== null && variable.getContext() !== null)
-            if (variable.isGlobal()) vars.push(...this.getVariablesCalled(variable.getName()));
-            else vars.push(...variable.getOuterContext().getVariablesCalled(variable.getName()));
+            if (variable.isGlobal()) vars.push(...this.getVariablesByName(variable.getName()));
+            else vars.push(...variable.getOuterContext().getVariablesByName(variable.getName()));
         return vars;
     }
 
@@ -249,8 +259,8 @@ class Graph {
     }
 
     public setCurrentNextOccurrence(selection: string) {
-        if (this.current && this.current.getName() === selection) {
-            let vars = this.getVariablesCalled(this.current.getName());
+        if (this.current && this.current.getAlias() === selection) {
+            let vars = this.getVariablesByAlias(this.current.getAlias());
             for (let i = 0; i < vars.length; i++) {
                 if (
                     !vars[i].getRange().getStartPosition().isBeforeOrEqual(this.current.getRange().getStartPosition())
@@ -261,14 +271,14 @@ class Graph {
             }
             this.setCurrentVariable(vars[0]);
         } else {
-            let next = this.getVariablesCalled(selection)[0];
+            let next = this.getVariablesByAlias(selection)[0];
             this.setCurrentVariable(next ? next : null);
         }
     }
 
     public setCurrentPrevOccurrence(selection: string) {
-        if (this.current && this.current.getName() === selection) {
-            let vars = this.getVariablesCalled(this.current.getName());
+        if (this.current && this.current.getAlias() === selection) {
+            let vars = this.getVariablesByAlias(this.current.getAlias());
             for (let i = vars.length - 1; i >= 0; i--) {
                 if (vars[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
                     this.setCurrentVariable(vars[i]);
@@ -277,7 +287,7 @@ class Graph {
             }
             this.setCurrentVariable(vars[vars.length - 1]);
         } else {
-            let next = this.getVariablesCalled(selection)[0];
+            let next = this.getVariablesByAlias(selection)[0];
             this.setCurrentVariable(next ? next : null);
         }
     }
@@ -380,26 +390,53 @@ class Graph {
         this.comments = [];
     }
 
-    private updateComments(reference: _node) {
+    private updateComments() {
         for (let i = 0; i < this.comments.length; i++)
-            if (this.comments[i].node === reference) this.comments[i].range = reference.getRange();
+            if (this.comments[i].node) this.comments[i].range = this.comments[i].node!.getRange();
     }
 
-    public renameCurrentVariable(alias: string) {
-        if (this.current && !alias.includes('%') && !alias.includes(' ')) {
-            this.current.setAlias(alias);
+    public setCurrentVariableAlias(alias: string) {
+        if (this.current)
+            if (!alias || this.current.getName() === alias) this.resetCurrentVariableAlias();
+            else if (alias && !alias.includes(' ') && !alias.includes('%') && !this.aliases.includes(alias)) {
+                this.aliases.push(alias);
+                this.current.setAlias(alias);
+                this.current.getContext()!.findRanges();
+                this.getVariableSiblings(this.current).forEach((s) => {
+                    s.setAlias(alias);
+                    s.getContext()!.findRanges();
+                });
+                this.updateComments();
+            }
+    }
+
+    public resetCurrentVariableAlias() {
+        if (this.current && this.current.hasAlias()) {
+            this.aliases.splice(this.aliases.indexOf(this.current.getAlias(), 1));
+            this.current.resetAlias();
             this.current.getContext()!.findRanges();
-            this.updateComments(this.current);
+            this.getVariableSiblings(this.current).forEach((s) => {
+                s.resetAlias();
+                s.getContext()!.findRanges();
+            });
+            this.updateComments();
         }
     }
 
     public resetAliases() {
+        this.aliases = removeDuplicates(this.variables.map((v) => v.getName()));
         this.variables.forEach((v) => v.resetAlias());
-        this.variables.forEach((v) => {
-            v.getContext()!.findRanges();
-            this.updateComments(v);
-        });
+        this.variables.forEach((v) => v.getContext()!.findRanges());
+        this.updateComments();
     }
 }
 
 export default Graph;
+
+/**
+ * removeDuplicates:
+ *
+ */
+function removeDuplicates(array: any[]) {
+    return array.filter((a, b) => array.indexOf(a) === b);
+}
