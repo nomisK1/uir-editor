@@ -103,7 +103,6 @@ class operation extends _instruction {
     }
 
     private build() {
-        // Condition order! (compareOpCode)
         if (
             //[opcode]
             compareOpCode(OpCode.UNREACHABLE, this.opcode)
@@ -114,17 +113,17 @@ class operation extends _instruction {
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'value'));
         } else if (
+            //[opcode,target]
+            compareOpCode(OpCode.BR, this.opcode)
+        ) {
+            this.buildTarget(this.json);
+        } else if (
             //[opcode,condition,targetTrue,targetFalse]
             compareOpCode(OpCode.CONDBR, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'condition'));
             this.buildTarget(this.json, 'targetTrue');
             this.buildTarget(this.json, 'targetFalse');
-        } else if (
-            //[opcode,target]
-            compareOpCode(OpCode.BR, this.opcode)
-        ) {
-            this.buildTarget(this.json);
         } else if (
             //[opcode,type,fun,args]
             compareOpCode(OpCode.CALL, this.opcode)
@@ -304,9 +303,9 @@ class operation extends _instruction {
     }
 
     public findRanges() {
-        let compare = this.toString();
         let offset =
             (this.context instanceof assignment ? this.context.toString().split('=')[0].length + 2 : 0) + indentation;
+        let compare = this.toString();
         this.operands.forEach((o) => {
             if (o instanceof variable) compare = findVariableRangeIn(o, compare, offset);
             else if (o instanceof constant) compare = findConstantRangeIn(o, compare, offset);
@@ -318,16 +317,28 @@ class operation extends _instruction {
     private printOperands() {
         if (this.operands.length === 0) return '';
         let str = '';
-        // TODO - handle "," for OpCode.CONDBR / OpCode.CHECKEDSADD / OpCode.BUILDDATA128 etc.
+        this.operands.forEach(
+            (o) =>
+                (str +=
+                    (o instanceof target || compareOpCode(OpCode.BUILDDATA128, this.opcode) ? ' ' : ', ') +
+                    o.toString()),
+        );
+        return this.operands[0] instanceof target || compareOpCode(OpCode.BUILDDATA128, this.opcode)
+            ? str.slice(1)
+            : str.slice(2);
+    }
+
+    private printPhi() {
+        let str = '[';
         this.operands.forEach((o) => (str += o.toString() + (o instanceof target ? ' ' : ', ')));
-        return this.operands[this.operands.length - 1] instanceof target ? str.slice(0, -1) : str.slice(0, -2);
+        return (this.operands[this.operands.length - 1] instanceof target ? str.slice(0, -1) : str.slice(0, -2)) + ']';
     }
 
     public toString() {
         let str = this.opcode! + ' ' + (this.type ? this.type + ' ' : '');
         if (compareOpCode(OpCode.CALL, this.opcode))
             str += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
-        else if (compareOpCode(OpCode.PHI, this.opcode)) str += '[' + this.printOperands() + ']';
+        else if (compareOpCode(OpCode.PHI, this.opcode)) str += this.printPhi();
         else if (compareOpCode(OpCode.UNREACHABLE, this.opcode)) str = str.slice(0, -1);
         else str += this.printOperands();
         return str /* + '//[' + Object.keys(this.json) + ']' */;
@@ -371,7 +382,7 @@ export default operation;
 
 function compareOpCode(opcode: OpCode | null, str: string | null) {
     if (!opcode || !str) return false;
-    return str.toUpperCase().includes(opcode.toUpperCase());
+    return str.toUpperCase() === opcode.toUpperCase();
 }
 
 function matchOpCode(str: string | null) {
