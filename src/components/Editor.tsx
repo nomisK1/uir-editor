@@ -8,27 +8,25 @@ import './Editor.css';
 interface IEditorProps {
     language: string;
     graph: Graph;
-    activateNodeHighlighting: boolean;
-    activateVariableDecoration: boolean;
-    activateChildDecoration: boolean;
-    activateParentDecoration: boolean;
-    activateCommentDecoration: boolean;
-    selection: string;
-    passSelection: (selection: string) => void;
+    input: string;
+    passInput: (input: string) => void;
     focusInput: () => void;
 }
 
-class Editor extends React.Component<IEditorProps> {
+interface IEditorState {
+    activateNodeHighlighting: boolean;
+    activateVariableDecorating: boolean;
+    activateChildDecorating: boolean;
+    activateParentDecorating: boolean;
+    activateCommentDecorating: boolean;
+}
+
+class Editor extends React.Component<IEditorProps, IEditorState> {
     private container: HTMLDivElement | null = null;
     private editor: monaco.editor.IStandaloneCodeEditor | null = null;
     private graph: Graph;
     private value: string;
-    private activateNodeHighlighting: boolean;
-    private activateVariableDecoration: boolean;
-    private activateChildDecoration: boolean;
-    private activateParentDecoration: boolean;
-    private activateCommentDecoration: boolean;
-    private selection: string;
+    private input: string;
     private decorations: string[] = [];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private treeDecorations: monaco.editor.IModelDeltaDecoration[] = [];
@@ -36,14 +34,16 @@ class Editor extends React.Component<IEditorProps> {
 
     constructor(props: IEditorProps) {
         super(props);
+        this.state = {
+            activateNodeHighlighting: true,
+            activateVariableDecorating: true,
+            activateChildDecorating: true,
+            activateParentDecorating: true,
+            activateCommentDecorating: true,
+        };
         this.graph = this.props.graph;
         this.value = this.graph.print();
-        this.activateNodeHighlighting = this.props.activateNodeHighlighting;
-        this.activateVariableDecoration = this.props.activateVariableDecoration;
-        this.activateChildDecoration = this.props.activateChildDecoration;
-        this.activateParentDecoration = this.props.activateParentDecoration;
-        this.activateCommentDecoration = this.props.activateCommentDecoration;
-        this.selection = this.props.selection;
+        this.input = this.props.input;
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
         this.handleKeypressToInput = this.handleKeypressToInput.bind(this);
@@ -66,7 +66,23 @@ class Editor extends React.Component<IEditorProps> {
         this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
         this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
+        this.handleToggleNodeHighlighting = this.handleToggleNodeHighlighting.bind(this);
+        this.handleToggleVariableDecorating = this.handleToggleVariableDecorating.bind(this);
+        this.handleToggleChildDecorating = this.handleToggleChildDecorating.bind(this);
+        this.handleToggleParentDecorating = this.handleToggleParentDecorating.bind(this);
+        this.handleToggleCommentDecorating = this.handleToggleCommentDecorating.bind(this);
+        this.handleFoldAll = this.handleFoldAll.bind(this);
+        this.handleFoldAllBlocks = this.handleFoldAllBlocks.bind(this);
+        this.handleUnfoldAll = this.handleUnfoldAll.bind(this);
     }
+
+    public getInstance() {
+        return this.editor!;
+    }
+
+    //--------------------------------------------------
+    //-----React lifecycle methods-----
+    //--------------------------------------------------
 
     public componentDidMount() {
         if (this.container) {
@@ -85,9 +101,6 @@ class Editor extends React.Component<IEditorProps> {
                 autoIndent: 'none',
                 readOnly: true,
                 glyphMargin: true,
-            });
-            this.editor.onDidChangeModelContent((_event) => {
-                this.value = this.editor!.getValue();
             });
             this.editor.onMouseDown(this.handleMouseclick);
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput);
@@ -109,12 +122,6 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_M, this.handleKeypressJumpLeft);
             this.editor.addCommand(monaco.KeyCode.KEY_N, this.handleKeypressNextOccurrence);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_N, this.handleKeypressPrevOccurrence);
-            this.editor.addCommand(monaco.KeyCode.KEY_R, this.handleKeypressRename);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_R, this.handleKeypressUndoRename);
-            this.editor.addCommand(
-                monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R,
-                this.handleKeypressResetNames,
-            );
             this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft);
             this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressDown);
             this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressUp);
@@ -124,25 +131,119 @@ class Editor extends React.Component<IEditorProps> {
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressParent);
             this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressHoverParent);
             this.editor.addAction({
-                id: 'AddComment',
-                label: 'Add Comment here',
+                id: 'AddCommentHover',
+                label: 'Add Comment (Hover)',
                 keybindings: [monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
+                contextMenuOrder: 1,
                 run: this.handleKeypressAddComment,
             });
             this.editor.addAction({
                 id: 'RemoveComment',
-                label: 'Remove this Comment',
+                label: 'Remove Comment',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
+                contextMenuOrder: 2,
                 run: this.handleKeypressRemoveComment,
             });
             this.editor.addAction({
                 id: 'ResetComments',
-                label: 'Reset all Comments',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_C],
+                label: 'Reset All Comments',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
+                contextMenuOrder: 3,
                 run: this.handleKeypressResetComments,
+            });
+            this.editor.addAction({
+                id: 'RenameVariable',
+                label: 'Rename Variable',
+                keybindings: [monaco.KeyCode.KEY_R],
+                contextMenuGroupId: '3_alias',
+                contextMenuOrder: 1,
+                run: this.handleKeypressRename,
+            });
+            this.editor.addAction({
+                id: 'UnnameVariable',
+                label: 'Unname Variable',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_R],
+                contextMenuGroupId: '3_alias',
+                contextMenuOrder: 2,
+                run: this.handleKeypressUndoRename,
+            });
+            this.editor.addAction({
+                id: 'ResetNames',
+                label: 'Reset All Names',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R],
+                contextMenuGroupId: '3_alias',
+                contextMenuOrder: 3,
+                run: this.handleKeypressResetNames,
+            });
+            this.editor.addAction({
+                id: 'foldAll',
+                label: 'Fold All',
+                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_1],
+                contextMenuGroupId: '4_folding',
+                contextMenuOrder: 1,
+                run: this.handleFoldAll,
+            });
+            this.editor.addAction({
+                id: 'foldBlocks',
+                label: 'Fold Blocks',
+                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_2],
+                contextMenuGroupId: '4_folding',
+                contextMenuOrder: 2,
+                run: this.handleFoldAllBlocks,
+            });
+            this.editor.addAction({
+                id: 'unfoldAll',
+                label: 'Unfold All',
+                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_3],
+                contextMenuGroupId: '4_folding',
+                contextMenuOrder: 3,
+                run: this.handleUnfoldAll,
+            });
+            this.editor.addAction({
+                id: 'toggleNodeHighlighting',
+                label: 'Toggle Node Highlighting',
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_1],
+                contextMenuGroupId: '5_features',
+                contextMenuOrder: 1,
+                run: this.handleToggleNodeHighlighting,
+            });
+            this.editor.addAction({
+                id: 'toggleVariableDecorating',
+                label: 'Toggle Variable Decorating',
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_2],
+                contextMenuGroupId: '5_features',
+                contextMenuOrder: 2,
+                run: this.handleToggleVariableDecorating,
+            });
+            this.editor.addAction({
+                id: 'toggleChildDecorating',
+                label: 'Toggle Child Decorating',
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_3],
+                contextMenuGroupId: '5_features',
+                contextMenuOrder: 3,
+                run: this.handleToggleChildDecorating,
+            });
+            this.editor.addAction({
+                id: 'toggleParentDecorating',
+                label: 'Toggle Parent Decorating',
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_4],
+                contextMenuGroupId: '5_features',
+                contextMenuOrder: 4,
+                run: this.handleToggleParentDecorating,
+            });
+            this.editor.addAction({
+                id: 'toggleCommentDisplay',
+                label: 'Toggle Comment Display',
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_5],
+                contextMenuGroupId: '5_features',
+                contextMenuOrder: 5,
+                run: this.handleToggleCommentDecorating,
+            });
+            this.editor.onDidChangeModelContent((_event) => {
+                this.value = this.editor!.getValue();
             });
             this.editor.focus();
         }
@@ -150,62 +251,42 @@ class Editor extends React.Component<IEditorProps> {
         monaco.editor.setTheme(themeID);
     }
 
-    private updateValue() {
-        let query = this.graph.print();
-        if (query !== this.value) this.value = query;
-        if (this.editor) this.editor.setValue(this.value);
-        this.decorateComments();
-    }
-
     public shouldComponentUpdate(nextProps: IEditorProps) {
         if (this.props.graph !== nextProps.graph) {
             this.graph = nextProps.graph;
             this.resetPosition();
+            this.updateValue();
             return true;
         }
-        if (this.props.selection !== nextProps.selection) {
-            this.selection = nextProps.selection;
-            this.props.passSelection(this.selection);
-        }
-        if (this.props.activateNodeHighlighting !== nextProps.activateNodeHighlighting) {
-            this.activateNodeHighlighting = nextProps.activateNodeHighlighting;
-        }
-        if (this.props.activateVariableDecoration !== nextProps.activateVariableDecoration) {
-            this.activateVariableDecoration = nextProps.activateVariableDecoration;
-            this.variableDecorations = [];
-            this.updateDecorations();
-        }
-        if (this.props.activateChildDecoration !== nextProps.activateChildDecoration) {
-            this.activateChildDecoration = nextProps.activateChildDecoration;
-            let variable = this.graph.getCurrentVariable();
-            if (variable) this.decorateTree(variable.getRange().getStartPosition());
-        }
-        if (this.props.activateParentDecoration !== nextProps.activateParentDecoration) {
-            this.activateParentDecoration = nextProps.activateParentDecoration;
-            let variable = this.graph.getCurrentVariable();
-            if (variable) this.decorateTree(variable.getRange().getStartPosition());
-        }
-        if (this.props.activateCommentDecoration !== nextProps.activateCommentDecoration) {
-            this.activateCommentDecoration = nextProps.activateCommentDecoration;
-            if (nextProps.activateCommentDecoration) this.decorateComments();
-            else {
-                this.commentDecorations = [];
-                this.updateDecorations();
-            }
+        if (this.props.input !== nextProps.input) {
+            this.input = nextProps.input;
+            this.props.passInput(this.input);
         }
         return false;
     }
 
     public componentDidUpdate() {
-        this.updateValue();
+        console.log('EDITOR UPDATED');
     }
 
     public componentWillUnmount() {
         if (this.editor) this.editor.dispose();
     }
 
-    public getInstance() {
-        return this.editor!;
+    //--------------------------------------------------
+    //-----Event handler methods-----
+    //--------------------------------------------------
+
+    public handleFoldAll() {
+        if (this.editor) this.editor.trigger('fold', 'editor.foldAll', null);
+    }
+
+    public handleFoldAllBlocks() {
+        if (this.editor) this.editor.trigger('foldBlockComments', 'editor.foldAllBlockComments', null);
+    }
+
+    public handleUnfoldAll() {
+        if (this.editor) this.editor.trigger('unfold', 'editor.unfoldAll', null);
     }
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
@@ -229,7 +310,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public handleKeypressNextOccurrence() {
-        this.graph.setCurrentNextOccurrence(this.selection);
+        this.graph.setCurrentNextOccurrence(this.input);
         let variable = this.graph.getCurrentVariable();
         if (variable) this.decorateTree(variable.getRange().getStartPosition());
         else this.resetPosition();
@@ -237,7 +318,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public handleKeypressPrevOccurrence() {
-        this.graph.setCurrentPrevOccurrence(this.selection);
+        this.graph.setCurrentPrevOccurrence(this.input);
         let variable = this.graph.getCurrentVariable();
         if (variable) this.decorateTree(variable.getRange().getStartPosition());
         else this.resetPosition();
@@ -292,7 +373,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public handleKeypressAddComment() {
-        this.graph.addCommentAt(this.selection, this.editor!.getPosition()!);
+        this.graph.addCommentAt(this.input, this.editor!.getPosition()!);
         this.decorateComments();
     }
 
@@ -309,17 +390,17 @@ class Editor extends React.Component<IEditorProps> {
     public handleKeypressRename() {
         let current = this.graph.getCurrentVariable();
         if (current) {
-            if (!this.selection) {
-                this.selection = current.getName();
-                this.props.passSelection(this.selection);
+            if (!this.input) {
+                this.input = current.getName();
+                this.props.passInput(this.input);
             }
-            if (this.selection === current.getAlias()) return;
-            if (this.graph.setCurrentVariableAlias(this.selection)) {
+            if (this.input === current.getAlias()) return;
+            if (this.graph.setCurrentVariableAlias(this.input)) {
                 this.updateValue();
                 this.focusCurrentVariable();
             } else {
-                this.selection = current.getAlias();
-                this.props.passSelection(this.selection);
+                this.input = current.getAlias();
+                this.props.passInput(this.input);
             }
         }
     }
@@ -327,8 +408,8 @@ class Editor extends React.Component<IEditorProps> {
     public handleKeypressUndoRename() {
         let current = this.graph.getCurrentVariable();
         if (current) {
-            this.selection = current.getName();
-            this.props.passSelection(this.selection);
+            this.input = current.getName();
+            this.props.passInput(this.input);
             if (this.graph.resetCurrentVariableAlias()) {
                 this.updateValue();
                 this.focusCurrentVariable();
@@ -342,6 +423,54 @@ class Editor extends React.Component<IEditorProps> {
         this.focusCurrentVariable();
     }
 
+    public handleToggleNodeHighlighting() {
+        this.setState({
+            activateNodeHighlighting: !this.state.activateNodeHighlighting,
+        });
+    }
+
+    public handleToggleVariableDecorating() {
+        this.setState({
+            activateVariableDecorating: !this.state.activateVariableDecorating,
+        });
+        this.variableDecorations = [];
+        this.updateDecorations();
+    }
+
+    public handleToggleChildDecorating() {
+        this.setState({
+            activateChildDecorating: !this.state.activateChildDecorating,
+        });
+        let variable = this.graph.getCurrentVariable();
+        if (variable) this.decorateTree(variable.getRange().getStartPosition());
+    }
+
+    public handleToggleParentDecorating() {
+        this.setState({
+            activateParentDecorating: !this.state.activateParentDecorating,
+        });
+        let variable = this.graph.getCurrentVariable();
+        if (variable) this.decorateTree(variable.getRange().getStartPosition());
+    }
+
+    public handleToggleCommentDecorating() {
+        this.setState({
+            activateCommentDecorating: !this.state.activateCommentDecorating,
+        });
+        this.decorateComments();
+    }
+
+    //--------------------------------------------------
+    //-----Helper methods-----
+    //--------------------------------------------------
+
+    private updateValue() {
+        let query = this.graph.print();
+        if (query !== this.value) this.value = query;
+        if (this.editor) this.editor.setValue(this.value);
+        this.decorateComments();
+    }
+
     /**
      * updateInput:
      * Updates the App Input field with the currently selected Variable name
@@ -350,8 +479,8 @@ class Editor extends React.Component<IEditorProps> {
         let variable = this.graph.getVariableAt(position);
         if (variable && variable !== this.graph.getCurrentVariable()) {
             this.graph.setCurrentVariable(variable);
-            this.selection = variable.getAlias();
-            this.props.passSelection(this.selection);
+            this.input = variable.getAlias();
+            this.props.passInput(this.input);
         }
         this.decorateTree(position);
     }
@@ -362,13 +491,13 @@ class Editor extends React.Component<IEditorProps> {
         this.updateInputAt(position);
     }
 
-    public focusCurrentVariable() {
-        let current = this.graph.getCurrentVariable();
-        this.updatePosition(current ? current.getRange().getStartPosition() : this.editor!.getPosition()!);
+    private resetPosition() {
+        this.updatePosition(new monaco.Position(0, 0));
     }
 
-    public resetPosition() {
-        this.updatePosition(new monaco.Position(0, 0));
+    private focusCurrentVariable() {
+        let current = this.graph.getCurrentVariable();
+        this.updatePosition(current ? current.getRange().getStartPosition() : this.editor!.getPosition()!);
     }
 
     /**
@@ -389,7 +518,7 @@ class Editor extends React.Component<IEditorProps> {
      */
     public highlightNodes(position: monaco.Position) {
         let highlights: monaco.languages.DocumentHighlight[] = [];
-        if (this.activateNodeHighlighting) {
+        if (this.state.activateNodeHighlighting) {
             let ranges = this.findNodeHighlights(position);
             ranges.forEach((r) => highlights.push({ range: r }));
         }
@@ -428,7 +557,7 @@ class Editor extends React.Component<IEditorProps> {
      */
     public decorateVariable(position: monaco.Position) {
         this.variableDecorations = [];
-        if (this.activateVariableDecoration) {
+        if (this.state.activateVariableDecorating) {
             let decorations = this.getVariableDecorationsAt(position);
             decorations.forEach((d) => this.setVariableDecoration(d));
             this.updateDecorations();
@@ -503,15 +632,15 @@ class Editor extends React.Component<IEditorProps> {
      * decorateTree:
      *
      */
-    public decorateTree(position: monaco.Position) {
+    private decorateTree(position: monaco.Position) {
         this.variableDecorations = [];
         this.treeDecorations = [];
         let decorations: { range: monaco.Range; depth: number }[] = [];
-        if (!(this.activateChildDecoration || this.activateParentDecoration))
+        if (!(this.state.activateChildDecorating || this.state.activateParentDecorating))
             this.getVariableDecorationsAt(position).forEach((d) => decorations.push({ range: d, depth: 0 }));
-        else if (this.activateChildDecoration && !this.activateParentDecoration)
+        else if (this.state.activateChildDecorating && !this.state.activateParentDecorating)
             decorations = this.getChildDecorationsAt(position);
-        else if (!this.activateChildDecoration && this.activateParentDecoration)
+        else if (!this.state.activateChildDecorating && this.state.activateParentDecorating)
             decorations = this.getParentDecorationsAt(position);
         else decorations = [...this.getChildDecorationsAt(position), ...this.getParentDecorationsAt(position)];
         let ranges: monaco.Range[] = [];
@@ -544,7 +673,7 @@ class Editor extends React.Component<IEditorProps> {
      */
     private decorateComments() {
         this.commentDecorations = [];
-        if (this.activateCommentDecoration) {
+        if (this.state.activateCommentDecorating) {
             let comments = this.graph.getComments();
             comments.forEach((c) => this.setCommentDecoration(c));
             this.updateDecorations();
@@ -555,6 +684,7 @@ class Editor extends React.Component<IEditorProps> {
     }
 
     public getCommentHovers() {
+        if (!this.state.activateCommentDecorating) return [];
         let hovers: monaco.languages.Hover[] = [];
         this.graph.getComments().forEach((c) =>
             hovers.push({
@@ -575,7 +705,7 @@ class Editor extends React.Component<IEditorProps> {
      * updateDecorations:
      * Adds the Decorations to the editor for display
      */
-    public updateDecorations() {
+    private updateDecorations() {
         if (this.editor !== null)
             this.decorations = this.editor.deltaDecorations(this.decorations, [
                 ...this.variableDecorations,
@@ -586,19 +716,22 @@ class Editor extends React.Component<IEditorProps> {
 
     public getFoldingRanges() {
         let ranges: monaco.languages.FoldingRange[] = [];
-        this.graph.getDefinitionRanges().forEach((r) =>
+        this.graph.getFoldingRanges().forEach((r) =>
             ranges.push({
-                start: r.startLineNumber,
-                end: r.endLineNumber,
-                kind: monaco.languages.FoldingRangeKind.Region,
+                start: r.range.startLineNumber,
+                end: r.range.endLineNumber,
+                kind: r.definition
+                    ? monaco.languages.FoldingRangeKind.Region
+                    : monaco.languages.FoldingRangeKind.Comment,
             }),
         );
         return ranges;
     }
 
     render() {
+        console.log('RENDERING...');
         console.log(this.graph);
-        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '73vh' }} />;
+        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }} />;
     }
 }
 

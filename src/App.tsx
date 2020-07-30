@@ -1,7 +1,6 @@
 import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
-import FeatureChecker from './components/FeatureChecker';
-import VariableInput from './components/VariableInput';
+import StatusInput from './components/StatusInput';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { getData } from './content/TPCH';
@@ -9,48 +8,28 @@ import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
 import './App.css';
 
-enum Feature {
-    NODEHIGHLIGHTING = 'Click: Highlight Node Occurrences',
-    VARIABLEDECORATION = 'Hover: Decorate Variable',
-    CHILDDECORATION = 'Select: Decorate Variable Children',
-    PARENTDECORATION = 'Select: Decorate Variable Parents',
-    COMMENTDECORATION = 'Hover: Display Comments',
-}
-
 interface IAppProps {}
 
 interface IAppState {
     index: number;
-    activateNodeHighlighting: boolean;
-    activateVariableDecoration: boolean;
-    activateChildDecoration: boolean;
-    activateParentDecoration: boolean;
-    activateCommentDecoration: boolean;
-    selection: string;
+    input: string;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
     private editor: Editor | null = null;
     private data: Graph[] = getData();
-    private features: string[] = Object.values(Feature);
-    private input: VariableInput | null = null;
+    private inputElement: StatusInput | null = null;
 
     constructor(props: IAppProps) {
         super(props);
         this.state = {
             index: 0,
-            activateNodeHighlighting: true,
-            activateVariableDecoration: true,
-            activateChildDecoration: true,
-            activateParentDecoration: true,
-            activateCommentDecoration: true,
-            selection: '',
+            input: '',
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
-        this.handleCheckerChange = this.handleCheckerChange.bind(this);
-        this.handleSelectionChange = this.handleSelectionChange.bind(this);
-        this.handleSelectionKeydown = this.handleSelectionKeydown.bind(this);
-        this.passSelection = this.passSelection.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleInputKeydown = this.handleInputKeydown.bind(this);
+        this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
     }
 
@@ -62,58 +41,26 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) this.editor.getInstance().focus();
     }
 
-    public handleCheckerChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.id === Feature.NODEHIGHLIGHTING)
-            this.setState({
-                activateNodeHighlighting: event.target.checked,
-            });
-        else if (event.target.id === Feature.VARIABLEDECORATION)
-            this.setState({
-                activateVariableDecoration: event.target.checked,
-            });
-        else if (event.target.id === Feature.CHILDDECORATION)
-            this.setState({
-                activateChildDecoration: event.target.checked,
-            });
-        else if (event.target.id === Feature.PARENTDECORATION)
-            this.setState({
-                activateParentDecoration: event.target.checked,
-            });
-        else if (event.target.id === Feature.COMMENTDECORATION)
-            this.setState({
-                activateCommentDecoration: event.target.checked,
-            });
-        if (this.editor) this.editor.getInstance().focus();
+    public handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+        this.setState({ input: event.target.value });
     }
 
-    public handleSelectionChange(event: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({ selection: event.target.value });
-    }
-
-    public handleSelectionKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
+    public handleInputKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
         if (event.key === 'Enter') {
             event.preventDefault();
             if (this.editor) {
                 this.editor.getInstance().focus();
-                this.editor.handleKeypressNextOccurrence();
-            }
-        }
-        // TODO!!!
-        if (event.key === 'r') {
-            event.preventDefault();
-            if (this.editor) {
-                this.editor.getInstance().focus();
-                this.editor.handleKeypressRename();
+                //this.editor.handleKeypressNextOccurrence();
             }
         }
     }
 
-    public passSelection(selection: string) {
-        this.setState({ selection });
+    public passInput(input: string) {
+        this.setState({ input });
     }
 
     public focusInput() {
-        if (this.input) this.input.getInstance().focus();
+        if (this.inputElement) this.inputElement.getInstance().focus();
     }
 
     render() {
@@ -125,46 +72,27 @@ class App extends React.Component<IAppProps, IAppState> {
                 onDropdownChange={this.handleDropdownChange}
             />
         );
-        let checker = (
-            <FeatureChecker
-                features={this.features}
-                activateNodeHighlighting={this.state.activateNodeHighlighting}
-                activateVariableDecoration={this.state.activateVariableDecoration}
-                activateChildDecoration={this.state.activateChildDecoration}
-                activateParentDecoration={this.state.activateParentDecoration}
-                activateCommentDecoration={this.state.activateCommentDecoration}
-                onCheckerChange={this.handleCheckerChange}
-            />
-        );
         let input = (
-            <VariableInput
-                selection={this.state.selection}
-                onSelectionChange={this.handleSelectionChange}
-                onSelectionKeydown={this.handleSelectionKeydown}
-                ref={(ref) => (this.input = ref)}
+            <StatusInput
+                input={this.state.input}
+                onInputChange={this.handleInputChange}
+                onInputKeydown={this.handleInputKeydown}
+                ref={(ref) => (this.inputElement = ref)}
             />
         );
         let editor = (
             <Editor
                 language={languageID}
                 graph={this.data[this.state.index]}
-                activateNodeHighlighting={this.state.activateNodeHighlighting}
-                activateVariableDecoration={this.state.activateVariableDecoration}
-                activateChildDecoration={this.state.activateChildDecoration}
-                activateParentDecoration={this.state.activateParentDecoration}
-                activateCommentDecoration={this.state.activateCommentDecoration}
-                selection={this.state.selection}
-                passSelection={this.passSelection}
+                input={this.state.input}
+                passInput={this.passInput}
                 focusInput={this.focusInput}
                 ref={(ref) => (this.editor = ref)}
             />
         );
         return (
             <div>
-                <b>CTRL+K and CTRL+0 to FoldAll // CTRL+K and CTRL+J to UnfoldAll</b>
-                <br />
                 {dropdown}
-                {checker}
                 {input}
                 {editor}
             </div>

@@ -101,6 +101,13 @@ class definition extends _function {
     public getTargetTree() {
         //TODO
     }
+
+    public getFoldingRanges() {
+        let ranges: { range: monaco.Range; definition?: boolean }[] = [];
+        ranges.push({ range: this.range!, definition: true });
+        this.blocks.forEach((b) => ranges.push({ range: b.getRange() }));
+        return ranges;
+    }
 }
 
 export default definition;

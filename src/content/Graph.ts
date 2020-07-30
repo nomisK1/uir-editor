@@ -101,10 +101,6 @@ class Graph {
         return definitions;
     }
 
-    public getDefinitionRanges() {
-        return this.getDefinitions().map((d) => d.getRange());
-    }
-
     private getVariablesByName(name: string) {
         let vars: variable[] = [];
         this.variables.forEach((v) => {
@@ -432,6 +428,14 @@ class Graph {
         this.variables.forEach((v) => v.resetAlias());
         this.variables.forEach((v) => v.getContext()!.findRanges());
         this.updateComments();
+    }
+
+    public getFoldingRanges() {
+        let ranges: { range: monaco.Range; definition?: boolean }[] = [];
+        this.getDefinitions().forEach((d) => {
+            ranges.push(...d.getFoldingRanges());
+        });
+        return ranges;
     }
 }
 
