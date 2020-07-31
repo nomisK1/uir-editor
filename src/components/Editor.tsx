@@ -10,8 +10,11 @@ interface IEditorProps {
     language: string;
     graph: Graph;
     input: string;
+    nextTcphQuery: () => void;
+    prevTcphQuery: () => void;
     passInput: (input: string) => void;
     focusInput: (status: Status, prev?: string) => void;
+    displayShortcutModal: () => void;
 }
 
 interface IEditorState {
@@ -77,6 +80,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
         this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
         this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
+        this.handleKeypressNextTcphQuery = this.handleKeypressNextTcphQuery.bind(this);
+        this.handleKeypressPrevTcphQuery = this.handleKeypressPrevTcphQuery.bind(this);
+        this.handleKeypressDisplayShortcutModal = this.handleKeypressDisplayShortcutModal.bind(this);
     }
 
     public getInstance() {
@@ -126,15 +132,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Tab, this.handleKeypressJumpLeft);
             this.editor.addCommand(monaco.KeyCode.KEY_M, this.handleKeypressJumpRight);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_M, this.handleKeypressJumpLeft);
-            this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search);
-            this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search);
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, this.handleKeypressPrevOccurrence);
             this.editor.addCommand(monaco.KeyCode.KEY_N, this.handleKeypressNextOccurrence);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_N, this.handleKeypressPrevOccurrence);
             this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressGoBack);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_B, this.handleKeypressGoBack);
+            this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search);
+            this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search);
+            this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextTcphQuery);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_Q, this.handleKeypressPrevTcphQuery);
             this.editor.addAction({
-                id: 'AddCommentHover',
+                id: 'addCommentHover',
                 label: 'Add Comment (Hover)',
                 keybindings: [monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
@@ -142,7 +151,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressToInput_Comment,
             });
             this.editor.addAction({
-                id: 'RemoveComment',
+                id: 'removeComment',
                 label: 'Remove Comment',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
@@ -150,7 +159,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressRemoveComment,
             });
             this.editor.addAction({
-                id: 'ResetComments',
+                id: 'resetComments',
                 label: 'Reset All Comments',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
@@ -158,7 +167,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressResetComments,
             });
             this.editor.addAction({
-                id: 'RenameVariable',
+                id: 'renameVariable',
                 label: 'Rename Variable',
                 keybindings: [monaco.KeyCode.KEY_R],
                 contextMenuGroupId: '3_alias',
@@ -166,7 +175,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressToInput_Rename,
             });
             this.editor.addAction({
-                id: 'UnnameVariable',
+                id: 'unnameVariable',
                 label: 'Unname Variable',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_R],
                 contextMenuGroupId: '3_alias',
@@ -174,7 +183,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressUndoRename,
             });
             this.editor.addAction({
-                id: 'ResetNames',
+                id: 'resetNames',
                 label: 'Reset All Names',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R],
                 contextMenuGroupId: '3_alias',
@@ -209,7 +218,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleNodeHighlighting',
                 label: 'Toggle Node Highlighting',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_1],
-                contextMenuGroupId: '5_features',
+                //contextMenuGroupId: '5_features',
                 contextMenuOrder: 1,
                 run: this.handleToggleNodeHighlighting,
             });
@@ -217,7 +226,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleVariableDecorating',
                 label: 'Toggle Variable Decorating',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_2],
-                contextMenuGroupId: '5_features',
+                //contextMenuGroupId: '5_features',
                 contextMenuOrder: 2,
                 run: this.handleToggleVariableDecorating,
             });
@@ -225,7 +234,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleChildDecorating',
                 label: 'Toggle Child Decorating',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_3],
-                contextMenuGroupId: '5_features',
+                //contextMenuGroupId: '5_features',
                 contextMenuOrder: 3,
                 run: this.handleToggleChildDecorating,
             });
@@ -233,7 +242,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleParentDecorating',
                 label: 'Toggle Parent Decorating',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_4],
-                contextMenuGroupId: '5_features',
+                //contextMenuGroupId: '5_features',
                 contextMenuOrder: 4,
                 run: this.handleToggleParentDecorating,
             });
@@ -241,9 +250,17 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleCommentDisplay',
                 label: 'Toggle Comment Display',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_5],
-                contextMenuGroupId: '5_features',
+                //contextMenuGroupId: '5_features',
                 contextMenuOrder: 5,
                 run: this.handleToggleCommentDecorating,
+            });
+            this.editor.addAction({
+                id: 'displayModal',
+                label: 'Show Keyboard Shortcuts',
+                keybindings: [monaco.KeyCode.KEY_S],
+                contextMenuGroupId: '9_modal',
+                contextMenuOrder: 1,
+                run: this.handleKeypressDisplayShortcutModal,
             });
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();
@@ -468,6 +485,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressUnfoldAll() {
         if (this.editor) this.editor.trigger('unfold', 'editor.unfoldAll', null);
+    }
+
+    public handleKeypressNextTcphQuery() {
+        this.props.nextTcphQuery();
+    }
+
+    public handleKeypressPrevTcphQuery() {
+        this.props.prevTcphQuery();
+    }
+
+    public handleKeypressDisplayShortcutModal() {
+        this.props.displayShortcutModal();
     }
 
     //--------------------------------------------------

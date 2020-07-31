@@ -1,9 +1,9 @@
 import React from 'react';
 
 export enum Status {
-    COMMENT = 'Add Comment',
-    RENAME = 'Rename Variable',
-    SEARCH = 'Search Variable',
+    COMMENT = 'ADD COMMENT',
+    RENAME = 'RENAME VARIABLE',
+    SEARCH = 'SEARCH VARIABLE',
 }
 
 interface IStatusInputProps {
@@ -30,15 +30,18 @@ class StatusInput extends React.Component<IStatusInputProps> {
 
     render() {
         return (
-            <input
-                id="statusInput"
-                className="input"
-                placeholder={this.status}
-                value={this.props.input}
-                onChange={this.props.onInputChange}
-                onKeyDown={this.props.onInputKeydown}
-                ref={(ref) => (this.inputElement = ref)}
-            />
+            <div>
+                <input id="statusDisplay" className="input" value={this.status} readOnly={true} />
+                <input
+                    id="statusInput"
+                    className="input"
+                    /* placeholder={this.status} */
+                    value={this.props.input}
+                    onChange={this.props.onInputChange}
+                    onKeyDown={this.props.onInputKeydown}
+                    ref={(ref) => (this.inputElement = ref)}
+                />
+            </div>
         );
     }
 }

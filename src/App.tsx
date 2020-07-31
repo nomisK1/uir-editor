@@ -1,7 +1,7 @@
 import * as React from 'react';
-import StatusInput, { Status } from './components/StatusInput';
 import TcphDropdown from './components/TcphDropdown';
-import KeybindModal from './components/KeybindModal';
+import StatusInput, { Status } from './components/StatusInput';
+import ShortcutModal from './components/ShortcutModal';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { getData } from './content/TPCH';
@@ -29,12 +29,32 @@ class App extends React.Component<IAppProps, IAppState> {
             input: '',
             showModal: false,
         };
+        this.handleDropdownChange = this.handleDropdownChange.bind(this);
+        this.nextTcphQuery = this.nextTcphQuery.bind(this);
+        this.prevTcphQuery = this.prevTcphQuery.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
         this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
-        this.handleDropdownChange = this.handleDropdownChange.bind(this);
-        this.handleModalClick = this.handleModalClick.bind(this);
+        this.displayShortcutModal = this.displayShortcutModal.bind(this);
+    }
+
+    public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        let index = parseInt(event.target.value);
+        this.setState({
+            index,
+        });
+        if (this.editor) this.editor.getInstance().focus();
+    }
+
+    public nextTcphQuery() {
+        let index = this.state.index < this.data.length - 1 ? this.state.index + 1 : 0;
+        this.setState({ index });
+    }
+
+    public prevTcphQuery() {
+        let index = this.state.index > 0 ? this.state.index - 1 : this.data.length - 1;
+        this.setState({ index });
     }
 
     public handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -67,23 +87,15 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
-        let index = parseInt(event.target.value);
+    public displayShortcutModal() {
         this.setState({
-            index,
+            showModal: !this.state.showModal,
         });
         if (this.editor) this.editor.getInstance().focus();
     }
 
-    public handleModalClick() {
-        this.setState({
-            showModal: !this.state.showModal,
-        });
-    }
-
     render() {
         setupLanguage();
-        let modal = <KeybindModal showModal={this.state.showModal} onModalClick={this.handleModalClick} />;
         let dropdown = (
             <TcphDropdown
                 size={this.data.length}
@@ -99,6 +111,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={(ref) => (this.inputElement = ref)}
             />
         );
+        let modal = <ShortcutModal showModal={this.state.showModal} onModalClick={this.displayShortcutModal} />;
         let editor = (
             <Editor
                 language={languageID}
@@ -106,14 +119,17 @@ class App extends React.Component<IAppProps, IAppState> {
                 input={this.state.input}
                 passInput={this.passInput}
                 focusInput={this.focusInput}
+                nextTcphQuery={this.nextTcphQuery}
+                prevTcphQuery={this.prevTcphQuery}
+                displayShortcutModal={this.displayShortcutModal}
                 ref={(ref) => (this.editor = ref)}
             />
         );
         return (
             <div>
-                {modal}
                 {dropdown}
                 {input}
+                {modal}
                 {editor}
             </div>
         );
