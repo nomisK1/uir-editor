@@ -1,6 +1,7 @@
 import * as React from 'react';
-import TcphDropdown from './components/TcphDropdown';
 import StatusInput from './components/StatusInput';
+import TcphDropdown from './components/TcphDropdown';
+import KeybindModal from './components/KeybindModal';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { getData } from './content/TPCH';
@@ -13,6 +14,7 @@ interface IAppProps {}
 interface IAppState {
     index: number;
     input: string;
+    showModal: boolean;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -25,20 +27,14 @@ class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             index: 0,
             input: '',
+            showModal: false,
         };
-        this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
         this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
-    }
-
-    public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
-        let index = parseInt(event.target.value);
-        this.setState({
-            index,
-        });
-        if (this.editor) this.editor.getInstance().focus();
+        this.handleDropdownChange = this.handleDropdownChange.bind(this);
+        this.handleModalClick = this.handleModalClick.bind(this);
     }
 
     public handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -63,8 +59,23 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.inputElement) this.inputElement.getInstance().focus();
     }
 
+    public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
+        let index = parseInt(event.target.value);
+        this.setState({
+            index,
+        });
+        if (this.editor) this.editor.getInstance().focus();
+    }
+
+    public handleModalClick() {
+        this.setState({
+            showModal: !this.state.showModal,
+        });
+    }
+
     render() {
         setupLanguage();
+        let modal = <KeybindModal showModal={this.state.showModal} onModalClick={this.handleModalClick} />;
         let dropdown = (
             <TcphDropdown
                 size={this.data.length}
@@ -92,6 +103,7 @@ class App extends React.Component<IAppProps, IAppState> {
         );
         return (
             <div>
+                {modal}
                 {dropdown}
                 {input}
                 {editor}
