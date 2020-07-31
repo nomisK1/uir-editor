@@ -346,42 +346,36 @@ class Graph {
     }
 
     public addCommentAt(text: string, position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node) {
-            let range = node.getRange();
-            if (range.startLineNumber !== range.endLineNumber)
-                this.comments.push({
-                    text,
-                    range: range.setEndPosition(range.startLineNumber + 1, 0),
-                    isWholeLine: false,
-                });
-            else
-                this.comments.push({
-                    text,
-                    range,
-                    isWholeLine: false,
-                    node,
-                });
-        } else
-            this.comments.push({
-                text,
-                range: new monaco.Range(position.lineNumber, position.column, position.lineNumber, 0),
-                isWholeLine: true,
-            });
+        this.removeCommentAt(position);
+        if (text) {
+            let node = this.getNodeAt(position);
+            let range = node ? node.getRange() : null;
+            let isWholeLine = false;
+            let pushNode = false;
+            if (range) pushNode = true;
+            else {
+                range = new monaco.Range(position.lineNumber, position.column, position.lineNumber, 0);
+                isWholeLine = true;
+            }
+            this.comments.push({ text, range, isWholeLine, node: pushNode ? node! : undefined });
+        }
+    }
+
+    public getCommentAt(position: monaco.Position) {
+        for (let i = 0; i < this.comments.length; i++)
+            if (this.comments[i].range.containsPosition(position)) return this.comments[i];
+        return null;
     }
 
     public removeCommentAt(position: monaco.Position) {
         for (let i = 0; i < this.comments.length; i++)
-            if (this.comments[i].range.containsPosition(position)) {
-                this.comments.splice(i, 1);
-                return;
-            }
+            if (this.comments[i].range.containsPosition(position)) return this.comments.splice(i, 1);
+        return null;
     }
 
     public getComments() {
         return this.comments;
     }
-
     public resetComments() {
         this.comments = [];
     }

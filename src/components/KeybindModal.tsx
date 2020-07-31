@@ -9,7 +9,7 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
     render() {
         return (
             <div>
-                <button id="keybindButton" onClick={this.props.onModalClick}>
+                <button id="keybindButton" className="button" onClick={this.props.onModalClick}>
                     Keybinds
                 </button>
                 <div id="keybindModal" className="modal" style={{ display: this.props.showModal ? 'block' : 'none' }}>
@@ -19,6 +19,7 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
                         </span>
                         <img
                             id="keybindImage"
+                            className="image"
                             src="shortcuts.png"
                             alt="Keybinds"
                             style={{ height: '100%', width: '100%', objectFit: 'contain' }}

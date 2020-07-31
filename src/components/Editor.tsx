@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor';
 import { themeID, monarchTheme } from '../language/uirTheme';
 import S from '../language/Singleton';
 import Graph from '../content/Graph';
+import { Status } from './StatusInput';
 import './Editor.css';
 
 interface IEditorProps {
@@ -10,7 +11,7 @@ interface IEditorProps {
     graph: Graph;
     input: string;
     passInput: (input: string) => void;
-    focusInput: () => void;
+    focusInput: (status: Status, prev?: string) => void;
 }
 
 interface IEditorState {
@@ -46,34 +47,36 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.input = this.props.input;
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
-        this.handleKeypressToInput = this.handleKeypressToInput.bind(this);
+        this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
+        this.handleKeypressDown = this.handleKeypressDown.bind(this);
+        this.handleKeypressUp = this.handleKeypressUp.bind(this);
+        this.handleKeypressRight = this.handleKeypressRight.bind(this);
         this.handleKeypressJumpRight = this.handleKeypressJumpRight.bind(this);
         this.handleKeypressJumpLeft = this.handleKeypressJumpLeft.bind(this);
-        this.handleKeypressNextOccurrence = this.handleKeypressNextOccurrence.bind(this);
-        this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
-        this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
-        this.handleKeypressUp = this.handleKeypressUp.bind(this);
-        this.handleKeypressDown = this.handleKeypressDown.bind(this);
-        this.handleKeypressRight = this.handleKeypressRight.bind(this);
         this.handleKeypressHoverChild = this.handleKeypressHoverChild.bind(this);
         this.handleKeypressChild = this.handleKeypressChild.bind(this);
-        this.handleKeypressParent = this.handleKeypressParent.bind(this);
         this.handleKeypressHoverParent = this.handleKeypressHoverParent.bind(this);
-        this.handleKeypressPrevious = this.handleKeypressPrevious.bind(this);
-        this.handleKeypressRename = this.handleKeypressRename.bind(this);
-        this.handleKeypressUndoRename = this.handleKeypressUndoRename.bind(this);
-        this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
+        this.handleKeypressParent = this.handleKeypressParent.bind(this);
+        this.handleKeypressGoBack = this.handleKeypressGoBack.bind(this);
+        this.handleKeypressToInput_Comment = this.handleKeypressToInput_Comment.bind(this);
+        this.handleKeypressToInput_Rename = this.handleKeypressToInput_Rename.bind(this);
+        this.handleKeypressToInput_Search = this.handleKeypressToInput_Search.bind(this);
+        this.handleKeypressNextOccurrence = this.handleKeypressNextOccurrence.bind(this);
+        this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
         this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
         this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
+        this.handleKeypressRename = this.handleKeypressRename.bind(this);
+        this.handleKeypressUndoRename = this.handleKeypressUndoRename.bind(this);
+        this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
         this.handleToggleNodeHighlighting = this.handleToggleNodeHighlighting.bind(this);
         this.handleToggleVariableDecorating = this.handleToggleVariableDecorating.bind(this);
         this.handleToggleChildDecorating = this.handleToggleChildDecorating.bind(this);
         this.handleToggleParentDecorating = this.handleToggleParentDecorating.bind(this);
         this.handleToggleCommentDecorating = this.handleToggleCommentDecorating.bind(this);
-        this.handleFoldAll = this.handleFoldAll.bind(this);
-        this.handleFoldAllBlocks = this.handleFoldAllBlocks.bind(this);
-        this.handleUnfoldAll = this.handleUnfoldAll.bind(this);
+        this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
+        this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
+        this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
     }
 
     public getInstance() {
@@ -103,40 +106,40 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 glyphMargin: true,
             });
             this.editor.onMouseDown(this.handleMouseclick);
-            this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput);
+            this.editor.addCommand(monaco.KeyCode.LeftArrow, this.handleKeypressLeft);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.LeftArrow, this.handleKeypressHoverChild);
+            this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_H, this.handleKeypressHoverChild);
+            this.editor.addCommand(monaco.KeyCode.DownArrow, this.handleKeypressDown);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.DownArrow, this.handleKeypressChild);
+            this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressDown);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J, this.handleKeypressChild);
+            this.editor.addCommand(monaco.KeyCode.UpArrow, this.handleKeypressUp);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.UpArrow, this.handleKeypressParent);
+            this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressUp);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressParent);
+            this.editor.addCommand(monaco.KeyCode.RightArrow, this.handleKeypressRight);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.RightArrow, this.handleKeypressHoverParent);
+            this.editor.addCommand(monaco.KeyCode.KEY_L, this.handleKeypressRight);
+            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressHoverParent);
             this.editor.addCommand(monaco.KeyCode.Tab, this.handleKeypressJumpRight);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Tab, this.handleKeypressJumpLeft);
-            this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, this.handleKeypressPrevOccurrence);
-            this.editor.addCommand(monaco.KeyCode.LeftArrow, this.handleKeypressLeft);
-            this.editor.addCommand(monaco.KeyCode.DownArrow, this.handleKeypressDown);
-            this.editor.addCommand(monaco.KeyCode.UpArrow, this.handleKeypressUp);
-            this.editor.addCommand(monaco.KeyCode.RightArrow, this.handleKeypressRight);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.LeftArrow, this.handleKeypressHoverChild);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.DownArrow, this.handleKeypressChild);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.UpArrow, this.handleKeypressParent);
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.RightArrow, this.handleKeypressHoverParent);
-            this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput);
-            this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressPrevious);
             this.editor.addCommand(monaco.KeyCode.KEY_M, this.handleKeypressJumpRight);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_M, this.handleKeypressJumpLeft);
+            this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search);
+            this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search);
+            this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence);
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, this.handleKeypressPrevOccurrence);
             this.editor.addCommand(monaco.KeyCode.KEY_N, this.handleKeypressNextOccurrence);
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_N, this.handleKeypressPrevOccurrence);
-            this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft);
-            this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressDown);
-            this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressUp);
-            this.editor.addCommand(monaco.KeyCode.KEY_L, this.handleKeypressRight);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_H, this.handleKeypressHoverChild);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J, this.handleKeypressChild);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K, this.handleKeypressParent);
-            this.editor.addCommand(/* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L, this.handleKeypressHoverParent);
+            this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressGoBack);
             this.editor.addAction({
                 id: 'AddCommentHover',
                 label: 'Add Comment (Hover)',
                 keybindings: [monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
                 contextMenuOrder: 1,
-                run: this.handleKeypressAddComment,
+                run: this.handleKeypressToInput_Comment,
             });
             this.editor.addAction({
                 id: 'RemoveComment',
@@ -160,7 +163,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 keybindings: [monaco.KeyCode.KEY_R],
                 contextMenuGroupId: '3_alias',
                 contextMenuOrder: 1,
-                run: this.handleKeypressRename,
+                run: this.handleKeypressToInput_Rename,
             });
             this.editor.addAction({
                 id: 'UnnameVariable',
@@ -184,7 +187,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_1],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 1,
-                run: this.handleFoldAll,
+                run: this.handleKeypressFoldAll,
             });
             this.editor.addAction({
                 id: 'foldBlocks',
@@ -192,7 +195,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_2],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 2,
-                run: this.handleFoldAllBlocks,
+                run: this.handleKeypressFoldAllBlocks,
             });
             this.editor.addAction({
                 id: 'unfoldAll',
@@ -200,7 +203,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_3],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 3,
-                run: this.handleUnfoldAll,
+                run: this.handleKeypressUnfoldAll,
             });
             this.editor.addAction({
                 id: 'toggleNodeHighlighting',
@@ -277,26 +280,28 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Event handler methods-----
     //--------------------------------------------------
 
-    public handleFoldAll() {
-        if (this.editor) this.editor.trigger('fold', 'editor.foldAll', null);
-    }
-
-    public handleFoldAllBlocks() {
-        if (this.editor) this.editor.trigger('foldBlockComments', 'editor.foldAllBlockComments', null);
-    }
-
-    public handleUnfoldAll() {
-        if (this.editor) this.editor.trigger('unfold', 'editor.unfoldAll', null);
-    }
-
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
-        if (event.target.position !== null) {
-            this.updateInputAt(event.target.position);
-        }
+        if (event.target.position !== null) this.updateInputAt(event.target.position);
     }
 
-    public handleKeypressToInput() {
-        this.props.focusInput();
+    public handleKeypressLeft() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(undefined, position.column - 1));
+    }
+
+    public handleKeypressDown() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(position.lineNumber + 1, undefined));
+    }
+
+    public handleKeypressUp() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(position.lineNumber - 1, undefined));
+    }
+
+    public handleKeypressRight() {
+        let position = this.editor!.getPosition()!;
+        this.updatePosition(position.with(undefined, position.column + 1));
     }
 
     public handleKeypressJumpRight() {
@@ -307,6 +312,47 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     public handleKeypressJumpLeft() {
         let position = this.editor!.getPosition()!;
         this.updatePosition(position.with(undefined, position.column - 15));
+    }
+
+    public handleKeypressHoverChild() {
+        let child = this.graph.updateNextChild();
+        if (child) this.decorateVariable(child.getRange().getStartPosition());
+    }
+
+    public handleKeypressChild() {
+        let child = this.graph.getCurrentChild();
+        if (child) this.graph.setCurrentVariable(child);
+        this.focusCurrentVariable();
+    }
+
+    public handleKeypressHoverParent() {
+        let parent = this.graph.updateNextParent();
+        if (parent) this.decorateVariable(parent.getRange().getStartPosition());
+    }
+
+    public handleKeypressParent() {
+        let parent = this.graph.getCurrentParent();
+        if (parent) this.graph.setCurrentVariable(parent);
+        this.focusCurrentVariable();
+    }
+
+    public handleKeypressGoBack() {
+        this.graph.setCurrentToPrevious();
+        this.focusCurrentVariable();
+    }
+
+    public handleKeypressToInput_Comment() {
+        let comment = this.graph.getCommentAt(this.editor!.getPosition()!);
+        this.props.focusInput(Status.COMMENT, comment ? comment.text : undefined);
+    }
+
+    public handleKeypressToInput_Rename() {
+        let variable = this.graph.getVariableAt(this.editor!.getPosition()!);
+        this.props.focusInput(Status.RENAME, variable && variable.hasAlias() ? variable.getAlias() : undefined);
+    }
+
+    public handleKeypressToInput_Search() {
+        this.props.focusInput(Status.SEARCH);
     }
 
     public handleKeypressNextOccurrence() {
@@ -325,56 +371,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.focusCurrentVariable();
     }
 
-    public handleKeypressLeft() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column - 1));
-    }
-
-    public handleKeypressUp() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(position.lineNumber - 1, undefined));
-    }
-
-    public handleKeypressRight() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column + 1));
-    }
-
-    public handleKeypressDown() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(position.lineNumber + 1, undefined));
-    }
-
-    public handleKeypressHoverParent() {
-        let parent = this.graph.updateNextParent();
-        if (parent) this.decorateVariable(parent.getRange().getStartPosition());
-    }
-
-    public handleKeypressParent() {
-        let parent = this.graph.getCurrentParent();
-        if (parent) this.graph.setCurrentVariable(parent);
-        this.focusCurrentVariable();
-    }
-
-    public handleKeypressHoverChild() {
-        let child = this.graph.updateNextChild();
-        if (child) this.decorateVariable(child.getRange().getStartPosition());
-    }
-
-    public handleKeypressChild() {
-        let child = this.graph.getCurrentChild();
-        if (child) this.graph.setCurrentVariable(child);
-        this.focusCurrentVariable();
-    }
-
-    public handleKeypressPrevious() {
-        this.graph.setCurrentToPrevious();
-        this.focusCurrentVariable();
-    }
-
     public handleKeypressAddComment() {
         this.graph.addCommentAt(this.input, this.editor!.getPosition()!);
         this.decorateComments();
+        this.updateInput();
     }
 
     public handleKeypressRemoveComment() {
@@ -398,11 +398,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             if (this.graph.setCurrentVariableAlias(this.input)) {
                 this.updateValue();
                 this.focusCurrentVariable();
-            } else {
-                this.input = current.getAlias();
-                this.props.passInput(this.input);
             }
         }
+        this.updateInput();
     }
 
     public handleKeypressUndoRename() {
@@ -460,6 +458,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateComments();
     }
 
+    public handleKeypressFoldAll() {
+        if (this.editor) this.editor.trigger('fold', 'editor.foldAll', null);
+    }
+
+    public handleKeypressFoldAllBlocks() {
+        if (this.editor) this.editor.trigger('foldBlockComments', 'editor.foldAllBlockComments', null);
+    }
+
+    public handleKeypressUnfoldAll() {
+        if (this.editor) this.editor.trigger('unfold', 'editor.unfoldAll', null);
+    }
+
     //--------------------------------------------------
     //-----Helper methods-----
     //--------------------------------------------------
@@ -473,14 +483,20 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     /**
      * updateInput:
-     * Updates the App Input field with the currently selected Variable name
+     * Updates the App Input field with the currently selected Variable
      */
+
+    private updateInput() {
+        let current = this.graph.getCurrentVariable();
+        this.input = current ? current.getAlias() : '';
+        this.props.passInput(this.input);
+    }
+
     private updateInputAt(position: monaco.Position) {
         let variable = this.graph.getVariableAt(position);
-        if (variable && variable !== this.graph.getCurrentVariable()) {
+        if (variable !== this.graph.getCurrentVariable()) {
             this.graph.setCurrentVariable(variable);
-            this.input = variable.getAlias();
-            this.props.passInput(this.input);
+            this.updateInput();
         }
         this.decorateTree(position);
     }

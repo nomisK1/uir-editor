@@ -1,5 +1,5 @@
 import * as React from 'react';
-import StatusInput from './components/StatusInput';
+import StatusInput, { Status } from './components/StatusInput';
 import TcphDropdown from './components/TcphDropdown';
 import KeybindModal from './components/KeybindModal';
 import Editor from './components/Editor';
@@ -44,9 +44,11 @@ class App extends React.Component<IAppProps, IAppState> {
     public handleInputKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            if (this.editor) {
+            if (this.editor && this.inputElement) {
                 this.editor.getInstance().focus();
-                //this.editor.handleKeypressNextOccurrence();
+                if (this.inputElement.getStatus() === Status.COMMENT) this.editor.handleKeypressAddComment();
+                else if (this.inputElement.getStatus() === Status.RENAME) this.editor.handleKeypressRename();
+                else if (this.inputElement.getStatus() === Status.SEARCH) this.editor.handleKeypressNextOccurrence();
             }
         }
     }
@@ -55,8 +57,14 @@ class App extends React.Component<IAppProps, IAppState> {
         this.setState({ input });
     }
 
-    public focusInput() {
-        if (this.inputElement) this.inputElement.getInstance().focus();
+    public focusInput(status: Status, prev?: string) {
+        if (this.inputElement) {
+            this.inputElement.setStatus(status);
+            this.inputElement.getInstance().focus();
+            if (status === Status.SEARCH) this.setState({ input: '' });
+            if (status === Status.COMMENT) this.setState({ input: prev ? prev : '' });
+            if (status === Status.RENAME) this.setState({ input: prev ? prev : '' });
+        }
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {

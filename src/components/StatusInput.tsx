@@ -1,14 +1,12 @@
 import React from 'react';
 
-enum Status {
-    //TODO
-    ADDCOMMENT = '---Select a Variable in the Editor---',
-    RENAMEVARIABLE = '---Select a Variable in the Editor---',
-    SEARCHVARIABLE = '---Select a Variable in the Editor---',
+export enum Status {
+    COMMENT = 'Add Comment',
+    RENAME = 'Rename Variable',
+    SEARCH = 'Search Variable',
 }
 
 interface IStatusInputProps {
-    //status: string;
     input: string;
     onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onInputKeydown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
@@ -16,23 +14,31 @@ interface IStatusInputProps {
 
 class StatusInput extends React.Component<IStatusInputProps> {
     private inputElement: HTMLInputElement | null = null;
+    private status: Status = Status.SEARCH;
 
     public getInstance() {
         return this.inputElement!;
     }
 
+    public getStatus() {
+        return this.status;
+    }
+
+    public setStatus(status: Status) {
+        this.status = status;
+    }
+
     render() {
         return (
-            <div className="StatusInput">
-                <label>Current Status: {Status.SEARCHVARIABLE}</label>
-                <input
-                    placeholder={Status.SEARCHVARIABLE}
-                    value={this.props.input}
-                    onChange={this.props.onInputChange}
-                    onKeyDown={this.props.onInputKeydown}
-                    ref={(ref) => (this.inputElement = ref)}
-                />
-            </div>
+            <input
+                id="statusInput"
+                className="input"
+                placeholder={this.status}
+                value={this.props.input}
+                onChange={this.props.onInputChange}
+                onKeyDown={this.props.onInputKeydown}
+                ref={(ref) => (this.inputElement = ref)}
+            />
         );
     }
 }

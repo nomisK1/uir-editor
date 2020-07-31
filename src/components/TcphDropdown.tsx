@@ -20,7 +20,12 @@ class TcphDropdown extends React.Component<ITcphDropdownProps> {
 
     render() {
         return (
-            <select className="TcphDropdown" value={this.props.index} onChange={this.props.onDropdownChange}>
+            <select
+                id="tcphDropdown"
+                className="dropdown"
+                value={this.props.index}
+                onChange={this.props.onDropdownChange}
+            >
                 {this.renderOptions()}
             </select>
         );
