@@ -388,7 +388,7 @@ class Graph {
     public setCurrentVariableAlias(alias: string) {
         if (this.current)
             if (!alias || this.current.getName() === alias) return this.resetCurrentVariableAlias();
-            else if (alias && !alias.includes(' ') && !alias.includes('%') && !this.aliases.includes(alias)) {
+            else if (alias && isLegal(alias) && !this.aliases.includes(alias)) {
                 this.aliases.push(alias);
                 this.current.setAlias(alias);
                 this.current.getContext()!.findRanges();
@@ -434,6 +434,80 @@ class Graph {
 }
 
 export default Graph;
+
+const legalStrings: string[] = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '0',
+    'q',
+    'w',
+    'W',
+    'e',
+    'E',
+    'r',
+    'R',
+    't',
+    'T',
+    'z',
+    'Z',
+    'u',
+    'U',
+    'i',
+    'I',
+    'o',
+    'O',
+    'p',
+    'P',
+    'a',
+    'A',
+    's',
+    'S',
+    'd',
+    'D',
+    'f',
+    'F',
+    'g',
+    'G',
+    'h',
+    'H',
+    'j',
+    'J',
+    'k',
+    'K',
+    'l',
+    'L',
+    'y',
+    'Y',
+    'x',
+    'X',
+    'c',
+    'C',
+    'v',
+    'V',
+    'b',
+    'B',
+    'n',
+    'N',
+    'm',
+    'M',
+    '_',
+];
+
+function isLegal(string: string) {
+    for (let i = 0; i < string.length; i++)
+        if (!legalStrings.includes(string[i])) {
+            alert('Variable names can only contain the following characters:\n' + legalStrings.toString());
+            return false;
+        }
+    return true;
+}
 
 /**
  * removeDuplicates:
