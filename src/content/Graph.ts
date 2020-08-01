@@ -26,7 +26,7 @@ class Graph {
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
     private comments: { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node }[] = [];
-    private aliases: string[] = [];
+    private aliases: { alias: string; position: monaco.Position }[] = [];
 
     constructor(props: IGraphProps) {
         this.gid = props.gid;
@@ -71,7 +71,6 @@ class Graph {
             this.variables.push(...c.getVariables());
             if (c instanceof definition) this.targets.push(...c.getTargets());
         });
-        this.aliases = removeDuplicates(this.variables.map((v) => v.getName()));
         this.getDefinitions().forEach((d) =>
             d.getVariables().forEach((v) => {
                 if (v.getParents().length === 0) {
@@ -81,6 +80,7 @@ class Graph {
             }),
         );
         this.retrieveLocalStorageComments();
+        this.retrieveLocalStorageAliases();
     }
 
     public print() {
@@ -427,43 +427,86 @@ class Graph {
             if (this.comments[i].node) this.comments[i].range = this.comments[i].node!.getRange();
     }
 
-    public setCurrentVariableAlias(alias: string) {
-        if (this.current)
-            if (!alias || this.current.getName() === alias) return this.resetCurrentVariableAlias();
-            else if (alias && isLegal(alias) && !this.aliases.includes(alias)) {
-                this.aliases.push(alias);
-                this.current.setAlias(alias);
-                this.current.getContext()!.findRanges();
-                this.getVariableSiblings(this.current).forEach((s) => {
+    private retrieveLocalStorageAliases() {
+        let size = localStorage.length;
+        for (let i = 0; i < size; i++) {
+            let key = 'a:' + this.gid + ':' + i;
+            let data = localStorage.getItem(key);
+            if (data) {
+                let json = JSON.parse(data);
+                let alias = lookupJSON(json, 'alias');
+                let position = lookupJSON(json, 'position');
+                this.setCurrentVariableAlias(alias, position);
+            }
+        }
+    }
+
+    private setLocalStorageAliases() {
+        for (let i = 0; i < this.aliases.length; i++) {
+            let alias = this.aliases[i].alias;
+            let position = this.aliases[i].position;
+            localStorage.setItem('a:' + this.gid + ':' + i, JSON.stringify({ alias, position }));
+        }
+    }
+
+    private removeLocalStorageAliases() {
+        let size = localStorage.length;
+        for (let i = 0; i < size; i++) {
+            let key = 'a:' + this.gid + ':' + i;
+            localStorage.removeItem(key);
+        }
+    }
+
+    public setCurrentVariableAlias(alias: string, position?: monaco.Position) {
+        this.resetCurrentVariableAlias();
+        let variable = position ? this.getVariableAt(position) : this.current;
+        if (variable)
+            if (
+                alias &&
+                isLegal(alias) &&
+                !this.variables.map((v) => v.getName()).includes(alias) &&
+                !this.aliases.map((a) => a.alias).includes(alias)
+            ) {
+                this.aliases.push({ alias, position: variable.getRange().getStartPosition() });
+                variable.setAlias(alias);
+                variable.getContext()!.findRanges();
+                this.getVariableSiblings(variable).forEach((s) => {
                     s.setAlias(alias);
                     s.getContext()!.findRanges();
                 });
                 this.updateComments();
-                return true;
+                this.setLocalStorageAliases();
             }
-        return false;
     }
 
-    public resetCurrentVariableAlias() {
-        if (this.current && this.current.hasAlias()) {
-            this.aliases.splice(this.aliases.indexOf(this.current.getAlias(), 1));
-            this.current.resetAlias();
-            this.current.getContext()!.findRanges();
-            this.getVariableSiblings(this.current).forEach((s) => {
+    public resetCurrentVariableAlias(position?: monaco.Position) {
+        let variable = position ? this.getVariableAt(position) : this.current;
+        if (variable && variable.hasAlias()) {
+            this.aliases.splice(this.aliases.map((a) => a.alias).indexOf(variable.getAlias()), 1);
+            variable.resetAlias();
+            variable.getContext()!.findRanges();
+            this.getVariableSiblings(variable).forEach((s) => {
                 s.resetAlias();
                 s.getContext()!.findRanges();
             });
             this.updateComments();
+            this.removeLocalStorageAliases();
+            this.setLocalStorageAliases();
             return true;
         }
         return false;
     }
 
     public resetAliases() {
-        this.aliases = removeDuplicates(this.variables.map((v) => v.getName()));
+        this.aliases = [];
         this.variables.forEach((v) => v.resetAlias());
         this.variables.forEach((v) => v.getContext()!.findRanges());
         this.updateComments();
+        this.removeLocalStorageAliases();
+    }
+
+    public getAliases() {
+        return this.aliases;
     }
 
     public getFoldingRanges() {
@@ -556,6 +599,7 @@ function isLegal(string: string) {
  * removeDuplicates:
  *
  */
+// eslint-disable-next-line
 function removeDuplicates(array: any[]) {
     return array.filter((a, b) => array.indexOf(a) === b);
 }

@@ -413,10 +413,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.props.passInput(this.input);
             }
             if (this.input === current.getAlias()) return;
-            if (this.graph.setCurrentVariableAlias(this.input)) {
-                this.updateValue();
-                this.focusCurrentVariable();
-            }
+            this.graph.setCurrentVariableAlias(this.input);
+            this.updateValue();
+            this.focusCurrentVariable();
         }
         this.updateInput();
     }
@@ -434,9 +433,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressResetNames() {
-        this.graph.resetAliases();
-        this.updateValue();
-        this.focusCurrentVariable();
+        if (this.graph.getAliases().length) {
+            this.graph.resetAliases();
+            this.updateValue();
+            this.focusCurrentVariable();
+        }
     }
 
     public handleToggleNodeHighlighting() {
@@ -543,7 +544,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private focusCurrentVariable() {
         let current = this.graph.getCurrentVariable();
-        this.updatePosition(current ? current.getRange().getStartPosition() : this.editor!.getPosition()!);
+        if (current) {
+            let range = current.getRange();
+            let position = range.getStartPosition();
+            this.editor!.setPosition(position);
+            this.editor!.revealRangeInCenterIfOutsideViewport(range);
+            this.updateInputAt(position);
+        } else this.updatePosition(this.editor!.getPosition()!);
     }
 
     /**
