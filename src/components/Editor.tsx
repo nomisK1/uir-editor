@@ -269,6 +269,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         }
         monaco.editor.defineTheme(themeID, monarchTheme);
         monaco.editor.setTheme(themeID);
+        this.updateValue();
     }
 
     public shouldComponentUpdate(nextProps: IEditorProps) {

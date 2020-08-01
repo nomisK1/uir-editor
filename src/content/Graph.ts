@@ -10,10 +10,12 @@ import variable from './structure/variable';
 import target from './structure/target';
 
 interface IGraphProps {
+    gid: number;
     json: Object;
 }
 
 class Graph {
+    private gid: number;
     private json: Object;
     private components: _component[] = [];
     private variables: variable[] = [];
@@ -27,6 +29,7 @@ class Graph {
     private aliases: string[] = [];
 
     constructor(props: IGraphProps) {
+        this.gid = props.gid;
         this.json = props.json;
         this.build();
     }
@@ -77,6 +80,7 @@ class Graph {
                 }
             }),
         );
+        this.retrieveLocalStorageComments();
     }
 
     public print() {
@@ -345,6 +349,36 @@ class Graph {
         }
     }
 
+    private retrieveLocalStorageComments() {
+        let size = localStorage.length;
+        for (let i = 0; i < size; i++) {
+            let key = 'c:' + this.gid + ':' + i;
+            let data = localStorage.getItem(key);
+            if (data) {
+                let json = JSON.parse(data);
+                let text = lookupJSON(json, 'text');
+                let position = lookupJSON(json, 'position');
+                this.addCommentAt(text, position);
+            }
+        }
+    }
+
+    private setLocalStorageComments() {
+        for (let i = 0; i < this.comments.length; i++) {
+            let text = this.comments[i].text;
+            let position = this.comments[i].range.getStartPosition();
+            localStorage.setItem('c:' + this.gid + ':' + i, JSON.stringify({ text, position }));
+        }
+    }
+
+    private removeLocalStorageComments() {
+        let size = localStorage.length;
+        for (let i = 0; i < size; i++) {
+            let key = 'c:' + this.gid + ':' + i;
+            localStorage.removeItem(key);
+        }
+    }
+
     public addCommentAt(text: string, position: monaco.Position) {
         this.removeCommentAt(position);
         if (text) {
@@ -358,7 +392,24 @@ class Graph {
                 isWholeLine = true;
             }
             this.comments.push({ text, range, isWholeLine, node: pushNode ? node! : undefined });
+            this.setLocalStorageComments();
         }
+    }
+
+    public removeCommentAt(position: monaco.Position) {
+        for (let i = 0; i < this.comments.length; i++)
+            if (this.comments[i].range.containsPosition(position)) {
+                let comment = this.comments.splice(i, 1);
+                this.removeLocalStorageComments();
+                this.setLocalStorageComments();
+                return comment;
+            }
+        return null;
+    }
+
+    public resetComments() {
+        this.comments = [];
+        this.removeLocalStorageComments();
     }
 
     public getCommentAt(position: monaco.Position) {
@@ -367,17 +418,8 @@ class Graph {
         return null;
     }
 
-    public removeCommentAt(position: monaco.Position) {
-        for (let i = 0; i < this.comments.length; i++)
-            if (this.comments[i].range.containsPosition(position)) return this.comments.splice(i, 1);
-        return null;
-    }
-
     public getComments() {
         return this.comments;
-    }
-    public resetComments() {
-        this.comments = [];
     }
 
     private updateComments() {

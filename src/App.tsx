@@ -117,10 +117,10 @@ class App extends React.Component<IAppProps, IAppState> {
                 language={languageID}
                 graph={this.data[this.state.index]}
                 input={this.state.input}
-                passInput={this.passInput}
-                focusInput={this.focusInput}
                 nextTcphQuery={this.nextTcphQuery}
                 prevTcphQuery={this.prevTcphQuery}
+                passInput={this.passInput}
+                focusInput={this.focusInput}
                 displayShortcutModal={this.displayShortcutModal}
                 ref={(ref) => (this.editor = ref)}
             />

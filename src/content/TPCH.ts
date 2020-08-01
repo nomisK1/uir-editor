@@ -1,7 +1,6 @@
 import Graph from './Graph';
 
 const url: string = 'http://localhost:8000/';
-let jsons: Object[] = [];
 let graphs: Graph[] = [];
 
 function requestQueries() {
@@ -9,11 +8,9 @@ function requestQueries() {
     for (let i = 1; i < 23; i++) {
         request.open('GET', url + i + '.json', false);
         request.send(null);
-        jsons.push(JSON.parse(request.responseText));
+        let json = JSON.parse(request.responseText);
+        graphs.push(new Graph({ gid: i, json }));
     }
-    jsons.forEach((json) => {
-        graphs.push(new Graph({ json }));
-    });
 }
 
 export function getData() {
