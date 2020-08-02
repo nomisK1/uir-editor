@@ -10,6 +10,12 @@
 .contentSelect {
     background: rgba(120, 79, 38);
 }
+.glyphBookmark {
+    background: rgb(57, 9, 120, 0.5); /* #390978 */
+}
+.contentBookmark {
+    background: rgb(57, 9, 120, 0.5);
+}
 .glyphComment {
     background: rgb(120, 120, 38, 0.5); /* #787826 */
 }

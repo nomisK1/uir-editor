@@ -26,6 +26,7 @@ class Graph {
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
+    private bookmark?: number = 0;
     private comments: { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node }[] = [];
     private aliases: { alias: string; position: monaco.Position }[] = [];
 
@@ -80,6 +81,7 @@ class Graph {
                 }
             }),
         );
+        this.retrieveLocalStorageBookmark();
         this.retrieveLocalStorageComments();
         this.retrieveLocalStorageAliases();
     }
@@ -340,6 +342,34 @@ class Graph {
             this.currentParents = [];
             this.currentChildren = [];
         }
+    }
+
+    private retrieveLocalStorageBookmark() {
+        let data = localStorage.getItem('b:' + this.gid);
+        if (data) this.addBookmarkAt(parseInt(data));
+    }
+
+    private setLocalStorageBookmark() {
+        localStorage.setItem('b:' + this.gid, '' + this.bookmark);
+    }
+
+    private removeLocalStorageBookmark() {
+        localStorage.removeItem('b:' + this.gid);
+    }
+
+    public addBookmarkAt(line: number) {
+        this.removeBookmark();
+        this.bookmark = line;
+        this.setLocalStorageBookmark();
+    }
+
+    public removeBookmark() {
+        this.bookmark = undefined;
+        this.removeLocalStorageBookmark();
+    }
+
+    public getBookmark() {
+        return this.bookmark;
     }
 
     private retrieveLocalStorageComments() {

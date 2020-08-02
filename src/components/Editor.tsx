@@ -22,6 +22,7 @@ interface IEditorState {
     activateVariableDecorating: boolean;
     activateChildDecorating: boolean;
     activateParentDecorating: boolean;
+    activateBookmarkDecorating: boolean;
     activateCommentDecorating: boolean;
 }
 
@@ -35,6 +36,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private decorations: string[] = [];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private treeDecorations: monaco.editor.IModelDeltaDecoration[] = [];
+    private bookmarkDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private commentDecorations: monaco.editor.IModelDeltaDecoration[] = [];
 
     constructor(props: IEditorProps) {
@@ -44,6 +46,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             activateVariableDecorating: true,
             activateChildDecorating: true,
             activateParentDecorating: true,
+            activateBookmarkDecorating: true,
             activateCommentDecorating: true,
         };
         this.graph = this.props.graph;
@@ -68,6 +71,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressToInput_Search = this.handleKeypressToInput_Search.bind(this);
         this.handleKeypressNextOccurrence = this.handleKeypressNextOccurrence.bind(this);
         this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
+        this.handleKeypressAddBookmark = this.handleKeypressAddBookmark.bind(this);
+        this.handleKeypressRemoveBookmark = this.handleKeypressRemoveBookmark.bind(this);
         this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
         this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
@@ -78,6 +83,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleToggleVariableDecorating = this.handleToggleVariableDecorating.bind(this);
         this.handleToggleChildDecorating = this.handleToggleChildDecorating.bind(this);
         this.handleToggleParentDecorating = this.handleToggleParentDecorating.bind(this);
+        this.handleToggleBookmarkDecorating = this.handleToggleBookmarkDecorating.bind(this);
         this.handleToggleCommentDecorating = this.handleToggleCommentDecorating.bind(this);
         this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
         this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
@@ -182,7 +188,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.handleKeypressPrevOccurrence,
                 'condition',
             );
-            this.editor.addCommand(monaco.KeyCode.KEY_B, this.handleKeypressGoBack, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_Z, this.handleKeypressGoBack, 'condition');
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_Z, this.handleKeypressGoBack, 'condition');
+            this.editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Z,
+                this.handleKeypressGoBack,
+                'condition',
+            );
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextTcphQuery, 'condition');
@@ -191,6 +203,24 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.handleKeypressPrevTcphQuery,
                 'condition',
             );
+            this.editor.addAction({
+                id: 'addBookmark',
+                label: 'Add Bookmark',
+                keybindings: [monaco.KeyCode.KEY_B],
+                contextMenuGroupId: '1_bookmark',
+                contextMenuOrder: 1,
+                keybindingContext: 'condition',
+                run: this.handleKeypressAddBookmark,
+            });
+            this.editor.addAction({
+                id: 'removeBookmark',
+                label: 'Remove Bookmark',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_B],
+                contextMenuGroupId: '1_bookmark',
+                contextMenuOrder: 2,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRemoveBookmark,
+            });
             this.editor.addAction({
                 id: 'addCommentHover',
                 label: 'Add Comment (Hover)',
@@ -309,11 +339,20 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleToggleParentDecorating,
             });
             this.editor.addAction({
-                id: 'toggleCommentDisplay',
-                label: 'Toggle Comment Display',
+                id: 'toggleBookmarkDisplay',
+                label: 'Toggle Bookmark Display',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_5],
                 //contextMenuGroupId: '5_features',
                 contextMenuOrder: 5,
+                keybindingContext: 'condition',
+                run: this.handleToggleBookmarkDecorating,
+            });
+            this.editor.addAction({
+                id: 'toggleCommentDisplay',
+                label: 'Toggle Comment Display',
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_6],
+                //contextMenuGroupId: '5_features',
+                contextMenuOrder: 6,
                 keybindingContext: 'condition',
                 run: this.handleToggleCommentDecorating,
             });
@@ -334,6 +373,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         monaco.editor.defineTheme(themeID, monarchTheme);
         monaco.editor.setTheme(themeID);
         this.updateValue();
+        this.revealBookmark();
     }
 
     public shouldComponentUpdate(nextProps: IEditorProps) {
@@ -351,6 +391,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public componentDidUpdate() {
+        this.revealBookmark();
         console.log('EDITOR UPDATED');
     }
 
@@ -463,6 +504,16 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.focusCurrentVariable();
     }
 
+    public handleKeypressAddBookmark() {
+        this.graph.addBookmarkAt(this.editor!.getPosition()!.lineNumber);
+        this.decorateBookmarks();
+    }
+
+    public handleKeypressRemoveBookmark() {
+        this.graph.removeBookmark();
+        this.decorateBookmarks();
+    }
+
     public handleKeypressAddComment() {
         this.graph.addCommentAt(this.input, this.editor!.getPosition()!);
         this.decorateComments();
@@ -544,6 +595,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (variable) this.decorateTree(variable.getRange().getStartPosition());
     }
 
+    public handleToggleBookmarkDecorating() {
+        this.setState({
+            activateBookmarkDecorating: !this.state.activateBookmarkDecorating,
+        });
+        this.decorateBookmarks();
+    }
+
     public handleToggleCommentDecorating() {
         this.setState({
             activateCommentDecorating: !this.state.activateCommentDecorating,
@@ -584,6 +642,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (query !== this.value) this.value = query;
         if (this.editor) this.editor.setValue(this.value);
         this.decorateComments();
+        this.decorateBookmarks();
     }
 
     /**
@@ -625,6 +684,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor!.revealRangeInCenterIfOutsideViewport(range);
             this.updateInputAt(position);
         } else this.updatePosition(this.editor!.getPosition()!);
+    }
+
+    private revealBookmark() {
+        if (this.editor && this.graph.getBookmark())
+            this.editor.revealPositionInCenterIfOutsideViewport(new monaco.Position(this.graph.getBookmark()!, 0));
     }
 
     /**
@@ -780,6 +844,32 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     /**
+     * setBookmarkDecoration:
+     *
+     */
+    private setBookmarkDecoration(line: number) {
+        this.bookmarkDecorations.push({
+            range: new monaco.Range(line, 0, line, 0),
+            options: {
+                isWholeLine: true,
+                className: 'contentBookmark',
+                glyphMarginClassName: 'glyphBookmark',
+            },
+        });
+    }
+
+    /**
+     * decorateBookmarks:
+     *
+     */
+    private decorateBookmarks() {
+        this.bookmarkDecorations = [];
+        if (this.state.activateBookmarkDecorating && this.graph.getBookmark())
+            this.setBookmarkDecoration(this.graph.getBookmark()!);
+        this.updateDecorations();
+    }
+
+    /**
      * setCommentDecoration:
      *
      */
@@ -800,14 +890,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
      */
     private decorateComments() {
         this.commentDecorations = [];
-        if (this.state.activateCommentDecorating) {
-            let comments = this.graph.getComments();
-            comments.forEach((c) => this.setCommentDecoration(c));
-            this.updateDecorations();
-            return comments;
-        }
+        if (this.state.activateCommentDecorating) this.graph.getComments().forEach((c) => this.setCommentDecoration(c));
         this.updateDecorations();
-        return [];
     }
 
     public getCommentHovers() {
@@ -837,6 +921,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.decorations = this.editor.deltaDecorations(this.decorations, [
                 ...this.variableDecorations,
                 ...this.treeDecorations,
+                ...this.bookmarkDecorations,
                 ...this.commentDecorations,
             ]);
     }
