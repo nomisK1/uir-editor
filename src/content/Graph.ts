@@ -219,7 +219,7 @@ class Graph {
             depth++;
             // eslint-disable-next-line
             parents.forEach((p) => {
-                if (tree.map((t) => t.variable).includes(p) === false) {
+                if (!tree.map((t) => t.variable).includes(p)) {
                     let orig = this.getVariableOrigin(p);
                     if (orig) tree.push({ variable: orig, depth });
                     tree.push({ variable: p, depth });
@@ -241,7 +241,7 @@ class Graph {
             depth--;
             // eslint-disable-next-line
             children.forEach((c) => {
-                if (tree.map((t) => t.variable).includes(c) === false) {
+                if (!tree.map((t) => t.variable).includes(c)) {
                     this.getVariableSiblings(c).forEach((v) => tree.push({ variable: v, depth }));
                     grandchildren.push(...this.getVariableChildren(c));
                 }
@@ -525,14 +525,11 @@ class Graph {
         return tree;
     }
 
-    private printTargetTree(tree: { label: label; targets: target[]; conditions: variable[] }[][]) {
+    private printTargetTree(tree: { label: label; targets: target[]; conditions: variable[]; printed?: true }[][]) {
         let str = '';
         for (let i = 0; i < tree.length; i++) {
             for (let j = 0; j < tree[i].length; j++) {
-                str += tree[i][j].label.getName() + ' (';
-                tree[i][j].conditions.forEach((c) => (str += c.getName() + ', '));
-                if (tree[i][j].conditions.length) str = str.slice(0, -2);
-                str += ') {\n';
+                str += printTreeNode(tree[i][j]);
             }
         }
         return str;
@@ -633,6 +630,15 @@ function isLegal(string: string) {
             return false;
         }
     return true;
+}
+
+function printTreeNode(node: { label: label; targets: target[]; conditions: variable[]; printed?: true }) {
+    if (node.printed) return '';
+    let str = '';
+    str += node.label.getName() + ' (';
+    node.conditions.forEach((c) => (str += c.getName() + ', '));
+    if (node.conditions.length) str = str.slice(0, -2);
+    return str + ') {';
 }
 
 /**

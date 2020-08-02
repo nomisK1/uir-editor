@@ -1,7 +1,7 @@
 import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
 import StatusInput, { Status } from './components/StatusInput';
-import ShortcutModal from './components/ShortcutModal';
+import KeybindModal from './components/KeybindModal';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { getData } from './content/TPCH';
@@ -36,7 +36,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
         this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
-        this.displayShortcutModal = this.displayShortcutModal.bind(this);
+        this.displayKeybindModal = this.displayKeybindModal.bind(this);
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -87,7 +87,7 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    public displayShortcutModal() {
+    public displayKeybindModal() {
         this.setState({
             showModal: !this.state.showModal,
         });
@@ -111,7 +111,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={(ref) => (this.inputElement = ref)}
             />
         );
-        let modal = <ShortcutModal showModal={this.state.showModal} onModalClick={this.displayShortcutModal} />;
+        let modal = <KeybindModal showModal={this.state.showModal} onModalClick={this.displayKeybindModal} />;
         let editor = (
             <Editor
                 language={languageID}
@@ -121,7 +121,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 prevTcphQuery={this.prevTcphQuery}
                 passInput={this.passInput}
                 focusInput={this.focusInput}
-                displayShortcutModal={this.displayShortcutModal}
+                displayKeybindModal={this.displayKeybindModal}
                 ref={(ref) => (this.editor = ref)}
             />
         );

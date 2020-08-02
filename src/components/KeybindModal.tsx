@@ -1,15 +1,15 @@
 import React from 'react';
 
-interface IShortcutModalProps {
+interface IKeybindModalProps {
     showModal: boolean;
     onModalClick: () => void;
 }
 
-class ShortcutModal extends React.Component<IShortcutModalProps> {
+class KeybindModal extends React.Component<IKeybindModalProps> {
     render() {
         return (
             <div
-                id="shortcutModal"
+                id="keybindModal"
                 className="modal"
                 style={{ display: this.props.showModal ? 'block' : 'none' }}
                 onClick={this.props.onModalClick}
@@ -17,10 +17,10 @@ class ShortcutModal extends React.Component<IShortcutModalProps> {
                 <div className="modal-content">
                     <span className="close">&times;</span>
                     <img
-                        id="shortcutImage"
+                        id="keybindImage"
                         className="image"
-                        src="shortcuts.png"
-                        alt="SHORTCUTS"
+                        src="keybinds.png"
+                        alt="KEYBINDS"
                         style={{ height: '100%', width: '100%', objectFit: 'contain' }}
                     />
                 </div>
@@ -29,4 +29,4 @@ class ShortcutModal extends React.Component<IShortcutModalProps> {
     }
 }
 
-export default ShortcutModal;
+export default KeybindModal;
