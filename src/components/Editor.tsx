@@ -299,7 +299,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
-        if (event.target.position !== null) this.updateInputAt(event.target.position);
+        if (event.target.position !== null) {
+            this.updateInputAt(event.target.position);
+            this.graph.getTargetTreeAt(event.target.position);
+        }
     }
 
     public handleKeypressLeft() {

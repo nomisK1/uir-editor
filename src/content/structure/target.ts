@@ -1,28 +1,23 @@
 import * as monaco from 'monaco-editor';
 import _node, { INodeProps, indexOfStrict, lookupJSON } from './_node';
+import label from './label';
 
-interface ITargetProps extends INodeProps {
+export interface ITargetProps extends INodeProps {
     reference?: string;
 }
 
 class target extends _node {
-    protected isLabel?: boolean;
+    protected goal: label | null = null;
 
     constructor(props: ITargetProps) {
         super(props);
-        if (props.reference) this.name = lookupJSON(this.json, props.reference);
-        else if (lookupJSON(this.json, 'label')) {
-            this.isLabel = true;
-            this.name = '' + lookupJSON(this.json, 'label');
-            this.range = new monaco.Range(this.line, 0, this.line, this.name.length);
-        } else this.name = '' + lookupJSON(this.json, 'target');
+        this.name = props.reference ? lookupJSON(this.json, props.reference) : '' + lookupJSON(this.json, 'target');
     }
 
     // Should always be called in the context
     public findRanges() {}
 
     public toString() {
-        if (this.isLabel) return this.name + ':';
         return '%' + this.name;
     }
 
@@ -32,6 +27,14 @@ class target extends _node {
 
     public getNodeAt(position: monaco.Position): _node | null {
         return this;
+    }
+
+    public getGoal() {
+        return this.goal;
+    }
+
+    public setGoal(goal: label) {
+        this.goal = goal;
     }
 }
 

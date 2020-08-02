@@ -5,6 +5,7 @@ import assignment from './assignment';
 import operation from './operation';
 import variable from './variable';
 import target from './target';
+import label from './label';
 
 // Number of whitespaces at the start of each instruction
 export const indentation = 2;
@@ -12,13 +13,13 @@ export const indentation = 2;
 interface IBlockProps extends INodeProps {}
 
 class block extends _node {
-    protected label: target;
+    protected label: label;
     protected targets: target[] = [];
     protected instructions: _instruction[] = [];
 
     constructor(props: IBlockProps) {
         super(props);
-        this.label = new target({
+        this.label = new label({
             json: this.json,
             line: this.line,
             context: this,
@@ -40,7 +41,7 @@ class block extends _node {
                         context: this,
                     }),
                 );
-            else
+            else {
                 this.instructions.push(
                     new operation({
                         json,
@@ -48,8 +49,9 @@ class block extends _node {
                         context: this,
                     }),
                 );
+                this.targets.push(...(this.instructions[this.instructions.length - 1] as operation).getTargets());
+            }
         });
-        this.getOperations().forEach((o) => this.targets.push(...o.getTargets()));
     }
 
     public findRanges() {
@@ -122,6 +124,12 @@ class block extends _node {
 
     public getTargets() {
         return this.targets;
+    }
+
+    public getTargetTreeNode() {
+        let operations = this.getOperations();
+        let op = operations[operations.length - 1];
+        return { label: this.label, targets: op.getTargets(), conditions: op.getVariables() };
     }
 }
 

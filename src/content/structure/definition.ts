@@ -35,6 +35,11 @@ class definition extends _function {
             );
             line = this.blocks[this.blocks.length - 1].getLastLine();
         });
+        let labels = this.blocks.map((b) => b.getLabel());
+        let labelNames = labels.map((l) => l.getName());
+        let targets: target[] = [];
+        this.blocks.forEach((b) => targets.push(...b.getTargets()));
+        targets.forEach((t) => t.setGoal(labels[labelNames.indexOf(t.getName())]));
     }
 
     public findRanges() {
@@ -98,8 +103,10 @@ class definition extends _function {
         return targets;
     }
 
-    public getTargetTree() {
-        //TODO
+    public getTargetTreeNode(target: target) {
+        for (let i = 0; i < this.blocks.length; i++)
+            if (this.blocks[i].getLabel().getName() === target.getName()) return this.blocks[i].getTargetTreeNode();
+        return null!;
     }
 
     public getFoldingRanges() {

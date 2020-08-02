@@ -8,6 +8,7 @@ import block from './structure/block';
 import operation from './structure/operation';
 import variable from './structure/variable';
 import target from './structure/target';
+import label from './structure/label';
 
 interface IGraphProps {
     gid: number;
@@ -211,17 +212,14 @@ class Graph {
     public getParentTree(variable: variable) {
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
-        this.getVariableSiblings(variable).forEach((v) => {
-            tree.push({ variable: v, depth });
-        });
+        this.getVariableSiblings(variable).forEach((v) => tree.push({ variable: v, depth }));
         let parents = this.getVariableParents(variable);
         while (parents.length > 0) {
             let grandparents: variable[] = [];
             depth++;
             // eslint-disable-next-line
             parents.forEach((p) => {
-                let vars = tree.map((t) => t.variable);
-                if (vars.includes(p) === false) {
+                if (tree.map((t) => t.variable).includes(p) === false) {
                     let orig = this.getVariableOrigin(p);
                     if (orig) tree.push({ variable: orig, depth });
                     tree.push({ variable: p, depth });
@@ -236,20 +234,15 @@ class Graph {
     public getChildTree(variable: variable) {
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
-        this.getVariableSiblings(variable).forEach((v) => {
-            tree.push({ variable: v, depth });
-        });
+        this.getVariableSiblings(variable).forEach((v) => tree.push({ variable: v, depth }));
         let children = this.getVariableChildren(variable);
         while (children.length > 0) {
             let grandchildren: variable[] = [];
             depth--;
             // eslint-disable-next-line
             children.forEach((c) => {
-                let vars = tree.map((t) => t.variable);
-                if (vars.includes(c) === false) {
-                    this.getVariableSiblings(c).forEach((v) => {
-                        tree.push({ variable: v, depth });
-                    });
+                if (tree.map((t) => t.variable).includes(c) === false) {
+                    this.getVariableSiblings(c).forEach((v) => tree.push({ variable: v, depth }));
                     grandchildren.push(...this.getVariableChildren(c));
                 }
             });
@@ -507,6 +500,53 @@ class Graph {
 
     public getAliases() {
         return this.aliases;
+    }
+
+    private getTargetTree(target: target) {
+        let def = target.getOuterContext() as definition;
+        let tree: { label: label; targets: target[]; conditions: variable[] }[][] = [];
+        tree.push([def.getTargetTreeNode(target)]);
+        let branches = tree[0][0].targets.map((t) => def.getTargetTreeNode(t));
+        while (branches.length > 0) {
+            let nextBranches: { label: label; targets: target[]; conditions: variable[] }[] = [];
+            let level: { label: label; targets: target[]; conditions: variable[] }[] = [];
+            branches.forEach((b) => {
+                let labels: label[] = [];
+                tree.forEach((i) => i.forEach((j) => labels.push(j.label)));
+                if (labels.includes(b.label)) level.push({ label: b.label, targets: [], conditions: [] });
+                else {
+                    level.push(b);
+                    b.targets.forEach((t) => nextBranches.push(def.getTargetTreeNode(t)));
+                }
+            });
+            tree.push(level);
+            branches = nextBranches;
+        }
+        return tree;
+    }
+
+    private printTargetTree(tree: { label: label; targets: target[]; conditions: variable[] }[][]) {
+        let str = '';
+        for (let i = 0; i < tree.length; i++) {
+            for (let j = 0; j < tree[i].length; j++) {
+                str += tree[i][j].label.getName() + ' (';
+                tree[i][j].conditions.forEach((c) => (str += c.getName() + ', '));
+                if (tree[i][j].conditions.length) str = str.slice(0, -2);
+                str += ') {\n';
+            }
+        }
+        return str;
+    }
+
+    public getTargetTreeAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node instanceof target) {
+            let tree = this.getTargetTree(node);
+            console.log(this.printTargetTree(tree));
+            console.log(tree);
+            return tree;
+        }
+        return null;
     }
 
     public getFoldingRanges() {
