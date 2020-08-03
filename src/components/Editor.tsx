@@ -75,6 +75,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
         this.handleKeypressAddBookmark = this.handleKeypressAddBookmark.bind(this);
         this.handleKeypressRemoveBookmark = this.handleKeypressRemoveBookmark.bind(this);
+        this.handleKeypressRevealBookmark = this.handleKeypressRevealBookmark.bind(this);
         this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
         this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
@@ -231,6 +232,15 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressRemoveBookmark,
             });
             this.editor.addAction({
+                id: 'revealBookmark',
+                label: 'Reveal Bookmark',
+                keybindings: [monaco.KeyCode.KEY_S],
+                contextMenuGroupId: '1_bookmark',
+                contextMenuOrder: 3,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRevealBookmark,
+            });
+            this.editor.addAction({
                 id: 'addCommentHover',
                 label: 'Add Comment (Hover)',
                 keybindings: [monaco.KeyCode.KEY_C],
@@ -377,7 +387,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'displayModal',
                 label: 'Show Keyboard Shortcuts',
-                keybindings: [monaco.KeyCode.KEY_S],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '9_modal',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
@@ -527,6 +537,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     public handleKeypressRemoveBookmark() {
         this.graph.removeBookmark();
         this.decorateBookmarks();
+    }
+
+    public handleKeypressRevealBookmark() {
+        this.revealBookmark();
     }
 
     public handleKeypressAddComment() {
@@ -944,13 +958,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             if (c.range.containsPosition(position))
                 hover = {
                     range: c.range,
-                    contents: [
-                        { value: c.text },
-                        {
-                            value: '![monaco-img-preview](https://analytics.db.in.tum.de/give_sql.svg)',
-                            isTrusted: true,
-                        },
-                    ],
+                    contents: [{ value: c.text }, { value: '![monaco-img-preview](example.png)', isTrusted: true }],
                 };
         });
         return hover;
@@ -964,7 +972,17 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (node && tree)
             hover = {
                 range: node.getRange(),
-                contents: [{ value: tree }],
+                contents: [
+                    {
+                        value:
+                            '**' +
+                            node.getOuterContext().getName().toUpperCase() +
+                            ' // ' +
+                            node.getName().toUpperCase() +
+                            '**',
+                    },
+                    { value: '```html\n' + tree + '\n```' },
+                ],
             };
         return hover;
     }

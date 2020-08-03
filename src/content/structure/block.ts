@@ -130,7 +130,12 @@ class block extends _node {
     public buildTargetTreeBranch() {
         let operations = this.getOperations();
         let op = operations[operations.length - 1];
-        return new branch({ label: this.label, targets: op.getTargets(), conditions: op.getVariables() });
+        return new branch({
+            label: this.label,
+            targets: op.getTargets(),
+            opcode: op.getOpCode(),
+            operands: op.getValues(),
+        });
     }
 }
 

@@ -22,7 +22,7 @@ class TargetTree {
             branches.forEach((b) => {
                 let labels = tree.map((i) => i.map((j) => j.label)).flat();
                 if (labels.includes(b.label))
-                    level.push(new branch({ label: b.label, targets: [], conditions: [], prev: b.prev }));
+                    level.push(new branch({ label: b.label, targets: [], opcode: 'LOOP', operands: [], prev: b.prev }));
                 else {
                     level.push(b);
                     b.targets.forEach((t) => {

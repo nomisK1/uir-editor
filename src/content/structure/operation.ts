@@ -376,6 +376,18 @@ class operation extends _instruction {
         });
         return targets;
     }
+
+    public getValues() {
+        let values: _value[] = [];
+        this.operands.forEach((o) => {
+            if (o instanceof _value) values.push(o);
+        });
+        return values;
+    }
+
+    public getOpCode() {
+        return this.opcode!;
+    }
 }
 
 export default operation;
