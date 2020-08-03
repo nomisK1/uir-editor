@@ -20,7 +20,6 @@ class Graph {
     private json: Object;
     private components: _component[] = [];
     private variables: variable[] = [];
-    private targets: target[] = [];
     private current: variable | null = null;
     private next?: variable;
     private currentParents: variable[] = [];
@@ -71,7 +70,6 @@ class Graph {
         });
         this.components.forEach((c) => {
             this.variables.push(...c.getVariables());
-            if (c instanceof definition) this.targets.push(...c.getTargets());
         });
         this.getDefinitions().forEach((d) =>
             d.getVariables().forEach((v) => {
