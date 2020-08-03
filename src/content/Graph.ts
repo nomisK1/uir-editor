@@ -8,7 +8,7 @@ import block from './structure/block';
 import operation from './structure/operation';
 import variable from './structure/variable';
 import target from './structure/target';
-import label from './structure/label';
+import TargetTree from './TargetTree';
 
 interface IGraphProps {
     gid: number;
@@ -532,44 +532,11 @@ class Graph {
         return this.aliases;
     }
 
-    private getTargetTree(target: target) {
-        let def = target.getOuterContext() as definition;
-        let tree: { label: label; targets: target[]; conditions: variable[] }[][] = [];
-        tree.push([def.getTargetTreeNode(target)]);
-        let branches = tree[0][0].targets.map((t) => def.getTargetTreeNode(t));
-        while (branches.length > 0) {
-            let nextBranches: { label: label; targets: target[]; conditions: variable[] }[] = [];
-            let level: { label: label; targets: target[]; conditions: variable[] }[] = [];
-            branches.forEach((b) => {
-                let labels: label[] = [];
-                tree.forEach((i) => i.forEach((j) => labels.push(j.label)));
-                if (labels.includes(b.label)) level.push({ label: b.label, targets: [], conditions: [] });
-                else {
-                    level.push(b);
-                    b.targets.forEach((t) => nextBranches.push(def.getTargetTreeNode(t)));
-                }
-            });
-            tree.push(level);
-            branches = nextBranches;
-        }
-        return tree;
-    }
-
-    private printTargetTree(tree: { label: label; targets: target[]; conditions: variable[]; printed?: true }[][]) {
-        let str = '';
-        for (let i = 0; i < tree.length; i++) {
-            for (let j = 0; j < tree[i].length; j++) {
-                str += printTreeNode(tree[i][j]);
-            }
-        }
-        return str;
-    }
-
     public getTargetTreeAt(position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (node instanceof target) {
-            let tree = this.getTargetTree(node);
-            console.log(this.printTargetTree(tree));
+            let tree = new TargetTree({ root: node });
+            console.log(tree.print());
             console.log(tree);
             return tree;
         }
@@ -660,15 +627,6 @@ function isLegal(string: string) {
             return false;
         }
     return true;
-}
-
-function printTreeNode(node: { label: label; targets: target[]; conditions: variable[]; printed?: true }) {
-    if (node.printed) return '';
-    let str = '';
-    str += node.label.getName() + ' (';
-    node.conditions.forEach((c) => (str += c.getName() + ', '));
-    if (node.conditions.length) str = str.slice(0, -2);
-    return str + ') {';
 }
 
 /**

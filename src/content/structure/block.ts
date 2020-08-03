@@ -6,6 +6,7 @@ import operation from './operation';
 import variable from './variable';
 import target from './target';
 import label from './label';
+import branch from './branch';
 
 // Number of whitespaces at the start of each instruction
 export const indentation = 2;
@@ -126,10 +127,10 @@ class block extends _node {
         return this.targets;
     }
 
-    public getTargetTreeNode() {
+    public buildTargetTreeBranch() {
         let operations = this.getOperations();
         let op = operations[operations.length - 1];
-        return { label: this.label, targets: op.getTargets(), conditions: op.getVariables() };
+        return new branch({ label: this.label, targets: op.getTargets(), conditions: op.getVariables() });
     }
 }
 

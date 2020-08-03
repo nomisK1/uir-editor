@@ -103,9 +103,9 @@ class definition extends _function {
         return targets;
     }
 
-    public getTargetTreeNode(target: target) {
+    public getTargetTreeBranch(root: target) {
         for (let i = 0; i < this.blocks.length; i++)
-            if (this.blocks[i].getLabel().getName() === target.getName()) return this.blocks[i].getTargetTreeNode();
+            if (this.blocks[i].getLabel().getName() === root.getName()) return this.blocks[i].buildTargetTreeBranch();
         return null!;
     }
 
