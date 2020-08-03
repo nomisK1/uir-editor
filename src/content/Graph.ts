@@ -530,11 +530,9 @@ class Graph {
         return this.aliases;
     }
 
-    public getTargetTreeAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
+    public getTargetTree(node: _node | null) {
         if (node instanceof target) {
-            let tree = new TargetTree({ root: node });
-            console.log(tree.print());
+            let tree = new TargetTree({ root: node }).print();
             console.log(tree);
             return tree;
         }

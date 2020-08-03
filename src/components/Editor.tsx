@@ -24,6 +24,7 @@ interface IEditorState {
     activateParentDecorating: boolean;
     activateBookmarkDecorating: boolean;
     activateCommentDecorating: boolean;
+    activateTargetTreeHover: boolean;
 }
 
 class Editor extends React.Component<IEditorProps, IEditorState> {
@@ -48,6 +49,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             activateParentDecorating: true,
             activateBookmarkDecorating: true,
             activateCommentDecorating: true,
+            activateTargetTreeHover: true,
         };
         this.graph = this.props.graph;
         this.value = this.graph.print();
@@ -85,6 +87,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleToggleParentDecorating = this.handleToggleParentDecorating.bind(this);
         this.handleToggleBookmarkDecorating = this.handleToggleBookmarkDecorating.bind(this);
         this.handleToggleCommentDecorating = this.handleToggleCommentDecorating.bind(this);
+        this.handleToggleTargetTreeHover = this.handleToggleTargetTreeHover.bind(this);
         this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
         this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
         this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
@@ -97,8 +100,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return this.editor!;
     }
 
+    render() {
+        console.log('RENDERING...');
+        console.log(this.graph);
+        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }} />;
+    }
+
     //--------------------------------------------------
-    //-----React lifecycle methods-----
+    //-----React lifecycle-----
     //--------------------------------------------------
 
     public componentDidMount() {
@@ -357,6 +366,15 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleToggleCommentDecorating,
             });
             this.editor.addAction({
+                id: 'toggleTargetTreeHover',
+                label: 'Toggle Target Tree (Hover)',
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_7],
+                //contextMenuGroupId: '5_features',
+                contextMenuOrder: 7,
+                keybindingContext: 'condition',
+                run: this.handleToggleTargetTreeHover,
+            });
+            this.editor.addAction({
                 id: 'displayModal',
                 label: 'Show Keyboard Shortcuts',
                 keybindings: [monaco.KeyCode.KEY_S],
@@ -400,14 +418,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Event handler methods-----
+    //-----Event handler-----
     //--------------------------------------------------
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
-        if (event.target.position !== null) {
-            this.updateInputAt(event.target.position);
-            this.graph.getTargetTreeAt(event.target.position);
-        }
+        if (event.target.position !== null) this.updateInputAt(event.target.position);
     }
 
     public handleKeypressToggleKeybinds() {
@@ -609,6 +624,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateComments();
     }
 
+    public handleToggleTargetTreeHover() {
+        this.setState({
+            activateTargetTreeHover: !this.state.activateTargetTreeHover,
+        });
+    }
+
     public handleKeypressFoldAll() {
         if (this.editor) this.editor.trigger('fold', 'editor.foldAll', null);
     }
@@ -634,7 +655,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Helper methods-----
+    //-----Helper-----
     //--------------------------------------------------
 
     private updateValue() {
@@ -691,29 +712,22 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.revealPositionInCenterIfOutsideViewport(new monaco.Position(this.graph.getBookmark()!, 0));
     }
 
-    /**
-     * findNodeHighlights:
-     *
-     */
-    private findNodeHighlights(position: monaco.Position) {
-        let node = this.graph.getNodeAt(position);
-        console.log(node);
-        let nodes = this.graph.getRelatedNodes(node);
-        let ranges = nodes.map((n) => n.getRange());
-        return ranges;
-    }
+    //--------------------------------------------------
+    //-----Decoration-----
+    //--------------------------------------------------
 
     /**
-     * highlightNodes:
-     *
+     * updateDecorations:
+     * Adds the Decorations to the editor for display
      */
-    public highlightNodes(position: monaco.Position) {
-        let highlights: monaco.languages.DocumentHighlight[] = [];
-        if (this.state.activateNodeHighlighting) {
-            let ranges = this.findNodeHighlights(position);
-            ranges.forEach((r) => highlights.push({ range: r }));
-        }
-        return highlights;
+    private updateDecorations() {
+        if (this.editor !== null)
+            this.decorations = this.editor.deltaDecorations(this.decorations, [
+                ...this.variableDecorations,
+                ...this.treeDecorations,
+                ...this.bookmarkDecorations,
+                ...this.commentDecorations,
+            ]);
     }
 
     /**
@@ -894,36 +908,65 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updateDecorations();
     }
 
-    public getCommentHovers() {
-        if (!this.state.activateCommentDecorating) return [];
-        let hovers: monaco.languages.Hover[] = [];
-        this.graph.getComments().forEach((c) =>
-            hovers.push({
-                range: c.range,
-                contents: [
-                    { value: c.text },
-                    {
-                        value: '![monaco-img-preview](https://analytics.db.in.tum.de/give_sql.svg)',
-                        isTrusted: true,
-                    },
-                ],
-            }),
-        );
-        return hovers;
+    //--------------------------------------------------
+    //-----Language features-----
+    //--------------------------------------------------
+
+    /**
+     * findNodeHighlights:
+     *
+     */
+    private findNodeHighlights(position: monaco.Position) {
+        let node = this.graph.getNodeAt(position);
+        console.log(node);
+        let nodes = this.graph.getRelatedNodes(node);
+        let ranges = nodes.map((n) => n.getRange());
+        return ranges;
     }
 
     /**
-     * updateDecorations:
-     * Adds the Decorations to the editor for display
+     * highlightNodes:
+     *
      */
-    private updateDecorations() {
-        if (this.editor !== null)
-            this.decorations = this.editor.deltaDecorations(this.decorations, [
-                ...this.variableDecorations,
-                ...this.treeDecorations,
-                ...this.bookmarkDecorations,
-                ...this.commentDecorations,
-            ]);
+    public highlightNodes(position: monaco.Position) {
+        let highlights: monaco.languages.DocumentHighlight[] = [];
+        if (this.state.activateNodeHighlighting) {
+            let ranges = this.findNodeHighlights(position);
+            ranges.forEach((r) => highlights.push({ range: r }));
+        }
+        return highlights;
+    }
+
+    public getCommentHover(position: monaco.Position) {
+        if (!this.state.activateCommentDecorating) return null;
+        let hover: monaco.languages.Hover | null = null;
+        this.graph.getComments().forEach((c) => {
+            if (c.range.containsPosition(position))
+                hover = {
+                    range: c.range,
+                    contents: [
+                        { value: c.text },
+                        {
+                            value: '![monaco-img-preview](https://analytics.db.in.tum.de/give_sql.svg)',
+                            isTrusted: true,
+                        },
+                    ],
+                };
+        });
+        return hover;
+    }
+
+    public getTargetTreeHover(position: monaco.Position) {
+        if (!this.state.activateTargetTreeHover) return null;
+        let hover: monaco.languages.Hover | null = null;
+        let node = this.graph.getNodeAt(position);
+        let tree = this.graph.getTargetTree(node);
+        if (node && tree)
+            hover = {
+                range: node.getRange(),
+                contents: [{ value: tree }],
+            };
+        return hover;
     }
 
     public getFoldingRanges() {
@@ -938,12 +981,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             }),
         );
         return ranges;
-    }
-
-    render() {
-        console.log('RENDERING...');
-        console.log(this.graph);
-        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }} />;
     }
 }
 
