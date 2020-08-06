@@ -695,13 +695,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private updateInputAt(position: monaco.Position) {
         let node = this.graph.getNodeAt(position);
         let variable = this.graph.getVariableOfNode(node);
-        if (node && !variable) {
-            this.props.passInput(node.getName());
-            this.props.resetStatus();
-        } else if (variable !== this.graph.getCurrentVariable()) {
+        if (node && !variable) this.props.passInput(node.getName());
+        else if (variable !== this.graph.getCurrentVariable()) {
             this.graph.setCurrentVariable(variable);
             this.updateInput();
         }
+        this.props.resetStatus();
         this.decorateTree(position);
     }
 
@@ -712,7 +711,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private resetPosition() {
-        this.updatePosition(new monaco.Position(0, 0));
+        this.updatePosition(new monaco.Position(1, 1));
     }
 
     private focusCurrentVariable() {

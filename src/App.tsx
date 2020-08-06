@@ -44,7 +44,9 @@ class App extends React.Component<IAppProps, IAppState> {
         let index = parseInt(event.target.value);
         this.setState({
             index,
+            input: '',
         });
+        this.resetStatus();
         if (this.editor) this.editor.getInstance().focus();
     }
 
