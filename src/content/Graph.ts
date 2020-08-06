@@ -536,9 +536,9 @@ class Graph {
 
     public getTargetTree(node: _node | null) {
         if (node instanceof target) {
-            let tree = new TargetTree({ root: node }).print();
-            console.log(tree);
-            return tree;
+            let tree = new TargetTree({ root: node });
+            console.log(tree.toJSON());
+            return tree.print();
         }
         return null;
     }

@@ -2,6 +2,7 @@ import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
 import StatusInput, { Status } from './components/StatusInput';
 import KeybindModal from './components/KeybindModal';
+import TargetTreeModal from './components/TargetTreeModal';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { getData } from './content/TPCH';
@@ -14,7 +15,8 @@ interface IAppProps {}
 interface IAppState {
     index: number;
     input: string;
-    showModal: boolean;
+    showKeybindModal: boolean;
+    showTargetTreeModal: boolean;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -27,7 +29,8 @@ class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             index: 0,
             input: '',
-            showModal: false,
+            showKeybindModal: false,
+            showTargetTreeModal: false,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.nextTcphQuery = this.nextTcphQuery.bind(this);
@@ -38,6 +41,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.focusInput = this.focusInput.bind(this);
         this.resetStatus = this.resetStatus.bind(this);
         this.displayKeybindModal = this.displayKeybindModal.bind(this);
+        this.displayTargetTreeModal = this.displayTargetTreeModal.bind(this);
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -97,7 +101,16 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public displayKeybindModal() {
         this.setState({
-            showModal: !this.state.showModal,
+            showKeybindModal: !this.state.showKeybindModal,
+            showTargetTreeModal: false,
+        });
+        if (this.editor) this.editor.getInstance().focus();
+    }
+
+    public displayTargetTreeModal() {
+        this.setState({
+            showKeybindModal: false,
+            showTargetTreeModal: !this.state.showTargetTreeModal,
         });
         if (this.editor) this.editor.getInstance().focus();
     }
@@ -119,7 +132,14 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={(ref) => (this.inputElement = ref)}
             />
         );
-        let modal = <KeybindModal showModal={this.state.showModal} onModalClick={this.displayKeybindModal} />;
+        let kbModal = <KeybindModal showModal={this.state.showKeybindModal} onModalClick={this.displayKeybindModal} />;
+        let ttModal = (
+            <TargetTreeModal
+                showModal={this.state.showTargetTreeModal}
+                onModalClick={this.displayTargetTreeModal}
+                json={Object}
+            />
+        );
         let editor = (
             <Editor
                 language={languageID}
@@ -131,6 +151,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 focusInput={this.focusInput}
                 resetStatus={this.resetStatus}
                 displayKeybindModal={this.displayKeybindModal}
+                displayTargetTreeModal={this.displayTargetTreeModal}
                 ref={(ref) => (this.editor = ref)}
             />
         );
@@ -140,7 +161,8 @@ class App extends React.Component<IAppProps, IAppState> {
                     {dropdown}
                     {input}
                 </div>
-                {modal}
+                {kbModal}
+                {ttModal}
                 {editor}
             </div>
         );

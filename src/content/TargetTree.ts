@@ -48,6 +48,10 @@ class TargetTree {
     public print() {
         return this.tree[0][0].print(0);
     }
+
+    public toJSON() {
+        return JSON.parse('{' + this.tree[0][0].toJSON() + '}');
+    }
 }
 
 export default TargetTree;

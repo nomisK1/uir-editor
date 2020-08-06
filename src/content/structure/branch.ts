@@ -42,6 +42,20 @@ class branch {
         }
         return str + '}';
     }
+
+    public toJSON() {
+        let str = '"label":"' + this.label.getName() + '","opcode":"' + this.opcode + '","operands":[';
+        if (this.operands.length) {
+            this.operands.forEach((c) => (str += '"' + c.getAlias() + '",'));
+            str = str.slice(0, -1);
+        }
+        str += '],"next":[';
+        if (this.next.length) {
+            this.next.forEach((n) => (str += '{' + n.toJSON() + '},'));
+            str = str.slice(0, -1);
+        }
+        return str + ']';
+    }
 }
 
 export default branch;

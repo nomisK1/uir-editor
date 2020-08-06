@@ -16,6 +16,7 @@ interface IEditorProps {
     focusInput: (status: Status, prev?: string) => void;
     resetStatus: () => void;
     displayKeybindModal: () => void;
+    displayTargetTreeModal: () => void;
 }
 
 interface IEditorState {
@@ -96,6 +97,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressNextTcphQuery = this.handleKeypressNextTcphQuery.bind(this);
         this.handleKeypressPrevTcphQuery = this.handleKeypressPrevTcphQuery.bind(this);
         this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
+        this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
     }
 
     public getInstance() {
@@ -224,22 +226,22 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressAddBookmark,
             });
             this.editor.addAction({
-                id: 'removeBookmark',
-                label: 'Remove Bookmark',
+                id: 'revealBookmark',
+                label: 'Reveal Bookmark',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_B],
                 contextMenuGroupId: '1_bookmark',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
-                run: this.handleKeypressRemoveBookmark,
+                run: this.handleKeypressRevealBookmark,
             });
             this.editor.addAction({
-                id: 'revealBookmark',
-                label: 'Reveal Bookmark',
-                keybindings: [monaco.KeyCode.KEY_S],
+                id: 'removeBookmark',
+                label: 'Remove Bookmark',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_B],
                 contextMenuGroupId: '1_bookmark',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
-                run: this.handleKeypressRevealBookmark,
+                run: this.handleKeypressRemoveBookmark,
             });
             this.editor.addAction({
                 id: 'addCommentHover',
@@ -386,13 +388,22 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleToggleTargetTreeHover,
             });
             this.editor.addAction({
-                id: 'displayModal',
+                id: 'displayKeybindModal',
                 label: 'Show Keyboard Shortcuts',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
+                keybindings: [monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '9_modal',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayKeybindModal,
+            });
+            this.editor.addAction({
+                id: 'displayTargetTreeModal',
+                label: 'Show Target Tree',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
+                contextMenuGroupId: '9_modal',
+                contextMenuOrder: 2,
+                keybindingContext: 'condition',
+                run: this.handleKeypressDisplayTargetTreeModal,
             });
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();
@@ -667,6 +678,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressDisplayKeybindModal() {
         this.props.displayKeybindModal();
+    }
+
+    public handleKeypressDisplayTargetTreeModal() {
+        this.props.displayTargetTreeModal();
     }
 
     //--------------------------------------------------
