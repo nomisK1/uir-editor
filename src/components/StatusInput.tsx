@@ -17,15 +17,15 @@ class StatusInput extends React.Component<IStatusInputProps> {
     private inputElement: HTMLInputElement | null = null;
     private status: Status = Status.NODE;
 
-    public getInstance() {
+    getInstance() {
         return this.inputElement!;
     }
 
-    public getStatus() {
+    getStatus() {
         return this.status;
     }
 
-    public setStatus(status: Status) {
+    setStatus(status: Status) {
         this.status = status;
         this.forceUpdate();
     }

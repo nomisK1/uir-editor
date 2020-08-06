@@ -23,6 +23,7 @@ class App extends React.Component<IAppProps, IAppState> {
     private editor: Editor | null = null;
     private data: Graph[] = getData();
     private inputElement: StatusInput | null = null;
+    private ttModalElement: TargetTreeModal | null = null;
 
     constructor(props: IAppProps) {
         super(props);
@@ -42,6 +43,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.resetStatus = this.resetStatus.bind(this);
         this.displayKeybindModal = this.displayKeybindModal.bind(this);
         this.displayTargetTreeModal = this.displayTargetTreeModal.bind(this);
+        this.buildTargetTreeModal = this.buildTargetTreeModal.bind(this);
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -115,6 +117,10 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) this.editor.getInstance().focus();
     }
 
+    public buildTargetTreeModal(json: Object | null) {
+        if (this.ttModalElement) this.ttModalElement.setJson(json);
+    }
+
     render() {
         setupLanguage();
         let dropdown = (
@@ -137,7 +143,7 @@ class App extends React.Component<IAppProps, IAppState> {
             <TargetTreeModal
                 showModal={this.state.showTargetTreeModal}
                 onModalClick={this.displayTargetTreeModal}
-                json={Object}
+                ref={(ref) => (this.ttModalElement = ref)}
             />
         );
         let editor = (
@@ -152,6 +158,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 resetStatus={this.resetStatus}
                 displayKeybindModal={this.displayKeybindModal}
                 displayTargetTreeModal={this.displayTargetTreeModal}
+                buildTargetTreeModal={this.buildTargetTreeModal}
                 ref={(ref) => (this.editor = ref)}
             />
         );

@@ -3,10 +3,20 @@ import React from 'react';
 interface ITargetTreeModalProps {
     showModal: boolean;
     onModalClick: () => void;
-    json: Object;
 }
 
 class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
+    private json: Object | null = null;
+
+    setJson(json: Object | null) {
+        this.json = json;
+    }
+
+    renderJson() {
+        if (!this.json) return <div>NO TARGET</div>;
+        return <div>{this.json}</div>;
+    }
+
     render() {
         return (
             <div
@@ -20,6 +30,7 @@ class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
                     <svg>
                         <circle cx="150" cy="77" r="40" />
                     </svg>
+                    {this.renderJson()}
                 </div>
             </div>
         );

@@ -17,6 +17,7 @@ interface IEditorProps {
     resetStatus: () => void;
     displayKeybindModal: () => void;
     displayTargetTreeModal: () => void;
+    buildTargetTreeModal: (json: Object | null) => void;
 }
 
 interface IEditorState {
@@ -681,6 +682,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressDisplayTargetTreeModal() {
+        let node = this.graph.getNodeAt(this.editor!.getPosition()!);
+        let tree = this.graph.getTargetTree(node);
+        if (tree) this.props.buildTargetTreeModal(tree);
+        else this.props.buildTargetTreeModal(null);
         this.props.displayTargetTreeModal();
     }
 
