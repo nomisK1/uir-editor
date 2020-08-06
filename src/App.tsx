@@ -134,8 +134,10 @@ class App extends React.Component<IAppProps, IAppState> {
         );
         return (
             <div>
-                {dropdown}
-                {input}
+                <div className="ui">
+                    {dropdown}
+                    {input}
+                </div>
                 {modal}
                 {editor}
             </div>

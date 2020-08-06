@@ -32,10 +32,10 @@ class StatusInput extends React.Component<IStatusInputProps> {
 
     render() {
         return (
-            <div>
-                <input id="statusDisplay" className="input" value={this.status} readOnly={true} />
+            <div className="statusInput">
+                <input id="sDisplay" className="input" value={this.status} readOnly={true} />
                 <input
-                    id="statusInput"
+                    id="sInput"
                     className="input"
                     value={this.props.input}
                     onChange={this.props.onInputChange}

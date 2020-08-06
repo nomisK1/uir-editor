@@ -1,18 +1,31 @@
+.ui {
+    display: flex;
+    width: 100%;
+}
 .dropdown {
+    font-family: monospace;
+    width: 10%;
+    padding: 5px;
+    margin: 0;
+    box-sizing: border-box;
+}
+.statusInput {
+    display: flex;
+    width: inherit;
+}
+.input {
     font-family: monospace;
     width: 100%;
     padding: 5px;
     margin: 0;
     box-sizing: border-box;
 }
-.input {
-    font-family: monospace;
-    width: 90%;
-    padding: 5px;
-    margin: 0;
-    box-sizing: border-box;
+#sInput {
+    width: 100%;
+    padding-left: 8px;
 }
-#statusDisplay {
+#sDisplay {
+    text-align: center;
     width: 10%;
     color: rgba(0, 0, 0, 0.4);
     pointer-events: none;

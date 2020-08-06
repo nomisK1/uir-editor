@@ -105,7 +105,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     render() {
         console.log('RENDERING...');
         console.log(this.graph);
-        return <div className="Editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }} />;
+        return <div className="editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }} />;
     }
 
     //--------------------------------------------------
