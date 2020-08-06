@@ -36,6 +36,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
         this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
+        this.resetStatus = this.resetStatus.bind(this);
         this.displayKeybindModal = this.displayKeybindModal.bind(this);
     }
 
@@ -69,6 +70,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 if (this.inputElement.getStatus() === Status.COMMENT) this.editor.handleKeypressAddComment();
                 else if (this.inputElement.getStatus() === Status.RENAME) this.editor.handleKeypressRename();
                 else if (this.inputElement.getStatus() === Status.SEARCH) this.editor.handleKeypressNextOccurrence();
+                this.resetStatus();
             }
         }
     }
@@ -85,6 +87,10 @@ class App extends React.Component<IAppProps, IAppState> {
             if (status === Status.COMMENT) this.setState({ input: prev ? prev : '' });
             if (status === Status.RENAME) this.setState({ input: prev ? prev : '' });
         }
+    }
+
+    public resetStatus() {
+        if (this.inputElement) this.inputElement.setStatus(Status.NODE);
     }
 
     public displayKeybindModal() {
@@ -121,6 +127,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 prevTcphQuery={this.prevTcphQuery}
                 passInput={this.passInput}
                 focusInput={this.focusInput}
+                resetStatus={this.resetStatus}
                 displayKeybindModal={this.displayKeybindModal}
                 ref={(ref) => (this.editor = ref)}
             />

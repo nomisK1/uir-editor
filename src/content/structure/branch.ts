@@ -31,7 +31,7 @@ class branch {
         let str = buffer + this.label.getName() + ' (' + this.opcode;
         if (this.operands.length) {
             str += ' ';
-            this.operands.forEach((c) => (str += c.getName() + ', '));
+            this.operands.forEach((c) => (str += c.getAlias() + ', '));
             str = str.slice(0, -2);
         }
         str += ') {';

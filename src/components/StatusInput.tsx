@@ -2,6 +2,7 @@ import React from 'react';
 
 export enum Status {
     COMMENT = 'ADD COMMENT',
+    NODE = 'CURRENT NODE',
     RENAME = 'RENAME VARIABLE',
     SEARCH = 'SEARCH VARIABLE',
 }
@@ -14,7 +15,7 @@ interface IStatusInputProps {
 
 class StatusInput extends React.Component<IStatusInputProps> {
     private inputElement: HTMLInputElement | null = null;
-    private status: Status = Status.SEARCH;
+    private status: Status = Status.NODE;
 
     public getInstance() {
         return this.inputElement!;
@@ -26,6 +27,7 @@ class StatusInput extends React.Component<IStatusInputProps> {
 
     public setStatus(status: Status) {
         this.status = status;
+        this.forceUpdate();
     }
 
     render() {
@@ -35,7 +37,6 @@ class StatusInput extends React.Component<IStatusInputProps> {
                 <input
                     id="statusInput"
                     className="input"
-                    /* placeholder={this.status} */
                     value={this.props.input}
                     onChange={this.props.onInputChange}
                     onKeyDown={this.props.onInputKeydown}

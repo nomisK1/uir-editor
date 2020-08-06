@@ -14,6 +14,7 @@ interface IEditorProps {
     prevTcphQuery: () => void;
     passInput: (input: string) => void;
     focusInput: (status: Status, prev?: string) => void;
+    resetStatus: () => void;
     displayKeybindModal: () => void;
 }
 
@@ -692,8 +693,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private updateInputAt(position: monaco.Position) {
-        let variable = this.graph.getVariableAt(position);
-        if (variable !== this.graph.getCurrentVariable()) {
+        let node = this.graph.getNodeAt(position);
+        let variable = this.graph.getVariableOfNode(node);
+        if (node && !variable) {
+            this.props.passInput(node.getName());
+            this.props.resetStatus();
+        } else if (variable !== this.graph.getCurrentVariable()) {
             this.graph.setCurrentVariable(variable);
             this.updateInput();
         }
@@ -723,7 +728,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private revealBookmark() {
         if (this.editor && this.graph.getBookmark())
-            this.editor.revealPositionInCenterIfOutsideViewport(new monaco.Position(this.graph.getBookmark()!, 0));
+            this.updatePosition(new monaco.Position(this.graph.getBookmark()!, 0));
     }
 
     //--------------------------------------------------

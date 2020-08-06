@@ -141,6 +141,10 @@ class Graph {
         return null;
     }
 
+    public getVariableOfNode(node: _node | null) {
+        return node instanceof variable ? node : null;
+    }
+
     public getRelatedNodes(node: _node | null) {
         let nodes: _node[] = [];
         if (node !== null) {

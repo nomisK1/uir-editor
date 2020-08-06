@@ -25,7 +25,7 @@ class block extends _node {
             line: this.line,
             context: this,
         });
-        this.name = 'block$' + this.label.getName() + '@line:' + this.line;
+        this.name = this.context!.getName() + '//' + this.label.getName();
         this.buildInstructions(lookupJSON(this.json, 'instructions'));
         this.findRanges();
     }
