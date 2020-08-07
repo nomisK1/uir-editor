@@ -129,6 +129,12 @@ class Graph {
         return null;
     }
 
+    private getBlockAt(position: monaco.Position): block | null {
+        let component = this.getComponentAt(position);
+        if (component instanceof definition) return component.getBlockAt(position);
+        return null;
+    }
+
     public getNodeAt(position: monaco.Position) {
         let component = this.getComponentAt(position);
         if (component) return component.getNodeAt(position);
@@ -534,11 +540,19 @@ class Graph {
         return this.aliases;
     }
 
-    public getTargetTree(node: _node | null) {
-        if (node instanceof target) {
-            let tree = new TargetTree({ root: node });
-            console.log(tree.toJSON());
-            return tree.print();
+    public getTargetTreeString(node: _node | null) {
+        if (node instanceof block) return new TargetTree({ root: node.getLabel() }).print();
+        if (node instanceof target) return new TargetTree({ root: node }).print();
+        return null;
+    }
+
+    public getTargetTreeDataAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (!node) return null;
+        if (node instanceof target) return new TargetTree({ root: node }).toData();
+        else {
+            let block = this.getBlockAt(node.getRange().getStartPosition());
+            if (block) return new TargetTree({ root: block.getLabel() }).toData();
         }
         return null;
     }

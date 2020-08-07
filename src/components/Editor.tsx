@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor';
 import { themeID, monarchTheme } from '../language/uirTheme';
 import S from '../language/Singleton';
 import Graph from '../content/Graph';
+import { treeData } from '../content/TargetTree';
 import { Status } from './StatusInput';
 import './Editor.css';
 
@@ -17,7 +18,8 @@ interface IEditorProps {
     resetStatus: () => void;
     displayKeybindModal: () => void;
     displayTargetTreeModal: () => void;
-    buildTargetTreeModal: (json: Object | null) => void;
+    buildTargetTreeModal: (data: treeData | null) => void;
+    closeModals: () => void;
 }
 
 interface IEditorState {
@@ -683,11 +685,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressDisplayTargetTreeModal() {
-        let node = this.graph.getNodeAt(this.editor!.getPosition()!);
-        let tree = this.graph.getTargetTree(node);
-        if (tree) this.props.buildTargetTreeModal(tree);
-        else this.props.buildTargetTreeModal(null);
-        this.props.displayTargetTreeModal();
+        let tree = this.graph.getTargetTreeDataAt(this.editor!.getPosition()!);
+        if (tree) {
+            this.props.buildTargetTreeModal(tree);
+            this.props.displayTargetTreeModal();
+        }
     }
 
     //--------------------------------------------------
@@ -728,6 +730,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private updatePosition(position: monaco.Position) {
         this.editor!.setPosition(position);
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
+        this.props.closeModals();
         this.updateInputAt(position);
     }
 
@@ -993,7 +996,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (!this.state.activateTargetTreeHover) return null;
         let hover: monaco.languages.Hover | null = null;
         let node = this.graph.getNodeAt(position);
-        let tree = this.graph.getTargetTree(node);
+        let tree = this.graph.getTargetTreeString(node);
         if (node && tree)
             hover = {
                 range: node.getRange(),

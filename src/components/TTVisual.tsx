@@ -1,9 +1,14 @@
 import * as React from 'react';
 import * as d3 from 'd3';
+import { treeData } from '../content/TargetTree';
+
+interface ITTVisualProps {
+    data: treeData;
+}
 
 const data = [20, 50, 120, 70, 90];
 
-class TTVisual extends React.Component {
+class TTVisual extends React.Component<ITTVisualProps> {
     private canvas: HTMLDivElement | null = null;
 
     componentDidMount() {

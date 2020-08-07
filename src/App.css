@@ -38,6 +38,10 @@
     height: fit-content;
     background-color: rgba(0, 0, 0, 0.4);
 }
+.modalHeader {
+    font-family: monospace;
+    padding: 5px;
+}
 .modal {
     display: none;
     position: fixed;

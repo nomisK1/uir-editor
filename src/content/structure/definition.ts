@@ -73,6 +73,12 @@ class definition extends _function {
         return vars;
     }
 
+    public getBlockAt(position: monaco.Position): block | null {
+        for (let i = 0; i < this.blocks.length; i++)
+            if (this.blocks[i].getRange().containsPosition(position)) return this.blocks[i];
+        return null;
+    }
+
     public getNodeAt(position: monaco.Position): _node | null {
         for (let i = 0; i < this.args.length; i++)
             if (this.args[i].getRange().containsPosition(position)) return this.args[i].getNodeAt(position);

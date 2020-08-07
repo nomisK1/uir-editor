@@ -43,11 +43,8 @@ class branch {
         return str + '}';
     }
 
-    public toJSON() {
-        let json: {
-            node: { label: string; opcode: string; operands: string[] } | null;
-            edges: { from: string; to: string }[];
-        } = {
+    public toData() {
+        let json: treeNode = {
             node: { label: this.label.getName(), opcode: this.opcode, operands: [] },
             edges: [],
         };
@@ -59,3 +56,15 @@ class branch {
 }
 
 export default branch;
+
+interface treeNode {
+    node: {
+        label: string;
+        opcode: string;
+        operands: string[];
+    } | null;
+    edges: {
+        from: string;
+        to: string;
+    }[];
+}

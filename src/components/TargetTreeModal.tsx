@@ -1,5 +1,6 @@
 import React from 'react';
 import TTVisual from './TTVisual';
+import { treeData } from '../content/TargetTree';
 
 interface ITargetTreeModalProps {
     showModal: boolean;
@@ -7,15 +8,22 @@ interface ITargetTreeModalProps {
 }
 
 class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
-    private json: Object | null = null;
+    private data: treeData | null = null;
 
-    setJson(json: Object | null) {
-        this.json = json;
+    setData(data: treeData | null) {
+        this.data = data;
     }
 
-    renderJson() {
-        if (!this.json) return <div>NO TARGET</div>;
-        return <div>{this.json}</div>;
+    visualizeData() {
+        if (this.data)
+            return (
+                <div>
+                    <h3 className="modalHeader">
+                        {this.data.context} // {this.data.nodes[0].label}
+                    </h3>
+                    <TTVisual data={this.data} />
+                </div>
+            );
     }
 
     render() {
@@ -28,8 +36,7 @@ class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
             >
                 <div className="modal-content">
                     <span className="close">&times;</span>
-                    <TTVisual />
-                    {this.renderJson()}
+                    {this.visualizeData()}
                 </div>
             </div>
         );

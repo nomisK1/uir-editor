@@ -6,6 +6,7 @@ import TargetTreeModal from './components/TargetTreeModal';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { getData } from './content/TPCH';
+import { treeData } from './content/TargetTree';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
 import './App.css';
@@ -44,6 +45,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.displayKeybindModal = this.displayKeybindModal.bind(this);
         this.displayTargetTreeModal = this.displayTargetTreeModal.bind(this);
         this.buildTargetTreeModal = this.buildTargetTreeModal.bind(this);
+        this.closeModals = this.closeModals.bind(this);
     }
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -117,8 +119,16 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) this.editor.getInstance().focus();
     }
 
-    public buildTargetTreeModal(json: Object | null) {
-        if (this.ttModalElement) this.ttModalElement.setJson(json);
+    public buildTargetTreeModal(data: treeData | null) {
+        if (this.ttModalElement) this.ttModalElement.setData(data);
+    }
+
+    public closeModals() {
+        this.setState({
+            showKeybindModal: false,
+            showTargetTreeModal: false,
+        });
+        if (this.editor) this.editor.getInstance().focus();
     }
 
     render() {
@@ -159,6 +169,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 displayKeybindModal={this.displayKeybindModal}
                 displayTargetTreeModal={this.displayTargetTreeModal}
                 buildTargetTreeModal={this.buildTargetTreeModal}
+                closeModals={this.closeModals}
                 ref={(ref) => (this.editor = ref)}
             />
         );
