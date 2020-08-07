@@ -12,7 +12,7 @@ enum OpCode {
     ADD = 'add',
     AND = 'and',
     ASHR = 'ashr',
-    ATOMICCMPXCHG = 'atomiccmpxchg',
+    //ATOMICCMPXCHG = 'atomiccmpxchg',
     ATOMICLOAD = 'atomicload',
     ATOMICRMWADD = 'atomicrmwadd',
     ATOMICRMWUMAX = 'atomicrmwumax',
@@ -22,7 +22,7 @@ enum OpCode {
     BSWAP = 'bswap',
     BUILDDATA128 = 'builddata128',
     CALL = 'call',
-    CALLBUILTIN = 'callbuiltin',
+    //CALLBUILTIN = 'callbuiltin',
     CHECKEDSADD = 'checkedsadd',
     CHECKEDSMUL = 'checkedsmul',
     CHECKEDSSUB = 'checkedssub',
@@ -35,17 +35,17 @@ enum OpCode {
     CMPULE = 'cmpule',
     CMPULT = 'cmpult',
     CONDBR = 'condbr',
-    CONST = 'const',
+    //CONST = 'const',
     CRC32 = 'crc32',
     CTLZ = 'ctlz',
     EXTRACTDATA128 = 'extractdata128',
     FPTOSI = 'fptosi',
-    FUNCTIONARGUMENT = 'functionargument',
-    FUNCTIONVARIABLE = 'functionvariable',
+    //FUNCTIONARGUMENT = 'functionargument',
+    //FUNCTIONVARIABLE = 'functionvariable',
     GEP = 'gep',
     GETELEMENTPTR = 'getelementptr',
-    GLOBALREF = 'globalref',
-    HEADERPTRPAIR = 'headerptrpair',
+    //GLOBALREF = 'globalref',
+    //HEADERPTRPAIR = 'headerptrpair',
     INTTOPTR = 'inttoptr',
     ISNOTNULL = 'isnotnull',
     ISNULL = 'isnull',
@@ -55,7 +55,7 @@ enum OpCode {
     NEG = 'neg',
     NOT = 'not',
     OR = 'or',
-    OVERFLOWRESULT = 'overflowresult',
+    //OVERFLOWRESULT = 'overflowresult',
     PHI = 'phi',
     POW = 'pow',
     PTRTOINT = 'ptrtoint',
@@ -63,25 +63,25 @@ enum OpCode {
     RETURNVOID = 'returnvoid',
     ROTL = 'rotl',
     ROTR = 'rotr',
-    SADDOVERFLOW = 'saddoverflow',
+    //SADDOVERFLOW = 'saddoverflow',
     SDIV = 'sdiv',
     SELECT = 'select',
     SEXT = 'sext',
     SHL = 'shl',
     SITOFP = 'sitofp',
-    SMULOVERFLOW = 'smuloverflow',
+    //SMULOVERFLOW = 'smuloverflow',
     SREM = 'srem',
-    SSUBOVERFLOW = 'ssuboverflow',
+    //SSUBOVERFLOW = 'ssuboverflow',
     STORE = 'store',
     SUB = 'sub',
-    SWITCH = 'switch',
+    //SWITCH = 'switch',
     TRUNC = 'trunc',
-    UADDOVERFLOW = 'uaddoverflow',
+    //UADDOVERFLOW = 'uaddoverflow',
     UDIV = 'udiv',
-    UMULOVERFLOW = 'umuloverflow',
+    //UMULOVERFLOW = 'umuloverflow',
     UNREACHABLE = 'unreachable',
     UREM = 'urem',
-    USUBOVERFLOW = 'usuboverflow',
+    //USUBOVERFLOW = 'usuboverflow',
     XOR = 'xor',
     ZEXT = 'zext',
 }
@@ -105,7 +105,8 @@ class operation extends _instruction {
     private build() {
         if (
             //[opcode]
-            compareOpCode(OpCode.UNREACHABLE, this.opcode)
+            compareOpCode(OpCode.UNREACHABLE, this.opcode) ||
+            compareOpCode(OpCode.RETURNVOID, this.opcode)
         ) {
         } else if (
             //[opcode,value]
@@ -131,8 +132,11 @@ class operation extends _instruction {
             this.buildValues(lookupJSON(this.json, 'args'));
         } else if (
             //[opcode,type,value,pointer,offsets]
+            compareOpCode(OpCode.ATOMICSTORE, this.opcode) ||
             compareOpCode(OpCode.STORE, this.opcode) ||
             //[dst,opcode,type,value,pointer,offsets]
+            compareOpCode(OpCode.ATOMICRMWADD, this.opcode) ||
+            compareOpCode(OpCode.ATOMICRMWUMAX, this.opcode) ||
             compareOpCode(OpCode.ATOMICRMWXCHG, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'value'));
@@ -141,8 +145,8 @@ class operation extends _instruction {
         } else if (
             //[dst,opcode,type,pointer,offsets]
             compareOpCode(OpCode.ATOMICLOAD, this.opcode) ||
-            compareOpCode(OpCode.GETELEMENTPTR, this.opcode) ||
-            compareOpCode(OpCode.LOAD, this.opcode)
+            compareOpCode(OpCode.LOAD, this.opcode) ||
+            compareOpCode(OpCode.GETELEMENTPTR, this.opcode)
         ) {
             this.buildValues(lookupJSON(this.json, 'pointer'));
             this.buildValues(lookupJSON(this.json, 'offsets'));
@@ -172,35 +176,47 @@ class operation extends _instruction {
             compareOpCode(OpCode.ADD, this.opcode) ||
             compareOpCode(OpCode.ASHR, this.opcode) ||
             compareOpCode(OpCode.BUILDDATA128, this.opcode) ||
+            compareOpCode(OpCode.BSWAP, this.opcode) ||
             compareOpCode(OpCode.CMPEQ, this.opcode) ||
             compareOpCode(OpCode.CMPNE, this.opcode) ||
             compareOpCode(OpCode.CMPSLE, this.opcode) ||
+            compareOpCode(OpCode.CMPSLT, this.opcode) ||
+            compareOpCode(OpCode.CMPSUOLE, this.opcode) ||
+            compareOpCode(OpCode.CMPSUOLT, this.opcode) ||
             compareOpCode(OpCode.CMPULE, this.opcode) ||
             compareOpCode(OpCode.CMPULT, this.opcode) ||
-            compareOpCode(OpCode.CMPSLT, this.opcode) ||
             compareOpCode(OpCode.CRC32, this.opcode) ||
+            compareOpCode(OpCode.CTLZ, this.opcode) ||
             compareOpCode(OpCode.EXTRACTDATA128, this.opcode) ||
+            compareOpCode(OpCode.FPTOSI, this.opcode) ||
             compareOpCode(OpCode.INTTOPTR, this.opcode) ||
             compareOpCode(OpCode.ISNOTNULL, this.opcode) ||
             compareOpCode(OpCode.ISNULL, this.opcode) ||
             compareOpCode(OpCode.LSHR, this.opcode) ||
             compareOpCode(OpCode.MUL, this.opcode) ||
+            compareOpCode(OpCode.NEG, this.opcode) ||
             compareOpCode(OpCode.NOT, this.opcode) ||
             compareOpCode(OpCode.OR, this.opcode) ||
+            compareOpCode(OpCode.POW, this.opcode) ||
             compareOpCode(OpCode.PTRTOINT, this.opcode) ||
             compareOpCode(OpCode.ROTL, this.opcode) ||
             compareOpCode(OpCode.ROTR, this.opcode) ||
             compareOpCode(OpCode.SDIV, this.opcode) ||
             compareOpCode(OpCode.SEXT, this.opcode) ||
             compareOpCode(OpCode.SHL, this.opcode) ||
+            compareOpCode(OpCode.SITOFP, this.opcode) ||
+            compareOpCode(OpCode.SREM, this.opcode) ||
             compareOpCode(OpCode.SUB, this.opcode) ||
             compareOpCode(OpCode.TRUNC, this.opcode) ||
+            compareOpCode(OpCode.UDIV, this.opcode) ||
+            compareOpCode(OpCode.UREM, this.opcode) ||
             compareOpCode(OpCode.XOR, this.opcode) ||
             compareOpCode(OpCode.ZEXT, this.opcode)
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'src'));
         } else {
-            //TODO - unknown OpCodes!
+            //TODO - unknown enum OpCodes!
+            throw new Error('UNKNOWN OPCODE!');
         }
     }
 

@@ -50,7 +50,16 @@ class TargetTree {
     }
 
     public toJSON() {
-        return JSON.parse('{' + this.tree[0][0].toJSON() + '}');
+        let json: {
+            nodes: { label: string; opcode: string; operands: string[] }[];
+            edges: { from: string; to: string }[];
+        } = { nodes: [], edges: [] };
+        this.tree.flat().forEach((t) => {
+            let elem = t.toJSON();
+            if (elem.node) json.nodes.push(elem.node);
+            json.edges.push(...elem.edges);
+        });
+        return json;
     }
 }
 

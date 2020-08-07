@@ -44,17 +44,17 @@ class branch {
     }
 
     public toJSON() {
-        let str = '"label":"' + this.label.getName() + '","opcode":"' + this.opcode + '","operands":[';
-        if (this.operands.length) {
-            this.operands.forEach((c) => (str += '"' + c.getAlias() + '",'));
-            str = str.slice(0, -1);
-        }
-        str += '],"next":[';
-        if (this.next.length) {
-            this.next.forEach((n) => (str += '{' + n.toJSON() + '},'));
-            str = str.slice(0, -1);
-        }
-        return str + ']';
+        let json: {
+            node: { label: string; opcode: string; operands: string[] } | null;
+            edges: { from: string; to: string }[];
+        } = {
+            node: { label: this.label.getName(), opcode: this.opcode, operands: [] },
+            edges: [],
+        };
+        this.operands.forEach((c) => json.node!.operands.push(c.getAlias()));
+        this.next.forEach((n) => json.edges.push({ from: this.label.getName(), to: n.label.getName() }));
+        if (this.opcode === 'LOOP') json.node = null;
+        return json;
     }
 }
 
