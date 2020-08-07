@@ -389,22 +389,22 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleToggleTargetTreeHover,
             });
             this.editor.addAction({
-                id: 'displayKeybindModal',
-                label: 'Show Keyboard Shortcuts',
+                id: 'displayTargetTreeModal',
+                label: 'Show Target Tree',
                 keybindings: [monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '9_modal',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
-                run: this.handleKeypressDisplayKeybindModal,
+                run: this.handleKeypressDisplayTargetTreeModal,
             });
             this.editor.addAction({
-                id: 'displayTargetTreeModal',
-                label: 'Show Target Tree',
+                id: 'displayKeybindModal',
+                label: 'Show Keyboard Shortcuts',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '9_modal',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
-                run: this.handleKeypressDisplayTargetTreeModal,
+                run: this.handleKeypressDisplayKeybindModal,
             });
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();

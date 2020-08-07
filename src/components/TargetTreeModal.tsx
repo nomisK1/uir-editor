@@ -1,4 +1,5 @@
 import React from 'react';
+import TTVisual from './TTVisual';
 
 interface ITargetTreeModalProps {
     showModal: boolean;
@@ -27,9 +28,7 @@ class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
             >
                 <div className="modal-content">
                     <span className="close">&times;</span>
-                    <svg>
-                        <circle cx="150" cy="77" r="40" />
-                    </svg>
+                    <TTVisual />
                     {this.renderJson()}
                 </div>
             </div>
