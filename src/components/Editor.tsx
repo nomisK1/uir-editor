@@ -717,12 +717,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private updateInputAt(position: monaco.Position) {
         let node = this.graph.getNodeAt(position);
-        let variable = this.graph.getVariableOfNode(node);
-        if (node && !variable) this.props.passInput(node.getName());
-        else if (variable !== this.graph.getCurrentVariable()) {
-            this.graph.setCurrentVariable(variable);
-            this.updateInput();
-        }
+        if (node) {
+            let variable = this.graph.getVariableOfNode(node);
+            if (!variable) this.props.passInput(node.getName());
+            else if (variable !== this.graph.getCurrentVariable()) {
+                this.graph.setCurrentVariable(variable);
+                this.updateInput();
+            }
+        } else this.props.passInput('');
         this.props.resetStatus();
         this.decorateTree(position);
     }
@@ -986,7 +988,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             if (c.range.containsPosition(position))
                 hover = {
                     range: c.range,
-                    contents: [{ value: c.text }, { value: '![monaco-img-preview](example.png)', isTrusted: true }],
+                    contents: [{ value: c.text }],
                 };
         });
         return hover;
