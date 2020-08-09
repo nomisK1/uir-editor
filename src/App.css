@@ -31,9 +31,6 @@
     pointer-events: none;
 }
 #ttVisual {
-    text-align: center;
-}
-.svg {
     width: fit-content;
     height: fit-content;
     background-color: rgba(0, 0, 0, 0.4);

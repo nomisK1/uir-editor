@@ -64,13 +64,17 @@ export default TargetTree;
 
 export interface treeData {
     context: string;
-    nodes: {
-        label: string;
-        opcode: string;
-        operands: string[];
-    }[];
-    edges: {
-        from: string;
-        to: string;
-    }[];
+    nodes: ttNode[];
+    edges: ttEdge[];
+}
+
+export interface ttNode {
+    label: string;
+    opcode: string;
+    operands: string[];
+}
+
+export interface ttEdge {
+    from: string;
+    to: string;
 }

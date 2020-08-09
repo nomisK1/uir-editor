@@ -1,6 +1,7 @@
 import _value from './_value';
 import target from './target';
 import label from './label';
+import { ttNode, ttEdge } from '../TargetTree';
 
 interface IBranchProps {
     label: label;
@@ -44,7 +45,7 @@ class branch {
     }
 
     public toData() {
-        let json: treeNode = {
+        let json: { node: ttNode | null; edges: ttEdge[] } = {
             node: { label: this.label.getName(), opcode: this.opcode, operands: [] },
             edges: [],
         };
@@ -56,15 +57,3 @@ class branch {
 }
 
 export default branch;
-
-interface treeNode {
-    node: {
-        label: string;
-        opcode: string;
-        operands: string[];
-    } | null;
-    edges: {
-        from: string;
-        to: string;
-    }[];
-}

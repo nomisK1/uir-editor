@@ -21,7 +21,7 @@ class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
                     <h3 className="modalHeader">
                         {this.data.context} // {this.data.nodes[0].label}
                     </h3>
-                    <TTVisual data={this.data} />
+                    <TTVisual data={this.data} showVisual={this.props.showModal} />
                 </div>
             );
     }
