@@ -6,18 +6,20 @@ interface ITTCanvasProps {
     data: treeData;
     width: number;
     height: number;
-    showVisual: boolean;
 }
 
 class TTCanvas extends React.Component<ITTCanvasProps> {
-    draw() {}
+    draw() {
+        d3.select('svg')
+            .append('circle')
+            .attr('r', 5)
+            .attr('cx', this.props.width / 2)
+            .attr('cy', this.props.height / 2)
+            .attr('fill', 'red');
+    }
 
     componentDidMount() {
         this.draw();
-    }
-
-    shouldComponentUpdate(nextProps: ITTCanvasProps) {
-        return this.props.data !== nextProps.data && nextProps.showVisual ? true : false;
     }
 
     componentDidUpdate() {
@@ -25,7 +27,7 @@ class TTCanvas extends React.Component<ITTCanvasProps> {
     }
 
     render() {
-        return <svg className="ttCanvas"></svg>;
+        return <svg id="ttCanvas" className="svg" height={this.props.height} width={this.props.width}></svg>;
     }
 }
 

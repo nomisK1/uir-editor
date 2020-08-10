@@ -17,13 +17,7 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
                 <div className="modal-content">
                     <span className="close">&times;</span>
                     <h3 className="modalHeader">KEYBINDS</h3>
-                    <img
-                        id="keybindImage"
-                        className="image"
-                        src="keybinds.png"
-                        alt="KEYBINDS"
-                        style={{ height: '100%', width: '100%', objectFit: 'contain' }}
-                    />
+                    <img id="keybindImage" className="image" src="keybinds.png" alt="KEYBINDS" />
                 </div>
             </div>
         );
