@@ -9,7 +9,11 @@ interface ITTCanvasProps {
 }
 
 class TTCanvas extends React.Component<ITTCanvasProps> {
+    private canvas: SVGElement | null = null;
+
     draw() {
+        console.log(this.props.data);
+
         d3.select('svg')
             .append('circle')
             .attr('r', 5)
@@ -27,7 +31,15 @@ class TTCanvas extends React.Component<ITTCanvasProps> {
     }
 
     render() {
-        return <svg id="ttCanvas" className="svg" height={this.props.height} width={this.props.width}></svg>;
+        return (
+            <svg
+                id="ttCanvas"
+                className="svg"
+                height={this.props.height}
+                width={this.props.width}
+                ref={(ref) => (this.canvas = ref)}
+            />
+        );
     }
 }
 

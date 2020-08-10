@@ -1,7 +1,7 @@
 import _value from './_value';
 import target from './target';
 import label from './label';
-import { treeNode, treeLink } from '../TargetTree';
+import { treeJSON } from '../TargetTree';
 
 interface IBranchProps {
     label: label;
@@ -44,15 +44,8 @@ class branch {
         return str + '}';
     }
 
-    public toData() {
-        let json: { node: treeNode | null; links: treeLink[] } = {
-            node: { id: this.label.getName(), opcode: this.opcode, operands: [] },
-            links: [],
-        };
-        this.operands.forEach((c) => json.node!.operands.push(c.getAlias()));
-        this.next.forEach((n) => json.links.push({ source: this.label.getName(), target: n.label.getName() }));
-        if (this.opcode === 'LOOP') json.node = null;
-        return json;
+    public toJSON(): treeJSON {
+        return { id: this.label.getName(), children: this.next.map((n) => n.toJSON()) };
     }
 }
 

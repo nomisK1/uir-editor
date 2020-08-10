@@ -49,14 +49,8 @@ class TargetTree {
         return this.tree[0][0].print(0);
     }
 
-    public toData() {
-        let json: treeData = { context: this.context.getName(), nodes: [], links: [] };
-        this.tree.flat().forEach((t) => {
-            let elem = t.toData();
-            if (elem.node) json.nodes.push(elem.node);
-            json.links.push(...elem.links);
-        });
-        return json;
+    public toData(): treeData {
+        return { context: this.context.getName(), tree: this.tree[0][0].toJSON() };
     }
 }
 
@@ -64,17 +58,10 @@ export default TargetTree;
 
 export type treeData = {
     context: string;
-    nodes: treeNode[];
-    links: treeLink[];
+    tree: treeJSON;
 };
 
-export type treeNode = {
+export type treeJSON = {
     id: string;
-    opcode: string;
-    operands: string[];
-};
-
-export type treeLink = {
-    source: string;
-    target: string;
+    children?: treeJSON[];
 };
