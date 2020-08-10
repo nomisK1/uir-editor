@@ -50,11 +50,11 @@ class TargetTree {
     }
 
     public toData() {
-        let json: treeData = { context: this.context.getName(), nodes: [], edges: [] };
+        let json: treeData = { context: this.context.getName(), nodes: [], links: [] };
         this.tree.flat().forEach((t) => {
             let elem = t.toData();
             if (elem.node) json.nodes.push(elem.node);
-            json.edges.push(...elem.edges);
+            json.links.push(...elem.links);
         });
         return json;
     }
@@ -62,19 +62,19 @@ class TargetTree {
 
 export default TargetTree;
 
-export interface treeData {
+export type treeData = {
     context: string;
-    nodes: ttNode[];
-    edges: ttEdge[];
-}
+    nodes: treeNode[];
+    links: treeLink[];
+};
 
-export interface ttNode {
-    label: string;
+export type treeNode = {
+    id: string;
     opcode: string;
     operands: string[];
-}
+};
 
-export interface ttEdge {
-    from: string;
-    to: string;
-}
+export type treeLink = {
+    source: string;
+    target: string;
+};

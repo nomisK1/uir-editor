@@ -1,5 +1,5 @@
 import React from 'react';
-import TTVisual from './TTVisual';
+import TTCanvas from './TTCanvas';
 import { treeData } from '../content/TargetTree';
 
 interface ITargetTreeModalProps {
@@ -19,9 +19,9 @@ class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
             return (
                 <div>
                     <h3 className="modalHeader">
-                        {this.data.context} // {this.data.nodes[0].label}
+                        {this.data.context} // {this.data.nodes[0].id}
                     </h3>
-                    <TTVisual data={this.data} showVisual={this.props.showModal} />
+                    <TTCanvas data={this.data} width={0} height={0} showVisual={this.props.showModal} />
                 </div>
             );
     }
