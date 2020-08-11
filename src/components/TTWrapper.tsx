@@ -22,7 +22,7 @@ class TTWrapper extends React.Component<ITTWrapperProps> {
             let domrect = this.wrapper.getBoundingClientRect();
             this.width = Math.floor(domrect.width);
             this.height = Math.floor(domrect.height);
-            console.log('TTMODAL: ' + this.width + ' // ' + this.height);
+            //console.log('TTMODAL: ' + this.width + ' // ' + this.height);
         }
     }
 

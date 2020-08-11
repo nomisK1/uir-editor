@@ -80,12 +80,31 @@
 }
 .link {
     fill: none;
-    stroke: rgba(0, 255, 255, 0.5);
+    stroke-width: 1.5px;
+}
+#hLink {
+    stroke: rgba(0, 255, 255, 0.3);
+}
+#vLink {
+    stroke: rgba(255, 0, 255, 0.3);
+}
+#hArrow {
+    fill: rgba(0, 255, 255, 0.6);
+}
+#vArrow {
+    fill: rgba(255, 0, 255, 0.6);
 }
 .node {
-    fill: rgb(0, 128, 0, 1);
+    fill: rgb(0, 255, 0);
+}
+#startNode {
+    fill: rgb(255, 255, 0);
+}
+#endNode {
+    fill: rgb(0, 0, 255);
 }
 #nodeText {
     fill: white;
+    text-shadow: 2px 2px 4px black;
     pointer-events: none;
 }
