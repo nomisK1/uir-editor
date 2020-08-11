@@ -6,7 +6,7 @@ import operation from './operation';
 import variable from './variable';
 import target from './target';
 import label from './label';
-import branch from './branch';
+import branch from '../tree/branch';
 
 // Number of whitespaces at the start of each instruction
 export const indentation = 2;

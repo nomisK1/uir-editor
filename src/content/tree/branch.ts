@@ -1,7 +1,7 @@
-import _value from './_value';
-import target from './target';
-import label from './label';
-import { treeJSON } from '../TargetTree';
+import _value from '../structure/_value';
+import target from '../structure/target';
+import label from '../structure/label';
+import { treeJSON } from './TargetTree';
 
 interface IBranchProps {
     label: label;

@@ -1,6 +1,6 @@
-import definition from './structure/definition';
-import target from './structure/target';
-import branch from './structure/branch';
+import definition from '../structure/definition';
+import target from '../structure/target';
+import branch from './branch';
 
 interface ITargetTreeProps {
     root: target;

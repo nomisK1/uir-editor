@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TTCanvas from './TTCanvas';
-import { treeData } from '../content/TargetTree';
+import { treeData } from './TargetTree';
 
 interface ITTWrapperProps {
     data: treeData | null;

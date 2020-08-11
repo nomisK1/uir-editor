@@ -6,7 +6,7 @@ import TargetTreeModal from './components/TargetTreeModal';
 import Editor from './components/Editor';
 import Graph from './content/Graph';
 import { getData } from './content/TPCH';
-import { treeData } from './content/TargetTree';
+import { treeData } from './content/tree/TargetTree';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
 import './App.css';

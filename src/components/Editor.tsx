@@ -3,7 +3,7 @@ import * as monaco from 'monaco-editor';
 import { themeID, monarchTheme } from '../language/uirTheme';
 import S from '../language/Singleton';
 import Graph from '../content/Graph';
-import { treeData } from '../content/TargetTree';
+import { treeData } from '../content/tree/TargetTree';
 import { Status } from './StatusInput';
 import './Editor.css';
 

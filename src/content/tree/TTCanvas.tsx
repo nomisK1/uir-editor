@@ -1,6 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { treeData, treeJSON } from '../content/TargetTree';
+import { treeData, treeJSON } from './TargetTree';
 
 interface ITTCanvasProps {
     data: treeData;
@@ -35,12 +35,12 @@ class TTCanvas extends React.Component<ITTCanvasProps> {
         const hLinks: d3.HierarchyLink<treeJSON>[] = [];
         const vLinks: d3.HierarchyLink<treeJSON>[] = [];
         root.links().forEach((l) => {
-            if (l.target.data.id.includes('[!]'))
+            if (!l.target.data.id.includes('[!]')) hLinks.push(l);
+            else
                 vLinks.push({
                     source: l.source,
                     target: nodes.find((n) => n.data.id === l.target.data.id.slice(0, l.target.data.id.length - 3))!,
                 });
-            else hLinks.push(l);
         });
 
         // create links

@@ -8,7 +8,7 @@ import block from './structure/block';
 import operation from './structure/operation';
 import variable from './structure/variable';
 import target from './structure/target';
-import TargetTree from './TargetTree';
+import TargetTree from './tree/TargetTree';
 
 interface IGraphProps {
     gid: number;
