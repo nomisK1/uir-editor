@@ -45,7 +45,10 @@ class branch {
     }
 
     public toJSON(): treeJSON {
-        return { id: this.label.getName(), children: this.next.map((n) => n.toJSON()) };
+        return {
+            id: this.label.getName() + (this.opcode === 'LOOP' ? '[!]' : ''),
+            children: this.next.map((n) => n.toJSON()),
+        };
     }
 }
 
