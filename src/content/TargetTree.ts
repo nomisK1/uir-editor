@@ -50,7 +50,7 @@ class TargetTree {
     }
 
     public toData(): treeData {
-        return { context: this.context.getName(), tree: this.tree[0][0].toJSON() };
+        return { context: this.context.getName(), json: this.tree[0][0].toJSON() };
     }
 }
 
@@ -58,7 +58,7 @@ export default TargetTree;
 
 export type treeData = {
     context: string;
-    tree: treeJSON;
+    json: treeJSON;
 };
 
 export type treeJSON = {

@@ -55,7 +55,7 @@ class TTWrapper extends React.Component<ITTWrapperProps> {
 
     render() {
         return (
-            <div id="ttWrapper" ref={(ref) => (this.wrapper = ref)}>
+            <div className="ttWrapper" ref={(ref) => (this.wrapper = ref)}>
                 {this.renderTT()}
             </div>
         );

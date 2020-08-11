@@ -12,14 +12,30 @@ class TTCanvas extends React.Component<ITTCanvasProps> {
     private canvas: SVGElement | null = null;
 
     draw() {
-        console.log(this.props.data);
+        const { data, width, height } = this.props;
+        console.log(data.json);
 
-        d3.select('svg')
-            .append('circle')
-            .attr('r', 5)
-            .attr('cx', this.props.width / 2)
-            .attr('cy', this.props.height / 2)
-            .attr('fill', 'red');
+        const svg = d3.select('svg');
+        svg.selectAll('*').remove();
+
+        const treeLayout = d3.tree().size([height, width]);
+        const root = d3.hierarchy(data.json);
+
+        treeLayout(root);
+        const nodes = root.descendants();
+        const links = root.links();
+
+        const renderLink: d3.Link<any, d3.DefaultLinkObject, [number, number]> = d3
+            .linkHorizontal()
+            .x((d: any) => d.y)
+            .y((d: any) => d.x);
+
+        svg.selectAll('path')
+            .data(links)
+            .enter()
+            .append('path')
+            .attr('class', 'link')
+            .attr('d', (d: any) => renderLink(d));
     }
 
     componentDidMount() {
@@ -33,8 +49,7 @@ class TTCanvas extends React.Component<ITTCanvasProps> {
     render() {
         return (
             <svg
-                id="ttCanvas"
-                className="svg"
+                className="ttCanvas"
                 height={this.props.height}
                 width={this.props.width}
                 ref={(ref) => (this.canvas = ref)}
