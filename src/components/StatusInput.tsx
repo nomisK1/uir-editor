@@ -33,11 +33,18 @@ class StatusInput extends React.Component<IStatusInputProps> {
     render() {
         return (
             <div className="statusInput">
-                <input id="sDisplay" className="input" value={this.status} readOnly={true} />
+                <input
+                    id="sDisplay"
+                    className="input"
+                    value={this.status}
+                    readOnly={true}
+                    style={getStatusStyle(this.status)}
+                />
                 <input
                     id="sInput"
                     className="input"
                     value={this.props.input}
+                    placeholder={'----- NO INPUT -----'}
                     onChange={this.props.onInputChange}
                     onKeyDown={this.props.onInputKeydown}
                     ref={(ref) => (this.inputElement = ref)}
@@ -48,3 +55,10 @@ class StatusInput extends React.Component<IStatusInputProps> {
 }
 
 export default StatusInput;
+
+function getStatusStyle(status: Status) {
+    if (status === Status.COMMENT) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
+    if (status === Status.RENAME) return { backgroundColor: 'rgb(255, 0, 0, 0.4)' };
+    if (status === Status.SEARCH) return { backgroundColor: 'rgb(0, 0, 255, 0.4)' };
+    else return { backgroundColor: 'rgb(160, 160, 160, 0.4)' };
+}

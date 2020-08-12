@@ -26,8 +26,8 @@ class Graph {
     private currentChildren: variable[] = [];
     private ancestors: variable[] = [];
     private bookmark?: number = 0;
-    private comments: { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node }[] = [];
-    private aliases: { alias: string; position: monaco.Position }[] = [];
+    private comments: commentHover[] = [];
+    private aliases: alias[] = [];
 
     constructor(props: IGraphProps) {
         this.gid = props.gid;
@@ -567,6 +567,10 @@ class Graph {
 }
 
 export default Graph;
+
+type commentLine = { text: string; line: number };
+type commentHover = { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node };
+type alias = { alias: string; position: monaco.Position };
 
 const legalStrings: string[] = [
     '0',

@@ -1,5 +1,7 @@
 * {
     font-family: monospace;
+    font-size: 15px;
+    font-weight: 100;
 }
 .ui {
     display: flex;
@@ -7,8 +9,9 @@
 }
 .dropdown {
     width: 10%;
-    padding: 5px;
-    margin: 0;
+    padding: 2px;
+    color: white;
+    background-color: rgb(40, 40, 40);
     box-sizing: border-box;
 }
 .statusInput {
@@ -16,19 +19,18 @@
     width: inherit;
 }
 .input {
-    width: 100%;
-    padding: 5px;
-    margin: 0;
     box-sizing: border-box;
 }
 #sInput {
     width: 100%;
     padding-left: 10px;
+    color: white;
+    background-color: rgb(40, 40, 40);
 }
 #sDisplay {
     text-align: center;
     width: 10%;
-    color: rgba(0, 0, 0, 0.4);
+    color: rgb(40, 40, 40);
     pointer-events: none;
 }
 .modalHeader {

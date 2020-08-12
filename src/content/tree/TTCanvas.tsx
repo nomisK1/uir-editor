@@ -24,7 +24,7 @@ class TTCanvas extends React.Component<ITTCanvasProps> {
 
         // define tree
         const treeLayout = d3
-            .cluster()
+            .cluster() //tree()
             .size([innerHeight, innerWidth])
             .separation((a, b) => (a.parent === b.parent ? 1 : 1));
         const root = d3.hierarchy(data.json);
