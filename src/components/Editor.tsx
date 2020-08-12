@@ -61,7 +61,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.input = this.props.input;
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
-        this.handleKeypressToggleKeybinds = this.handleKeypressToggleKeybinds.bind(this);
         this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
         this.handleKeypressDown = this.handleKeypressDown.bind(this);
         this.handleKeypressUp = this.handleKeypressUp.bind(this);
@@ -101,6 +100,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressPrevTcphQuery = this.handleKeypressPrevTcphQuery.bind(this);
         this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
         this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
+        this.handleKeypressToggleKeybinds = this.handleKeypressToggleKeybinds.bind(this);
     }
 
     public getInstance() {
@@ -137,7 +137,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             });
             this.ctxKey = this.editor.createContextKey('condition', true);
             this.editor.onMouseDown(this.handleMouseclick);
-            this.editor.addCommand(monaco.KeyCode.Tab, this.handleKeypressToggleKeybinds);
             this.editor.addCommand(monaco.KeyCode.LeftArrow, this.handleKeypressLeft, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.LeftArrow,
@@ -146,7 +145,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             );
             this.editor.addCommand(monaco.KeyCode.KEY_H, this.handleKeypressLeft, 'condition');
             this.editor.addCommand(
-                /* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_H,
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_H,
                 this.handleKeypressHoverChild,
                 'condition',
             );
@@ -157,11 +156,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 'condition',
             );
             this.editor.addCommand(monaco.KeyCode.KEY_J, this.handleKeypressDown, 'condition');
-            this.editor.addCommand(
-                /* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_J,
-                this.handleKeypressChild,
-                'condition',
-            );
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_J, this.handleKeypressChild, 'condition');
             this.editor.addCommand(monaco.KeyCode.UpArrow, this.handleKeypressUp, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.UpArrow,
@@ -169,11 +164,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 'condition',
             );
             this.editor.addCommand(monaco.KeyCode.KEY_K, this.handleKeypressUp, 'condition');
-            this.editor.addCommand(
-                /* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_K,
-                this.handleKeypressParent,
-                'condition',
-            );
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_K, this.handleKeypressParent, 'condition');
             this.editor.addCommand(monaco.KeyCode.RightArrow, this.handleKeypressRight, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.RightArrow,
@@ -182,7 +173,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             );
             this.editor.addCommand(monaco.KeyCode.KEY_L, this.handleKeypressRight, 'condition');
             this.editor.addCommand(
-                /* monaco.KeyMod.Shift |  */ monaco.KeyCode.KEY_L,
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_L,
                 this.handleKeypressHoverParent,
                 'condition',
             );
@@ -206,11 +197,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             );
             this.editor.addCommand(monaco.KeyCode.KEY_Z, this.handleKeypressGoBack, 'condition');
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_Z, this.handleKeypressGoBack, 'condition');
-            this.editor.addCommand(
-                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Z,
-                this.handleKeypressGoBack,
-                'condition',
-            );
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextTcphQuery, 'condition');
@@ -247,8 +233,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressRemoveBookmark,
             });
             this.editor.addAction({
-                id: 'addCommentHover',
-                label: 'Add Comment (Hover)',
+                id: 'addComment',
+                label: 'Add Comment',
                 keybindings: [monaco.KeyCode.KEY_C],
                 contextMenuGroupId: '2_comment',
                 contextMenuOrder: 1,
@@ -331,7 +317,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleNodeHighlighting',
                 label: 'Toggle Node Highlighting',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_1],
-                //contextMenuGroupId: '5_features',
+                contextMenuGroupId: '5_features',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleToggleNodeHighlighting,
@@ -340,7 +326,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleVariableDecorating',
                 label: 'Toggle Variable Decorating',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_2],
-                //contextMenuGroupId: '5_features',
+                contextMenuGroupId: '5_features',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleToggleVariableDecorating,
@@ -349,7 +335,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleChildDecorating',
                 label: 'Toggle Child Decorating',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_3],
-                //contextMenuGroupId: '5_features',
+                contextMenuGroupId: '5_features',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleToggleChildDecorating,
@@ -358,7 +344,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleParentDecorating',
                 label: 'Toggle Parent Decorating',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_4],
-                //contextMenuGroupId: '5_features',
+                contextMenuGroupId: '5_features',
                 contextMenuOrder: 4,
                 keybindingContext: 'condition',
                 run: this.handleToggleParentDecorating,
@@ -367,7 +353,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleBookmarkDisplay',
                 label: 'Toggle Bookmark Display',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_5],
-                //contextMenuGroupId: '5_features',
+                contextMenuGroupId: '5_features',
                 contextMenuOrder: 5,
                 keybindingContext: 'condition',
                 run: this.handleToggleBookmarkDecorating,
@@ -376,16 +362,16 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleCommentDisplay',
                 label: 'Toggle Comment Display',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_6],
-                //contextMenuGroupId: '5_features',
+                contextMenuGroupId: '5_features',
                 contextMenuOrder: 6,
                 keybindingContext: 'condition',
                 run: this.handleToggleCommentDecorating,
             });
             this.editor.addAction({
                 id: 'toggleTargetTreeHover',
-                label: 'Toggle Target Tree (Hover)',
+                label: 'Toggle Target Tree Hover',
                 keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_7],
-                //contextMenuGroupId: '5_features',
+                contextMenuGroupId: '5_features',
                 contextMenuOrder: 7,
                 keybindingContext: 'condition',
                 run: this.handleToggleTargetTreeHover,
@@ -394,7 +380,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'displayTargetTreeModal',
                 label: 'Show Target Tree',
                 keybindings: [monaco.KeyCode.KEY_S],
-                contextMenuGroupId: '9_modal',
+                contextMenuGroupId: '9_other',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayTargetTreeModal,
@@ -403,10 +389,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'displayKeybindModal',
                 label: 'Show Keyboard Shortcuts',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
-                contextMenuGroupId: '9_modal',
+                contextMenuGroupId: '9_other',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayKeybindModal,
+            });
+            this.editor.addAction({
+                id: 'toggleKeybinds',
+                label: 'Toggle All Keybinds',
+                keybindings: [monaco.KeyCode.Tab],
+                contextMenuGroupId: '9_other',
+                contextMenuOrder: 3,
+                run: this.handleKeypressToggleKeybinds,
             });
             this.editor.onDidChangeModelContent((_event) => {
                 this.value = this.editor!.getValue();
