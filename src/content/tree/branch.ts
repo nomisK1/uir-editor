@@ -29,7 +29,7 @@ class branch {
 
     public print(depth: number) {
         let buffer = '|\t'.repeat(depth);
-        let str = buffer + this.label.getName() + ' (' + this.opcode;
+        let str = buffer + this.label.getAlias() + ' (' + this.opcode;
         if (this.operands.length) {
             str += ' ';
             this.operands.forEach((c) => (str += c.getAlias() + ', '));
@@ -46,7 +46,7 @@ class branch {
 
     public toJSON(): treeJSON {
         return {
-            id: this.label.getName() + (this.opcode === 'LOOP' ? '[!]' : ''),
+            id: this.label.getAlias() + (this.opcode === 'LOOP' ? '[!]' : ''),
             children: this.next.map((n) => n.toJSON()),
         };
     }

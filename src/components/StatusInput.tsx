@@ -3,7 +3,7 @@ import React from 'react';
 export enum Status {
     COMMENT = 'ADD COMMENT',
     NODE = 'CURRENT NODE',
-    RENAME = 'RENAME VARIABLE',
+    RENAME = 'RENAME NODE',
     SEARCH = 'SEARCH VARIABLE',
 }
 

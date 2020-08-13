@@ -20,6 +20,7 @@ class Graph {
     private json: Object;
     private components: _component[] = [];
     private variables: variable[] = [];
+    private targets: target[] = [];
     private current: variable | null = null;
     private next?: variable;
     private currentParents: variable[] = [];
@@ -69,6 +70,7 @@ class Graph {
             line = this.components[this.components.length - 1].getLastLine() + 2;
         });
         this.components.forEach((c) => {
+            if (c instanceof definition) this.targets.push(...c.getTargets());
             this.variables.push(...c.getVariables());
         });
         this.getDefinitions().forEach((d) =>
@@ -149,6 +151,16 @@ class Graph {
 
     public getVariableOfNode(node: _node | null) {
         return node instanceof variable ? node : null;
+    }
+
+    public getTarVarAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node instanceof variable || node instanceof target) return node;
+        return null;
+    }
+
+    public getTarVarOfNode(node: _node | null) {
+        return node instanceof variable || node instanceof target ? node : null;
     }
 
     public getRelatedNodes(node: _node | null) {
@@ -261,8 +273,8 @@ class Graph {
         return tree;
     }
 
-    public setCurrentNextOccurrence(selection: string) {
-        if (this.current && this.current.getAlias() === selection) {
+    public setCurrentNextOccurrence(input: string) {
+        if (this.current && this.current.getAlias() === input) {
             let vars = this.getVariablesByAlias(this.current.getAlias());
             for (let i = 0; i < vars.length; i++) {
                 if (
@@ -274,13 +286,13 @@ class Graph {
             }
             this.setCurrentVariable(vars[0]);
         } else {
-            let next = this.getVariablesByAlias(selection)[0];
+            let next = this.getVariablesByAlias(input)[0];
             this.setCurrentVariable(next ? next : null);
         }
     }
 
-    public setCurrentPrevOccurrence(selection: string) {
-        if (this.current && this.current.getAlias() === selection) {
+    public setCurrentPrevOccurrence(input: string) {
+        if (this.current && this.current.getAlias() === input) {
             let vars = this.getVariablesByAlias(this.current.getAlias());
             for (let i = vars.length - 1; i >= 0; i--) {
                 if (vars[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
@@ -290,7 +302,7 @@ class Graph {
             }
             this.setCurrentVariable(vars[vars.length - 1]);
         } else {
-            let next = this.getVariablesByAlias(selection)[0];
+            let next = this.getVariablesByAlias(input)[0];
             this.setCurrentVariable(next ? next : null);
         }
     }
@@ -467,7 +479,7 @@ class Graph {
                 let json = JSON.parse(data);
                 let alias = lookupJSON(json, 'alias');
                 let position = lookupJSON(json, 'position');
-                this.setCurrentVariableAlias(alias, position);
+                this.setAliasAt(alias, position);
             }
         }
     }
@@ -488,38 +500,51 @@ class Graph {
         }
     }
 
-    public setCurrentVariableAlias(alias: string, position?: monaco.Position) {
-        this.resetCurrentVariableAlias();
-        let variable = position ? this.getVariableAt(position) : this.current;
-        if (variable)
+    public setAliasAt(alias: string, position: monaco.Position) {
+        let tarvar = this.getTarVarAt(position);
+        if (tarvar)
             if (
                 alias &&
                 isLegal(alias) &&
                 !this.variables.map((v) => v.getName()).includes(alias) &&
+                !this.targets.map((t) => t.getName()).includes(alias) &&
                 !this.aliases.map((a) => a.alias).includes(alias)
             ) {
-                this.aliases.push({ alias, position: variable.getRange().getStartPosition() });
-                variable.setAlias(alias);
-                variable.getContext()!.findRanges();
-                this.getVariableSiblings(variable).forEach((s) => {
-                    s.setAlias(alias);
-                    s.getContext()!.findRanges();
-                });
+                this.resetAliasAt(position);
+                this.aliases.push({ alias, position: tarvar.getRange().getStartPosition() });
+                tarvar.setAlias(alias);
+                tarvar.getContext()!.findRanges();
+                if (tarvar instanceof variable)
+                    this.getVariableSiblings(tarvar).forEach((s) => {
+                        s.setAlias(alias);
+                        s.getContext()!.findRanges();
+                    });
+                else
+                    this.getRelatedTargets(tarvar).forEach((t) => {
+                        t.setAlias(alias);
+                        t.getContext()!.findRanges();
+                    });
                 this.updateComments();
                 this.setLocalStorageAliases();
-            }
+            } else console.log('ERROR: INVALID INPUT');
     }
 
-    public resetCurrentVariableAlias(position?: monaco.Position) {
-        let variable = position ? this.getVariableAt(position) : this.current;
-        if (variable && variable.hasAlias()) {
-            this.aliases.splice(this.aliases.map((a) => a.alias).indexOf(variable.getAlias()), 1);
-            variable.resetAlias();
-            variable.getContext()!.findRanges();
-            this.getVariableSiblings(variable).forEach((s) => {
-                s.resetAlias();
-                s.getContext()!.findRanges();
-            });
+    public resetAliasAt(position: monaco.Position) {
+        let tarvar = this.getTarVarAt(position);
+        if (tarvar && tarvar.hasAlias()) {
+            this.aliases.splice(this.aliases.map((a) => a.alias).indexOf(tarvar.getAlias()), 1);
+            tarvar.resetAlias();
+            tarvar.getContext()!.findRanges();
+            if (tarvar instanceof variable)
+                this.getVariableSiblings(tarvar).forEach((s) => {
+                    s.resetAlias();
+                    s.getContext()!.findRanges();
+                });
+            else
+                this.getRelatedTargets(tarvar).forEach((t) => {
+                    t.resetAlias();
+                    t.getContext()!.findRanges();
+                });
             this.updateComments();
             this.removeLocalStorageAliases();
             this.setLocalStorageAliases();
@@ -532,6 +557,8 @@ class Graph {
         this.aliases = [];
         this.variables.forEach((v) => v.resetAlias());
         this.variables.forEach((v) => v.getContext()!.findRanges());
+        this.targets.forEach((t) => t.resetAlias());
+        this.targets.forEach((t) => t.getContext()!.findRanges());
         this.updateComments();
         this.removeLocalStorageAliases();
     }
@@ -639,11 +666,7 @@ const legalStrings: string[] = [
 ];
 
 function isLegal(string: string) {
-    for (let i = 0; i < string.length; i++)
-        if (!legalStrings.includes(string[i])) {
-            alert('Variable names can only contain the following characters:\n' + legalStrings.toString());
-            return false;
-        }
+    for (let i = 0; i < string.length; i++) if (!legalStrings.includes(string[i])) return false;
     return true;
 }
 

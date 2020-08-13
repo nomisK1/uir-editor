@@ -39,6 +39,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private graph: Graph;
     private value: string;
     private input: string;
+    private lastPosition: monaco.Position = new monaco.Position(1, 1);
     private decorations: string[] = [];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private treeDecorations: monaco.editor.IModelDeltaDecoration[] = [];
@@ -260,8 +261,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressResetComments,
             });
             this.editor.addAction({
-                id: 'renameVariable',
-                label: 'Rename Variable',
+                id: 'renameNode',
+                label: 'Rename Node',
                 keybindings: [monaco.KeyCode.KEY_R],
                 contextMenuGroupId: '3_alias',
                 contextMenuOrder: 1,
@@ -269,8 +270,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressToInput_Rename,
             });
             this.editor.addAction({
-                id: 'unnameVariable',
-                label: 'Unname Variable',
+                id: 'unnameNode',
+                label: 'Unname Node',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_R],
                 contextMenuGroupId: '3_alias',
                 contextMenuOrder: 2,
@@ -442,7 +443,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
-        if (event.target.position !== null) this.updateInputAt(event.target.position);
+        if (event.target.position !== null) this.updatePosition(event.target.position);
     }
 
     public handleKeypressToggleKeybinds() {
@@ -510,13 +511,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressToInput_Comment() {
-        let comment = this.graph.getCommentAt(this.editor!.getPosition()!);
+        let comment = this.graph.getCommentAt(this.lastPosition);
         this.props.focusInput(Status.COMMENT, comment ? comment.text : undefined);
     }
 
     public handleKeypressToInput_Rename() {
-        let variable = this.graph.getVariableAt(this.editor!.getPosition()!);
-        this.props.focusInput(Status.RENAME, variable && variable.hasAlias() ? variable.getAlias() : undefined);
+        let tarvar = this.graph.getTarVarAt(this.lastPosition);
+        if (tarvar) this.props.focusInput(Status.RENAME, tarvar && tarvar.hasAlias() ? tarvar.getAlias() : undefined);
+        else console.log('ERROR: INVALID NODE');
     }
 
     public handleKeypressToInput_Search() {
@@ -540,7 +542,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressAddBookmark() {
-        this.graph.addBookmarkAt(this.editor!.getPosition()!.lineNumber);
+        this.graph.addBookmarkAt(this.lastPosition.lineNumber);
         this.decorateBookmarks();
     }
 
@@ -554,13 +556,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressAddComment() {
-        this.graph.addCommentAt(this.input, this.editor!.getPosition()!);
+        this.graph.addCommentAt(this.input, this.lastPosition);
         this.decorateComments();
-        this.updateInput();
+        this.resetPosition();
     }
 
     public handleKeypressRemoveComment() {
-        this.graph.removeCommentAt(this.editor!.getPosition()!);
+        this.graph.removeCommentAt(this.lastPosition);
         this.decorateComments();
     }
 
@@ -570,28 +572,27 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressRename() {
-        let current = this.graph.getCurrentVariable();
-        if (current) {
+        let tarvar = this.graph.getTarVarAt(this.lastPosition);
+        if (tarvar) {
             if (!this.input) {
-                this.input = current.getName();
+                this.input = tarvar.getName();
                 this.props.passInput(this.input);
             }
-            if (this.input === current.getAlias()) return;
-            this.graph.setCurrentVariableAlias(this.input);
+            if (this.input === tarvar.getAlias()) return;
+            this.graph.setAliasAt(this.input, this.lastPosition);
             this.updateValue();
-            this.focusCurrentVariable();
         }
-        this.updateInput();
+        this.resetPosition();
     }
 
     public handleKeypressUndoRename() {
-        let current = this.graph.getCurrentVariable();
-        if (current) {
-            this.input = current.getName();
+        let tarvar = this.graph.getNodeAt(this.lastPosition);
+        if (tarvar) {
+            this.input = tarvar.getName();
             this.props.passInput(this.input);
-            if (this.graph.resetCurrentVariableAlias()) {
+            if (this.graph.resetAliasAt(this.lastPosition)) {
                 this.updateValue();
-                this.focusCurrentVariable();
+                this.resetPosition();
             }
         }
     }
@@ -600,7 +601,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (this.graph.getAliases().length) {
             this.graph.resetAliases();
             this.updateValue();
-            this.focusCurrentVariable();
+            this.resetPosition();
         }
     }
 
@@ -679,7 +680,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressDisplayTargetTreeModal() {
-        let tree = this.graph.getTargetTreeDataAt(this.editor!.getPosition()!);
+        let tree = this.graph.getTargetTreeDataAt(this.lastPosition);
         if (tree) {
             this.props.buildTargetTreeModal(tree);
             this.props.displayTargetTreeModal();
@@ -699,31 +700,27 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     /**
-     * updateInput:
+     * updateInputAt:
      * Updates the App Input field with the currently selected Variable
      */
-
-    private updateInput() {
-        let current = this.graph.getCurrentVariable();
-        this.input = current ? current.getAlias() : '';
-        this.props.passInput(this.input);
-    }
-
     private updateInputAt(position: monaco.Position) {
+        this.graph.setCurrentVariable(null);
         let node = this.graph.getNodeAt(position);
         if (node) {
-            let variable = this.graph.getVariableOfNode(node);
-            if (!variable) this.props.passInput(node.getName());
-            else if (variable !== this.graph.getCurrentVariable()) {
-                this.graph.setCurrentVariable(variable);
-                this.updateInput();
-            }
+            let tarvar = this.graph.getTarVarOfNode(node);
+            if (tarvar) {
+                let variable = this.graph.getVariableOfNode(node);
+                if (variable) this.graph.setCurrentVariable(variable);
+                this.input = tarvar.getAlias();
+            } else this.input = node.getName();
+            this.props.passInput(this.input);
         } else this.props.passInput('');
         this.props.resetStatus();
         this.decorateTree(position);
     }
 
     private updatePosition(position: monaco.Position) {
+        this.lastPosition = position;
         this.editor!.setPosition(position);
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.props.closeModals();
@@ -731,7 +728,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private resetPosition() {
-        this.updatePosition(new monaco.Position(1, 1));
+        this.updatePosition(this.lastPosition);
     }
 
     private focusCurrentVariable() {
@@ -742,7 +739,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor!.setPosition(position);
             this.editor!.revealRangeInCenterIfOutsideViewport(range);
             this.updateInputAt(position);
-        } else this.updatePosition(this.editor!.getPosition()!);
+        } else this.resetPosition();
     }
 
     private revealBookmark() {
@@ -996,17 +993,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (node && tree)
             hover = {
                 range: node.getRange(),
-                contents: [
-                    {
-                        value:
-                            '**' +
-                            node.getOuterContext().getName().toUpperCase() +
-                            ' // ' +
-                            node.getName().toUpperCase() +
-                            '**',
-                    },
-                    { value: '```html\n' + tree + '\n```' },
-                ],
+                contents: [{ value: '```html\n' + tree + '\n```' }],
             };
         return hover;
     }

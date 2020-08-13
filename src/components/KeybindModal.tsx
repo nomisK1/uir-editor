@@ -50,8 +50,8 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
                                 shift + c       : removeComment
                                 shift + alt + c : resetAllComments
                             
-                                r               : renameVariable
-                                shift + r       : unnameVariable
+                                r               : renameNode
+                                shift + r       : unnameNode
                                 shift + alt + r : resetAllNames
                             
                                 alt + 1 : foldAll

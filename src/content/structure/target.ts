@@ -8,6 +8,7 @@ export interface ITargetProps extends INodeProps {
 
 class target extends _node {
     protected goal: label | null = null;
+    protected alias?: string;
 
     constructor(props: ITargetProps) {
         super(props);
@@ -18,7 +19,7 @@ class target extends _node {
     public findRanges() {}
 
     public toString() {
-        return '%' + this.name;
+        return '%' + this.getAlias();
     }
 
     public getVariables() {
@@ -36,12 +37,28 @@ class target extends _node {
     public setGoal(goal: label) {
         this.goal = goal;
     }
+
+    public getAlias() {
+        return this.alias ? this.alias : this.name!;
+    }
+
+    public setAlias(alias: string) {
+        this.alias = alias;
+    }
+
+    public resetAlias() {
+        this.alias = undefined;
+    }
+
+    public hasAlias() {
+        return this.alias ? true : false;
+    }
 }
 
 export default target;
 
 export function findTargetRangeIn(target: target, text: string, offset?: number) {
-    let name = '%' + target.getName();
+    let name = '%' + target.getAlias();
     let line = target.getLastLine();
     let coloumn = indexOfStrict(name, text) + (offset ? offset : 0);
     target.setRange(new monaco.Range(line, coloumn, line, coloumn + name.length));

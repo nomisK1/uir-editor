@@ -25,9 +25,14 @@ class block extends _node {
             line: this.line,
             context: this,
         });
-        this.name = this.context!.getName() + '//' + this.label.getName();
         this.buildInstructions(lookupJSON(this.json, 'instructions'));
         this.findRanges();
+        this.range = new monaco.Range(
+            this.line,
+            0,
+            this.getLastLine(),
+            this.instructions[this.instructions.length - 1].toString().length + indentation,
+        );
     }
 
     private buildInstructions(jsons: Object[]) {
@@ -56,12 +61,8 @@ class block extends _node {
     }
 
     public findRanges() {
-        this.range = new monaco.Range(
-            this.line,
-            0,
-            this.getLastLine(),
-            this.instructions[this.instructions.length - 1].toString().length + indentation,
-        );
+        this.name = this.context!.getName() + '//' + this.label.getAlias();
+        this.label.setRange(new monaco.Range(this.line, 0, this.line, this.label.getAlias().length));
     }
 
     public getLastLine() {
