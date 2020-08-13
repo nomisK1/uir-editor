@@ -1,4 +1,3 @@
-import * as monaco from 'monaco-editor';
 import { lookupJSON } from './_node';
 import target, { ITargetProps } from './target';
 
