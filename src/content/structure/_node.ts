@@ -44,6 +44,8 @@ abstract class _node {
 
     public abstract toString(): string;
 
+    public abstract getNodes(): _node[];
+
     public abstract getVariables(): variable[];
 
     public abstract getNodeAt(position: monaco.Position): _node | null;
@@ -72,6 +74,10 @@ abstract class _node {
     }
 
     public getName() {
+        return this.name!;
+    }
+
+    public getAlias() {
         return this.name!;
     }
 

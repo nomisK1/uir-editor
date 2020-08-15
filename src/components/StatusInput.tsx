@@ -4,7 +4,7 @@ export enum Status {
     COMMENT = 'ADD COMMENT',
     NODE = 'CURRENT NODE',
     RENAME = 'RENAME NODE',
-    SEARCH = 'SEARCH VARIABLE',
+    SEARCH = 'SEARCH NODE',
 }
 
 interface IStatusInputProps {
@@ -13,21 +13,35 @@ interface IStatusInputProps {
     onInputKeydown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-class StatusInput extends React.Component<IStatusInputProps> {
+interface IStatusInputState {
+    status: Status;
+}
+
+class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> {
     private inputElement: HTMLInputElement | null = null;
-    private status: Status = Status.NODE;
+
+    constructor(props: IStatusInputProps) {
+        super(props);
+        this.state = {
+            status: Status.NODE,
+        };
+        this.handleClick = this.handleClick.bind(this);
+    }
 
     getInstance() {
         return this.inputElement!;
     }
 
     getStatus() {
-        return this.status;
+        return this.state.status;
     }
 
     setStatus(status: Status) {
-        this.status = status;
-        this.forceUpdate();
+        this.setState({ status });
+    }
+
+    handleClick() {
+        this.setState({ status: Status.SEARCH });
     }
 
     render() {
@@ -36,15 +50,16 @@ class StatusInput extends React.Component<IStatusInputProps> {
                 <input
                     id="sDisplay"
                     className="input"
-                    value={this.status}
+                    value={this.state.status}
                     readOnly={true}
-                    style={getStatusStyle(this.status)}
+                    style={getStatusStyle(this.state.status)}
                 />
                 <input
                     id="sInput"
                     className="input"
                     value={this.props.input}
                     placeholder={'----- NO INPUT -----'}
+                    onClick={this.handleClick}
                     onChange={this.props.onInputChange}
                     onKeyDown={this.props.onInputKeydown}
                     ref={(ref) => (this.inputElement = ref)}

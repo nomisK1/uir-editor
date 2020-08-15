@@ -18,16 +18,18 @@ interface IGraphProps {
 class Graph {
     private gid: number;
     private json: Object;
+    private line: number = 1;
+    private nodes: _node[] = [];
     private components: _component[] = [];
     private variables: variable[] = [];
     private targets: target[] = [];
-    private current: variable | null = null;
+    private current: _node | null = null;
+    private ancestors: _node[] = [];
     private next?: variable;
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
-    private ancestors: variable[] = [];
     private bookmark?: number = 0;
-    private comments: commentHover[] = [];
+    private comments: comment[] = [];
     private aliases: alias[] = [];
 
     constructor(props: IGraphProps) {
@@ -37,25 +39,24 @@ class Graph {
     }
 
     private build() {
-        let line = 1;
         let globals = lookupJSON(this.json, 'globals') as Object[];
         let functions = lookupJSON(this.json, 'functions') as Object[];
         globals.forEach((json) => {
             this.components.push(
                 new global({
                     json,
-                    line,
+                    line: this.line,
                     context: null,
                 }),
             );
-            line = this.components[this.components.length - 1].getLastLine() + 2;
+            this.line = this.components[this.components.length - 1].getLastLine() + 2;
         });
         functions.forEach((json) => {
             if (lookupJSON(json, 'blocks'))
                 this.components.push(
                     new definition({
                         json,
-                        line,
+                        line: this.line,
                         context: null,
                     }),
                 );
@@ -63,15 +64,16 @@ class Graph {
                 this.components.push(
                     new declaration({
                         json,
-                        line,
+                        line: this.line,
                         context: null,
                     }),
                 );
-            line = this.components[this.components.length - 1].getLastLine() + 2;
+            this.line = this.components[this.components.length - 1].getLastLine() + 2;
         });
-        this.components.forEach((c) => {
-            if (c instanceof definition) this.targets.push(...c.getTargets());
-            this.variables.push(...c.getVariables());
+        this.components.forEach((c) => this.nodes.push(...c.getNodes()));
+        this.nodes.forEach((n) => {
+            if (n instanceof variable) this.variables.push(n);
+            if (n instanceof target) this.targets.push(n);
         });
         this.getDefinitions().forEach((d) =>
             d.getVariables().forEach((v) => {
@@ -90,6 +92,14 @@ class Graph {
         let str = '';
         this.components.forEach((c) => (str += c.toString() + '\n\n'));
         return str.slice(0, -1);
+    }
+
+    public getStartPosition() {
+        return new monaco.Position(1, 1);
+    }
+
+    public getEndPosition() {
+        return new monaco.Position(this.line - 1, 1);
     }
 
     private getDeclarations() {
@@ -116,12 +126,12 @@ class Graph {
         return vars;
     }
 
-    private getVariablesByAlias(alias: string) {
-        let vars: variable[] = [];
-        this.variables.forEach((v) => {
-            if (v.getAlias() === alias) vars.push(v);
+    private getNodeByAlias(alias: string) {
+        let nodes: _node[] = [];
+        this.nodes.forEach((n) => {
+            if (n.getAlias() === alias) nodes.push(n);
         });
-        return vars;
+        return nodes;
     }
 
     private getComponentAt(position: monaco.Position) {
@@ -149,18 +159,10 @@ class Graph {
         return null;
     }
 
-    public getVariableOfNode(node: _node | null) {
-        return node instanceof variable ? node : null;
-    }
-
     public getTarVarAt(position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (node instanceof variable || node instanceof target) return node;
         return null;
-    }
-
-    public getTarVarOfNode(node: _node | null) {
-        return node instanceof variable || node instanceof target ? node : null;
     }
 
     public getRelatedNodes(node: _node | null) {
@@ -273,51 +275,7 @@ class Graph {
         return tree;
     }
 
-    public setCurrentNextOccurrence(input: string) {
-        if (this.current && this.current.getAlias() === input) {
-            let vars = this.getVariablesByAlias(this.current.getAlias());
-            for (let i = 0; i < vars.length; i++) {
-                if (
-                    !vars[i].getRange().getStartPosition().isBeforeOrEqual(this.current.getRange().getStartPosition())
-                ) {
-                    this.setCurrentVariable(vars[i]);
-                    return;
-                }
-            }
-            this.setCurrentVariable(vars[0]);
-        } else {
-            let next = this.getVariablesByAlias(input)[0];
-            this.setCurrentVariable(next ? next : null);
-        }
-    }
-
-    public setCurrentPrevOccurrence(input: string) {
-        if (this.current && this.current.getAlias() === input) {
-            let vars = this.getVariablesByAlias(this.current.getAlias());
-            for (let i = vars.length - 1; i >= 0; i--) {
-                if (vars[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
-                    this.setCurrentVariable(vars[i]);
-                    return;
-                }
-            }
-            this.setCurrentVariable(vars[vars.length - 1]);
-        } else {
-            let next = this.getVariablesByAlias(input)[0];
-            this.setCurrentVariable(next ? next : null);
-        }
-    }
-
-    public getCurrentParent() {
-        if (this.next === undefined) return this.currentParents[0];
-        return this.currentParents[this.currentParents.length - 1];
-    }
-
-    public getCurrentChild() {
-        if (this.next === undefined) return this.currentChildren[0];
-        return this.currentChildren[this.currentChildren.length - 1];
-    }
-
-    public updateNextParent() {
+    public getNextParent() {
         let temp = [...this.currentParents];
         this.next = temp.shift();
         if (this.next) temp.push(this.next);
@@ -325,7 +283,7 @@ class Graph {
         return this.next;
     }
 
-    public updateNextChild() {
+    public getNextChild() {
         let temp = [...this.currentChildren];
         this.next = temp.shift();
         if (this.next) temp.push(this.next);
@@ -333,15 +291,26 @@ class Graph {
         return this.next;
     }
 
-    public getCurrentVariable() {
+    public setCurrentParent() {
+        let parent = this.currentParents[this.next ? this.currentParents.length - 1 : 0];
+        if (parent) this.setCurrent(parent);
+    }
+
+    public setCurrentChild() {
+        let child = this.currentChildren[this.next ? this.currentChildren.length - 1 : 0];
+        if (child) this.setCurrent(child);
+    }
+
+    public getCurrent() {
         return this.current;
     }
 
-    public setCurrentToPrevious() {
-        let previous = this.ancestors.pop();
-        this.current = previous ? previous : null;
+    public setCurrent(node: _node | null) {
+        if (this.current && this.current !== node && !this.ancestors.includes(this.current))
+            this.ancestors.push(this.current);
+        this.current = node;
         this.next = undefined;
-        if (this.current) {
+        if (this.current instanceof variable) {
             this.currentParents = this.getVariableParents(this.current);
             this.currentChildren = this.getVariableChildren(this.current);
         } else {
@@ -350,17 +319,50 @@ class Graph {
         }
     }
 
-    public setCurrentVariable(variable: variable | null) {
-        if (this.current && this.current !== variable && !this.ancestors.includes(this.current))
-            this.ancestors.push(this.current);
-        this.current = variable;
+    public setCurrentToPrevious() {
+        let previous = this.ancestors.pop();
+        this.current = previous ? previous : null;
         this.next = undefined;
-        if (this.current) {
+        if (this.current instanceof variable) {
             this.currentParents = this.getVariableParents(this.current);
             this.currentChildren = this.getVariableChildren(this.current);
         } else {
             this.currentParents = [];
             this.currentChildren = [];
+        }
+    }
+
+    public setCurrentNextOccurrence(input: string) {
+        if (this.current && this.current.getAlias() === input) {
+            let nodes = this.getNodeByAlias(this.current.getAlias());
+            for (let i = 0; i < nodes.length; i++) {
+                if (
+                    !nodes[i].getRange().getStartPosition().isBeforeOrEqual(this.current.getRange().getStartPosition())
+                ) {
+                    this.setCurrent(nodes[i]);
+                    return;
+                }
+            }
+            this.setCurrent(nodes[0]);
+        } else {
+            let next = this.getNodeByAlias(input)[0];
+            this.setCurrent(next ? next : null);
+        }
+    }
+
+    public setCurrentPrevOccurrence(input: string) {
+        if (this.current && this.current.getAlias() === input) {
+            let nodes = this.getNodeByAlias(this.current.getAlias());
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                if (nodes[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
+                    this.setCurrent(nodes[i]);
+                    return;
+                }
+            }
+            this.setCurrent(nodes[nodes.length - 1]);
+        } else {
+            let next = this.getNodeByAlias(input)[0];
+            this.setCurrent(next ? next : null);
         }
     }
 
@@ -455,6 +457,11 @@ class Graph {
         this.removeLocalStorageComments();
     }
 
+    private updateComments() {
+        for (let i = 0; i < this.comments.length; i++)
+            if (this.comments[i].node) this.comments[i].range = this.comments[i].node!.getRange();
+    }
+
     public getCommentAt(position: monaco.Position) {
         for (let i = 0; i < this.comments.length; i++)
             if (this.comments[i].range.containsPosition(position)) return this.comments[i];
@@ -465,10 +472,9 @@ class Graph {
         return this.comments;
     }
 
-    private updateComments() {
-        for (let i = 0; i < this.comments.length; i++)
-            if (this.comments[i].node) this.comments[i].range = this.comments[i].node!.getRange();
-    }
+    public getNextCommentAt(position: monaco.Position) {}
+
+    public getPrevCommentAt(position: monaco.Position) {}
 
     private retrieveLocalStorageAliases() {
         let size = localStorage.length;
@@ -595,8 +601,7 @@ class Graph {
 
 export default Graph;
 
-type commentLine = { text: string; line: number };
-type commentHover = { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node };
+type comment = { text: string; range: monaco.Range; isWholeLine: boolean; node?: _node };
 type alias = { alias: string; position: monaco.Position };
 
 const legalStrings: string[] = [
@@ -668,13 +673,4 @@ const legalStrings: string[] = [
 function isLegal(string: string) {
     for (let i = 0; i < string.length; i++) if (!legalStrings.includes(string[i])) return false;
     return true;
-}
-
-/**
- * removeDuplicates:
- *
- */
-// eslint-disable-next-line
-function removeDuplicates(array: any[]) {
-    return array.filter((a, b) => array.indexOf(a) === b);
 }

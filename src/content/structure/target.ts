@@ -22,6 +22,10 @@ class target extends _node {
         return '%' + this.getAlias();
     }
 
+    public getNodes() {
+        return [this];
+    }
+
     public getVariables() {
         return [];
     }

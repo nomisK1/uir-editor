@@ -17,6 +17,10 @@ class constant extends _value {
         return (this.showType && this.type ? this.type + ' ' : '') + this.name;
     }
 
+    public getNodes() {
+        return [this];
+    }
+
     public getVariables() {
         return [];
     }

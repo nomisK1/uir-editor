@@ -38,6 +38,10 @@ class assignment extends _instruction {
         return '%' + this.destination.getAlias() + ' = ' + (this.operation ? this.operation.toString() : '');
     }
 
+    public getNodes() {
+        return [this, this.destination, ...this.operation.getNodes()];
+    }
+
     public getVariables() {
         return [this.destination, ...this.operation.getVariables()];
     }
@@ -54,6 +58,10 @@ class assignment extends _instruction {
 
     public getOperation() {
         return this.operation;
+    }
+
+    public getTargets() {
+        return this.operation.getTargets();
     }
 
     public hasParent(name: string) {

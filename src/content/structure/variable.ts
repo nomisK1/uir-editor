@@ -28,6 +28,10 @@ class variable extends _value {
         return (this.showType && this.type ? this.type + ' ' : '') + '%' + this.getAlias();
     }
 
+    public getNodes() {
+        return [this];
+    }
+
     public getVariables() {
         return [this];
     }

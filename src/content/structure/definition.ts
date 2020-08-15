@@ -67,6 +67,12 @@ class definition extends _function {
         );
     }
 
+    public getNodes() {
+        let nodes: _node[] = [this, ...this.args];
+        this.blocks.forEach((b) => nodes.push(...b.getNodes()));
+        return nodes;
+    }
+
     public getVariables() {
         let vars = [...this.args];
         this.blocks.forEach((b) => vars.push(...b.getVariables()));

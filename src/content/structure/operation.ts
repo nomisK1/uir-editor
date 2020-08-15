@@ -360,6 +360,10 @@ class operation extends _instruction {
         return str /* + '//[' + Object.keys(this.json) + ']' */;
     }
 
+    public getNodes() {
+        return [this, ...this.operands];
+    }
+
     public getVariables() {
         let vars: variable[] = [];
         this.operands.forEach((o) => {

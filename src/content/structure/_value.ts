@@ -15,10 +15,6 @@ abstract class _value extends _node {
 
     // Should always be called in the context
     public findRanges() {}
-
-    public getAlias() {
-        return this.name!;
-    }
 }
 
 export default _value;

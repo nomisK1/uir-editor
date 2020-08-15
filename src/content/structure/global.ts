@@ -32,6 +32,10 @@ class global extends _component {
         return 'const ' + this.variable.toString() + '[' + this.size + '] = "' + this.data + '"';
     }
 
+    public getNodes() {
+        return [this, this.variable];
+    }
+
     public getVariables() {
         return this.variable.getVariables();
     }

@@ -26,6 +26,10 @@ class declaration extends _function {
         return 'declare ' + this.type + ' @' + this.fullName + '(' + this.printArgs() + ')';
     }
 
+    public getNodes() {
+        return [this, ...this.args];
+    }
+
     public getVariables() {
         return this.args;
     }

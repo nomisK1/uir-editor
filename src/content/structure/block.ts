@@ -55,8 +55,10 @@ class block extends _node {
                         context: this,
                     }),
                 );
-                this.targets.push(...(this.instructions[this.instructions.length - 1] as operation).getTargets());
             }
+        });
+        this.instructions.forEach((i) => {
+            this.targets.push(...i.getTargets());
         });
     }
 
@@ -80,6 +82,12 @@ class block extends _node {
 
     public toString() {
         return this.label!.toString() + '\n' + this.printInstructions();
+    }
+
+    public getNodes() {
+        let nodes: _node[] = [this, this.label];
+        this.instructions.forEach((i) => nodes.push(...i.getNodes()));
+        return nodes;
     }
 
     public getVariables() {
