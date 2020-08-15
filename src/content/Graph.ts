@@ -472,9 +472,31 @@ class Graph {
         return this.comments;
     }
 
-    public getNextCommentAt(position: monaco.Position) {}
+    private compareComments(a: comment, b: comment) {
+        let aPos = a.range.getStartPosition();
+        let bPos = b.range.getStartPosition();
+        return aPos.isBefore(bPos) ? -1 : aPos.equals(bPos) ? 0 : 1;
+    }
 
-    public getPrevCommentAt(position: monaco.Position) {}
+    public getNextCommentAt(position: monaco.Position): comment | null {
+        if (this.comments.length) {
+            this.comments.sort(this.compareComments);
+            for (let i = 0; i < this.comments.length; i++)
+                if (!this.comments[i].range.getStartPosition().isBeforeOrEqual(position)) return this.comments[i];
+            return this.getNextCommentAt(this.getStartPosition());
+        }
+        return null;
+    }
+
+    public getPrevCommentAt(position: monaco.Position): comment | null {
+        if (this.comments.length) {
+            this.comments.sort(this.compareComments);
+            for (let i = this.comments.length - 1; i >= 0; i--)
+                if (this.comments[i].range.getStartPosition().isBefore(position)) return this.comments[i];
+            return this.getPrevCommentAt(this.getEndPosition());
+        }
+        return null;
+    }
 
     private retrieveLocalStorageAliases() {
         let size = localStorage.length;

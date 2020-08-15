@@ -89,6 +89,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
         this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
+        this.handleKeypressRevealNextComment = this.handleKeypressRevealNextComment.bind(this);
+        this.handleKeypressRevealPrevComment = this.handleKeypressRevealPrevComment.bind(this);
         this.handleKeypressRename = this.handleKeypressRename.bind(this);
         this.handleKeypressUndoRename = this.handleKeypressUndoRename.bind(this);
         this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
@@ -267,6 +269,24 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressResetComments,
+            });
+            this.editor.addAction({
+                id: 'revealNextComment',
+                label: 'Reveal Next Comment',
+                keybindings: [monaco.KeyCode.KEY_X],
+                contextMenuGroupId: '2_comment',
+                contextMenuOrder: 4,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRevealNextComment,
+            });
+            this.editor.addAction({
+                id: 'revealPrevComment',
+                label: 'Reveal Previous Comment',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_X],
+                contextMenuGroupId: '2_comment',
+                contextMenuOrder: 5,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRevealPrevComment,
             });
             this.editor.addAction({
                 id: 'renameNode',
@@ -471,33 +491,27 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressLeft() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column - 1));
+        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column - 1));
     }
 
     public handleKeypressDown() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(position.lineNumber + 1, undefined));
+        this.updatePosition(this.lastPosition.with(this.lastPosition.lineNumber + 1, undefined));
     }
 
     public handleKeypressUp() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(position.lineNumber - 1, undefined));
+        this.updatePosition(this.lastPosition.with(this.lastPosition.lineNumber - 1, undefined));
     }
 
     public handleKeypressRight() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column + 1));
+        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column + 1));
     }
 
     public handleKeypressJumpRight() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column + 15));
+        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column + 15));
     }
 
     public handleKeypressJumpLeft() {
-        let position = this.editor!.getPosition()!;
-        this.updatePosition(position.with(undefined, position.column - 15));
+        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column - 15));
     }
 
     public handleKeypressJumpStart() {
@@ -586,6 +600,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     public handleKeypressResetComments() {
         this.graph.resetComments();
         this.decorateComments();
+    }
+
+    public handleKeypressRevealNextComment() {
+        this.revealNextComment();
+    }
+
+    public handleKeypressRevealPrevComment() {
+        this.revealPrevComment();
     }
 
     public handleKeypressRename() {
@@ -741,8 +763,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.decorateCursor();
         this.decorateTree(position);
-        console.log(this.graph.getCurrent());
-        console.log(this.lastPosition);
+        //console.log(this.graph.getCurrent());
+        //console.log(this.lastPosition);
     }
 
     private resetPosition() {
@@ -750,20 +772,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private revealBookmark() {
-        if (this.editor && this.graph.getBookmark())
-            this.updatePosition(new monaco.Position(this.graph.getBookmark()!, 0));
+        let bookmark = this.graph.getBookmark();
+        if (bookmark) this.updatePosition(new monaco.Position(bookmark, 0));
     }
 
     private revealNextComment() {
-        //TODO
-        if (this.editor && this.graph.getBookmark())
-            this.updatePosition(new monaco.Position(this.graph.getBookmark()!, 0));
+        let comment = this.graph.getNextCommentAt(this.lastPosition);
+        if (comment) this.updatePosition(comment.range.getStartPosition());
     }
 
     private revealPrevComment() {
-        //TODO
-        if (this.editor && this.graph.getBookmark())
-            this.updatePosition(new monaco.Position(this.graph.getBookmark()!, 0));
+        let comment = this.graph.getPrevCommentAt(this.lastPosition);
+        if (comment) this.updatePosition(comment.range.getStartPosition());
     }
 
     //--------------------------------------------------
