@@ -10,15 +10,28 @@
     shift + (down-Arrow | k)  : jumpParent
     shift + (right-Arrow | l) : cycleParents
 
-    m                    : moveRight
-    shift + m            : moveLeft 
+    m                    : jumpRight
+    shift + m            : jumpLeft
+
     Enter | n            : jumpNextOccurrence
     shift + (Enter | n)  : jumpPrevOccurrence
-    (shift +)? z         : jumpBack
-    Backspace | US-Slash : searchVariable
+
+    t (insideDefinition) : jumpNextTarget
+    shift + t            : jumpPrevTarget
+
+    y | z (insideBlock) : jumpCurrentLabel
+    shift + (y |z)      : jumpBack
+
+    v         : jumpStart
+    shift + v : jumpEnd
 
 
 Features:
+
+    Backspace | US-Slash : searchNode
+
+    s (insideDefinition) : showTargetTree
+    shift + s            : showKeyboardShortcuts
 
     b               : addBookmark
     shift + b       : revealBookmark
@@ -28,28 +41,29 @@ Features:
     shift + c       : removeComment
     shift + alt + c : resetAllComments
 
+    x               : revealNextComment
+    shift + x       : revealPrevComment
+
     r               : renameNode
     shift + r       : unnameNode
     shift + alt + r : resetAllNames
 
-    alt + 1 : foldAll
-    alt + 2 : foldBlocks
-    alt + 3 : unfoldAll
-
-    s (+ CursorInsideBlock) : showTargetTree
-    shift + s               : showKeyboardShortcuts
+    1 : foldAll
+    2 : foldBlocks
+    3 : unfoldAll
 
 
 Editor:
 
+    tab      : toggleAllKeybinds
+
     q         : nextTCPH
     shift + q : prevTCPH
-    tab       : toggleAllKeybinds
     
-    ctrl + 1 : toggleNodeHighlighting
-    ctrl + 2 : toggleVariableDecorating
-    ctrl + 3 : toggleChildDecorating
-    ctrl + 4 : toggleParentDecorating
-    ctrl + 5 : toggleBookmarkDisplay
-    ctrl + 6 : toggleCommentDisplay
-    ctrl + 7 : toggleTargetTreeHover`
+    shift + 1 : toggleNodeHighlighting
+    shift + 2 : toggleVariableDecorating
+    shift + 3 : toggleChildDecorating
+    shift + 4 : toggleParentDecorating
+    shift + 5 : toggleBookmarkDisplay
+    shift + 6 : toggleCommentDisplay
+    shift + 7 : toggleTargetTreeHover`

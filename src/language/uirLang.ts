@@ -47,7 +47,6 @@ export const hoverProvider: monaco.languages.HoverProvider = {
 
 export const highlightProvider: monaco.languages.DocumentHighlightProvider = {
     provideDocumentHighlights: function (_model, position, _token) {
-        //console.log(_model.getWordAtPosition(position));
         return new Promise(function (resolve, reject) {
             const editor = S.getInstance().getEditor();
             if (editor) resolve(editor.highlightNodes(position));

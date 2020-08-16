@@ -210,6 +210,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.handleKeypressJumpBack,
                 'condition',
             );
+            this.editor.addCommand(monaco.KeyCode.KEY_Y, this.handleKeypressJumpLabel, 'condition');
+            this.editor.addCommand(
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_Y,
+                this.handleKeypressJumpBack,
+                'condition',
+            );
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.Enter,
@@ -332,7 +338,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'foldAll',
                 label: 'Fold All',
-                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_1],
+                keybindings: [monaco.KeyCode.KEY_1],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
@@ -341,7 +347,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'foldBlocks',
                 label: 'Fold Blocks',
-                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_2],
+                keybindings: [monaco.KeyCode.KEY_2],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
@@ -350,7 +356,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'unfoldAll',
                 label: 'Unfold All',
-                keybindings: [monaco.KeyMod.Alt | monaco.KeyCode.KEY_3],
+                keybindings: [monaco.KeyCode.KEY_3],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
@@ -359,7 +365,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleNodeHighlighting',
                 label: 'Toggle Node Highlighting',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_1],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_1],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
@@ -368,7 +374,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleCursorDecorating',
                 label: 'Toggle Cursor Decorating',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_2],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_2],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
@@ -377,7 +383,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleVariableDecorating',
                 label: 'Toggle Variable Decorating',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_3],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_3],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
@@ -386,7 +392,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleChildDecorating',
                 label: 'Toggle Child Decorating',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_4],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_4],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 4,
                 keybindingContext: 'condition',
@@ -395,7 +401,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleParentDecorating',
                 label: 'Toggle Parent Decorating',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_5],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_5],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 5,
                 keybindingContext: 'condition',
@@ -404,7 +410,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleBookmarkDisplay',
                 label: 'Toggle Bookmark Display',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_6],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_6],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 6,
                 keybindingContext: 'condition',
@@ -413,7 +419,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleCommentDisplay',
                 label: 'Toggle Comment Display',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_7],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_7],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 7,
                 keybindingContext: 'condition',
@@ -422,7 +428,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'toggleTargetTreeHover',
                 label: 'Toggle Target Tree Hover',
-                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_8],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_8],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 8,
                 keybindingContext: 'condition',

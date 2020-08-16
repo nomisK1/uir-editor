@@ -16,68 +16,8 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
             >
                 <div className="modal-content">
                     <span className="close">&times;</span>
-                    <h3 className="modalHeader">KEYBINDS</h3>
-                    <div className="pre-wrapper">
-                        <pre>
-                            {`
-                            Navigation:
-
-                                left-Arrow | h  : left
-                                up-Arrow | j    : up
-                                down-Arrow | k  : down
-                                right-Arrow | l : right
-                                
-                                shift + (left-Arrow | h)  : cycleChildren
-                                shift + (up-Arrow | j)    : jumpChild
-                                shift + (down-Arrow | k)  : jumpParent
-                                shift + (right-Arrow | l) : cycleParents
-                            
-                                m                    : moveRight
-                                shift + m            : moveLeft 
-                                Enter | n            : jumpNextOccurrence
-                                shift + (Enter | n)  : jumpPrevOccurrence
-                                (shift +)? z         : jumpBack
-                                Backspace | US-Slash : searchVariable
-                            
-                            
-                            Features:
-                            
-                                b               : addBookmark
-                                shift + b       : revealBookmark
-                                shift + alt + b : removeBookmark
-                            
-                                c               : addComment
-                                shift + c       : removeComment
-                                shift + alt + c : resetAllComments
-                            
-                                r               : renameNode
-                                shift + r       : unnameNode
-                                shift + alt + r : resetAllNames
-                            
-                                alt + 1 : foldAll
-                                alt + 2 : foldBlocks
-                                alt + 3 : unfoldAll
-                            
-                                s (+ CursorInsideBlock) : showTargetTree
-                                shift + s               : showKeyboardShortcuts
-                            
-                            
-                            Editor:
-                            
-                                q         : nextTCPH
-                                shift + q : prevTCPH
-                                tab       : toggleAllKeybinds
-                                
-                                ctrl + 1 : toggleNodeHighlighting
-                                ctrl + 2 : toggleVariableDecorating
-                                ctrl + 3 : toggleChildDecorating
-                                ctrl + 4 : toggleParentDecorating
-                                ctrl + 5 : toggleBookmarkDisplay
-                                ctrl + 6 : toggleCommentDisplay
-                                ctrl + 7 : toggleTargetTreeHover`}
-                        </pre>
-                    </div>
-                    {/* <img id="keybindImage" className="image" src="keybinds.png" alt="KEYBINDS" /> */}
+                    <h3 className="modalHeader">KEYBINDS (UIR-Editor/public/keybinds.txt)</h3>
+                    <img className="image" src="keybinds.png" alt="KEYBINDS" />
                 </div>
             </div>
         );
