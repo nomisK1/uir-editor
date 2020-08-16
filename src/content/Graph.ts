@@ -8,6 +8,7 @@ import block from './structure/block';
 import operation from './structure/operation';
 import variable from './structure/variable';
 import target from './structure/target';
+import label from './structure/label';
 import TargetTree from './tree/TargetTree';
 
 interface IGraphProps {
@@ -319,19 +320,6 @@ class Graph {
         }
     }
 
-    public setCurrentToPrevious() {
-        let previous = this.ancestors.pop();
-        this.current = previous ? previous : null;
-        this.next = undefined;
-        if (this.current instanceof variable) {
-            this.currentParents = this.getVariableParents(this.current);
-            this.currentChildren = this.getVariableChildren(this.current);
-        } else {
-            this.currentParents = [];
-            this.currentChildren = [];
-        }
-    }
-
     public setCurrentNextOccurrence(input: string) {
         if (this.current && this.current.getAlias() === input) {
             let nodes = this.getNodeByAlias(this.current.getAlias());
@@ -364,6 +352,58 @@ class Graph {
             let next = this.getNodeByAlias(input)[0];
             this.setCurrent(next ? next : null);
         }
+    }
+
+    public setCurrentToPrevious() {
+        let previous = this.ancestors.pop();
+        this.current = previous ? previous : null;
+        this.next = undefined;
+        if (this.current instanceof variable) {
+            this.currentParents = this.getVariableParents(this.current);
+            this.currentChildren = this.getVariableChildren(this.current);
+        } else {
+            this.currentParents = [];
+            this.currentChildren = [];
+        }
+    }
+
+    public getRelatedLabelAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node) {
+            if (node instanceof target)
+                return this.getRelatedTargets(node).filter((t) => t instanceof label)[0] as label;
+            let block = this.getBlockAt(node.getRange().getStartPosition());
+            if (block) return block.getLabel();
+        }
+        return null;
+    }
+
+    public getNextTargetAt(position: monaco.Position): target | null {
+        let node = this.getNodeAt(position);
+        if (node) {
+            let context = node.getOuterContext();
+            if (context instanceof definition) {
+                let targets = context.getTargets();
+                for (let i = 0; i < targets.length; i++)
+                    if (!targets[i].getRange().getStartPosition().isBeforeOrEqual(position)) return targets[i];
+                return this.getNextTargetAt(context.getRange().getStartPosition());
+            }
+        }
+        return null;
+    }
+
+    public getPrevTargetAt(position: monaco.Position): target | null {
+        let node = this.getNodeAt(position);
+        if (node) {
+            let context = node.getOuterContext();
+            if (context instanceof definition) {
+                let targets = context.getTargets();
+                for (let i = targets.length - 1; i >= 0; i--)
+                    if (targets[i].getRange().getStartPosition().isBefore(position)) return targets[i];
+                return this.getPrevTargetAt(context.getRange().getEndPosition());
+            }
+        }
+        return null;
     }
 
     private retrieveLocalStorageBookmark() {

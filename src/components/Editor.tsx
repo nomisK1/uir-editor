@@ -74,11 +74,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressJumpLeft = this.handleKeypressJumpLeft.bind(this);
         this.handleKeypressJumpStart = this.handleKeypressJumpStart.bind(this);
         this.handleKeypressJumpEnd = this.handleKeypressJumpEnd.bind(this);
+        this.handleKeypressJumpNextTarget = this.handleKeypressJumpNextTarget.bind(this);
+        this.handleKeypressJumpPrevTarget = this.handleKeypressJumpPrevTarget.bind(this);
+        this.handleKeypressJumpLabel = this.handleKeypressJumpLabel.bind(this);
+        this.handleKeypressJumpBack = this.handleKeypressJumpBack.bind(this);
         this.handleKeypressHoverChild = this.handleKeypressHoverChild.bind(this);
         this.handleKeypressChild = this.handleKeypressChild.bind(this);
         this.handleKeypressHoverParent = this.handleKeypressHoverParent.bind(this);
         this.handleKeypressParent = this.handleKeypressParent.bind(this);
-        this.handleKeypressGoBack = this.handleKeypressGoBack.bind(this);
         this.handleKeypressToInput_Comment = this.handleKeypressToInput_Comment.bind(this);
         this.handleKeypressToInput_Rename = this.handleKeypressToInput_Rename.bind(this);
         this.handleKeypressToInput_Search = this.handleKeypressToInput_Search.bind(this);
@@ -195,6 +198,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             );
             this.editor.addCommand(monaco.KeyCode.KEY_V, this.handleKeypressJumpStart, 'condition');
             this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_V, this.handleKeypressJumpEnd, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_T, this.handleKeypressJumpNextTarget, 'condition');
+            this.editor.addCommand(
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_T,
+                this.handleKeypressJumpPrevTarget,
+                'condition',
+            );
+            this.editor.addCommand(monaco.KeyCode.KEY_Z, this.handleKeypressJumpLabel, 'condition');
+            this.editor.addCommand(
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_Z,
+                this.handleKeypressJumpBack,
+                'condition',
+            );
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.Enter,
@@ -207,8 +222,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.handleKeypressPrevOccurrence,
                 'condition',
             );
-            this.editor.addCommand(monaco.KeyCode.KEY_Z, this.handleKeypressGoBack, 'condition');
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_Z, this.handleKeypressGoBack, 'condition');
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextTcphQuery, 'condition');
@@ -480,6 +493,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Event handler-----
     //--------------------------------------------------
 
+    //-----Navigation-----
+
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
         let position = event.target.position;
         if (position !== null) {
@@ -529,6 +544,45 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updatePosition(this.graph.getEndPosition());
     }
 
+    public handleKeypressJumpNextTarget() {
+        let target = this.graph.getNextTargetAt(this.lastPosition);
+        if (target) {
+            this.graph.setCurrent(target);
+            this.updatePosition();
+        }
+    }
+
+    public handleKeypressJumpPrevTarget() {
+        let target = this.graph.getPrevTargetAt(this.lastPosition);
+        if (target) {
+            this.graph.setCurrent(target);
+            this.updatePosition();
+        }
+    }
+
+    public handleKeypressJumpLabel() {
+        let label = this.graph.getRelatedLabelAt(this.lastPosition);
+        if (label) {
+            this.graph.setCurrent(label);
+            this.updatePosition();
+        }
+    }
+
+    public handleKeypressJumpBack() {
+        this.graph.setCurrentToPrevious();
+        this.updatePosition();
+    }
+
+    public handleKeypressNextOccurrence() {
+        this.graph.setCurrentNextOccurrence(this.input);
+        this.updatePosition();
+    }
+
+    public handleKeypressPrevOccurrence() {
+        this.graph.setCurrentPrevOccurrence(this.input);
+        this.updatePosition();
+    }
+
     public handleKeypressHoverChild() {
         let child = this.graph.getNextChild();
         if (child) this.decorateVariable(child.getRange().getStartPosition());
@@ -549,10 +603,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updatePosition();
     }
 
-    public handleKeypressGoBack() {
-        this.graph.setCurrentToPrevious();
-        this.updatePosition();
-    }
+    //-----Features-----
 
     public handleKeypressToInput_Comment() {
         let comment = this.graph.getCommentAt(this.lastPosition);
@@ -567,16 +618,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressToInput_Search() {
         this.props.focusInput(Status.SEARCH);
-    }
-
-    public handleKeypressNextOccurrence() {
-        this.graph.setCurrentNextOccurrence(this.input);
-        this.updatePosition();
-    }
-
-    public handleKeypressPrevOccurrence() {
-        this.graph.setCurrentPrevOccurrence(this.input);
-        this.updatePosition();
     }
 
     public handleKeypressAddBookmark() {
@@ -650,6 +691,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.resetPosition();
         }
     }
+
+    //-----Editor-----
 
     public handleToggleNodeHighlighting() {
         this.setState({
@@ -771,8 +814,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.decorateCursor();
         this.decorateTree(position);
-        console.log(this.grid);
-        console.log(this.lastPosition);
+        //console.log(this.grid);
+        //console.log(this.lastPosition);
     }
 
     private resetPosition() {
