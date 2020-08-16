@@ -1,14 +1,14 @@
 .glyphBookmark {
-    background: rgb(57, 9, 120, 0.6); /* #390978 */
+    background: rgb(57, 9, 120, 0.4); /* #390978 */
 }
 .contentBookmark {
-    background: rgb(57, 9, 120, 0.6);
+    background: rgb(57, 9, 120, 0.4);
 }
 .glyphComment {
-    background: rgb(120, 120, 38, 0.6); /* #787826 */
+    background: rgb(120, 120, 38, 0.2); /* #787826 */
 }
 .contentComment {
-    background: rgb(120, 120, 38, 0.6);
+    background: rgb(120, 120, 38, 0.2);
 }
 /* .glyphChild-5 {
     background: rgba(38, 120, 120, 0.1);

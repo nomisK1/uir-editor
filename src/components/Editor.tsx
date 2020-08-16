@@ -41,6 +41,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private value: string;
     private input: string;
     private lastPosition: monaco.Position = new monaco.Position(1, 1);
+    private grid: number = 1;
     private decorations: string[] = [];
     private cursorDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
@@ -480,7 +481,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
-        if (event.target.position !== null) this.updatePosition(event.target.position);
+        let position = event.target.position;
+        if (position !== null) {
+            this.setGrid(position);
+            this.updatePosition(position);
+        }
     }
 
     public handleKeypressToggleKeybinds() {
@@ -491,6 +496,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressLeft() {
+        this.decreaseGrid();
         this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column - 1));
     }
 
@@ -503,6 +509,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressRight() {
+        this.increaseGrid();
         this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column + 1));
     }
 
@@ -746,11 +753,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private updatePosition(position?: monaco.Position) {
         let current = this.graph.getCurrent();
-        if (!position && current) position = current.getRange().getStartPosition();
-        else {
+        if (!position && current) {
+            position = current.getRange().getStartPosition();
+            this.setGrid(position);
+        } else {
             if (!position) position = this.lastPosition;
-            if (!position.lineNumber) position = new monaco.Position(1, position.column);
-            if (!position.column) position = new monaco.Position(position.lineNumber, 1);
+            position = this.validate(position);
             current = this.graph.getNodeAt(position);
             this.graph.setCurrent(current);
         }
@@ -763,12 +771,49 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.decorateCursor();
         this.decorateTree(position);
-        //console.log(this.graph.getCurrent());
-        //console.log(this.lastPosition);
+        console.log(this.grid);
+        console.log(this.lastPosition);
     }
 
     private resetPosition() {
         this.updatePosition(this.lastPosition);
+    }
+
+    private getLineLength(line: number) {
+        if (line < 1) return 1;
+        let lines = this.value.split('\n');
+        return lines[line - 1] ? lines[line - 1].length + 1 : 1;
+    }
+
+    private setGrid(position: monaco.Position) {
+        let max = this.getLineLength(position.lineNumber);
+        this.grid = max > position.column ? position.column : max;
+    }
+
+    private decreaseGrid() {
+        let max = this.getLineLength(this.lastPosition.lineNumber);
+        this.grid = max > this.grid ? this.grid : max;
+        this.grid = this.grid > 1 ? this.grid - 1 : 1;
+    }
+
+    private increaseGrid() {
+        let max = this.getLineLength(this.lastPosition.lineNumber);
+        this.grid = max > this.grid ? this.grid + 1 : max;
+    }
+
+    private validate(position: monaco.Position) {
+        let maxL = this.graph.getEndPosition().lineNumber;
+        let maxC = this.getLineLength(position.lineNumber);
+        let lineNumber = maxL < position.lineNumber ? maxL : position.lineNumber > 0 ? position.lineNumber : 1;
+        let column =
+            maxC >= this.grid && this.grid > position.column
+                ? this.grid
+                : position.column > maxC || this.grid > maxC
+                ? maxC
+                : position.column > 0
+                ? position.column
+                : 1;
+        return new monaco.Position(lineNumber, column);
     }
 
     private revealBookmark() {
