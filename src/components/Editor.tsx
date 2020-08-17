@@ -42,6 +42,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private input: string;
     private lastPosition: monaco.Position = new monaco.Position(1, 1);
     private grid: number = 1;
+    private maxAncestorDepth: number = 3;
     private decorations: string[] = [];
     private cursorDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
@@ -113,6 +114,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressPrevTcphQuery = this.handleKeypressPrevTcphQuery.bind(this);
         this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
         this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
+        this.handleKeypressRevealCursor = this.handleKeypressRevealCursor.bind(this);
         this.handleKeypressToggleKeybinds = this.handleKeypressToggleKeybinds.bind(this);
     }
 
@@ -143,7 +145,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 automaticLayout: true,
                 roundedSelection: false,
                 scrollBeyondLastLine: true,
-                minimap: { enabled: true },
+                minimap: { enabled: true, renderCharacters: false },
                 autoIndent: 'none',
                 readOnly: true,
                 glyphMargin: true,
@@ -435,11 +437,20 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleToggleTargetTreeHover,
             });
             this.editor.addAction({
+                id: 'revealCursor',
+                label: 'Reveal Cursor',
+                keybindings: [monaco.KeyCode.Space],
+                contextMenuGroupId: '9_other',
+                contextMenuOrder: 1,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRevealCursor,
+            });
+            this.editor.addAction({
                 id: 'displayTargetTreeModal',
                 label: 'Show Target Tree',
                 keybindings: [monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '9_other',
-                contextMenuOrder: 1,
+                contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayTargetTreeModal,
             });
@@ -448,7 +459,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 label: 'Show Keyboard Shortcuts',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '9_other',
-                contextMenuOrder: 2,
+                contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayKeybindModal,
             });
@@ -457,7 +468,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 label: 'Toggle All Keybinds',
                 keybindings: [monaco.KeyCode.Tab],
                 contextMenuGroupId: '9_other',
-                contextMenuOrder: 3,
+                contextMenuOrder: 4,
                 run: this.handleKeypressToggleKeybinds,
             });
             this.editor.onDidChangeModelContent((_event) => {
@@ -624,6 +635,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressToInput_Search() {
         this.props.focusInput(Status.SEARCH);
+    }
+
+    public handleKeypressRevealCursor() {
+        this.revealCursor();
     }
 
     public handleKeypressAddBookmark() {
@@ -865,6 +880,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return new monaco.Position(lineNumber, column);
     }
 
+    private revealCursor() {
+        this.resetPosition();
+    }
+
     private revealBookmark() {
         let bookmark = this.graph.getBookmark();
         if (bookmark) this.updatePosition(new monaco.Position(bookmark, 0));
@@ -913,6 +932,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                         isWholeLine: true,
                         className: 'contentCursor',
                         glyphMarginClassName: 'glyphCursor',
+                        minimap: {
+                            color: { id: 'cursor' },
+                            position: 2,
+                        },
+                        zIndex: 7,
                     },
                 },
             ];
@@ -942,6 +966,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 isWholeLine: false,
                 className: 'contentVariable',
                 glyphMarginClassName: 'glyphVariable',
+                minimap: {
+                    color: { id: 'variable' },
+                    position: 2,
+                },
+                zIndex: 6,
             },
         });
     }
@@ -998,29 +1027,47 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                     isWholeLine: false,
                     className: 'contentSelect',
                     glyphMarginClassName: 'glyphSelect',
+                    minimap: {
+                        color: { id: 'select' },
+                        position: 1,
+                    },
+                    zIndex: 5,
                 },
             });
-        } else if (leaf.depth < 0) {
-            let className = 'contentChild' + leaf.depth;
-            this.treeDecorations.push({
-                range: leaf.range,
-                options: {
-                    isWholeLine: false,
-                    className,
-                    glyphMarginClassName: 'glyphChild' + leaf.depth,
-                },
-            });
-        } else {
-            let className = 'contentParent' + leaf.depth;
-            this.treeDecorations.push({
-                range: leaf.range,
-                options: {
-                    isWholeLine: false,
-                    className,
-                    glyphMarginClassName: 'glyphParent' + leaf.depth,
-                },
-            });
-        }
+        } else if (Math.abs(leaf.depth) <= this.maxAncestorDepth)
+            if (leaf.depth < 0) {
+                if (leaf.depth < -4) leaf.depth = -4;
+                let className = 'contentChild' + leaf.depth;
+                this.treeDecorations.push({
+                    range: leaf.range,
+                    options: {
+                        isWholeLine: false,
+                        className,
+                        glyphMarginClassName: 'glyphChild' + leaf.depth,
+                        minimap: {
+                            color: { id: 'child' },
+                            position: 1,
+                        },
+                        zIndex: 3,
+                    },
+                });
+            } else {
+                if (leaf.depth > 4) leaf.depth = 4;
+                let className = 'contentParent' + leaf.depth;
+                this.treeDecorations.push({
+                    range: leaf.range,
+                    options: {
+                        isWholeLine: false,
+                        className,
+                        glyphMarginClassName: 'glyphParent' + leaf.depth,
+                        minimap: {
+                            color: { id: 'parent' },
+                            position: 1,
+                        },
+                        zIndex: 4,
+                    },
+                });
+            }
     }
 
     /**
@@ -1058,6 +1105,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 isWholeLine: true,
                 className: 'contentBookmark',
                 glyphMarginClassName: 'glyphBookmark',
+                minimap: {
+                    color: { id: 'bookmark' },
+                    position: 1,
+                },
+                zIndex: 1,
             },
         });
     }
@@ -1084,6 +1136,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 isWholeLine: comment.isWholeLine,
                 className: 'contentComment',
                 glyphMarginClassName: 'glyphComment',
+                minimap: {
+                    color: { id: 'comment' },
+                    position: 1,
+                },
+                zIndex: 2,
             },
         });
     }

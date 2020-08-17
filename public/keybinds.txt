@@ -28,6 +28,8 @@
 
 Features:
 
+    Space:               : revealCursor
+    
     Backspace | US-Slash : searchNode
 
     s (insideDefinition) : showTargetTree

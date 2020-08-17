@@ -1,27 +1,21 @@
 .glyphBookmark {
-    background: rgb(57, 9, 120, 0.4); /* #390978 */
+    background: rgba(57, 9, 120, 0.4); /* #39097866 */
 }
 .contentBookmark {
     background: rgb(57, 9, 120, 0.4);
 }
 .glyphComment {
-    background: rgb(120, 120, 38, 0.2); /* #787826 */
+    background: rgba(120, 120, 38, 0.2); /* #78782633 */
 }
 .contentComment {
     background: rgb(120, 120, 38, 0.2);
-}
-/* .glyphChild-5 {
-    background: rgba(38, 120, 120, 0.1);
-}
-.contentChild-5 {
-    background: rgba(38, 120, 120, 0.1);
 }
 .glyphChild-4 {
     background: rgba(38, 120, 120, 0.1);
 }
 .contentChild-4 {
     background: rgba(38, 120, 120, 0.1);
-} */
+}
 .glyphChild-3 {
     background: rgba(38, 120, 120, 0.2);
 }
@@ -35,13 +29,13 @@
     background: rgba(38, 120, 120, 0.4);
 }
 .glyphChild-1 {
-    background: rgba(38, 120, 120, 0.8); /* #267878 */
+    background: rgba(38, 120, 120, 0.8); /* #267878CC */
 }
 .contentChild-1 {
     background: rgba(38, 120, 120, 0.8);
 }
 .glyphParent1 {
-    background: rgba(120, 38, 79, 0.8); /* #78264f */
+    background: rgba(120, 38, 79, 0.8); /* #78264FCC */
 }
 .contentParent1 {
     background: rgba(120, 38, 79, 0.8);
@@ -58,33 +52,27 @@
 .contentParent3 {
     background: rgba(120, 38, 79, 0.2);
 }
-/* .glyphParent4 {
+.glyphParent4 {
     background: rgba(120, 38, 79, 0.1);
 }
 .contentParent4 {
     background: rgba(120, 38, 79, 0.1);
 }
-.glyphParent5 {
-    background: rgba(120, 38, 79, 0.1);
-}
-.contentParent5 {
-    background: rgba(120, 38, 79, 0.1);
-} */
 .glyphSelect {
-    background: rgba(120, 79, 38, 0.8); /* #784f26 */
+    background: rgba(120, 79, 38, 0.8); /* #784F26CC */
 }
 .contentSelect {
     background: rgba(120, 79, 38, 0.8);
 }
 .glyphVariable {
-    background: rgba(38, 79, 120, 0.8); /* #264F78 */
+    background: rgba(38, 79, 120, 0.8); /* #264F78CC */
 }
 .contentVariable {
     background: rgba(38, 79, 120, 0.8);
 }
 .glyphCursor {
-    background: rgba(255, 255, 0, 0.8);
+    background: rgba(255, 255, 0, 0.8); /* #FFFF00CC */
 }
 .contentCursor {
-    background: rgba(255, 255, 0, 0.05);
+    background: rgba(255, 255, 0, 0.05); /* #FFFF000D */
 }

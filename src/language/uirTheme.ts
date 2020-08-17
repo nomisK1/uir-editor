@@ -18,5 +18,13 @@ export const monarchTheme: monaco.editor.IStandaloneThemeData = {
         { token: 'string', foreground: 'CE9178' },
         { token: 'comment', foreground: '229977' },
     ],
-    colors: {},
+    colors: {
+        cursor: '#FFFF00',
+        variable: '#264F78',
+        select: '#784F26',
+        parent: '#78264F',
+        child: '#267878',
+        comment: '#787826',
+        bookmark: '#390978',
+    },
 };
