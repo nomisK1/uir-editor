@@ -109,6 +109,12 @@ class definition extends _function {
         return nodes;
     }
 
+    public getLabels() {
+        let targets: target[] = [];
+        this.blocks.forEach((b) => targets.push(b.getLabel()));
+        return targets;
+    }
+
     public getTargets() {
         let targets: target[] = [];
         this.blocks.forEach((b) => targets.push(b.getLabel(), ...b.getTargets()));

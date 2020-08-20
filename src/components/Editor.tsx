@@ -77,7 +77,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressJumpEnd = this.handleKeypressJumpEnd.bind(this);
         this.handleKeypressJumpNextTarget = this.handleKeypressJumpNextTarget.bind(this);
         this.handleKeypressJumpPrevTarget = this.handleKeypressJumpPrevTarget.bind(this);
-        this.handleKeypressJumpLabel = this.handleKeypressJumpLabel.bind(this);
+        this.handleKeypressJumpNextBlock = this.handleKeypressJumpNextBlock.bind(this);
+        this.handleKeypressJumpPrevBlock = this.handleKeypressJumpPrevBlock.bind(this);
         this.handleKeypressJumpBack = this.handleKeypressJumpBack.bind(this);
         this.handleKeypressHoverChild = this.handleKeypressHoverChild.bind(this);
         this.handleKeypressChild = this.handleKeypressChild.bind(this);
@@ -206,18 +207,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.handleKeypressJumpPrevTarget,
                 'condition',
             );
-            this.editor.addCommand(monaco.KeyCode.KEY_Z, this.handleKeypressJumpLabel, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_G, this.handleKeypressJumpNextBlock, 'condition');
             this.editor.addCommand(
-                monaco.KeyMod.Shift | monaco.KeyCode.KEY_Z,
-                this.handleKeypressJumpBack,
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_G,
+                this.handleKeypressJumpPrevBlock,
                 'condition',
             );
-            this.editor.addCommand(monaco.KeyCode.KEY_Y, this.handleKeypressJumpLabel, 'condition');
-            this.editor.addCommand(
-                monaco.KeyMod.Shift | monaco.KeyCode.KEY_Y,
-                this.handleKeypressJumpBack,
-                'condition',
-            );
+            this.editor.addCommand(monaco.KeyCode.KEY_U, this.handleKeypressJumpBack, 'condition');
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.Enter,
@@ -340,7 +336,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'foldAll',
                 label: 'Fold All',
-                keybindings: [monaco.KeyCode.KEY_1],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
@@ -349,7 +345,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'foldBlocks',
                 label: 'Fold Blocks',
-                keybindings: [monaco.KeyCode.KEY_2],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_F],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
@@ -358,7 +354,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'unfoldAll',
                 label: 'Unfold All',
-                keybindings: [monaco.KeyCode.KEY_3],
+                keybindings: [monaco.KeyCode.KEY_F],
                 contextMenuGroupId: '4_folding',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
@@ -577,8 +573,16 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         }
     }
 
-    public handleKeypressJumpLabel() {
-        let label = this.graph.getRelatedLabelAt(this.lastPosition);
+    public handleKeypressJumpNextBlock() {
+        let label = this.graph.getNextLabelAt(this.lastPosition);
+        if (label) {
+            this.graph.setCurrent(label);
+            this.updatePosition();
+        }
+    }
+
+    public handleKeypressJumpPrevBlock() {
+        let label = this.graph.getPrevLabelAt(this.lastPosition);
         if (label) {
             this.graph.setCurrent(label);
             this.updatePosition();

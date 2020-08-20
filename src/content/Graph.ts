@@ -367,17 +367,6 @@ class Graph {
         }
     }
 
-    public getRelatedLabelAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node) {
-            if (node instanceof target)
-                return this.getRelatedTargets(node).filter((t) => t instanceof label)[0] as label;
-            let block = this.getBlockAt(node.getRange().getStartPosition());
-            if (block) return block.getLabel();
-        }
-        return null;
-    }
-
     public getNextTargetAt(position: monaco.Position): target | null {
         let node = this.getNodeAt(position);
         if (node) {
@@ -401,6 +390,34 @@ class Graph {
                 for (let i = targets.length - 1; i >= 0; i--)
                     if (targets[i].getRange().getStartPosition().isBefore(position)) return targets[i];
                 return this.getPrevTargetAt(context.getRange().getEndPosition());
+            }
+        }
+        return null;
+    }
+
+    public getNextLabelAt(position: monaco.Position): label | null {
+        let node = this.getNodeAt(position);
+        if (node) {
+            let context = node.getOuterContext();
+            if (context instanceof definition) {
+                let labels = context.getLabels();
+                for (let i = 0; i < labels.length; i++)
+                    if (!labels[i].getRange().getStartPosition().isBeforeOrEqual(position)) return labels[i];
+                return this.getNextLabelAt(context.getRange().getStartPosition());
+            }
+        }
+        return null;
+    }
+
+    public getPrevLabelAt(position: monaco.Position): label | null {
+        let node = this.getNodeAt(position);
+        if (node) {
+            let context = node.getOuterContext();
+            if (context instanceof definition) {
+                let labels = context.getLabels();
+                for (let i = labels.length - 1; i >= 0; i--)
+                    if (labels[i].getRange().getStartPosition().isBefore(position)) return labels[i];
+                return this.getPrevLabelAt(context.getRange().getEndPosition());
             }
         }
         return null;
