@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as monaco from 'monaco-editor';
 import { themeID, monarchTheme } from '../language/uirTheme';
 import S from '../language/Singleton';
-import Graph from '../content/Graph';
+import Graph, { comment } from '../content/Graph'; // eslint-disable-line
 import { treeData } from '../content/tree/TargetTree';
 import { Status } from './StatusInput';
 import './Editor.css';
@@ -87,12 +87,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressToInput_Comment = this.handleKeypressToInput_Comment.bind(this);
         this.handleKeypressToInput_Rename = this.handleKeypressToInput_Rename.bind(this);
         this.handleKeypressToInput_Search = this.handleKeypressToInput_Search.bind(this);
+        this.handleKeypressSearch = this.handleKeypressSearch.bind(this);
         this.handleKeypressNextOccurrence = this.handleKeypressNextOccurrence.bind(this);
         this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
         this.handleKeypressAddBookmark = this.handleKeypressAddBookmark.bind(this);
         this.handleKeypressRemoveBookmark = this.handleKeypressRemoveBookmark.bind(this);
         this.handleKeypressRevealBookmark = this.handleKeypressRevealBookmark.bind(this);
-        this.handleKeypressAddComment = this.handleKeypressAddComment.bind(this);
+        this.handleKeypressComment = this.handleKeypressComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
         this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
         this.handleKeypressRevealNextComment = this.handleKeypressRevealNextComment.bind(this);
@@ -594,13 +595,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updatePosition();
     }
 
+    public handleKeypressSearch() {
+        this.graph.searchCurrent(this.input);
+        this.updatePosition();
+    }
+
     public handleKeypressNextOccurrence() {
-        this.graph.setCurrentNextOccurrence(this.input);
+        this.graph.setCurrentNextOccurrence();
         this.updatePosition();
     }
 
     public handleKeypressPrevOccurrence() {
-        this.graph.setCurrentPrevOccurrence(this.input);
+        this.graph.setCurrentPrevOccurrence();
         this.updatePosition();
     }
 
@@ -627,8 +633,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Features-----
 
     public handleKeypressToInput_Comment() {
-        let comment = this.graph.getCommentAt(this.lastPosition);
-        this.props.focusInput(Status.COMMENT, comment ? comment.text : undefined);
+        let node = this.graph.getNodeAt(this.lastPosition);
+        let comment = this.graph.getOuterCommentAt(this.lastPosition);
+        this.props.focusInput(Status.COMMENT, comment && comment.node === node ? comment.text : undefined);
     }
 
     public handleKeypressToInput_Rename() {
@@ -643,6 +650,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressRevealCursor() {
         this.revealCursor();
+        this.resetPosition();
     }
 
     public handleKeypressAddBookmark() {
@@ -657,9 +665,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressRevealBookmark() {
         this.revealBookmark();
+        this.resetPosition();
     }
 
-    public handleKeypressAddComment() {
+    public handleKeypressComment() {
         this.graph.addCommentAt(this.input, this.lastPosition);
         this.decorateComments();
         this.resetPosition();
@@ -668,19 +677,23 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     public handleKeypressRemoveComment() {
         this.graph.removeCommentAt(this.lastPosition);
         this.decorateComments();
+        this.resetPosition();
     }
 
     public handleKeypressResetComments() {
         this.graph.resetComments();
         this.decorateComments();
+        this.resetPosition();
     }
 
     public handleKeypressRevealNextComment() {
         this.revealNextComment();
+        this.resetPosition();
     }
 
     public handleKeypressRevealPrevComment() {
         this.revealPrevComment();
+        this.resetPosition();
     }
 
     public handleKeypressRename() {
@@ -831,7 +844,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.graph.setCurrent(current);
         }
         this.lastPosition = position;
-        this.input = current ? current.getAlias() : '';
+        this.input = (current ? current.getAlias() : '') + this.graph.getCommentStringAt(this.lastPosition);
         this.props.passInput(this.input);
         this.props.closeModals();
         this.props.resetStatus();
@@ -844,6 +857,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private resetPosition() {
+        this.grid = 1;
         this.updatePosition(this.lastPosition);
     }
 
@@ -1111,7 +1125,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 glyphMarginClassName: 'glyphBookmark',
                 minimap: {
                     color: { id: 'bookmark' },
-                    position: 1,
+                    position: 2,
                 },
                 zIndex: 1,
             },
@@ -1133,12 +1147,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
      * setCommentDecoration:
      *
      */
-    private setCommentDecoration(comment: { text: string; range: monaco.Range; isWholeLine: boolean }) {
+    private setCommentDecoration(comment: comment) {
         this.commentDecorations.push({
             range: comment.range,
             options: {
                 isWholeLine: comment.isWholeLine,
-                className: 'contentComment',
+                className: 'contentComment' + comment.node?.constructor.name,
                 glyphMarginClassName: 'glyphComment',
                 minimap: {
                     color: { id: 'comment' },
@@ -1169,7 +1183,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
      */
     private findNodeHighlights(position: monaco.Position) {
         let node = this.graph.getNodeAt(position);
-        //console.log(node);
+        console.log(node);
         let nodes = this.graph.getRelatedNodes(node);
         let ranges = nodes.map((n) => n.getRange());
         return ranges;
@@ -1190,28 +1204,25 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public getCommentHover(position: monaco.Position) {
         if (!this.state.activateCommentDecorating) return null;
-        let hover: monaco.languages.Hover | null = null;
-        this.graph.getComments().forEach((c) => {
-            if (c.range.containsPosition(position))
-                hover = {
-                    range: c.range,
-                    contents: [{ value: c.text }],
-                };
-        });
-        return hover;
+        let comment = this.graph.getOuterCommentAt(position);
+        return comment
+            ? {
+                  range: comment.range,
+                  contents: [{ value: comment.text }],
+              }
+            : null;
     }
 
     public getTargetTreeHover(position: monaco.Position) {
         if (!this.state.activateTargetTreeHover) return null;
-        let hover: monaco.languages.Hover | null = null;
         let node = this.graph.getNodeAt(position);
         let tree = this.graph.getTargetTreeString(node);
-        if (node && tree)
-            hover = {
-                range: node.getRange(),
-                contents: [{ value: '```html\n' + tree + '\n```' }],
-            };
-        return hover;
+        return node && tree
+            ? {
+                  range: node.getRange(),
+                  contents: [{ value: '```html\n' + tree + '\n```' }],
+              }
+            : null;
     }
 
     public getFoldingRanges() {

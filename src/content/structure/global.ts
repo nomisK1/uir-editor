@@ -12,7 +12,7 @@ class global extends _component {
 
     constructor(props: IGlobalProps) {
         super(props);
-        this.name = 'const:' + lookupJSON(this.json, 'name');
+        this.name = 'const(' + lookupJSON(this.json, 'name') + ')';
         this.size = lookupJSON(this.json, 'size');
         this.data = lookupJSON(this.json, 'data');
         this.variable = new variable({

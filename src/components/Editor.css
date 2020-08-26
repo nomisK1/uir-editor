@@ -5,10 +5,40 @@
     background: rgb(57, 9, 120, 0.4);
 }
 .glyphComment {
-    background: rgba(120, 120, 38, 0.2); /* #78782633 */
+    background: rgba(120, 120, 38, 0.4); /* #78782633 */
 }
-.contentComment {
+.contentCommentassignment {
+    background: rgb(120, 120, 38, 0.3);
+}
+.contentCommentblock {
+    background: rgb(120, 120, 38, 0.1);
+}
+.contentCommentconstant {
+    background: rgb(120, 120, 38, 0.4);
+}
+.contentCommentdeclaration {
+    background: rgb(120, 120, 38, 0.1);
+}
+.contentCommentdefinition {
+    background: rgb(120, 120, 38, 0.1);
+}
+.contentCommentglobal {
+    background: rgb(120, 120, 38, 0.1);
+}
+.contentCommentlabel {
+    background: rgb(120, 120, 38, 0.4);
+}
+.contentCommentoperation {
     background: rgb(120, 120, 38, 0.2);
+}
+.contentCommenttarget {
+    background: rgb(120, 120, 38, 0.4);
+}
+.contentCommentvariable {
+    background: rgb(120, 120, 38, 0.4);
+}
+.contentCommentundefined {
+    background: rgb(120, 120, 38, 0.1);
 }
 .glyphChild-4 {
     background: rgba(38, 120, 120, 0.1);
@@ -74,5 +104,5 @@
     background: rgba(255, 255, 0, 0.8); /* #FFFF00CC */
 }
 .contentCursor {
-    background: rgba(255, 255, 0, 0.05); /* #FFFF000D */
+    background: rgba(255, 255, 0, 0.01); /* #FFFF000D */
 }

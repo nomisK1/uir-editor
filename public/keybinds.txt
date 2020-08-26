@@ -1,4 +1,5 @@
-`Navigation:
+`
+Navigation:
 
     left-Arrow | h  : left
     up-Arrow | j    : up
@@ -10,8 +11,8 @@
     shift + (down-Arrow | k)  : jumpParent
     shift + (right-Arrow | l) : cycleParents
 
-    m                    : jumpRight
-    shift + m            : jumpLeft
+    m                    : moveRight
+    shift + m            : moveLeft
 
     Enter | n            : jumpNextOccurrence
     shift + (Enter | n)  : jumpPrevOccurrence
@@ -19,11 +20,13 @@
     t (insideDefinition) : jumpNextTarget
     shift + t            : jumpPrevTarget
 
-    y | z (insideBlock) : jumpCurrentLabel
-    shift + (y |z)      : jumpBack
-
+    g (insideDefinition) : jumpNextBlock
+    shift + g            : jumpPrevBlock
+    
     v         : jumpStart
     shift + v : jumpEnd
+    
+    u      : jumpBack
 
 
 Features:
@@ -50,9 +53,9 @@ Features:
     shift + r       : unnameNode
     shift + alt + r : resetAllNames
 
-    1 : foldAll
-    2 : foldBlocks
-    3 : unfoldAll
+    shift + alt + f : foldAll
+    shift + f       : foldBlocks
+    f               : unfoldAll
 
 
 Editor:
@@ -68,4 +71,5 @@ Editor:
     shift + 4 : toggleParentDecorating
     shift + 5 : toggleBookmarkDisplay
     shift + 6 : toggleCommentDisplay
-    shift + 7 : toggleTargetTreeHover`
+    shift + 7 : toggleTargetTreeHover
+`

@@ -77,9 +77,9 @@ class App extends React.Component<IAppProps, IAppState> {
             event.preventDefault();
             if (this.editor && this.inputElement) {
                 this.editor.getInstance().focus();
-                if (this.inputElement.getStatus() === Status.COMMENT) this.editor.handleKeypressAddComment();
+                if (this.inputElement.getStatus() === Status.COMMENT) this.editor.handleKeypressComment();
                 else if (this.inputElement.getStatus() === Status.RENAME) this.editor.handleKeypressRename();
-                else if (this.inputElement.getStatus() === Status.SEARCH) this.editor.handleKeypressNextOccurrence();
+                else if (this.inputElement.getStatus() === Status.SEARCH) this.editor.handleKeypressSearch();
                 this.resetStatus();
             }
         }

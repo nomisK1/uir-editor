@@ -24,7 +24,7 @@ class assignment extends _instruction {
             context: this,
         });
         this.destination.setParents(this.operation.getVariables());
-        this.name = 'assignment@line:' + this.line;
+        this.name = 'assignment@' + this.line;
         this.findRanges();
     }
 

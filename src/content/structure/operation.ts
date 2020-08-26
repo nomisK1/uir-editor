@@ -97,7 +97,7 @@ class operation extends _instruction {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.name = 'operation@line:' + this.line;
+        this.name = 'operation@' + this.line;
         this.build();
         this.findRanges();
     }

@@ -58,7 +58,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
                     id="sInput"
                     className="input"
                     value={this.props.input}
-                    placeholder={'----- NO INPUT -----'}
+                    placeholder={'----- EMPTY -----'}
                     onClick={this.handleClick}
                     onChange={this.props.onInputChange}
                     onKeyDown={this.props.onInputKeydown}
