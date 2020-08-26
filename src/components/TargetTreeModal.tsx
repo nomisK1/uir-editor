@@ -7,6 +7,10 @@ interface ITargetTreeModalProps {
     onModalClick: () => void;
 }
 
+/**
+ * TargetTreeModal:
+ * Modal for the TargetTree
+ */
 class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
     private data: treeData | null = null;
 

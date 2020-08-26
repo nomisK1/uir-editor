@@ -33,6 +33,10 @@ interface IEditorState {
     activateTargetTreeHover: boolean;
 }
 
+/**
+ * Editor:
+ * Interactive Editor the Umbra-IR language
+ */
 class Editor extends React.Component<IEditorProps, IEditorState> {
     private container: HTMLDivElement | null = null;
     private editor: monaco.editor.IStandaloneCodeEditor | null = null;
@@ -504,10 +508,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Event handler-----
+    //-----Handle Navigation-----
     //--------------------------------------------------
-
-    //-----Navigation-----
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
         let position = event.target.position;
@@ -630,7 +632,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updatePosition();
     }
 
-    //-----Features-----
+    //--------------------------------------------------
+    //-----Handle Features-----
+    //--------------------------------------------------
 
     public handleKeypressToInput_Comment() {
         let node = this.graph.getNodeAt(this.lastPosition);
@@ -730,7 +734,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         }
     }
 
-    //-----Editor-----
+    //--------------------------------------------------
+    //-----Toggle Features-----
+    //--------------------------------------------------
 
     public handleToggleNodeHighlighting() {
         this.setState({
@@ -821,9 +827,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Helper-----
+    //-----Manage Editor Surface-----
     //--------------------------------------------------
 
+    /**
+     * updateValue:
+     * Handle Value change
+     */
     private updateValue() {
         let query = this.graph.print();
         if (query !== this.value) this.value = query;
@@ -832,6 +842,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateBookmarks();
     }
 
+    /**
+     * updatePosition:
+     * Handle Position change
+     */
     private updatePosition(position?: monaco.Position) {
         let current = this.graph.getCurrent();
         if (!position && current) {
@@ -861,11 +875,28 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updatePosition(this.lastPosition);
     }
 
-    private getLineLength(line: number) {
-        if (line < 1) return 1;
-        let lines = this.value.split('\n');
-        return lines[line - 1] ? lines[line - 1].length + 1 : 1;
+    private revealCursor() {
+        this.resetPosition();
     }
+
+    private revealBookmark() {
+        let bookmark = this.graph.getBookmark();
+        if (bookmark) this.updatePosition(new monaco.Position(bookmark, 0));
+    }
+
+    private revealNextComment() {
+        let comment = this.graph.getNextCommentAt(this.lastPosition);
+        if (comment) this.updatePosition(comment.range.getStartPosition());
+    }
+
+    private revealPrevComment() {
+        let comment = this.graph.getPrevCommentAt(this.lastPosition);
+        if (comment) this.updatePosition(comment.range.getStartPosition());
+    }
+
+    //--------------------------------------------------
+    //-----Manage Grid-----
+    //--------------------------------------------------
 
     private setGrid(position: monaco.Position) {
         let max = this.getLineLength(position.lineNumber);
@@ -898,27 +929,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return new monaco.Position(lineNumber, column);
     }
 
-    private revealCursor() {
-        this.resetPosition();
-    }
-
-    private revealBookmark() {
-        let bookmark = this.graph.getBookmark();
-        if (bookmark) this.updatePosition(new monaco.Position(bookmark, 0));
-    }
-
-    private revealNextComment() {
-        let comment = this.graph.getNextCommentAt(this.lastPosition);
-        if (comment) this.updatePosition(comment.range.getStartPosition());
-    }
-
-    private revealPrevComment() {
-        let comment = this.graph.getPrevCommentAt(this.lastPosition);
-        if (comment) this.updatePosition(comment.range.getStartPosition());
+    private getLineLength(line: number) {
+        if (line < 1) return 1;
+        let lines = this.value.split('\n');
+        return lines[line - 1] ? lines[line - 1].length + 1 : 1;
     }
 
     //--------------------------------------------------
-    //-----Decoration-----
+    //-----Manage Decorations-----
     //--------------------------------------------------
 
     /**
@@ -936,10 +954,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             ]);
     }
 
-    /**
-     * decorateCursor:
-     *
-     */
     public decorateCursor() {
         this.cursorDecorations = [];
         if (this.state.activateCursorDecorating) {
@@ -962,10 +976,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updateDecorations();
     }
 
-    /**
-     * getVariableDecorationsAt:
-     *
-     */
     private getVariableDecorationsAt(position: monaco.Position) {
         let variable = this.graph.getVariableAt(position);
         let vars = this.graph.getVariableSiblings(variable);
@@ -973,10 +983,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return ranges;
     }
 
-    /**
-     * setVariableDecoration:
-     *
-     */
     private setVariableDecoration(range: monaco.Range) {
         this.variableDecorations.push({
             range,
@@ -993,10 +999,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         });
     }
 
-    /**
-     * decorateVariable:
-     *
-     */
     public decorateVariable(position: monaco.Position) {
         this.variableDecorations = [];
         if (this.state.activateVariableDecorating) {
@@ -1009,10 +1011,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return [];
     }
 
-    /**
-     * findChildDecorations:
-     *
-     */
     private getChildDecorationsAt(position: monaco.Position) {
         let variable = this.graph.getVariableAt(position);
         let vars = variable ? this.graph.getChildTree(variable) : [];
@@ -1021,10 +1019,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return decorations;
     }
 
-    /**
-     * findParentDecorations:
-     *
-     */
     private getParentDecorationsAt(position: monaco.Position) {
         let variable = this.graph.getVariableAt(position);
         let vars = variable ? this.graph.getParentTree(variable) : [];
@@ -1033,10 +1027,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return decorations;
     }
 
-    /**
-     * setTreeDecoration:
-     *
-     */
     private setTreeDecoration(leaf: { range: monaco.Range; depth: number }) {
         if (leaf.depth === 0) {
             this.treeDecorations.push({
@@ -1088,10 +1078,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             }
     }
 
-    /**
-     * decorateTree:
-     *
-     */
     private decorateTree(position: monaco.Position) {
         this.variableDecorations = [];
         this.treeDecorations = [];
@@ -1112,10 +1098,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return ranges;
     }
 
-    /**
-     * setBookmarkDecoration:
-     *
-     */
     private setBookmarkDecoration(line: number) {
         this.bookmarkDecorations.push({
             range: new monaco.Range(line, 0, line, 0),
@@ -1132,10 +1114,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         });
     }
 
-    /**
-     * decorateBookmarks:
-     *
-     */
     private decorateBookmarks() {
         this.bookmarkDecorations = [];
         if (this.state.activateBookmarkDecorating && this.graph.getBookmark())
@@ -1143,10 +1121,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updateDecorations();
     }
 
-    /**
-     * setCommentDecoration:
-     *
-     */
     private setCommentDecoration(comment: comment) {
         this.commentDecorations.push({
             range: comment.range,
@@ -1163,10 +1137,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         });
     }
 
-    /**
-     * decorateComments:
-     *
-     */
     private decorateComments() {
         this.commentDecorations = [];
         if (this.state.activateCommentDecorating) this.graph.getComments().forEach((c) => this.setCommentDecoration(c));
@@ -1174,13 +1144,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Language features-----
+    //-----Manage Language Features-----
     //--------------------------------------------------
 
-    /**
-     * findNodeHighlights:
-     *
-     */
     private findNodeHighlights(position: monaco.Position) {
         let node = this.graph.getNodeAt(position);
         console.log(node);
@@ -1189,10 +1155,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return ranges;
     }
 
-    /**
-     * highlightNodes:
-     *
-     */
     public highlightNodes(position: monaco.Position) {
         let highlights: monaco.languages.DocumentHighlight[] = [];
         if (this.state.activateNodeHighlighting) {

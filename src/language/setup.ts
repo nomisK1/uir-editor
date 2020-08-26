@@ -3,6 +3,10 @@ import { languageExtensionPoint, languageID } from './config';
 import { monarchLanguage, hoverProvider, highlightProvider, foldingProvider } from './uirLang';
 import * as EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker'; // eslint-disable-line import/no-webpack-loader-syntax
 
+/**
+ * setupLanguage:
+ * Connect Monaco language and features to the environment
+ */
 export function setupLanguage() {
     (window as any).MonacoEnvironment = {
         getWorker: function (_moduleId: string, _label: string) {

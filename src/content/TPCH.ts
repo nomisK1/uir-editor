@@ -5,6 +5,10 @@ const local: string = './data/';
 const count: number = 22;
 const graphs: Graph[] = [];
 
+/**
+ * requestQueries:
+ * Load queries from the specified URL or default to local data
+ */
 function requestQueries() {
     try {
         let xhr = new XMLHttpRequest();
@@ -28,18 +32,3 @@ export function getData() {
     requestQueries();
     return graphs;
 }
-
-/*
-const fetchQuery = async () => {
-    let response = await fetch(url);
-    let result = await response.json();
-    queries.push(JSON.stringify(result));
-};
-
-fetch(url)
-    .then((response) => response.json())
-    .then((data) => queries.push(data))
-    .catch((error) => {
-        console.log(error);
-    });
-*/

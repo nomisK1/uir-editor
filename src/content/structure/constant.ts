@@ -32,6 +32,10 @@ class constant extends _value {
 
 export default constant;
 
+/**
+ * findConstantRangeIn:
+ * Set Constant range in a text (call in the context!)
+ */
 export function findConstantRangeIn(constant: constant, text: string, offset?: number) {
     let name = constant.getName();
     let line = constant.getLastLine();

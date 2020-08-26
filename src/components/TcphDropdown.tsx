@@ -6,6 +6,10 @@ interface ITcphDropdownProps {
     onDropdownChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
+/**
+ * TcphDropdown:
+ * Dropdown for the TCP-H queries
+ */
 class TcphDropdown extends React.Component<ITcphDropdownProps> {
     renderOptions() {
         let options: JSX.Element[] = [];

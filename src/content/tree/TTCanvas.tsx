@@ -8,6 +8,10 @@ interface ITTCanvasProps {
     height: number;
 }
 
+/**
+ * TTCanvas:
+ * Canvas for the TargetTree
+ */
 class TTCanvas extends React.Component<ITTCanvasProps> {
     private canvas: SVGElement | null = null;
 

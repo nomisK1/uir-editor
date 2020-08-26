@@ -6,6 +6,10 @@ interface ITargetTreeProps {
     root: target;
 }
 
+/**
+ * TargetTree:
+ * Hierarchical Tree of related Labels
+ */
 class TargetTree {
     context: definition;
     tree: branch[][];

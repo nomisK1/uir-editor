@@ -1,5 +1,9 @@
 import Editor from '../components/Editor';
 
+/**
+ * Singleton:
+ * Provide a static connection between the Monaco language and an Editor instance
+ */
 class Singleton {
     private static instance: Singleton;
     private editor: Editor | null;

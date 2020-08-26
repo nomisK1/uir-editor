@@ -8,6 +8,10 @@ import variable, { findVariableRangeIn } from './variable';
 import constant, { findConstantRangeIn } from './constant';
 import target, { findTargetRangeIn } from './target';
 
+/**
+ * OpCode:
+ * Define operation codes
+ */
 enum OpCode {
     ADD = 'add',
     AND = 'and',
@@ -411,6 +415,10 @@ class operation extends _instruction {
 }
 
 export default operation;
+
+//--------------------------------------------------
+//-----Helpers-----
+//--------------------------------------------------
 
 function compareOpCode(opcode: OpCode | null, str: string | null) {
     if (!opcode || !str) return false;

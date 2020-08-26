@@ -20,6 +20,10 @@ interface IAppState {
     showTargetTreeModal: boolean;
 }
 
+/**
+ * App:
+ * Main component
+ */
 class App extends React.Component<IAppProps, IAppState> {
     private editor: Editor | null = null;
     private data: Graph[] = getData();

@@ -72,6 +72,10 @@ class variable extends _value {
 
 export default variable;
 
+/**
+ * findVariableRangeIn:
+ * Set Variable range in a text (call in the context!)
+ */
 export function findVariableRangeIn(variable: variable, text: string, offset?: number) {
     let name = '%' + variable.getAlias();
     let line = variable.getLastLine();

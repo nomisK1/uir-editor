@@ -1,12 +1,17 @@
+/**
+ * uirLang:
+ * Define Monaco language features
+ */
+
 import * as monaco from 'monaco-editor';
 import S from './Singleton';
 
 export const monarchLanguage: monaco.languages.IMonarchLanguage = {
-    // defaultToken: "invalid",
+    defaultToken: 'invalid',
     ignoreCase: true,
     tokenizer: {
         root: [
-            [/\(|\)|\[|\]|{|}/, 'parenthesis'],
+            [/=|,|\*|\(|\)|\[|\]|{|}/, 'syntax'],
             [/%[\w]*/, 'variable'],
             [/@?umbra(::[\w]*)*\(|@[\w_]*/, 'function'],
             [/^[\w]+:/, 'label'],

@@ -5,6 +5,10 @@ interface IKeybindModalProps {
     onModalClick: () => void;
 }
 
+/**
+ * KeybindModal:
+ * Modal for the keybind image
+ */
 class KeybindModal extends React.Component<IKeybindModalProps> {
     render() {
         return (

@@ -17,6 +17,10 @@ interface IStatusInputState {
     status: Status;
 }
 
+/**
+ * StatusInput:
+ * Input field and status display
+ */
 class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> {
     private inputElement: HTMLInputElement | null = null;
 

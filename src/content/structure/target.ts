@@ -61,6 +61,10 @@ class target extends _node {
 
 export default target;
 
+/**
+ * findTargetRangeIn:
+ * Set Target range in a text (call in the context!)
+ */
 export function findTargetRangeIn(target: target, text: string, offset?: number) {
     let name = '%' + target.getAlias();
     let line = target.getLastLine();

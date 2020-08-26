@@ -1,6 +1,10 @@
 import * as monaco from 'monaco-editor';
 import variable from './variable';
 
+/**
+ * Type:
+ * Define node types
+ */
 export enum Type {
     VOID = 'void',
     BOOL = 'bool',
@@ -27,6 +31,10 @@ export interface INodeProps {
     context: _node | null;
 }
 
+/**
+ * _node:
+ * Basic node for the Graph structure
+ */
 abstract class _node {
     protected json: Object;
     protected line: number;
@@ -100,6 +108,10 @@ abstract class _node {
 
 export default _node;
 
+//--------------------------------------------------
+//-----Helpers-----
+//--------------------------------------------------
+
 export function compareType(type: Type | null, str: string | null) {
     if (!type || !str) return false;
     return str.toUpperCase().includes(type.toUpperCase());
@@ -121,6 +133,10 @@ export function indexOfStrict(string: string, text: string) {
     return text.search(regexp) + 1;
 }
 
+/**
+ * lookupJSON:
+ * Extract JSON data
+ */
 export function lookupJSON(json: Object, key: string) {
     let keys = Object.keys(json);
     let values = Object.values(json);

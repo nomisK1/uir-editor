@@ -11,6 +11,10 @@ interface IBranchProps {
     prev?: branch;
 }
 
+/**
+ * branch:
+ * Connection of a Label to related Targets
+ */
 class branch {
     label: label;
     targets: target[];
