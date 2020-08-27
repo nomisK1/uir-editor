@@ -35,7 +35,7 @@ interface IEditorState {
 
 /**
  * Editor:
- * Interactive Editor the Umbra-IR language
+ * Interactive Editor for the Umbra-IR language
  */
 class Editor extends React.Component<IEditorProps, IEditorState> {
     private container: HTMLDivElement | null = null;
@@ -147,7 +147,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 //fontFamily: 'monospace',
                 //fontSize: 15,
                 //fontWeight: '100',
-                letterSpacing: 0,
+                //letterSpacing: 0,
                 automaticLayout: true,
                 roundedSelection: false,
                 scrollBeyondLastLine: true,

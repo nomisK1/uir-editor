@@ -1,7 +1,8 @@
 * {
-    font-family: monospace;
-    font-size: 15px;
-    font-weight: 100;
+    font-family: Consolas, 'Courier New', monospace;
+    font-weight: normal;
+    font-size: 14px;
+    letter-spacing: 0px;
 }
 .ui {
     display: flex;
