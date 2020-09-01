@@ -11,9 +11,9 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
     ignoreCase: true,
     tokenizer: {
         root: [
-            [/=|,|\*|\(|\)|\[|\]|{|}/, 'syntax'],
+            [/=|,|\(|\)|\[|\]|{|}/, 'syntax'],
             [/%[\w]*/, 'variable'],
-            [/@?umbra(::[\w]*)*\(|@[\w_]*/, 'function'],
+            [/@?umbra(::[\w]*)*(?=\()|@[\w_]*/, 'function'],
             [/^[\w]+:/, 'label'],
             [/const |declare |define /, 'constdeclaredefine'],
             [/return|returnvoid|br|condbr|unreachable/, 'statement'],
@@ -22,7 +22,7 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
                 'operator',
             ],
             [
-                /i(nt)?(8|32|64)?|d(ata)?128|bool|char|const|global|long|ptr|void|object|unsigned|umbra(::[\w|&]*)*/,
+                /(i(nt)?(8|32|64)?|d(ata)?128|bool|char|const|global|long|ptr|void|object|unsigned|umbra(::[\w|&]*)*)\*?/,
                 'type',
             ],
             [/true|false|0x[\w]+|\d+/, 'constant'],
