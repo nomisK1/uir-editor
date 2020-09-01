@@ -2,8 +2,8 @@
 Navigation:
 
     left-Arrow | h  : left
-    up-Arrow | j    : up
-    down-Arrow | k  : down
+    up-Arrow | j    : down
+    down-Arrow | k  : up
     right-Arrow | l : right
     
     shift + (left-Arrow | h)  : cycleChildren
