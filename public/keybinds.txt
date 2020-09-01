@@ -72,4 +72,10 @@ Editor:
     shift + 5 : toggleBookmarkDisplay
     shift + 6 : toggleCommentDisplay
     shift + 7 : toggleTargetTreeHover
+
+
+Other:
+
+    ctrl + f    : openFindDialog
+    shift + esc : closeToolWindow
 `
