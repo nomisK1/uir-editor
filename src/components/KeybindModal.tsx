@@ -22,7 +22,7 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
                     <span className="close">&times;</span>
                     <h3 className="modalHeader">KEYBINDS (UIR-Editor/public/keybinds.txt)</h3>
                     <div className="image-container">
-                        <img className="image" src="keybinds.png" alt="KEYBINDS" />
+                        <img className="image" src="img/keybinds.png" alt="KEYBINDS" />
                     </div>
                 </div>
             </div>

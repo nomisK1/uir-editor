@@ -1,39 +1,165 @@
-## UIR-Editor Bachelor Project
+# UIR-Editor Bachelor Project
 
 UIR-Editor
 
 A web application used to display TCPH-queries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
 
-## Project Screenshots
-
-![Screenshot](public/screenshots/showcaseapp.png?raw=true 'UIR-Editor: App')
-![Screenshot](public/screenshots/showcasechildparent.png?raw=true 'UIR-Editor: Child / Parent')
-![Screenshot](public/screenshots/showcaserename.png?raw=true 'UIR-Editor: Renaming')
-![Screenshot](public/screenshots/showcasecomment.png?raw=true 'UIR-Editor: Comments')
-![Screenshot](public/screenshots/showcasefolding.png?raw=true 'UIR-Editor: Folding')
-![Screenshot](public/screenshots/showcasetargettree.png?raw=true 'UIR-Editor: Target Tree')
-
-## Installation and Setup
+# Installation and Setup
 
 Clone this repository. Node and npm is required.
 
 1. `npm install`
 
-2. optional: start python server by running the file: `server/static_server.py` (alternatively local files will be used)
+2. **optional**: Start python development server by running the file: `server/static_server.py`
 
 3. `npm start`
 
-App is hostet on `localhost:3000`
+App is hosted on `localhost:3000`
 
-Server is hostet on `localhost:8000`
+Server is hosted on `localhost:8000` (alternatively local files will be used)
 
-## Description
+# Description
 
-### Background
+## Background
 
-### Features
+UIR is a subset of LLVM.
+Explain content structure.
+Reference project structure image.
 
-## Reflection
+## Features
+
+### `Basic`
+
+The UIR-Editor changes the following default settings of the Monaco Editor framework.
+
+-   Content: Read only
+-   Font: 'Courier New', monospace, 14px
+-   Glyph margin: Activated
+-   Minimap: Characters disabled
+
+Additionally cursor decoration was added to highlight the current position with a yellow glyph.
+Most of the implemented features can also be accessed via the context menu when right clicking on the editor.
+A modal containing all the custom keybindings can be opened by pressing `shift + s`.
+
+### `Query Fetching`
+
+On startup the UIR-Editor looks for the Umbra webserver containing the raw TCP-H query files.
+If a server is found at the specified URL the 22 TCP-H queries will be requested.
+Otherwise the default queries will be loaded.
+After that the queries will be converted from .json format to TypeScript objects and saved for the duration of the session.
+
+### `User Interface`
+
+The user interface consists of three main parts:
+
+1. The **TCP-H dropdown** on the top left can be used to change the currently displayed query. Alternatively the shortcut `q` displays the next and `shift + q` the last query.
+2. The **text bar** on the top right changes its functionality according to the current status. It is used to display and input information. The user can jump back to the editor by pressing `Enter`.
+3. The **status display** in the middle indicates which action will be performed once `Enter` is pressed in the text bar. The status changes depending on the shortcut used and can be set one of the following: (Clicking on the text bar witch the mouse will set the status to SEARCH NODE)
+
+| Status       | Action                                               |
+| ------------ | ---------------------------------------------------- |
+| CURRENT NODE | Shows the Node selected by the cursor                |
+| SEARCH NODE  | Searches the query for a node that matches the input |
+| ADD COMMENT  | Adds a comment to the selected Node                  |
+| RENAME NODE  | Changes the name of the selected node to the input   |
+
+### `Syntax Highlighting`
+
+Monarch library
+Regular Expressions
+Tokens & Colors
+Theme
+
+### `Node Highlighting`
+
+Similar Nodes
+Minimap
+Equal name
+Globals
+Functions
+
+### `Folding`
+
+Definitions
+Blocks
+Unfold all
+
+### `Hovering`
+
+Variable Occurrences
+Comments
+Block Tree string
+
+### `Position Grid`
+
+Mouse click or navigation keys set grid
+on up / down: cX <= lx ? maxX : lx
+
+### `Feature Toggle`
+
+Toggle features
+Tab + StrgF for searching
+
+### `Bookmarks`
+
+Add Bookmark
+Remove Bookmark
+Reveal Bookmark
+Per Query Bookmarks
+LocalStorage
+
+### `Comments`
+
+Add Comment
+Remove Comment
+Remove all Comments
+How to see Comment
+Comment layering
+Comment jumping
+Per Query Comments
+LocalStorage
+
+### `Renaming`
+
+Add Name
+Remove Name
+Remove all Names
+Per Query Names
+LocalStorage
+
+### `Variable Flow`
+
+Occurrence Decorations (Hover)
+Current Decorations
+Child Decorations
+Parent Decorations
+MaxDepth
+
+### `Code Jumping`
+
+Search node (Back / Slash)
+Next / Prev Node (enter / n)
+Jump Back
+
+### `Basic Navigation`
+
+vim no mouse
+arrows + hjkl
+move left right (m)
+Reveal cursor
+move start / end
+
+### `Block Tree`
+
+String Representation (hover)
+TargetTree Modal
+
+# Future Work
+
+Context Menu submenus
+SQL-Inspektor
+
+# Reflection
 
 -   This project was created as my Bachelors Project at the chair for database systems of the Technical University of Munich.
 
@@ -43,4 +169,38 @@ Server is hostet on `localhost:8000`
 
 -   Some challenges occurred when combining the monaco editor framework (on which this application is based) together with TypeScript as little documentation for this exists so far. It was also challenging to make sure that the provided .json files of the UIR code would be represented correctly within the editor and could be analyzed.
 
--   The tools used for this project were mainly [VS Code](https://code.visualstudio.com/) as a code editor and reference for some features, [Monaco Editor Playground](https://microsoft.github.io/monaco-editor/playground.html) for exploring monaco features and [D3js](https://d3js.org/) for visualization.
+-   The tools used for this project were mainly [Visual Studio Code](https://code.visualstudio.com/) as a code editor and reference for some features, [Monaco Editor Playground](https://microsoft.github.io/monaco-editor/playground.html) for exploring monaco features and [D3js](https://d3js.org/) for visualization.
+
+# Project Images
+
+#### _UIR-Editor_
+
+![Screenshot](public/img/showcaseapp.png?raw=true 'UIR-Editor: App')
+
+#### _Folding_
+
+![Screenshot](public/img/showcasefolding.png?raw=true 'UIR-Editor: Folding')
+
+#### _Variable Flow_
+
+![Screenshot](public/img/showcasechildparent.png?raw=true 'UIR-Editor: Child / Parent')
+
+#### _Renaming_
+
+![Screenshot](public/img/showcaserename.png?raw=true 'UIR-Editor: Renaming')
+
+#### _Comments_
+
+![Screenshot](public/img/showcasecomment.png?raw=true 'UIR-Editor: Comments')
+
+#### _Block Tree_
+
+![Screenshot](public/img/showcasetargettree.png?raw=true 'UIR-Editor: Block Tree')
+
+#### _Keybindings_
+
+![Screenshot](public/img/keybinds.png?raw=true 'UIR-Editor: Keybindings')
+
+#### _Project Structure_
+
+![Screenshot](public/img/structure.png?raw=true 'UIR-Editor: Project Structure')
