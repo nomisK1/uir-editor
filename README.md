@@ -4,9 +4,14 @@ UIR-Editor
 
 A web application used to display TCPH-quieries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
 
-# Project Screenshot
+# Project Screenshots
 
-![Screenshot](public/showcaseapp.png?raw=true 'UIR-Editor')
+![Screenshot](public/screenshots/showcaseapp.png?raw=true 'UIR-Editor App')
+![Screenshot](public/screenshots/showcasechildparent.png?raw=true 'UIR-Editor App')
+![Screenshot](public/screenshots/showcaserename.png?raw=true 'UIR-Editor App')
+![Screenshot](public/screenshots/showcasecomment.png?raw=true 'UIR-Editor App')
+![Screenshot](public/screenshots/showcasefolding.png?raw=true 'UIR-Editor App')
+![Screenshot](public/screenshots/showcasetargettree.png?raw=true 'UIR-Editor App')
 
 # Installation and Setup
 
