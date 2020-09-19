@@ -6,12 +6,12 @@ A web application used to display TCPH-quieries compiled in the Umbra Intermedia
 
 # Project Screenshots
 
-![Screenshot](public/screenshots/showcaseapp.png?raw=true 'UIR-Editor App')
-![Screenshot](public/screenshots/showcasechildparent.png?raw=true 'UIR-Editor App')
-![Screenshot](public/screenshots/showcaserename.png?raw=true 'UIR-Editor App')
-![Screenshot](public/screenshots/showcasecomment.png?raw=true 'UIR-Editor App')
-![Screenshot](public/screenshots/showcasefolding.png?raw=true 'UIR-Editor App')
-![Screenshot](public/screenshots/showcasetargettree.png?raw=true 'UIR-Editor App')
+![Screenshot](public/screenshots/showcaseapp.png?raw=true 'UIR-Editor: App')
+![Screenshot](public/screenshots/showcasechildparent.png?raw=true 'UIR-Editor: Child / Parent')
+![Screenshot](public/screenshots/showcaserename.png?raw=true 'UIR-Editor: Renaming')
+![Screenshot](public/screenshots/showcasecomment.png?raw=true 'UIR-Editor: Comments')
+![Screenshot](public/screenshots/showcasefolding.png?raw=true 'UIR-Editor: Folding')
+![Screenshot](public/screenshots/showcasetargettree.png?raw=true 'UIR-Editor: Target Tree')
 
 # Installation and Setup
 
