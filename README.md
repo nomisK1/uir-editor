@@ -26,3 +26,11 @@ Clone this repository. Node and npm is required.
 App is hostet on `localhost:3000`
 
 Server is hostet on `localhost:8000`
+
+# Reflection
+
+-   This project was created as my Bachelors Project at the chair for database systems of the Technical University of Munich.
+-   The goal was to build a tool for visualizing dynamically generated database code of the compiler language Umbra Intermediate Representation (UIR).
+-   The main focus of this project was to make it easier to engage with UIR code. This includes helping professionals analyzing and debugging the code as well as providing an easy entry point for interested users to start understanding the UmbraIR language.
+-   Some challenges occurred when combining the monaco editor framework (on which this application is based) together with TypeScript as little documentation for this exists so far. It was also challenging to make sure that the provided .json files of the UIR code would be represented correctly within the editor and could be analyzed.
+-   The tool used for this project were mainly [VS Code](https://code.visualstudio.com/) as a code editor and reference for some features, [Monaco Editor Playground](https://microsoft.github.io/monaco-editor/playground.html) for exploring monaco features and [D3js](https://d3js.org/) for visualization.
