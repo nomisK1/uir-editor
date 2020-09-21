@@ -2,7 +2,7 @@
 
 UIR-Editor
 
-A web application used to display TCPH-queries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
+A web application used to display TPCH-queries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
 
 # Installation and Setup
 
@@ -158,6 +158,40 @@ TargetTree Modal
 
 Context Menu submenus
 SQL-Inspektor
+
+# Use Cases
+
+## UC#1: Compare C++ to UmbraIR
+
+Showcase data flow in @_Compare:
+
+1. Start by defining input parameters via RENAME (left -> A / right -> B)
+2. Click on variable to find child node and jump to it.
+3. RENAME child according to operation context.
+=> For reference: LLVM Doc / Explanation Button
+**optional:** Add comments for reference
+
+## UC#2: Analyzing big plan_steps
+
+Example TPC-H 1: plan_step_11
+
+1. Start by analyzing body block according to UC#1.
+2. Hover over body label or use Block Tree modal (s) to see following blocks.
+3. Look for desired target at last line of the block or use target key (t) to jump to next target. (target reference)
+4. Use go to block key (g) to jump to the referenced blocks label
+
+## UC#3: Increase Convenience
+
+For regular users:
+
+1. Comments, Names and Bookmarks get saved in local storage
+2. Use Bookmarks to instantly find last position (b)
+3. Jump between Comments and use them as reference (x)
+4. Jump to variables with the same name (n / Enter)
+5. Use Folding (f) for better overview of the whole query
+6. Use Undo key (u) to go back to last node
+7. Change to next query fast (q)
+8. Show all keybinds (shift + s)
 
 # Reflection
 
