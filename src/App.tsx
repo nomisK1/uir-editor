@@ -1,6 +1,7 @@
 import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
 import StatusInput, { Status } from './components/StatusInput';
+import ExplanationModal from './components/ExplanationModal';
 import KeybindModal from './components/KeybindModal';
 import TargetTreeModal from './components/TargetTreeModal';
 import Editor from './components/Editor';
@@ -16,6 +17,7 @@ interface IAppProps {}
 interface IAppState {
     index: number;
     input: string;
+    showExpanationModal: boolean;
     showKeybindModal: boolean;
     showTargetTreeModal: boolean;
 }
@@ -35,6 +37,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             index: 0,
             input: '',
+            showExpanationModal: false,
             showKeybindModal: false,
             showTargetTreeModal: false,
         };
@@ -46,6 +49,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
         this.resetStatus = this.resetStatus.bind(this);
+        this.displayExplanationModal = this.displayExplanationModal.bind(this);
         this.displayKeybindModal = this.displayKeybindModal.bind(this);
         this.displayTargetTreeModal = this.displayTargetTreeModal.bind(this);
         this.buildTargetTreeModal = this.buildTargetTreeModal.bind(this);
@@ -107,8 +111,18 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.inputElement) this.inputElement.setStatus(Status.NODE);
     }
 
+    public displayExplanationModal() {
+        this.setState({
+            showExpanationModal: !this.state.showExpanationModal,
+            showKeybindModal: false,
+            showTargetTreeModal: false,
+        });
+        if (this.editor) this.editor.getInstance().focus();
+    }
+
     public displayKeybindModal() {
         this.setState({
+            showExpanationModal: false,
             showKeybindModal: !this.state.showKeybindModal,
             showTargetTreeModal: false,
         });
@@ -117,6 +131,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public displayTargetTreeModal() {
         this.setState({
+            showExpanationModal: false,
             showKeybindModal: false,
             showTargetTreeModal: !this.state.showTargetTreeModal,
         });
@@ -129,6 +144,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public closeModals() {
         this.setState({
+            showExpanationModal: false,
             showKeybindModal: false,
             showTargetTreeModal: false,
         });
@@ -152,6 +168,9 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={(ref) => (this.inputElement = ref)}
             />
         );
+        let exModal = (
+            <ExplanationModal showModal={this.state.showExpanationModal} onModalClick={this.displayExplanationModal} />
+        );
         let kbModal = <KeybindModal showModal={this.state.showKeybindModal} onModalClick={this.displayKeybindModal} />;
         let ttModal = (
             <TargetTreeModal
@@ -170,6 +189,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 passInput={this.passInput}
                 focusInput={this.focusInput}
                 resetStatus={this.resetStatus}
+                displayExplanationModal={this.displayExplanationModal}
                 displayKeybindModal={this.displayKeybindModal}
                 displayTargetTreeModal={this.displayTargetTreeModal}
                 buildTargetTreeModal={this.buildTargetTreeModal}
@@ -183,6 +203,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     {dropdown}
                     {input}
                 </div>
+                {exModal}
                 {kbModal}
                 {ttModal}
                 {editor}

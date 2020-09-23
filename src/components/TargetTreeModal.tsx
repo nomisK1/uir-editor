@@ -26,9 +26,9 @@ class TargetTreeModal extends React.Component<ITargetTreeModalProps> {
                 style={{ display: this.props.showModal ? 'block' : 'none' }}
                 onClick={this.props.onModalClick}
             >
-                <div className="modal-content">
+                <div className="modal-background">
                     <span className="close">&times;</span>
-                    <h3 className="modalHeader">
+                    <h3 className="modal-header">
                         {this.data ? this.data.context + ' // ' + this.data.json.id : 'HEADER'}
                     </h3>
                     <TTWrapper data={this.data} showTT={this.props.showModal} />

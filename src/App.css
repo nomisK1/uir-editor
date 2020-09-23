@@ -34,11 +34,6 @@
     color: rgba(0, 0, 0, 0.8);
     pointer-events: none;
 }
-.modalHeader {
-    font-size: 17px;
-    font-weight: 600;
-    padding: 5px;
-}
 .modal {
     display: none;
     position: fixed;
@@ -51,7 +46,7 @@
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
 }
-.modal-content {
+.modal-background {
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
@@ -72,7 +67,12 @@
     text-decoration: none;
     cursor: pointer;
 }
-.image-container {
+.modal-header {
+    font-size: 17px;
+    font-weight: 600;
+    padding: 5px;
+}
+.modal-content-container {
     text-align: center;
     width: 100%;
     height: 90%;
@@ -80,8 +80,9 @@
     border-radius: 15px;
     overflow: hidden;
 }
-.image {
+.modal-content {
     position: relative;
+    color: white;
     top: 50%;
     transform: translateY(-50%);
     max-width: 95%;

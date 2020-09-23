@@ -1,28 +1,28 @@
 import React from 'react';
 
-interface IKeybindModalProps {
+interface IExplanationModalProps {
     showModal: boolean;
     onModalClick: () => void;
 }
 
 /**
- * KeybindModal:
- * Modal for the keybind image
+ * ExplanationModal:
+ * Modal for the explanation text
  */
-class KeybindModal extends React.Component<IKeybindModalProps> {
+class ExplanationModal extends React.Component<IExplanationModalProps> {
     render() {
         return (
             <div
-                id="keybindModal"
+                id="ExplanationModal"
                 className="modal"
                 style={{ display: this.props.showModal ? 'block' : 'none' }}
                 onClick={this.props.onModalClick}
             >
                 <div className="modal-background">
                     <span className="close">&times;</span>
-                    <h3 className="modal-header">Keybindings reference (UIR-Editor/public/keybinds.txt)</h3>
+                    <h3 className="modal-header">Explanation for "{}" operation</h3>
                     <div className="modal-content-container">
-                        <img className="modal-content" src="img/keybinds.png" alt="KEYBINDS" />
+                        <text className="modal-content">Hello World!</text>
                     </div>
                 </div>
             </div>
@@ -30,4 +30,4 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
     }
 }
 
-export default KeybindModal;
+export default ExplanationModal;

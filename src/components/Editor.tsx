@@ -16,6 +16,7 @@ interface IEditorProps {
     passInput: (input: string) => void;
     focusInput: (status: Status, prev?: string) => void;
     resetStatus: () => void;
+    displayExplanationModal: () => void;
     displayKeybindModal: () => void;
     displayTargetTreeModal: () => void;
     buildTargetTreeModal: (data: treeData | null) => void;
@@ -118,6 +119,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
         this.handleKeypressNextTcphQuery = this.handleKeypressNextTcphQuery.bind(this);
         this.handleKeypressPrevTcphQuery = this.handleKeypressPrevTcphQuery.bind(this);
+        this.handleKeypressDisplayExplanationModal = this.handleKeypressDisplayExplanationModal.bind(this);
         this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
         this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
         this.handleKeypressRevealCursor = this.handleKeypressRevealCursor.bind(this);
@@ -456,11 +458,20 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressDisplayTargetTreeModal,
             });
             this.editor.addAction({
-                id: 'displayKeybindModal',
-                label: 'Show Keyboard Shortcuts',
+                id: 'displayExplanationModal',
+                label: 'Show Operation Explanation',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '6_other',
                 contextMenuOrder: 3,
+                keybindingContext: 'condition',
+                run: this.handleKeypressDisplayExplanationModal,
+            });
+            this.editor.addAction({
+                id: 'displayKeybindModal',
+                label: 'Show Keyboard Shortcuts',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S],
+                contextMenuGroupId: '6_other',
+                contextMenuOrder: 4,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayKeybindModal,
             });
@@ -812,6 +823,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressPrevTcphQuery() {
         this.props.prevTcphQuery();
+    }
+
+    public handleKeypressDisplayExplanationModal() {
+        this.props.displayExplanationModal();
     }
 
     public handleKeypressDisplayKeybindModal() {

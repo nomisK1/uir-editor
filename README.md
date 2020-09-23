@@ -20,11 +20,41 @@ Server is hosted on `localhost:8000` (alternatively local files will be used)
 
 # Description
 
+## Motivation & Goal
+
+Reading and analyzing blanc UmbraIR code is strenuous for the user and can lead to mistakes.
+Important insights are hard to detect even with sufficient knowledge of the context.
+Some details might be missed in the process.
+UIR code can contain multiple 100 lines per TPC-H query which makes it quite convoluted.
+Available code editors do not offer functionality to traverse such amount of code lines effectively.
+The best a user can do currently is scroll through the code.
+Additionally there are no tools available to increase perception of context or detail awareness.
+This leads to increased time when looking for specific code parts or tracing the code flow.
+All these factors can make it hard to understand blanc UIR code and lead to a bad user experience.
+
+The goal of this thesis and the UIR-Editor is to fix these problems for UmbraIR.
+By developing a Editor specifically for the UIR language it is possible to tailor its features to best fit the code.
+All the features aim to make the code more clear, comprehensive and improve the user experience when working with UIR.
+The editor is designed for experienced users of UIR that want to work with the code in a more effective way as well as inexperienced users by providing features that make code digestion easier.
+It delivers UIR in colors that highlights the code logic, provides quick content based navigation and follows routines that are familiar to the user.
+
 ## Background
 
-UIR is a subset of LLVM.
-Explain content structure.
-Reference project structure image.
+UmbraIR is a subset of the popular compiler language LLVM.
+UIR provides a similar operation library but includes only the minimal functionality to support the Umbra database system.
+This minimizes the overhead of unused code and therefore increases performance in the database.
+The UIR-Editor is built specifically for the UIR language and depends on its structure.
+In this section we will look at the content most of the UIR-Editor features depend on.
+The UML diagram of figure X will be referenced to highlight relationships within the content structure.
+
+content structure erklären pro token / farbe
+uml highlight + codezeilen beispiele
+
+-   components: globals, functions -> declarations, definitions (showcasefoldall)
+-   blocks: labels (showcasefoldblocks)
+-   instructions -> assignments, operation
+-   targets -> labels
+-   values: variables, constants
 
 ## Features
 
@@ -32,10 +62,10 @@ Reference project structure image.
 
 The UIR-Editor changes the following default settings of the Monaco Editor framework.
 
--   Content: Read only
--   Font: 'Courier New', monospace, 14px
--   Glyph margin: Activated
--   Minimap: Characters disabled
+-   **Content**: Read only
+-   **Font**: 'Courier New', monospace, 14px
+-   **Glyph margin**: Activated
+-   **Minimap**: Characters disabled
 
 Additionally cursor decoration was added to highlight the current position with a yellow glyph.
 Most of the implemented features can also be accessed via the context menu when right clicking on the editor.
