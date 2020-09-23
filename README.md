@@ -2,7 +2,7 @@
 
 UIR-Editor
 
-A web application used to display TPCH-queries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
+A web application used to display TPC-H queries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
 
 # Installation and Setup
 
@@ -193,13 +193,13 @@ SQL-Inspektor
 
 ## UC#1: Compare C++ to UmbraIR
 
-Showcase data flow in @_Compare:
+Showcase data flow in @\_Compare:
 
 1. Start by defining input parameters via RENAME (left -> A / right -> B)
 2. Click on variable to find child node and jump to it.
 3. RENAME child according to operation context.
-=> For reference: LLVM Doc / Explanation Button
-**optional:** Add comments for reference
+   => For reference: LLVM Doc / Help Button
+   **optional:** Add comments for reference
 
 ## UC#2: Analyzing big plan_steps
 

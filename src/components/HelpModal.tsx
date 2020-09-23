@@ -1,28 +1,34 @@
 import React from 'react';
 
-interface IExplanationModalProps {
+interface IHelpModalProps {
     showModal: boolean;
     onModalClick: () => void;
 }
 
 /**
- * ExplanationModal:
- * Modal for the explanation text
+ * HelpModal:
+ * Modal for the help text
  */
-class ExplanationModal extends React.Component<IExplanationModalProps> {
+class HelpModal extends React.Component<IHelpModalProps> {
+    private data: string | null = null;
+
+    setData(data: string) {
+        this.data = data;
+    }
+
     render() {
         return (
             <div
-                id="ExplanationModal"
+                id="HelpModal"
                 className="modal"
                 style={{ display: this.props.showModal ? 'block' : 'none' }}
                 onClick={this.props.onModalClick}
             >
                 <div className="modal-background">
                     <span className="close">&times;</span>
-                    <h3 className="modal-header">Explanation for "{}" operation</h3>
+                    <h3 className="modal-header">Help - CURRENT NODE</h3>
                     <div className="modal-content-container">
-                        <text className="modal-content">Hello World!</text>
+                        <pre className="modal-content">{this.data}</pre>
                     </div>
                 </div>
             </div>
@@ -30,4 +36,4 @@ class ExplanationModal extends React.Component<IExplanationModalProps> {
     }
 }
 
-export default ExplanationModal;
+export default HelpModal;

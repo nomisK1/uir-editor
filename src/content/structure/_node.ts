@@ -58,6 +58,26 @@ abstract class _node {
 
     public abstract getNodeAt(position: monaco.Position): _node | null;
 
+    public getHelp() {
+        let start = this.getRange().getStartPosition();
+        let end = this.getRange().getEndPosition();
+        return (
+            'CLASS: ' +
+            this.constructor.name +
+            '\nNAME: ' +
+            this.getAlias() +
+            '\nSTART: [' +
+            start.lineNumber +
+            '/' +
+            start.column +
+            ']\nEND: [' +
+            end.lineNumber +
+            '/' +
+            end.column +
+            ']'
+        );
+    }
+
     public getVariablesByName(name: string) {
         let vars: variable[] = [];
         this.getVariables().forEach((v) => {

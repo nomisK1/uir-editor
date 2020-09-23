@@ -1,7 +1,7 @@
 import * as React from 'react';
 import TcphDropdown from './components/TcphDropdown';
 import StatusInput, { Status } from './components/StatusInput';
-import ExplanationModal from './components/ExplanationModal';
+import HelpModal from './components/HelpModal';
 import KeybindModal from './components/KeybindModal';
 import TargetTreeModal from './components/TargetTreeModal';
 import Editor from './components/Editor';
@@ -17,7 +17,7 @@ interface IAppProps {}
 interface IAppState {
     index: number;
     input: string;
-    showExpanationModal: boolean;
+    showHelpModal: boolean;
     showKeybindModal: boolean;
     showTargetTreeModal: boolean;
 }
@@ -30,6 +30,7 @@ class App extends React.Component<IAppProps, IAppState> {
     private editor: Editor | null = null;
     private data: Graph[] = getData();
     private inputElement: StatusInput | null = null;
+    private hpModalElement: HelpModal | null = null;
     private ttModalElement: TargetTreeModal | null = null;
 
     constructor(props: IAppProps) {
@@ -37,7 +38,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             index: 0,
             input: '',
-            showExpanationModal: false,
+            showHelpModal: false,
             showKeybindModal: false,
             showTargetTreeModal: false,
         };
@@ -49,7 +50,8 @@ class App extends React.Component<IAppProps, IAppState> {
         this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
         this.resetStatus = this.resetStatus.bind(this);
-        this.displayExplanationModal = this.displayExplanationModal.bind(this);
+        this.displayHelpModal = this.displayHelpModal.bind(this);
+        this.buildHelpModal = this.buildHelpModal.bind(this);
         this.displayKeybindModal = this.displayKeybindModal.bind(this);
         this.displayTargetTreeModal = this.displayTargetTreeModal.bind(this);
         this.buildTargetTreeModal = this.buildTargetTreeModal.bind(this);
@@ -111,18 +113,22 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.inputElement) this.inputElement.setStatus(Status.NODE);
     }
 
-    public displayExplanationModal() {
+    public displayHelpModal() {
         this.setState({
-            showExpanationModal: !this.state.showExpanationModal,
+            showHelpModal: !this.state.showHelpModal,
             showKeybindModal: false,
             showTargetTreeModal: false,
         });
         if (this.editor) this.editor.getInstance().focus();
     }
 
+    public buildHelpModal(help: string) {
+        if (this.hpModalElement) this.hpModalElement.setData(help);
+    }
+
     public displayKeybindModal() {
         this.setState({
-            showExpanationModal: false,
+            showHelpModal: false,
             showKeybindModal: !this.state.showKeybindModal,
             showTargetTreeModal: false,
         });
@@ -131,7 +137,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public displayTargetTreeModal() {
         this.setState({
-            showExpanationModal: false,
+            showHelpModal: false,
             showKeybindModal: false,
             showTargetTreeModal: !this.state.showTargetTreeModal,
         });
@@ -144,7 +150,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public closeModals() {
         this.setState({
-            showExpanationModal: false,
+            showHelpModal: false,
             showKeybindModal: false,
             showTargetTreeModal: false,
         });
@@ -168,8 +174,12 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={(ref) => (this.inputElement = ref)}
             />
         );
-        let exModal = (
-            <ExplanationModal showModal={this.state.showExpanationModal} onModalClick={this.displayExplanationModal} />
+        let hpModal = (
+            <HelpModal
+                showModal={this.state.showHelpModal}
+                onModalClick={this.displayHelpModal}
+                ref={(ref) => (this.hpModalElement = ref)}
+            />
         );
         let kbModal = <KeybindModal showModal={this.state.showKeybindModal} onModalClick={this.displayKeybindModal} />;
         let ttModal = (
@@ -189,7 +199,8 @@ class App extends React.Component<IAppProps, IAppState> {
                 passInput={this.passInput}
                 focusInput={this.focusInput}
                 resetStatus={this.resetStatus}
-                displayExplanationModal={this.displayExplanationModal}
+                displayHelpModal={this.displayHelpModal}
+                buildHelpModal={this.buildHelpModal}
                 displayKeybindModal={this.displayKeybindModal}
                 displayTargetTreeModal={this.displayTargetTreeModal}
                 buildTargetTreeModal={this.buildTargetTreeModal}
@@ -203,7 +214,7 @@ class App extends React.Component<IAppProps, IAppState> {
                     {dropdown}
                     {input}
                 </div>
-                {exModal}
+                {hpModal}
                 {kbModal}
                 {ttModal}
                 {editor}

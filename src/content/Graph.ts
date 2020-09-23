@@ -162,6 +162,16 @@ class Graph {
         return null;
     }
 
+    public getHelpAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node)
+            return (
+                node.getHelp() +
+                (this.getCommentsAt(position).length ? '\nCOMMENTS: ' + this.getCommentStringAt(position) : '')
+            );
+        return null;
+    }
+
     public getVariableAt(position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (node instanceof variable) return node;
@@ -530,15 +540,14 @@ class Graph {
             ? this.getCommentsAt(position).map(
                   (c) =>
                       (c.node ? ' ' : '') +
-                      '[C' +
-                      (c.node ? '@' + c.node?.constructor.name : '') +
-                      '(' +
+                      '\n["' +
+                      //(c.node ? c.node?.constructor.name : '') +
+                      c.text +
+                      '"@' +
                       c.range.getStartPosition().lineNumber +
                       '/' +
                       c.range.getStartPosition().column +
-                      '): "' +
-                      c.text +
-                      '"]',
+                      ']',
               )
             : '';
     }
@@ -556,7 +565,13 @@ class Graph {
                 range = new monaco.Range(position.lineNumber, 1, position.lineNumber, 1);
                 isWholeLine = true;
             }
-            this.comments.push({ text, position, range, isWholeLine, node: pushNode ? node! : undefined });
+            this.comments.push({
+                text: text.slice(0, maxComment),
+                position,
+                range,
+                isWholeLine,
+                node: pushNode ? node! : undefined,
+            });
             this.comments = sortCommentsByDepth(this.comments);
             this.setLocalStorageComments();
         }
@@ -770,11 +785,15 @@ function sortCommentsByPosition(comments: comment[]) {
     return comments.sort(compareCommentPosition);
 }
 
+// Maximum amount of characters in one comment
+const maxComment = 50;
+
 function isLegal(string: string) {
     for (let i = 0; i < string.length; i++) if (!legalStrings.includes(string[i])) return false;
     return true;
 }
 
+// Character that can be used in a name
 const legalStrings: string[] = [
     '0',
     '1',

@@ -91,10 +91,10 @@ enum OpCode {
 }
 
 /**
- * OpNote:
- * Define explanations for operations (https://llvm.org/docs/LangRef.html)
+ * OpHelp:
+ * Define help for operations (https://llvm.org/docs/LangRef.html)
  */
-enum OpNote {
+enum OpHelp {
     ADD = 'The ‘add’ instruction returns the sum of its two operands.',
     AND = 'and',
     ASHR = 'ashr',

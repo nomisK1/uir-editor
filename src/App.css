@@ -82,6 +82,7 @@
 }
 .modal-content {
     position: relative;
+    font-size: 28px;
     color: white;
     top: 50%;
     transform: translateY(-50%);
