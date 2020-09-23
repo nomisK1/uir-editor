@@ -62,15 +62,15 @@ abstract class _node {
         let start = this.getRange().getStartPosition();
         let end = this.getRange().getEndPosition();
         return (
-            'CLASS: ' +
+            'CLASS:\t' +
             this.constructor.name +
-            '\nNAME: ' +
+            '\n\nNAME:\t' +
             this.getAlias() +
-            '\nSTART: [' +
+            '\n\nSTART:\t[' +
             start.lineNumber +
             '/' +
             start.column +
-            ']\nEND: [' +
+            ']\n\nEND:\t[' +
             end.lineNumber +
             '/' +
             end.column +

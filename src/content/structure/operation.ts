@@ -91,97 +91,99 @@ enum OpCode {
 }
 
 /**
- * OpHelp:
+ * OpNote:
  * Define help for operations (https://llvm.org/docs/LangRef.html)
  */
-enum OpHelp {
-    ADD = 'The ‘add’ instruction returns the sum of its two operands.',
-    AND = 'and',
-    ASHR = 'ashr',
-    //ATOMICCMPXCHG = 'atomiccmpxchg',
-    ATOMICLOAD = 'atomicload',
-    ATOMICRMWADD = 'atomicrmwadd',
-    ATOMICRMWUMAX = 'atomicrmwumax',
-    ATOMICRMWXCHG = 'atomicrmwxchg',
-    ATOMICSTORE = 'atomicstore',
-    BR = 'br',
-    BSWAP = 'bswap',
-    BUILDDATA128 = 'builddata128',
-    CALL = 'call',
-    //CALLBUILTIN = 'callbuiltin',
-    CHECKEDSADD = 'checkedsadd',
-    CHECKEDSMUL = 'checkedsmul',
-    CHECKEDSSUB = 'checkedssub',
-    CMPEQ = 'cmpeq',
-    CMPNE = 'cmpne',
-    CMPSLE = 'cmpsle',
-    CMPSLT = 'cmpslt',
-    CMPSUOLE = 'cmpsuole',
-    CMPSUOLT = 'cmpsuolt',
-    CMPULE = 'cmpule',
-    CMPULT = 'cmpult',
-    CONDBR = 'condbr',
-    //CONST = 'const',
-    CRC32 = 'crc32',
-    CTLZ = 'ctlz',
-    EXTRACTDATA128 = 'extractdata128',
-    FPTOSI = 'fptosi',
-    //FUNCTIONARGUMENT = 'functionargument',
-    //FUNCTIONVARIABLE = 'functionvariable',
-    GEP = 'gep',
-    GETELEMENTPTR = 'getelementptr',
-    //GLOBALREF = 'globalref',
-    //HEADERPTRPAIR = 'headerptrpair',
-    INTTOPTR = 'inttoptr',
-    ISNOTNULL = 'isnotnull',
-    ISNULL = 'isnull',
-    LOAD = 'load',
-    LSHR = 'lshr',
-    MUL = 'mul',
-    NEG = 'neg',
-    NOT = 'not',
-    OR = 'or',
-    //OVERFLOWRESULT = 'overflowresult',
-    PHI = 'phi',
-    POW = 'pow',
-    PTRTOINT = 'ptrtoint',
-    RETURN = 'return',
-    RETURNVOID = 'returnvoid',
-    ROTL = 'rotl',
-    ROTR = 'rotr',
-    //SADDOVERFLOW = 'saddoverflow',
-    SDIV = 'sdiv',
-    SELECT = 'select',
-    SEXT = 'sext',
-    SHL = 'shl',
-    SITOFP = 'sitofp',
-    //SMULOVERFLOW = 'smuloverflow',
-    SREM = 'srem',
-    //SSUBOVERFLOW = 'ssuboverflow',
-    STORE = 'store',
-    SUB = 'sub',
-    //SWITCH = 'switch',
-    TRUNC = 'trunc',
-    //UADDOVERFLOW = 'uaddoverflow',
-    UDIV = 'udiv',
-    //UMULOVERFLOW = 'umuloverflow',
-    UNREACHABLE = 'unreachable',
-    UREM = 'urem',
-    //USUBOVERFLOW = 'usuboverflow',
-    XOR = 'xor',
-    ZEXT = 'zext',
+enum OpNote {
+    ADD = 'Returns the sum of its two operands',
+    AND = '__________________________________________________',
+    ASHR = '__________________________________________________',
+    //ATOMICCMPXCHG = '__________________________________________________',
+    ATOMICLOAD = '__________________________________________________',
+    ATOMICRMWADD = '__________________________________________________',
+    ATOMICRMWUMAX = '__________________________________________________',
+    ATOMICRMWXCHG = '__________________________________________________',
+    ATOMICSTORE = '__________________________________________________',
+    BR = '__________________________________________________',
+    BSWAP = '__________________________________________________',
+    BUILDDATA128 = '__________________________________________________',
+    CALL = 'Returns the sum of its two operands',
+    //CALLBUILTIN = '__________________________________________________',
+    CHECKEDSADD = '__________________________________________________',
+    CHECKEDSMUL = '__________________________________________________',
+    CHECKEDSSUB = '__________________________________________________',
+    CMPEQ = '__________________________________________________',
+    CMPNE = '__________________________________________________',
+    CMPSLE = '__________________________________________________',
+    CMPSLT = '__________________________________________________',
+    CMPSUOLE = '__________________________________________________',
+    CMPSUOLT = '__________________________________________________',
+    CMPULE = '__________________________________________________',
+    CMPULT = '__________________________________________________',
+    CONDBR = '__________________________________________________',
+    //CONST = '__________________________________________________',
+    CRC32 = '__________________________________________________',
+    CTLZ = '__________________________________________________',
+    EXTRACTDATA128 = '__________________________________________________',
+    FPTOSI = '__________________________________________________',
+    //FUNCTIONARGUMENT = '__________________________________________________',
+    //FUNCTIONVARIABLE = '__________________________________________________',
+    GEP = '__________________________________________________',
+    GETELEMENTPTR = '__________________________________________________',
+    //GLOBALREF = '__________________________________________________',
+    //HEADERPTRPAIR = '__________________________________________________',
+    INTTOPTR = '__________________________________________________',
+    ISNOTNULL = '__________________________________________________',
+    ISNULL = '__________________________________________________',
+    LOAD = '__________________________________________________',
+    LSHR = '__________________________________________________',
+    MUL = '__________________________________________________',
+    NEG = '__________________________________________________',
+    NOT = '__________________________________________________',
+    OR = '__________________________________________________',
+    //OVERFLOWRESULT = '__________________________________________________',
+    PHI = '__________________________________________________',
+    POW = '__________________________________________________',
+    PTRTOINT = '__________________________________________________',
+    RETURN = '__________________________________________________',
+    RETURNVOID = '__________________________________________________',
+    ROTL = '__________________________________________________',
+    ROTR = '__________________________________________________',
+    //SADDOVERFLOW = '__________________________________________________',
+    SDIV = '__________________________________________________',
+    SELECT = '__________________________________________________',
+    SEXT = '__________________________________________________',
+    SHL = '__________________________________________________',
+    SITOFP = '__________________________________________________',
+    //SMULOVERFLOW = '__________________________________________________',
+    SREM = '__________________________________________________',
+    //SSUBOVERFLOW = '__________________________________________________',
+    STORE = '__________________________________________________',
+    SUB = '__________________________________________________',
+    //SWITCH = '__________________________________________________',
+    TRUNC = '__________________________________________________',
+    //UADDOVERFLOW = '__________________________________________________',
+    UDIV = '__________________________________________________',
+    //UMULOVERFLOW = '__________________________________________________',
+    UNREACHABLE = '__________________________________________________',
+    UREM = '__________________________________________________',
+    //USUBOVERFLOW = '__________________________________________________',
+    XOR = '__________________________________________________',
+    ZEXT = '__________________________________________________',
 }
 
 interface IOperationProps extends IInstructionProps {}
 
 class operation extends _instruction {
     protected opcode: string | null;
+    protected opnote: string | null;
     protected type: string | null;
     protected operands: (_value | target)[] = [];
 
     constructor(props: IOperationProps) {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
+        this.opnote = matchOpNote(this.opcode);
         this.type = matchType(lookupJSON(this.json, 'type'));
         this.name = 'operation@' + this.line;
         this.build();
@@ -464,6 +466,10 @@ class operation extends _instruction {
         return this;
     }
 
+    public getHelp() {
+        return super.getHelp() + '\n\nOPCODE:\t' + this.opcode + '\n\nNOTE:\t' + this.opnote;
+    }
+
     public hasVariable(name: string) {
         let vars = this.getVariables();
         for (let i = 0; i < vars.length; i++) if (vars[i].getName() === name) return true;
@@ -511,5 +517,12 @@ function matchOpCode(str: string | null) {
     if (!str) return null;
     let codes = Object.values(OpCode);
     for (let i = 0; i < codes.length; i++) if (compareOpCode(codes[i], str)) return str;
+    return null;
+}
+
+function matchOpNote(str: string | null) {
+    if (!str) return null;
+    let helps = Object.keys(OpNote);
+    for (let i = 0; i < helps.length; i++) if (helps[i] === str.toUpperCase()) return Object.values(OpNote)[i];
     return null;
 }

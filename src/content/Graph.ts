@@ -167,7 +167,7 @@ class Graph {
         if (node)
             return (
                 node.getHelp() +
-                (this.getCommentsAt(position).length ? '\nCOMMENTS: ' + this.getCommentStringAt(position) : '')
+                (this.getCommentsAt(position).length ? '\n\nCOMMENTS:' + this.getCommentStringAt(position) : '')
             );
         return null;
     }
