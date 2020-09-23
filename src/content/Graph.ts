@@ -166,7 +166,7 @@ class Graph {
         let node = this.getNodeAt(position);
         if (node)
             return (
-                node.getHelp() +
+                node.getInfo() +
                 (this.getCommentsAt(position).length ? '\n\nCOMMENTS:' + this.getCommentStringAt(position) : '')
             );
         return null;
