@@ -58,7 +58,7 @@ abstract class _node {
 
     public abstract getNodeAt(position: monaco.Position): _node | null;
 
-    public getHelp() {
+    public getInfo() {
         let start = this.getRange().getStartPosition();
         let end = this.getRange().getEndPosition();
         return (

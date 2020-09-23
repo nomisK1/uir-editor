@@ -36,7 +36,8 @@ Features:
     Backspace | US-Slash : searchNode
 
     s (insideDefinition) : showTargetTree
-    shift + s            : showKeyboardShortcuts
+    shift + s            : showCurrentNodeInfo
+    shift + alt + s      : showKeyboardShortcuts
 
     b               : addBookmark
     shift + b       : revealBookmark
@@ -76,6 +77,7 @@ Editor:
 
 Other:
 
-    ctrl + f    : openFindDialog
-    shift + esc : closeToolWindow
+    ctrl + f       : openFindDialog
+    shift + esc    : closeToolWindow
+    shift + scroll : scroll left / right
 `

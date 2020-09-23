@@ -92,7 +92,7 @@ enum OpCode {
 
 /**
  * OpNote:
- * Define help for operations (https://llvm.org/docs/LangRef.html)
+ * Define operation note (https://llvm.org/docs/LangRef.html)
  */
 enum OpNote {
     ADD = 'Returns the sum of its two operands',
@@ -466,8 +466,8 @@ class operation extends _instruction {
         return this;
     }
 
-    public getHelp() {
-        return super.getHelp() + '\n\nOPCODE:\t' + this.opcode + '\n\nNOTE:\t' + this.opnote;
+    public getInfo() {
+        return super.getInfo() + '\n\nOPCODE:\t' + this.opcode + '\n\nNOTE:\t' + this.opnote;
     }
 
     public hasVariable(name: string) {
@@ -522,7 +522,7 @@ function matchOpCode(str: string | null) {
 
 function matchOpNote(str: string | null) {
     if (!str) return null;
-    let helps = Object.keys(OpNote);
-    for (let i = 0; i < helps.length; i++) if (helps[i] === str.toUpperCase()) return Object.values(OpNote)[i];
+    let notes = Object.keys(OpNote);
+    for (let i = 0; i < notes.length; i++) if (notes[i] === str.toUpperCase()) return Object.values(OpNote)[i];
     return null;
 }

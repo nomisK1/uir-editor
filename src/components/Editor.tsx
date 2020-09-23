@@ -16,8 +16,8 @@ interface IEditorProps {
     passInput: (input: string) => void;
     focusInput: (status: Status, prev?: string) => void;
     resetStatus: () => void;
-    displayHelpModal: () => void;
-    buildHelpModal: (help: string) => void;
+    displayInfoModal: () => void;
+    buildInfoModal: (help: string) => void;
     displayKeybindModal: () => void;
     displayTargetTreeModal: () => void;
     buildTargetTreeModal: (data: treeData | null) => void;
@@ -120,7 +120,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
         this.handleKeypressNextTcphQuery = this.handleKeypressNextTcphQuery.bind(this);
         this.handleKeypressPrevTcphQuery = this.handleKeypressPrevTcphQuery.bind(this);
-        this.handleKeypressDisplayHelpModal = this.handleKeypressDisplayHelpModal.bind(this);
+        this.handleKeypressDisplayInfoModal = this.handleKeypressDisplayInfoModal.bind(this);
         this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
         this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
         this.handleKeypressRevealCursor = this.handleKeypressRevealCursor.bind(this);
@@ -444,14 +444,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'revealCursor',
                 label: 'Reveal Cursor',
                 keybindings: [monaco.KeyCode.Space],
-                contextMenuGroupId: '6_other',
+                //contextMenuGroupId: '6_other',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressRevealCursor,
             });
             this.editor.addAction({
                 id: 'displayTargetTreeModal',
-                label: 'Show Target Tree Modal',
+                label: 'Show Target Tree',
                 keybindings: [monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '6_other',
                 contextMenuOrder: 2,
@@ -459,17 +459,17 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressDisplayTargetTreeModal,
             });
             this.editor.addAction({
-                id: 'displayHelpModal',
-                label: 'Show Help Modal',
+                id: 'displayInfoModal',
+                label: 'Show Current Node Info',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '6_other',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
-                run: this.handleKeypressDisplayHelpModal,
+                run: this.handleKeypressDisplayInfoModal,
             });
             this.editor.addAction({
                 id: 'displayKeybindModal',
-                label: 'Show Keybindings Modal',
+                label: 'Show Keyboard Shortcuts',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '6_other',
                 contextMenuOrder: 4,
@@ -826,11 +826,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.props.prevTcphQuery();
     }
 
-    public handleKeypressDisplayHelpModal() {
+    public handleKeypressDisplayInfoModal() {
         let help = this.graph.getHelpAt(this.lastPosition);
         if (help) {
-            this.props.buildHelpModal(help);
-            this.props.displayHelpModal();
+            this.props.buildInfoModal(help);
+            this.props.displayInfoModal();
         }
     }
 

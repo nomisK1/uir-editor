@@ -187,6 +187,7 @@ TargetTree Modal
 # Future Work
 
 Context Menu submenus
+More info
 SQL-Inspektor
 
 # Use Cases
@@ -198,7 +199,7 @@ Showcase data flow in @\_Compare:
 1. Start by defining input parameters via RENAME (left -> A / right -> B)
 2. Click on variable to find child node and jump to it.
 3. RENAME child according to operation context.
-   => For reference: LLVM Doc / Help Button
+   => For reference: LLVM Doc / Info Button
    **optional:** Add comments for reference
 
 ## UC#2: Analyzing big plan_steps
