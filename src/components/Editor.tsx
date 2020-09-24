@@ -17,7 +17,7 @@ interface IEditorProps {
     focusInput: (status: Status, prev?: string) => void;
     resetStatus: () => void;
     displayInfoModal: () => void;
-    buildInfoModal: (help: string) => void;
+    buildInfoModal: (data: string[]) => void;
     displayKeybindModal: () => void;
     displayTargetTreeModal: () => void;
     buildTargetTreeModal: (data: treeData | null) => void;
@@ -107,14 +107,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressRename = this.handleKeypressRename.bind(this);
         this.handleKeypressUndoRename = this.handleKeypressUndoRename.bind(this);
         this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
-        this.handleToggleNodeHighlighting = this.handleToggleNodeHighlighting.bind(this);
-        this.handleToggleCursorDecorating = this.handleToggleCursorDecorating.bind(this);
-        this.handleToggleVariableDecorating = this.handleToggleVariableDecorating.bind(this);
-        this.handleToggleChildDecorating = this.handleToggleChildDecorating.bind(this);
-        this.handleToggleParentDecorating = this.handleToggleParentDecorating.bind(this);
-        this.handleToggleBookmarkDecorating = this.handleToggleBookmarkDecorating.bind(this);
-        this.handleToggleCommentDecorating = this.handleToggleCommentDecorating.bind(this);
-        this.handleToggleTargetTreeHover = this.handleToggleTargetTreeHover.bind(this);
+        this.handleKeypressToggleNodeHighlighting = this.handleKeypressToggleNodeHighlighting.bind(this);
+        this.handleKeypressToggleCursorDecorating = this.handleKeypressToggleCursorDecorating.bind(this);
+        this.handleKeypressToggleVariableDecorating = this.handleKeypressToggleVariableDecorating.bind(this);
+        this.handleKeypressToggleChildDecorating = this.handleKeypressToggleChildDecorating.bind(this);
+        this.handleKeypressToggleParentDecorating = this.handleKeypressToggleParentDecorating.bind(this);
+        this.handleKeypressToggleBookmarkDecorating = this.handleKeypressToggleBookmarkDecorating.bind(this);
+        this.handleKeypressToggleCommentDecorating = this.handleKeypressToggleCommentDecorating.bind(this);
+        this.handleKeypressToggleTargetTreeHover = this.handleKeypressToggleTargetTreeHover.bind(this);
         this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
         this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
         this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
@@ -375,7 +375,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
-                run: this.handleToggleNodeHighlighting,
+                run: this.handleKeypressToggleNodeHighlighting,
             });
             this.editor.addAction({
                 id: 'toggleCursorDecorating',
@@ -384,7 +384,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
-                run: this.handleToggleCursorDecorating,
+                run: this.handleKeypressToggleCursorDecorating,
             });
             this.editor.addAction({
                 id: 'toggleVariableDecorating',
@@ -393,7 +393,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
-                run: this.handleToggleVariableDecorating,
+                run: this.handleKeypressToggleVariableDecorating,
             });
             this.editor.addAction({
                 id: 'toggleChildDecorating',
@@ -402,7 +402,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 4,
                 keybindingContext: 'condition',
-                run: this.handleToggleChildDecorating,
+                run: this.handleKeypressToggleChildDecorating,
             });
             this.editor.addAction({
                 id: 'toggleParentDecorating',
@@ -411,7 +411,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 5,
                 keybindingContext: 'condition',
-                run: this.handleToggleParentDecorating,
+                run: this.handleKeypressToggleParentDecorating,
             });
             this.editor.addAction({
                 id: 'toggleBookmarkDisplay',
@@ -420,7 +420,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 6,
                 keybindingContext: 'condition',
-                run: this.handleToggleBookmarkDecorating,
+                run: this.handleKeypressToggleBookmarkDecorating,
             });
             this.editor.addAction({
                 id: 'toggleCommentDisplay',
@@ -429,7 +429,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 7,
                 keybindingContext: 'condition',
-                run: this.handleToggleCommentDecorating,
+                run: this.handleKeypressToggleCommentDecorating,
             });
             this.editor.addAction({
                 id: 'toggleTargetTreeHover',
@@ -438,7 +438,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 8,
                 keybindingContext: 'condition',
-                run: this.handleToggleTargetTreeHover,
+                run: this.handleKeypressToggleTargetTreeHover,
             });
             this.editor.addAction({
                 id: 'revealCursor',
@@ -481,7 +481,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 label: 'Toggle All Keybinds',
                 keybindings: [monaco.KeyCode.Tab],
                 contextMenuGroupId: '6_other',
-                contextMenuOrder: 4,
+                contextMenuOrder: 5,
                 run: this.handleKeypressToggleKeybinds,
             });
             this.editor.onDidChangeModelContent((_event) => {
@@ -534,7 +534,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     public handleKeypressToggleKeybinds() {
         if (this.ctxKey) {
             this.ctxKey.set(!this.ctxKey.get());
-            if (this.ctxKey.get() && this.editor) this.editor.focus();
+            if (this.ctxKey.get() && this.editor) {
+                this.editor.focus();
+                let position = this.editor.getPosition();
+                if (position) {
+                    this.setGrid(position);
+                    this.updatePosition(position);
+                }
+            }
         }
     }
 
@@ -750,13 +757,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Toggle Features-----
     //--------------------------------------------------
 
-    public handleToggleNodeHighlighting() {
+    public handleKeypressToggleNodeHighlighting() {
         this.setState({
             activateNodeHighlighting: !this.state.activateNodeHighlighting,
         });
     }
 
-    public handleToggleCursorDecorating() {
+    public handleKeypressToggleCursorDecorating() {
         this.setState({
             activateCursorDecorating: !this.state.activateCursorDecorating,
         });
@@ -764,7 +771,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateCursor();
     }
 
-    public handleToggleVariableDecorating() {
+    public handleKeypressToggleVariableDecorating() {
         this.setState({
             activateVariableDecorating: !this.state.activateVariableDecorating,
         });
@@ -772,35 +779,35 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updateDecorations();
     }
 
-    public handleToggleChildDecorating() {
+    public handleKeypressToggleChildDecorating() {
         this.setState({
             activateChildDecorating: !this.state.activateChildDecorating,
         });
         this.updatePosition();
     }
 
-    public handleToggleParentDecorating() {
+    public handleKeypressToggleParentDecorating() {
         this.setState({
             activateParentDecorating: !this.state.activateParentDecorating,
         });
         this.updatePosition();
     }
 
-    public handleToggleBookmarkDecorating() {
+    public handleKeypressToggleBookmarkDecorating() {
         this.setState({
             activateBookmarkDecorating: !this.state.activateBookmarkDecorating,
         });
         this.decorateBookmarks();
     }
 
-    public handleToggleCommentDecorating() {
+    public handleKeypressToggleCommentDecorating() {
         this.setState({
             activateCommentDecorating: !this.state.activateCommentDecorating,
         });
         this.decorateComments();
     }
 
-    public handleToggleTargetTreeHover() {
+    public handleKeypressToggleTargetTreeHover() {
         this.setState({
             activateTargetTreeHover: !this.state.activateTargetTreeHover,
         });
@@ -827,9 +834,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressDisplayInfoModal() {
-        let help = this.graph.getHelpAt(this.lastPosition);
-        if (help) {
-            this.props.buildInfoModal(help);
+        let info = this.graph.getInfoAt(this.lastPosition);
+        if (info) {
+            this.props.buildInfoModal(info);
             this.props.displayInfoModal();
         }
     }

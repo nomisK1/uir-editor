@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { matchType, lookupJSON } from './_node';
+import _node, { matchType, lookupJSON, formatInfo } from './_node';
 import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import assignment from './assignment';
@@ -91,23 +91,23 @@ enum OpCode {
 }
 
 /**
- * OpNote:
- * Define operation note (https://llvm.org/docs/LangRef.html)
+ * OpInfo:
+ * Define operation info (https://llvm.org/docs/LangRef.html)
  */
-enum OpNote {
-    ADD = 'Returns the sum of its two operands',
-    AND = '__________________________________________________',
-    ASHR = '__________________________________________________',
+enum OpInfo {
+    ADD = 'Returns the sum of its two operands.\n~~~\n<result> = add <ty> <op1>, <op2>\n=> ty:result',
+    AND = 'Returns the bitwise logical and of its two operands.\n~~~\n<result> = and <ty> <op1>, <op2>\n=> ty:result',
+    ASHR = 'Returns the first operand shifted to the right a specified number of bits.\n~~~\n<result> = ashr <ty> <op1>, <op2>\n=> ty:result',
     //ATOMICCMPXCHG = '__________________________________________________',
-    ATOMICLOAD = '__________________________________________________',
-    ATOMICRMWADD = '__________________________________________________',
-    ATOMICRMWUMAX = '__________________________________________________',
+    ATOMICLOAD = 'Used to atomically read from memory.\n~~~\n<result> = atomicload <ty> <pointer>\n=> ty:result',
+    ATOMICRMWADD = 'Used to atomically modify memory.\nWrites the sum of its operands.\n~~~\n<result> = atomicrmwadd <ty> <op1>, <op2>\n=> ty:result',
+    ATOMICRMWUMAX = 'Used to atomically modify memory.\nWrites the unsigned maximum of its operands.\n~~~\n<result> = atomicrmwumax <ty> <op1>, <op2>\n=> ty:result',
     ATOMICRMWXCHG = '__________________________________________________',
-    ATOMICSTORE = '__________________________________________________',
-    BR = '__________________________________________________',
+    ATOMICSTORE = 'Used to atomically write to memory\n~~~\natomicstore <ty> <value>, <pointer>\n=> void',
+    BR = 'Used to cause control flow to transfer to a different basic block in the current function.\n~~~\nbr <target>',
     BSWAP = '__________________________________________________',
-    BUILDDATA128 = '__________________________________________________',
-    CALL = 'Returns the sum of its two operands',
+    BUILDDATA128 = '\n~~~\nbuilddata128 d128 <op1> <op2>\n=> void', //TODO
+    CALL = 'Represents a simple function call.\n~~~\ncall <fnty> <fnref> (<function args>) => <fnty>',
     //CALLBUILTIN = '__________________________________________________',
     CHECKEDSADD = '__________________________________________________',
     CHECKEDSMUL = '__________________________________________________',
@@ -120,7 +120,7 @@ enum OpNote {
     CMPSUOLT = '__________________________________________________',
     CMPULE = '__________________________________________________',
     CMPULT = '__________________________________________________',
-    CONDBR = '__________________________________________________',
+    CONDBR = 'Used to cause control flow to transfer to a different basic block in the current function depending on the condition.\n~~~\ncondbr <cond> <iftrue> <iffalse>',
     //CONST = '__________________________________________________',
     CRC32 = '__________________________________________________',
     CTLZ = '__________________________________________________',
@@ -135,7 +135,7 @@ enum OpNote {
     INTTOPTR = '__________________________________________________',
     ISNOTNULL = '__________________________________________________',
     ISNULL = '__________________________________________________',
-    LOAD = '__________________________________________________',
+    LOAD = 'Used to read from memory.\n~~~\n<result> = load <ty> <pointer>\n=> ty:result',
     LSHR = '__________________________________________________',
     MUL = '__________________________________________________',
     NEG = '__________________________________________________',
@@ -158,7 +158,7 @@ enum OpNote {
     //SMULOVERFLOW = '__________________________________________________',
     SREM = '__________________________________________________',
     //SSUBOVERFLOW = '__________________________________________________',
-    STORE = '__________________________________________________',
+    STORE = 'Used to write to memory\n~~~\nstore <ty> <value>, <pointer>\n=> void',
     SUB = '__________________________________________________',
     //SWITCH = '__________________________________________________',
     TRUNC = '__________________________________________________',
@@ -176,14 +176,12 @@ interface IOperationProps extends IInstructionProps {}
 
 class operation extends _instruction {
     protected opcode: string | null;
-    protected opnote: string | null;
     protected type: string | null;
     protected operands: (_value | target)[] = [];
 
     constructor(props: IOperationProps) {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
-        this.opnote = matchOpNote(this.opcode);
         this.type = matchType(lookupJSON(this.json, 'type'));
         this.name = 'operation@' + this.line;
         this.build();
@@ -467,7 +465,7 @@ class operation extends _instruction {
     }
 
     public getInfo() {
-        return super.getInfo() + '\n\nOPCODE:\t' + this.opcode + '\n\nNOTE:\t' + this.opnote;
+        return [...super.getInfo(), 'OPCODE:\t' + this.opcode, formatInfo(matchOpInfo(this.opcode)!, '\n', '\n')];
     }
 
     public hasVariable(name: string) {
@@ -520,9 +518,9 @@ function matchOpCode(str: string | null) {
     return null;
 }
 
-function matchOpNote(str: string | null) {
+function matchOpInfo(str: string | null) {
     if (!str) return null;
-    let notes = Object.keys(OpNote);
-    for (let i = 0; i < notes.length; i++) if (notes[i] === str.toUpperCase()) return Object.values(OpNote)[i];
+    let infos = Object.keys(OpInfo);
+    for (let i = 0; i < infos.length; i++) if (infos[i] === str.toUpperCase()) return Object.values(OpInfo)[i];
     return null;
 }

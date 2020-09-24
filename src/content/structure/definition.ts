@@ -6,9 +6,6 @@ import assignment from './assignment';
 import { findVariableRangeIn } from './variable';
 import target from './target';
 
-// Number of linebreaks between blocks
-const linebreaks = 2;
-
 interface IDefinitionProps extends IFunctionProps {}
 
 class definition extends _function {
@@ -136,3 +133,6 @@ class definition extends _function {
 }
 
 export default definition;
+
+// Number of linebreaks between blocks
+const linebreaks = 2;

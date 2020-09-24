@@ -8,9 +8,6 @@ import target from './target';
 import label from './label';
 import branch from '../tree/branch';
 
-// Number of whitespaces at the start of each instruction
-export const indentation = 2;
-
 interface IBlockProps extends INodeProps {}
 
 class block extends _node {
@@ -149,3 +146,6 @@ class block extends _node {
 }
 
 export default block;
+
+// Number of whitespaces at the start of each instruction
+export const indentation = 2;

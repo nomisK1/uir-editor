@@ -10,10 +10,12 @@ interface IInfoModalProps {
  * Modal for the help text
  */
 class InfoModal extends React.Component<IInfoModalProps> {
-    private data: string | null = null;
+    private header: string | null = null;
+    private content: string | null = null;
 
-    setData(data: string) {
-        this.data = data;
+    setData(data: string[]) {
+        this.header = data[0];
+        this.content = data.slice(1).join('\n\n');
     }
 
     render() {
@@ -26,9 +28,9 @@ class InfoModal extends React.Component<IInfoModalProps> {
             >
                 <div className="modal-background">
                     <span className="close">&times;</span>
-                    <h3 className="modal-header">Info - CURRENT NODE</h3>
+                    <h3 className="modal-header">{this.header}</h3>
                     <div className="modal-content-container">
-                        <pre className="modal-content">{this.data}</pre>
+                        <pre className="modal-content">{this.content}</pre>
                     </div>
                 </div>
             </div>

@@ -82,10 +82,10 @@
 }
 .modal-content {
     position: relative;
-    font-size: 28px;
+    font-size: 26px;
     color: white;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 40%;
+    transform: translateY(-40%);
     max-width: 95%;
 }
 .ttWrapper {

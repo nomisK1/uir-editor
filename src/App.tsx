@@ -122,8 +122,8 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) this.editor.getInstance().focus();
     }
 
-    public buildInfoModal(help: string) {
-        if (this.ifModalElement) this.ifModalElement.setData(help);
+    public buildInfoModal(data: string[]) {
+        if (this.ifModalElement) this.ifModalElement.setData(data);
     }
 
     public displayKeybindModal() {

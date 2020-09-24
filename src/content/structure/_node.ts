@@ -59,23 +59,15 @@ abstract class _node {
     public abstract getNodeAt(position: monaco.Position): _node | null;
 
     public getInfo() {
+        let str = this.toString();
         let start = this.getRange().getStartPosition();
         let end = this.getRange().getEndPosition();
-        return (
-            'CLASS:\t' +
-            this.constructor.name +
-            '\n\nNAME:\t' +
-            this.getAlias() +
-            '\n\nSTART:\t[' +
-            start.lineNumber +
-            '/' +
-            start.column +
-            ']\n\nEND:\t[' +
-            end.lineNumber +
-            '/' +
-            end.column +
-            ']'
-        );
+        return [
+            str.length > maxHeader ? str.slice(0, maxHeader) + '[...]' : str,
+            'CLASS:\t' + this.constructor.name,
+            'NAME:\t' + this.getAlias(),
+            'RANGE:\t[' + start.lineNumber + '/' + start.column + '] ~ [' + end.lineNumber + '/' + end.column + ']',
+        ];
     }
 
     public getVariablesByName(name: string) {
@@ -166,4 +158,23 @@ export function lookupJSON(json: Object, key: string) {
         i++;
     }
     return null;
+}
+
+// Maximum amount of characters in the header string
+export const maxHeader = 120;
+
+// Maximum amount of characters per line in the info string
+export const maxInfo = 60;
+
+/**
+ * formatInfo:
+ * Inserts join string into the info text at constant index or at the seperator
+ */
+export function formatInfo(info: string, join: string, seperator?: string): string {
+    function splitter(str: string): string {
+        return str.length > maxInfo ? str.slice(0, maxInfo) + join + splitter(str.slice(maxInfo)) : str;
+    }
+    let parts = [info];
+    if (seperator) parts = info.split(seperator);
+    return parts.map((p) => splitter(p)).join(join);
 }
