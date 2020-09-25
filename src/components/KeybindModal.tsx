@@ -21,8 +21,8 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
                 <div className="modal-background">
                     <span className="close">&times;</span>
                     <h3 className="modal-header">Keybindings (UIR-Editor/public/keybinds.txt)</h3>
-                    <div className="modal-content-container">
-                        <img className="modal-content" src="img/keybinds.png" alt="KEYBINDS" />
+                    <div className="modal-content">
+                        <img src="img/keybinds.png" alt="KEYBINDS" />
                     </div>
                 </div>
             </div>

@@ -29,10 +29,8 @@ class InfoModal extends React.Component<IInfoModalProps> {
                 <div className="modal-background">
                     <span className="close">&times;</span>
                     <h3 className="modal-header">{this.header}</h3>
-                    <div className="modal-content-container">
-                        <text id="modalText" className="modal-content">
-                            {this.content}
-                        </text>
+                    <div className="modal-content">
+                        <text>{this.content}</text>
                     </div>
                 </div>
             </div>
