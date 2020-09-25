@@ -15,13 +15,13 @@ class InfoModal extends React.Component<IInfoModalProps> {
 
     setData(data: string[]) {
         this.header = data[0];
-        this.content = data.slice(1).join('\n\n');
+        this.content = data.slice(1).join('\n');
     }
 
     render() {
         return (
             <div
-                id="InfoModal"
+                id="infoModal"
                 className="modal"
                 style={{ display: this.props.showModal ? 'block' : 'none' }}
                 onClick={this.props.onModalClick}
@@ -30,7 +30,9 @@ class InfoModal extends React.Component<IInfoModalProps> {
                     <span className="close">&times;</span>
                     <h3 className="modal-header">{this.header}</h3>
                     <div className="modal-content-container">
-                        <pre className="modal-content">{this.content}</pre>
+                        <text id="modalText" className="modal-content">
+                            {this.content}
+                        </text>
                     </div>
                 </div>
             </div>

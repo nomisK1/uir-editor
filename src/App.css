@@ -63,11 +63,12 @@
 }
 .close:hover,
 .close:focus {
-    color: #000;
+    color: rgba(0, 0, 0, 0.8);
     text-decoration: none;
     cursor: pointer;
 }
 .modal-header {
+    color: rgba(0, 0, 0, 0.8);
     font-size: 17px;
     font-weight: 600;
     padding: 5px;
@@ -82,11 +83,17 @@
 }
 .modal-content {
     position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 95%;
+}
+.modal-content#modalText {
+    display: block;
+    top: 30%;
+    margin: 10%;
     font-size: 26px;
     color: white;
-    top: 40%;
-    transform: translateY(-40%);
-    max-width: 95%;
+    white-space: pre-wrap;
 }
 .ttWrapper {
     width: 100%;

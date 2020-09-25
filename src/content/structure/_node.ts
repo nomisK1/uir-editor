@@ -161,20 +161,4 @@ export function lookupJSON(json: Object, key: string) {
 }
 
 // Maximum amount of characters in the header string
-export const maxHeader = 120;
-
-// Maximum amount of characters per line in the info string
-export const maxInfo = 60;
-
-/**
- * formatInfo:
- * Inserts join string into the info text at constant index or at the seperator
- */
-export function formatInfo(info: string, join: string, seperator?: string): string {
-    function splitter(str: string): string {
-        return str.length > maxInfo ? str.slice(0, maxInfo) + join + splitter(str.slice(maxInfo)) : str;
-    }
-    let parts = [info];
-    if (seperator) parts = info.split(seperator);
-    return parts.map((p) => splitter(p)).join(join);
-}
+const maxHeader = 120;

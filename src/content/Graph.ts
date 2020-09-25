@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { lookupJSON, maxInfo } from './structure/_node';
+import _node, { lookupJSON } from './structure/_node';
 import _component from './structure/_component';
 import global from './structure/global';
 import declaration from './structure/declaration';
@@ -167,7 +167,7 @@ class Graph {
         if (node) {
             let info = node.getInfo();
             let comments = this.getCommentStringAt(position);
-            if (comments) info.push('\nCOMMENTS:\n' + comments);
+            if (comments) info.push('\n\nCOMMENTS:\n' + comments);
             return info;
         }
         return null;
@@ -568,7 +568,7 @@ class Graph {
                 isWholeLine = true;
             }
             this.comments.push({
-                text: text.slice(0, maxInfo),
+                text: text.slice(0, maxComment),
                 position,
                 range,
                 isWholeLine,
@@ -786,6 +786,9 @@ function sortCommentsByPosition(comments: comment[]) {
     };
     return comments.sort(compareCommentPosition);
 }
+
+// Maximum amount of characters in a comment
+const maxComment = 60;
 
 function isLegal(string: string) {
     for (let i = 0; i < string.length; i++) if (!legalStrings.includes(string[i])) return false;

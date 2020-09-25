@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import _node, { matchType, lookupJSON, formatInfo } from './_node';
+import _node, { matchType, lookupJSON } from './_node';
 import { indentation } from './block';
 import _instruction, { IInstructionProps } from './_instruction';
 import assignment from './assignment';
@@ -95,19 +95,19 @@ enum OpCode {
  * Define operation info (https://llvm.org/docs/LangRef.html)
  */
 enum OpInfo {
-    ADD = 'Returns the sum of its two operands.\n~~~\n<result> = add <ty> <op1>, <op2>\n=> ty:result',
-    AND = 'Returns the bitwise logical and of its two operands.\n~~~\n<result> = and <ty> <op1>, <op2>\n=> ty:result',
-    ASHR = 'Returns the first operand shifted to the right a specified number of bits.\n~~~\n<result> = ashr <ty> <op1>, <op2>\n=> ty:result',
+    ADD = 'Returns the sum of its two operands.\n~~~\n<result> = add <ty> <op1>, <op2>',
+    AND = 'Returns the bitwise logical and of its two operands.\n~~~\n<result> = and <ty> <op1>, <op2>',
+    ASHR = 'Returns the first operand shifted to the right a specified number of bits with sign extension.\n~~~\n<result> = ashr <ty> <op1>, <op2>',
     //ATOMICCMPXCHG = '__________________________________________________',
-    ATOMICLOAD = 'Used to atomically read from memory.\n~~~\n<result> = atomicload <ty> <pointer>\n=> ty:result',
-    ATOMICRMWADD = 'Used to atomically modify memory.\nWrites the sum of its operands.\n~~~\n<result> = atomicrmwadd <ty> <op1>, <op2>\n=> ty:result',
-    ATOMICRMWUMAX = 'Used to atomically modify memory.\nWrites the unsigned maximum of its operands.\n~~~\n<result> = atomicrmwumax <ty> <op1>, <op2>\n=> ty:result',
-    ATOMICRMWXCHG = '__________________________________________________',
-    ATOMICSTORE = 'Used to atomically write to memory\n~~~\natomicstore <ty> <value>, <pointer>\n=> void',
-    BR = 'Used to cause control flow to transfer to a different basic block in the current function.\n~~~\nbr <target>',
+    ATOMICLOAD = 'Used to atomically read from memory.\n~~~\n<result> = atomicload <ty> <pointer>',
+    ATOMICRMWADD = 'Used to atomically modify memory.\nWrites the sum of its operands.\n~~~\n<result> = atomicrmwadd <ty> <op1>, <op2>',
+    ATOMICRMWUMAX = 'Used to atomically modify memory.\nWrites the unsigned maximum of its operands.\n~~~\n<result> = atomicrmwumax <ty> <op1>, <op2>',
+    ATOMICRMWXCHG = '__________________________________________________', //TODO
+    ATOMICSTORE = 'Used to atomically write to memory.\n~~~\natomicstore <ty> <value>, <pointer>',
+    BR = 'Used to cause control flow to transfer to a different basic block in the current function.\n~~~\nbr <label>',
     BSWAP = '__________________________________________________',
-    BUILDDATA128 = '\n~~~\nbuilddata128 d128 <op1> <op2>\n=> void', //TODO
-    CALL = 'Represents a simple function call.\n~~~\ncall <fnty> <fnref> (<function args>) => <fnty>',
+    BUILDDATA128 = '\n~~~\nbuilddata128 d128 <op1> <op2>', //TODO
+    CALL = 'Represents a simple function call.\n~~~\ncall <fnty> <fnref> (<function args>)',
     //CALLBUILTIN = '__________________________________________________',
     CHECKEDSADD = '__________________________________________________',
     CHECKEDSMUL = '__________________________________________________',
@@ -125,51 +125,51 @@ enum OpInfo {
     CRC32 = '__________________________________________________',
     CTLZ = '__________________________________________________',
     EXTRACTDATA128 = '__________________________________________________',
-    FPTOSI = '__________________________________________________',
+    FPTOSI = 'Converts the floating-point value to the nearest signed interger value (rounding towards zero).\n~~~\n<result> = or <ty> <value>',
     //FUNCTIONARGUMENT = '__________________________________________________',
     //FUNCTIONVARIABLE = '__________________________________________________',
     GEP = '__________________________________________________',
-    GETELEMENTPTR = '__________________________________________________',
+    GETELEMENTPTR = 'Used to get the address of a subelement of an aggregate data structure. It performs address calculation only and does not access memory.\n~~~\n<result> = getelementpr <ty> <pointer>, <ty> <value>',
     //GLOBALREF = '__________________________________________________',
     //HEADERPTRPAIR = '__________________________________________________',
-    INTTOPTR = '__________________________________________________',
+    INTTOPTR = 'Converts value to a pointer by applying either a zero extension or a truncation depending on the size of the integer value.\n~~~\n<result> = intoptr ptr <value>',
     ISNOTNULL = '__________________________________________________',
     ISNULL = '__________________________________________________',
-    LOAD = 'Used to read from memory.\n~~~\n<result> = load <ty> <pointer>\n=> ty:result',
-    LSHR = '__________________________________________________',
-    MUL = '__________________________________________________',
-    NEG = '__________________________________________________',
+    LOAD = 'Used to read from memory.\n~~~\n<result> = load <ty> <pointer>',
+    LSHR = 'Returns the first operand shifted to the right a specified number of bits with zero fill.\n~~~\n<result> = lshr <ty> <op1>, <op2>',
+    MUL = 'Returns the product of its two operands.\n~~~\n<result> = mul <ty> <op1>, <op2>',
+    NEG = 'Returns the negation of its operand.\n~~~\n<result> = neg <ty> <op1>',
     NOT = '__________________________________________________',
-    OR = '__________________________________________________',
+    OR = 'Returns the bitwise logical inclusive or of its two operands.\n~~~\n<result> = or <ty> <op1>, <op2>',
     //OVERFLOWRESULT = '__________________________________________________',
-    PHI = '__________________________________________________',
+    PHI = 'At runtime, logically takes on the value specified by the pair corresponding to the predecessor basic block that executed just prior to the current block.\n~~~\n<result> = phi <ty> [<val0>, <label0> <val1>, <label1>]',
     POW = '__________________________________________________',
-    PTRTOINT = '__________________________________________________',
+    PTRTOINT = 'Converts the pointer value to the specified integer type.\n~~~\n<result> = ptrtoint <ty> <pointer>',
     RETURN = '__________________________________________________',
     RETURNVOID = '__________________________________________________',
     ROTL = '__________________________________________________',
     ROTR = '__________________________________________________',
     //SADDOVERFLOW = '__________________________________________________',
-    SDIV = '__________________________________________________',
-    SELECT = '__________________________________________________',
-    SEXT = '__________________________________________________',
-    SHL = '__________________________________________________',
+    SDIV = 'Returns the signed quotient of its two operands.\n~~~\n<result> = sdiv <ty> <op1>, <op2>',
+    SELECT = 'Used to choose one value based on a condition. If the condition evaluates to 1, the instruction returns the first value argument. Otherwise, it returns the second value argument.\n~~~\n<result> = select <ty> <cond>, <val1>, <val2>',
+    SEXT = 'Sign extends its value by copying the highest order sign bit until the value fits the type.\n~~~\n<result> = sext <ty> <value>',
+    SHL = 'Returns the first operand shifted to the left a specified number of bits.\n~~~\n<result> = shl <ty> <op1>, <op2>',
     SITOFP = '__________________________________________________',
     //SMULOVERFLOW = '__________________________________________________',
     SREM = '__________________________________________________',
     //SSUBOVERFLOW = '__________________________________________________',
-    STORE = 'Used to write to memory\n~~~\nstore <ty> <value>, <pointer>\n=> void',
-    SUB = '__________________________________________________',
+    STORE = 'Used to write to memory.\n~~~\nstore <ty> <value>, <pointer>',
+    SUB = 'Returns the difference of its two operands.\n~~~\n<result> = sub <ty> <op1>, <op2>',
     //SWITCH = '__________________________________________________',
-    TRUNC = '__________________________________________________',
+    TRUNC = 'Truncates its value by removing higher order bits to fit the type.\n~~~\n<result> = trunc <ty> <value>',
     //UADDOVERFLOW = '__________________________________________________',
-    UDIV = '__________________________________________________',
+    UDIV = 'Returns the unsigned quotient of its two operands.\n~~~\n<result> = udiv <ty> <op1>, <op2>',
     //UMULOVERFLOW = '__________________________________________________',
-    UNREACHABLE = '__________________________________________________',
-    UREM = '__________________________________________________',
+    UNREACHABLE = 'Used to inform the optimizer that a particular portion of the code is not reachable.\n~~~\nunreachable',
+    UREM = 'Returns the remainder from the unsigned division of its two arguments.\n~~~\n<result> = urem <ty> <op1>, <op2>',
     //USUBOVERFLOW = '__________________________________________________',
-    XOR = '__________________________________________________',
-    ZEXT = '__________________________________________________',
+    XOR = 'Returns the bitwise logical exclusive or of its two operands.\n~~~\n<result> = xor <ty> <op1>, <op2>',
+    ZEXT = 'Zero extends its value by filling the higher order bits with zero to fit the type.\n~~~\n<result> = zext <ty> <value>',
 }
 
 interface IOperationProps extends IInstructionProps {}
@@ -465,7 +465,7 @@ class operation extends _instruction {
     }
 
     public getInfo() {
-        return [...super.getInfo(), 'OPCODE:\t' + this.opcode, formatInfo(matchOpInfo(this.opcode)!, '\n', '\n')];
+        return [...super.getInfo(), '\n\nOPCODE:\t' + this.opcode, matchOpInfo(this.opcode)!];
     }
 
     public hasVariable(name: string) {
