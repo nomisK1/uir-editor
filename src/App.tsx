@@ -1,6 +1,7 @@
 import * as React from 'react';
-import TcphDropdown from './components/TcphDropdown';
+import TpchDropdown from './components/TpchDropdown';
 import StatusInput, { Status } from './components/StatusInput';
+import KeybindButton from './components/KeybindButton';
 import InfoModal from './components/InfoModal';
 import KeybindModal from './components/KeybindModal';
 import TargetTreeModal from './components/TargetTreeModal';
@@ -30,6 +31,7 @@ class App extends React.Component<IAppProps, IAppState> {
     private editor: Editor | null = null;
     private data: Graph[] = getData();
     private inputElement: StatusInput | null = null;
+    private buttonElement: KeybindButton | null = null;
     private ifModalElement: InfoModal | null = null;
     private ttModalElement: TargetTreeModal | null = null;
 
@@ -43,13 +45,15 @@ class App extends React.Component<IAppProps, IAppState> {
             showTargetTreeModal: false,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
-        this.nextTcphQuery = this.nextTcphQuery.bind(this);
-        this.prevTcphQuery = this.prevTcphQuery.bind(this);
+        this.nextTpchQuery = this.nextTpchQuery.bind(this);
+        this.prevTpchQuery = this.prevTpchQuery.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
         this.passInput = this.passInput.bind(this);
         this.focusInput = this.focusInput.bind(this);
         this.resetStatus = this.resetStatus.bind(this);
+        this.handleButtonPress = this.handleButtonPress.bind(this);
+        this.toggleButton = this.toggleButton.bind(this);
         this.displayInfoModal = this.displayInfoModal.bind(this);
         this.buildInfoModal = this.buildInfoModal.bind(this);
         this.displayKeybindModal = this.displayKeybindModal.bind(this);
@@ -57,6 +61,10 @@ class App extends React.Component<IAppProps, IAppState> {
         this.buildTargetTreeModal = this.buildTargetTreeModal.bind(this);
         this.closeModals = this.closeModals.bind(this);
     }
+
+    //--------------------------------------------------
+    //-----TPC-H Dropdown-----
+    //--------------------------------------------------
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
         let index = parseInt(event.target.value);
@@ -68,15 +76,19 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) this.editor.getInstance().focus();
     }
 
-    public nextTcphQuery() {
+    public nextTpchQuery() {
         let index = this.state.index < this.data.length - 1 ? this.state.index + 1 : 0;
         this.setState({ index });
     }
 
-    public prevTcphQuery() {
+    public prevTpchQuery() {
         let index = this.state.index > 0 ? this.state.index - 1 : this.data.length - 1;
         this.setState({ index });
     }
+
+    //--------------------------------------------------
+    //-----Status Input-----
+    //--------------------------------------------------
 
     public handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         this.setState({ input: event.target.value });
@@ -112,6 +124,25 @@ class App extends React.Component<IAppProps, IAppState> {
     public resetStatus() {
         if (this.inputElement) this.inputElement.setStatus(Status.NODE);
     }
+
+    //--------------------------------------------------
+    //-----Keybind Button-----
+    //--------------------------------------------------
+
+    public handleButtonPress() {
+        if (this.editor) {
+            this.editor.getInstance().focus();
+            this.editor.handleKeypressToggleKeybinds();
+        }
+    }
+
+    public toggleButton() {
+        if (this.buttonElement) this.buttonElement.toggle();
+    }
+
+    //--------------------------------------------------
+    //-----Manage Modals-----
+    //--------------------------------------------------
 
     public displayInfoModal() {
         this.setState({
@@ -160,7 +191,7 @@ class App extends React.Component<IAppProps, IAppState> {
     render() {
         setupLanguage();
         let dropdown = (
-            <TcphDropdown
+            <TpchDropdown
                 size={this.data.length}
                 index={this.state.index}
                 onDropdownChange={this.handleDropdownChange}
@@ -174,6 +205,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={(ref) => (this.inputElement = ref)}
             />
         );
+        let button = <KeybindButton onButtonPress={this.handleButtonPress} ref={(ref) => (this.buttonElement = ref)} />;
         let ifModal = (
             <InfoModal
                 showModal={this.state.showInfoModal}
@@ -194,11 +226,12 @@ class App extends React.Component<IAppProps, IAppState> {
                 language={languageID}
                 graph={this.data[this.state.index]}
                 input={this.state.input}
-                nextTcphQuery={this.nextTcphQuery}
-                prevTcphQuery={this.prevTcphQuery}
+                nextTpchQuery={this.nextTpchQuery}
+                prevTpchQuery={this.prevTpchQuery}
                 passInput={this.passInput}
                 focusInput={this.focusInput}
                 resetStatus={this.resetStatus}
+                toggleButton={this.toggleButton}
                 displayInfoModal={this.displayInfoModal}
                 buildInfoModal={this.buildInfoModal}
                 displayKeybindModal={this.displayKeybindModal}
@@ -213,6 +246,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 <div className="ui">
                     {dropdown}
                     {input}
+                    {button}
                 </div>
                 {ifModal}
                 {kbModal}

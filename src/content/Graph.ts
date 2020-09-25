@@ -108,7 +108,7 @@ class Graph {
     }
 
     //--------------------------------------------------
-    //-----Manage Components-----
+    //-----Find Components-----
     //--------------------------------------------------
 
     private getDeclarations() {
@@ -162,17 +162,6 @@ class Graph {
         return null;
     }
 
-    public getInfoAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node) {
-            let info = node.getInfo();
-            let comments = this.getCommentStringAt(position);
-            if (comments) info.push('\n\nCOMMENTS:\n' + comments);
-            return info;
-        }
-        return null;
-    }
-
     public getVariableAt(position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (node instanceof variable) return node;
@@ -219,8 +208,13 @@ class Graph {
             let context = node.getOuterContext();
             if (context instanceof definition) {
                 let labels = context.getLabels();
-                for (let i = 0; i < labels.length; i++)
-                    if (!labels[i].getRange().getStartPosition().isBeforeOrEqual(position)) return labels[i];
+                if (node instanceof target && !(node instanceof label)) {
+                    for (let i = 0; i < labels.length; i++)
+                        if (labels[i].getAlias() === node.getAlias()) return labels[i];
+                } else {
+                    for (let i = 0; i < labels.length; i++)
+                        if (!labels[i].getRange().getStartPosition().isBeforeOrEqual(position)) return labels[i];
+                }
                 return this.getNextLabelAt(context.getRange().getStartPosition());
             }
         }
@@ -233,8 +227,13 @@ class Graph {
             let context = node.getOuterContext();
             if (context instanceof definition) {
                 let labels = context.getLabels();
-                for (let i = labels.length - 1; i >= 0; i--)
-                    if (labels[i].getRange().getStartPosition().isBefore(position)) return labels[i];
+                if (node instanceof target && !(node instanceof label)) {
+                    for (let i = labels.length - 1; i >= 0; i--)
+                        if (labels[i].getAlias() === node.getAlias()) return labels[i];
+                } else {
+                    for (let i = labels.length - 1; i >= 0; i--)
+                        if (labels[i].getRange().getStartPosition().isBefore(position)) return labels[i];
+                }
                 return this.getPrevLabelAt(context.getRange().getEndPosition());
             }
         }
@@ -739,6 +738,21 @@ class Graph {
         else {
             let block = this.getBlockAt(node.getRange().getStartPosition());
             if (block) return new TargetTree({ root: block.getLabel() }).toData();
+        }
+        return null;
+    }
+
+    //--------------------------------------------------
+    //-----Handle Info-----
+    //--------------------------------------------------
+
+    public getInfoAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node) {
+            let info = node.getInfo();
+            let comments = this.getCommentStringAt(position);
+            if (comments) info.push('\n\nCOMMENTS:\n' + comments);
+            return info;
         }
         return null;
     }

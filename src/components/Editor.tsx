@@ -11,11 +11,12 @@ interface IEditorProps {
     language: string;
     graph: Graph;
     input: string;
-    nextTcphQuery: () => void;
-    prevTcphQuery: () => void;
+    nextTpchQuery: () => void;
+    prevTpchQuery: () => void;
     passInput: (input: string) => void;
     focusInput: (status: Status, prev?: string) => void;
     resetStatus: () => void;
+    toggleButton: () => void;
     displayInfoModal: () => void;
     buildInfoModal: (data: string[]) => void;
     displayKeybindModal: () => void;
@@ -118,8 +119,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
         this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
         this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
-        this.handleKeypressNextTcphQuery = this.handleKeypressNextTcphQuery.bind(this);
-        this.handleKeypressPrevTcphQuery = this.handleKeypressPrevTcphQuery.bind(this);
+        this.handleKeypressNextTpchQuery = this.handleKeypressNextTpchQuery.bind(this);
+        this.handleKeypressPrevTpchQuery = this.handleKeypressPrevTpchQuery.bind(this);
         this.handleKeypressDisplayInfoModal = this.handleKeypressDisplayInfoModal.bind(this);
         this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
         this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
@@ -138,7 +139,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----React lifecycle-----
+    //-----React Lifecycle-----
     //--------------------------------------------------
 
     public componentDidMount() {
@@ -147,10 +148,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 language: this.props.language,
                 value: this.value,
                 lineNumbers: 'on',
-                //fontFamily: 'monospace',
-                //fontSize: 15,
-                //fontWeight: '100',
-                //letterSpacing: 0,
                 automaticLayout: true,
                 roundedSelection: false,
                 scrollBeyondLastLine: true,
@@ -236,10 +233,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             );
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search, 'condition');
-            this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextTcphQuery, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextTpchQuery, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.KEY_Q,
-                this.handleKeypressPrevTcphQuery,
+                this.handleKeypressPrevTpchQuery,
                 'condition',
             );
             this.editor.addAction({
@@ -520,29 +517,19 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Handle Navigation-----
+    //-----Basic Navigation-----
     //--------------------------------------------------
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
         let position = event.target.position;
-        if (position !== null) {
+        if (position && this.ctxKey && this.ctxKey.get()) {
             this.setGrid(position);
             this.updatePosition(position);
         }
     }
 
-    public handleKeypressToggleKeybinds() {
-        if (this.ctxKey) {
-            this.ctxKey.set(!this.ctxKey.get());
-            if (this.ctxKey.get() && this.editor) {
-                this.editor.focus();
-                let position = this.editor.getPosition();
-                if (position) {
-                    this.setGrid(position);
-                    this.updatePosition(position);
-                }
-            }
-        }
+    public handleKeypressRevealCursor() {
+        this.resetPosition();
     }
 
     public handleKeypressLeft() {
@@ -577,6 +564,40 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressJumpEnd() {
         this.updatePosition(this.graph.getEndPosition());
+    }
+
+    //--------------------------------------------------
+    //-----Node Jumping-----
+    //--------------------------------------------------
+
+    public handleKeypressNextOccurrence() {
+        this.graph.setCurrentNextOccurrence();
+        this.updatePosition();
+    }
+
+    public handleKeypressPrevOccurrence() {
+        this.graph.setCurrentPrevOccurrence();
+        this.updatePosition();
+    }
+
+    public handleKeypressHoverChild() {
+        let child = this.graph.getNextChild();
+        if (child) this.decorateVariable(child.getRange().getStartPosition());
+    }
+
+    public handleKeypressChild() {
+        this.graph.setCurrentChild();
+        this.updatePosition();
+    }
+
+    public handleKeypressHoverParent() {
+        let parent = this.graph.getNextParent();
+        if (parent) this.decorateVariable(parent.getRange().getStartPosition());
+    }
+
+    public handleKeypressParent() {
+        this.graph.setCurrentParent();
+        this.updatePosition();
     }
 
     public handleKeypressJumpNextTarget() {
@@ -616,44 +637,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updatePosition();
     }
 
+    //--------------------------------------------------
+    //-----Input-----
+    //--------------------------------------------------
+
     public handleKeypressSearch() {
         this.graph.searchCurrent(this.input);
         this.updatePosition();
     }
 
-    public handleKeypressNextOccurrence() {
-        this.graph.setCurrentNextOccurrence();
-        this.updatePosition();
+    public handleKeypressToInput_Search() {
+        this.props.focusInput(Status.SEARCH);
     }
-
-    public handleKeypressPrevOccurrence() {
-        this.graph.setCurrentPrevOccurrence();
-        this.updatePosition();
-    }
-
-    public handleKeypressHoverChild() {
-        let child = this.graph.getNextChild();
-        if (child) this.decorateVariable(child.getRange().getStartPosition());
-    }
-
-    public handleKeypressChild() {
-        this.graph.setCurrentChild();
-        this.updatePosition();
-    }
-
-    public handleKeypressHoverParent() {
-        let parent = this.graph.getNextParent();
-        if (parent) this.decorateVariable(parent.getRange().getStartPosition());
-    }
-
-    public handleKeypressParent() {
-        this.graph.setCurrentParent();
-        this.updatePosition();
-    }
-
-    //--------------------------------------------------
-    //-----Handle Features-----
-    //--------------------------------------------------
 
     public handleKeypressToInput_Comment() {
         let node = this.graph.getNodeAt(this.lastPosition);
@@ -667,14 +662,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         else console.log('ERROR: INVALID NODE');
     }
 
-    public handleKeypressToInput_Search() {
-        this.props.focusInput(Status.SEARCH);
-    }
-
-    public handleKeypressRevealCursor() {
-        this.revealCursor();
-        this.resetPosition();
-    }
+    //--------------------------------------------------
+    //-----Bookmark-----
+    //--------------------------------------------------
 
     public handleKeypressAddBookmark() {
         this.graph.addBookmarkAt(this.lastPosition.lineNumber);
@@ -686,10 +676,19 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateBookmarks();
     }
 
+    private revealBookmark() {
+        let bookmark = this.graph.getBookmark();
+        if (bookmark) this.updatePosition(new monaco.Position(bookmark, 0));
+    }
+
     public handleKeypressRevealBookmark() {
         this.revealBookmark();
         this.resetPosition();
     }
+
+    //--------------------------------------------------
+    //-----Comments-----
+    //--------------------------------------------------
 
     public handleKeypressComment() {
         this.graph.addCommentAt(this.input, this.lastPosition);
@@ -710,14 +709,20 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressRevealNextComment() {
-        this.revealNextComment();
-        this.resetPosition();
+        let comment = this.graph.getNextCommentAt(this.lastPosition);
+        if (comment) this.updatePosition(comment.range.getStartPosition());
+        else this.resetPosition();
     }
 
     public handleKeypressRevealPrevComment() {
-        this.revealPrevComment();
-        this.resetPosition();
+        let comment = this.graph.getPrevCommentAt(this.lastPosition);
+        if (comment) this.updatePosition(comment.range.getStartPosition());
+        else this.resetPosition();
     }
+
+    //--------------------------------------------------
+    //-----Renaming-----
+    //--------------------------------------------------
 
     public handleKeypressRename() {
         let tarvar = this.graph.getTarVarAt(this.lastPosition);
@@ -754,8 +759,23 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Toggle Features-----
+    //-----Feature Toggle-----
     //--------------------------------------------------
+
+    public handleKeypressToggleKeybinds() {
+        this.props.toggleButton();
+        if (this.ctxKey) {
+            this.ctxKey.set(!this.ctxKey.get());
+            if (this.editor && this.ctxKey.get()) {
+                this.editor.focus();
+                let position = this.editor.getPosition();
+                if (position) {
+                    this.setGrid(position);
+                    this.updatePosition(position);
+                }
+            }
+        }
+    }
 
     public handleKeypressToggleNodeHighlighting() {
         this.setState({
@@ -813,6 +833,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         });
     }
 
+    //--------------------------------------------------
+    //-----Folding-----
+    //--------------------------------------------------
+
     public handleKeypressFoldAll() {
         if (this.editor) this.editor.trigger('fold', 'editor.foldAll', null);
     }
@@ -825,13 +849,21 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (this.editor) this.editor.trigger('unfold', 'editor.unfoldAll', null);
     }
 
-    public handleKeypressNextTcphQuery() {
-        this.props.nextTcphQuery();
+    //--------------------------------------------------
+    //-----Query Selection-----
+    //--------------------------------------------------
+
+    public handleKeypressNextTpchQuery() {
+        this.props.nextTpchQuery();
     }
 
-    public handleKeypressPrevTcphQuery() {
-        this.props.prevTcphQuery();
+    public handleKeypressPrevTpchQuery() {
+        this.props.prevTpchQuery();
     }
+
+    //--------------------------------------------------
+    //-----Modals-----
+    //--------------------------------------------------
 
     public handleKeypressDisplayInfoModal() {
         let info = this.graph.getInfoAt(this.lastPosition);
@@ -854,7 +886,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Manage Editor Surface-----
+    //-----General-----
     //--------------------------------------------------
 
     /**
@@ -902,27 +934,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updatePosition(this.lastPosition);
     }
 
-    private revealCursor() {
-        this.resetPosition();
-    }
-
-    private revealBookmark() {
-        let bookmark = this.graph.getBookmark();
-        if (bookmark) this.updatePosition(new monaco.Position(bookmark, 0));
-    }
-
-    private revealNextComment() {
-        let comment = this.graph.getNextCommentAt(this.lastPosition);
-        if (comment) this.updatePosition(comment.range.getStartPosition());
-    }
-
-    private revealPrevComment() {
-        let comment = this.graph.getPrevCommentAt(this.lastPosition);
-        if (comment) this.updatePosition(comment.range.getStartPosition());
-    }
-
     //--------------------------------------------------
-    //-----Manage Grid-----
+    //-----Grid-----
     //--------------------------------------------------
 
     private setGrid(position: monaco.Position) {

@@ -9,7 +9,7 @@
     width: 100%;
 }
 .dropdown {
-    width: 10%;
+    width: 150px;
     padding: 2px;
     color: white;
     background-color: rgba(0, 0, 0, 0.8);
@@ -30,9 +30,18 @@
 }
 #sDisplay {
     text-align: center;
-    width: 10%;
+    width: 150px;
     color: rgba(0, 0, 0, 0.8);
     pointer-events: none;
+}
+.keybindButton {
+    width: fit-content;
+    box-sizing: border-box;
+}
+.keybindButton img {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .modal {
     display: none;

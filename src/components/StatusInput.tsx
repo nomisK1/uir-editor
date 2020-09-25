@@ -29,7 +29,6 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         this.state = {
             status: Status.NODE,
         };
-        this.handleClick = this.handleClick.bind(this);
     }
 
     getInstance() {
@@ -42,10 +41,6 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
 
     setStatus(status: Status) {
         this.setState({ status });
-    }
-
-    handleClick() {
-        this.setState({ status: Status.SEARCH });
     }
 
     render() {
@@ -63,7 +58,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
                     className="input"
                     value={this.props.input}
                     placeholder={'----- EMPTY -----'}
-                    onClick={this.handleClick}
+                    onClick={() => this.setState({ status: Status.SEARCH })}
                     onChange={this.props.onInputChange}
                     onKeyDown={this.props.onInputKeydown}
                     ref={(ref) => (this.inputElement = ref)}

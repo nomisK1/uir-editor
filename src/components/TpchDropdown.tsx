@@ -1,22 +1,22 @@
 import React from 'react';
 
-interface ITcphDropdownProps {
+interface ITpchDropdownProps {
     size: number;
     index: number;
     onDropdownChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 /**
- * TcphDropdown:
- * Dropdown for the TCP-H queries
+ * TpchDropdown:
+ * Dropdown for the TPC-H queries
  */
-class TcphDropdown extends React.Component<ITcphDropdownProps> {
+class TpchDropdown extends React.Component<ITpchDropdownProps> {
     renderOptions() {
         let options: JSX.Element[] = [];
         for (let i = 0; i < this.props.size; i++)
             options.push(
                 <option key={i} value={i}>
-                    TCP-H {i + 1}
+                    TPC-H {i + 1}
                 </option>,
             );
         return options;
@@ -25,7 +25,7 @@ class TcphDropdown extends React.Component<ITcphDropdownProps> {
     render() {
         return (
             <select
-                id="tcphDropdown"
+                id="tpchDropdown"
                 className="dropdown"
                 value={this.props.index}
                 onChange={this.props.onDropdownChange}
@@ -36,4 +36,4 @@ class TcphDropdown extends React.Component<ITcphDropdownProps> {
     }
 }
 
-export default TcphDropdown;
+export default TpchDropdown;

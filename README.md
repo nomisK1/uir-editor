@@ -73,8 +73,8 @@ A modal containing all the custom keybindings can be opened by pressing `shift +
 
 ### `Query Fetching`
 
-On startup the UIR-Editor looks for the Umbra webserver containing the raw TCP-H query files.
-If a server is found at the specified URL the 22 TCP-H queries will be requested.
+On startup the UIR-Editor looks for the Umbra webserver containing the raw TPC-H query files.
+If a server is found at the specified URL the 22 TPC-H queries will be requested.
 Otherwise the default queries will be loaded.
 After that the queries will be converted from .json format to TypeScript objects and saved for the duration of the session.
 
@@ -82,7 +82,7 @@ After that the queries will be converted from .json format to TypeScript objects
 
 The user interface consists of three main parts:
 
-1. The **TCP-H dropdown** on the top left can be used to change the currently displayed query. Alternatively the shortcut `q` displays the next and `shift + q` the last query.
+1. The **TPC-H dropdown** on the top left can be used to change the currently displayed query. Alternatively the shortcut `q` displays the next and `shift + q` the last query.
 2. The **text bar** on the top right changes its functionality according to the current status. It is used to display and input information. The user can jump back to the editor by pressing `Enter`.
 3. The **status display** in the middle indicates which action will be performed once `Enter` is pressed in the text bar. The status changes depending on the shortcut used and can be set one of the following: (Clicking on the text bar witch the mouse will set the status to SEARCH NODE)
 
