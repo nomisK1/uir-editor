@@ -56,57 +56,47 @@ uml highlight + codezeilen beispiele
 -   targets -> labels
 -   values: variables, constants
 
-## Features
+# Features
 
-### `Basic`
+In this section all the implemented features of UIR-Editor will be highlighted. Most can be used via a shortcut or the context menu when right clicking on the editor. A modal containing all the custom keybindings can be opened by pressing `Shift + Alt + S`.
 
-The UIR-Editor changes the following default settings of the Monaco Editor framework.
+### `Basic features`
 
--   **Content**: Read only
--   **Font**: 'Courier New', monospace, 14px
--   **Glyph margin**: Activated
--   **Minimap**: Characters disabled
+The UIR-Editor is based on the Monaco Editor framework. Therefore all the basic features of monaco are included in the application and can be tweaked to fit the use case. The most important ones are the following:
 
-Additionally cursor decoration was added to highlight the current position with a yellow glyph.
-Most of the implemented features can also be accessed via the context menu when right clicking on the editor.
-A modal containing all the custom keybindings can be opened by pressing `shift + s`.
+1. **Line numbers**: Line numbers are activated to enable code referencing and improve general readability.
 
-### `Query Fetching`
+2. **Font**: The monospace font 'Courier New' is used for improved code representation and clarity.
 
-On startup the UIR-Editor looks for the Umbra webserver containing the raw TPC-H query files.
-If a server is found at the specified URL the 22 TPC-H queries will be requested.
-Otherwise the default queries will be loaded.
-After that the queries will be converted from .json format to TypeScript objects and saved for the duration of the session.
+3. **Content**: The UIR-Editor is set to read only in order to prevent errors when displaying and analyzing code.
+
+4. **Minimap**: The minimap is activated to provide a clear overview of the code structure. To increase simplicity detail characters are disabled and important sections of the code will also be highlighted in color matching the main editor.
+
+5. **Glyph margin**: In the glyph margin to the left of the line numbers reader clues will be displayed. These clues help guide the user through the code. Additionally cursor decoration was added to highlight the current position with a yellow glyph.
 
 ### `User Interface`
 
-The user interface consists of three main parts:
+In order for the user to interact with the editor without modifying the code, a simple interface was implemented on top of the editor. It consist of these four parts:
 
-1. The **TPC-H dropdown** on the top left can be used to change the currently displayed query. Alternatively the shortcut `q` displays the next and `shift + q` the last query.
-2. The **text bar** on the top right changes its functionality according to the current status. It is used to display and input information. The user can jump back to the editor by pressing `Enter`.
-3. The **status display** in the middle indicates which action will be performed once `Enter` is pressed in the text bar. The status changes depending on the shortcut used and can be set one of the following: (Clicking on the text bar witch the mouse will set the status to SEARCH NODE)
+1. The **TPC-H dropdown** on the top left can be used to change the currently displayed query. Alternatively the shortcut `Q` can be used to select the next and `Shift + Q` the last query.
+2. The **keyboard button** on the top right triggers dumb mode. This toggles all the Editors Keybindings and changes the button color accordingly from green to red and vice versa. Alternatively the shortcut `Tab` can be used.
+3. The **text bar** in the middle changes its functionality according to the current status. It is used to display and input information depending on the status. The user can always jump back to the editor by pressing `Enter`.
+4. The **status display** to the left of the text bar indicates which action will be performed once `Enter` is pressed. The status changes depending on the shortcut used and can be set to one of the following:
 
-| Status       | Action                                               |
-| ------------ | ---------------------------------------------------- |
-| CURRENT NODE | Shows the Node selected by the cursor                |
-| SEARCH NODE  | Searches the query for a node that matches the input |
-| ADD COMMENT  | Adds a comment to the selected Node                  |
-| RENAME NODE  | Changes the name of the selected node to the input   |
+| Status       | Action                                                |
+| ------------ | ----------------------------------------------------- |
+| CURRENT NODE | Shows the Node selected by the cursor (default)       |
+| SEARCH NODE  | Searches for a node that matches the input (on click) |
+| ADD COMMENT  | Adds a comment to the selected Node                   |
+| RENAME NODE  | Changes the name of the selected node to the input    |
 
 ### `Syntax Highlighting`
 
-Monarch library
-Regular Expressions
-Tokens & Colors
-Theme
+Reading plain black code on a white background is strenuous. That is why the UIR-Editor provides meaningful syntax highlighting for the UmbraIR language to improve code digestion. The popular "VS dark" theme of Visual Studio Code was used as a baseline. From there tokens and colors were defined to match UIR as described in section 2. The token / color matching can be seen in figure x.
 
 ### `Node Highlighting`
 
-Similar Nodes
-Minimap
-Equal name
-Globals
-Functions
+When clicking using a mouse the selected node will be highlighted in the editor. All similar nodes will be highlighted and their position can be seen in the minimap. Nodes with the same name, global variables, function calls and declarations will be highlighted.
 
 ### `Folding`
 
@@ -124,11 +114,6 @@ Block Tree string
 
 Mouse click or navigation keys set grid
 on up / down: cX <= lx ? maxX : lx
-
-### `Feature Toggle`
-
-Toggle features
-Tab + StrgF for searching
 
 ### `Bookmarks`
 
@@ -184,11 +169,28 @@ move start / end
 String Representation (hover)
 TargetTree Modal
 
-# Future Work
+### `Dumb Mode`
 
-Context Menu submenus
-More info
-SQL-Inspektor
+Toggle all hotkeys
+KeybindButton
+Tab
+Strg + F
+
+# Implementation
+
+### `Query Fetching`
+
+On startup the UIR-Editor looks for the Umbra webserver containing the raw TPC-H query files.
+If a server is found at the specified URL the 22 TPC-H queries will be requested.
+Otherwise the default queries will be loaded.
+After that the queries will be converted from .json format to TypeScript objects and saved for the duration of the session.
+
+### `Syntax Highlighting`
+
+Monarch library
+Regular Expressions
+Tokens & Colors
+Theme
 
 # Use Cases
 
@@ -198,8 +200,8 @@ Showcase data flow in @\_Compare:
 
 1. Start by defining input parameters via RENAME (left -> A / right -> B)
 2. Click on variable to find child node and jump to it.
-3. RENAME child according to operation context.
-   => For reference: LLVM Doc / Info Button
+3. Analyze context (for reference: info key)
+4. RENAME child according to operation context.
    **optional:** Add comments for reference
 
 ## UC#2: Analyzing big plan_steps
@@ -208,8 +210,9 @@ Example TPC-H 1: plan_step_11
 
 1. Start by analyzing body block according to UC#1.
 2. Hover over body label or use Block Tree modal (s) to see following blocks.
-3. Look for desired target at last line of the block or use target key (t) to jump to next target. (target reference)
+3. Navigate the targets by using target key (t)
 4. Use go to block key (g) to jump to the referenced blocks label
+   **optional** Use Bookmarks / Comments to keep track of important sections
 
 ## UC#3: Increase Convenience
 
@@ -223,6 +226,23 @@ For regular users:
 6. Use Undo key (u) to go back to last node
 7. Change to next query fast (q)
 8. Show all keybinds (shift + s)
+
+## UC#4: Utalizing Dumb Mode
+
+Find any string in query (eg add operation):
+
+1. Press Tab / Button to disable keybinds for typing
+2. Ctrl + F -> Find dialog
+3. input string (add)
+4. Use enter to jump between occurrences
+5. Press Tab / Button to focus editor and enable hotkeys
+6. Press Shift + Esc to close Find dialog
+
+# Future Work
+
+Context Menu submenus
+More info
+SQL-Inspektor
 
 # Reflection
 
