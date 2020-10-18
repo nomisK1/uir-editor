@@ -4,6 +4,23 @@
     font-size: 14px;
     letter-spacing: 0px;
 }
+.umbra-loader {
+    position: absolute;
+    animation: spin 1s infinite ease-in-out;
+}
+.umbra-loader img {
+    transform: scale(0.5, 0.5);
+    -ms-transform: scale(0.5, 0.5);
+    -webkit-transform: scale(0.5, 0.5);
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 .ui {
     display: flex;
     width: 100%;
@@ -96,7 +113,7 @@
     transform: translateY(-50%);
     max-width: 95%;
 }
-.modal-content text {
+.modal-content span {
     display: block;
     margin: 10%;
     font-size: 26px;

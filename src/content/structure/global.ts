@@ -14,7 +14,8 @@ class global extends _component {
         super(props);
         this.name = 'const(' + lookupJSON(this.json, 'name') + ')';
         this.size = lookupJSON(this.json, 'size');
-        this.data = lookupJSON(this.json, 'data');
+        let data = lookupJSON(this.json, 'data');
+        this.data = getUnicodeLiteral(data);
         this.variable = new variable({
             json: this.json,
             line: this.line,
@@ -47,3 +48,17 @@ class global extends _component {
 }
 
 export default global;
+
+/**
+ * getUnicodeLiteral:
+ * Convert every unreadable ascii character in a string to unicode format (\u****)
+ */
+function getUnicodeLiteral(str: string) {
+    let ucl = '';
+    for (let i = 0; i < str.length; i++) {
+        let dec = str.charCodeAt(i);
+        if (dec > 31 && dec < 127) ucl += str[i];
+        else ucl += '\\u' + dec.toString(16).toUpperCase().padStart(4, '0');
+    }
+    return ucl;
+}

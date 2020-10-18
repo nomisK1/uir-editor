@@ -1,4 +1,5 @@
 import * as React from 'react';
+import LoadAnimation from './components/LoadAnimation';
 import TpchDropdown from './components/TpchDropdown';
 import StatusInput, { Status } from './components/StatusInput';
 import KeybindButton from './components/KeybindButton';
@@ -16,6 +17,7 @@ import './App.css';
 interface IAppProps {}
 
 interface IAppState {
+    loading: boolean;
     index: number;
     input: string;
     showInfoModal: boolean;
@@ -28,8 +30,8 @@ interface IAppState {
  * Main component
  */
 class App extends React.Component<IAppProps, IAppState> {
+    private data: Graph[] = [];
     private editor: Editor | null = null;
-    private data: Graph[] = getData();
     private inputElement: StatusInput | null = null;
     private buttonElement: KeybindButton | null = null;
     private ifModalElement: InfoModal | null = null;
@@ -38,6 +40,7 @@ class App extends React.Component<IAppProps, IAppState> {
     constructor(props: IAppProps) {
         super(props);
         this.state = {
+            loading: true,
             index: 0,
             input: '',
             showInfoModal: false,
@@ -188,7 +191,13 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) this.editor.getInstance().focus();
     }
 
+    public async componentDidMount() {
+        this.data = await getData();
+        this.setState({ loading: false });
+    }
+
     render() {
+        if (this.state.loading) return <LoadAnimation />;
         setupLanguage();
         let dropdown = (
             <TpchDropdown

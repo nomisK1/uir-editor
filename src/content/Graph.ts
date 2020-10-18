@@ -29,7 +29,7 @@ class Graph {
     private variables: variable[] = [];
     private targets: target[] = [];
     private current: _node | null = null;
-    private ancestors: _node[] = [];
+    private previous: _node[] = [];
     private next?: variable;
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
@@ -393,8 +393,8 @@ class Graph {
     }
 
     public setCurrent(node: _node | null) {
-        if (this.current && this.current !== node && !this.ancestors.includes(this.current))
-            this.ancestors.push(this.current);
+        if (this.current && this.current !== node && !this.previous.includes(this.current))
+            this.previous.push(this.current);
         this.current = node;
         this.next = undefined;
         if (this.current instanceof variable) {
@@ -441,8 +441,8 @@ class Graph {
     }
 
     public setCurrentToPrevious() {
-        let previous = this.ancestors.pop();
-        this.current = previous ? previous : null;
+        let last = this.previous.pop();
+        this.current = last ? last : null;
         this.next = undefined;
         if (this.current instanceof variable) {
             this.currentParents = this.getVariableParents(this.current);

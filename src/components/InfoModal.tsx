@@ -30,7 +30,7 @@ class InfoModal extends React.Component<IInfoModalProps> {
                     <span className="close">&times;</span>
                     <h3 className="modal-header">{this.header}</h3>
                     <div className="modal-content">
-                        <text>{this.content}</text>
+                        <span>{this.content}</span>
                     </div>
                 </div>
             </div>
