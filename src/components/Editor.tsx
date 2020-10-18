@@ -15,7 +15,7 @@ interface IEditorProps {
     prevTpchQuery: () => void;
     passInput: (input: string) => void;
     focusInput: (status: Status, prev?: string) => void;
-    resetStatus: () => void;
+    resetStatus: (position?: { line: number; column: number }) => void;
     toggleButton: () => void;
     displayInfoModal: () => void;
     buildInfoModal: (data: string[]) => void;
@@ -496,8 +496,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     public shouldComponentUpdate(nextProps: IEditorProps) {
         if (this.props.graph !== nextProps.graph) {
             this.graph = nextProps.graph;
-            this.resetPosition();
-            this.updateValue();
             return true;
         }
         if (this.props.input !== nextProps.input) {
@@ -508,6 +506,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public componentDidUpdate() {
+        this.updateValue();
+        this.resetPosition();
         this.revealBookmark();
         console.log('EDITOR UPDATED');
     }
@@ -642,6 +642,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressSearch() {
+        //TODO!!
         this.graph.searchCurrent(this.input);
         this.updatePosition();
     }
@@ -920,17 +921,17 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.input = (current ? current.getAlias() : '') + this.graph.getCommentStringAt(this.lastPosition);
         this.props.passInput(this.input);
         this.props.closeModals();
-        this.props.resetStatus();
+        this.props.resetStatus({ line: position.lineNumber, column: position.column });
         this.editor!.setPosition(position);
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.decorateCursor();
         this.decorateTree(position);
-        //console.log(this.grid);
         //console.log(this.lastPosition);
+        //console.log(this.grid);
     }
 
     private resetPosition() {
-        this.grid = 1;
+        this.setGrid(this.lastPosition);
         this.updatePosition(this.lastPosition);
     }
 

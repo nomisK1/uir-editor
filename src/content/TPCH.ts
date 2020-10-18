@@ -2,6 +2,7 @@ import Graph from './Graph';
 
 const url: string = 'https://umbra.db.in.tum.de:25992/irJson';
 const local: string = './data/';
+const dev = true;
 
 /**
  * getData:
@@ -21,6 +22,7 @@ export async function getData() {
  * Request and return a content graph for the x-th TPC-H query from the specified URL or default to local data
  */
 async function requestQuery(x: number) {
+    if (dev) return failure();
     function success(result: string) {
         console.log('NETWORK SUCCESS: LOADING TPC-H QUERY ' + (x + 1) + ' @ URL "' + url + '"');
         let json = JSON.parse(result);
@@ -42,7 +44,7 @@ async function requestQuery(x: number) {
     let response = await fetch(url, requestOptions);
     let result = await response.text();
     if (response.ok) return success(result);
-    else return failure();
+    return failure();
 }
 
 const sql: string[] = [

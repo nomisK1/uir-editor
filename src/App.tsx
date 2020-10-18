@@ -20,6 +20,8 @@ interface IAppState {
     loading: boolean;
     index: number;
     input: string;
+    line: number;
+    column: number;
     showInfoModal: boolean;
     showKeybindModal: boolean;
     showTargetTreeModal: boolean;
@@ -43,6 +45,8 @@ class App extends React.Component<IAppProps, IAppState> {
             loading: true,
             index: 0,
             input: '',
+            line: 0,
+            column: 0,
             showInfoModal: false,
             showKeybindModal: false,
             showTargetTreeModal: false,
@@ -70,13 +74,9 @@ class App extends React.Component<IAppProps, IAppState> {
     //--------------------------------------------------
 
     public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
-        let index = parseInt(event.target.value);
-        this.setState({
-            index,
-            input: '',
-        });
-        this.resetStatus();
+        this.setState({ index: parseInt(event.target.value) });
         if (this.editor) this.editor.getInstance().focus();
+        this.resetStatus();
     }
 
     public nextTpchQuery() {
@@ -98,15 +98,16 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     public handleInputKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
-        if (event.key === 'Enter') {
+        if (event.key === 'Tab') event.preventDefault();
+        else if (event.key === 'Enter') {
             event.preventDefault();
             if (this.editor && this.inputElement) {
                 this.editor.getInstance().focus();
                 if (this.inputElement.getStatus() === Status.COMMENT) this.editor.handleKeypressComment();
                 else if (this.inputElement.getStatus() === Status.RENAME) this.editor.handleKeypressRename();
                 else if (this.inputElement.getStatus() === Status.SEARCH) this.editor.handleKeypressSearch();
-                this.resetStatus();
             }
+            this.resetStatus();
         }
     }
 
@@ -116,16 +117,16 @@ class App extends React.Component<IAppProps, IAppState> {
 
     public focusInput(status: Status, prev?: string) {
         if (this.inputElement) {
-            this.inputElement.setStatus(status);
-            this.inputElement.getInstance().focus();
             if (status === Status.SEARCH) this.setState({ input: '' });
             if (status === Status.COMMENT) this.setState({ input: prev ? prev : '' });
             if (status === Status.RENAME) this.setState({ input: prev ? prev : '' });
+            this.inputElement.setStatus(status);
+            this.inputElement.getInstance().focus();
         }
     }
 
-    public resetStatus() {
-        if (this.inputElement) this.inputElement.setStatus(Status.NODE);
+    public resetStatus(position?: { line: number; column: number }) {
+        if (this.inputElement) this.inputElement.resetStatus(position);
     }
 
     //--------------------------------------------------
@@ -191,12 +192,17 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) this.editor.getInstance().focus();
     }
 
+    //--------------------------------------------------
+    //-----React Lifecycle-----
+    //--------------------------------------------------
+
     public async componentDidMount() {
         this.data = await getData();
         this.setState({ loading: false });
     }
 
     render() {
+        console.log('APP...');
         if (this.state.loading) return <LoadAnimation />;
         setupLanguage();
         let dropdown = (

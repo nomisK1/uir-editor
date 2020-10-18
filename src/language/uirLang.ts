@@ -25,7 +25,7 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
                 /(i(nt)?(8|32|64)?|d(ata)?128|bool|char|const|global|long|ptr|void|object|unsigned|umbra(::[\w|&]*)*)\**/,
                 'type',
             ],
-            [/true|false|0x[\w]+|-?\d+/, 'constant'],
+            [/true|false|0x[\w]+|-?(\d+,\d+)+|-?\d+/, 'constant'],
             [/".*"/, 'string'],
             [/(\/\/).*/, 'comment'],
         ],

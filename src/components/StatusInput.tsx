@@ -15,6 +15,8 @@ interface IStatusInputProps {
 
 interface IStatusInputState {
     status: Status;
+    line: number;
+    column: number;
 }
 
 /**
@@ -28,6 +30,8 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         super(props);
         this.state = {
             status: Status.NODE,
+            line: 1,
+            column: 1,
         };
     }
 
@@ -43,13 +47,25 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         this.setState({ status });
     }
 
+    resetStatus(position?: { line: number; column: number }) {
+        this.setState({
+            status: Status.NODE,
+            line: position ? position.line : this.state.line,
+            column: position ? position.column : this.state.column,
+        });
+    }
+
     render() {
         return (
             <div className="statusInput">
                 <input
                     id="sDisplay"
                     className="input"
-                    value={this.state.status}
+                    value={
+                        this.state.status === Status.NODE
+                            ? '[' + this.state.line + '/' + this.state.column + ']'
+                            : this.state.status
+                    }
                     readOnly={true}
                     style={getStatusStyle(this.state.status)}
                 />
