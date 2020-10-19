@@ -10,12 +10,10 @@ import './Editor.css';
 interface IEditorProps {
     language: string;
     graph: Graph;
-    input: string;
     nextTpchQuery: () => void;
     prevTpchQuery: () => void;
-    passInput: (input: string) => void;
-    focusInput: (status: Status, prev?: string) => void;
-    resetStatus: (position?: { line: number; column: number }) => void;
+    focusStatusInput: (status: Status, input: string) => void;
+    updateStatusInput: (input: string, position: { line: number; column: number }) => void;
     toggleButton: () => void;
     displayInfoModal: () => void;
     buildInfoModal: (data: string[]) => void;
@@ -46,7 +44,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private ctxKey: monaco.editor.IContextKey<boolean> | null = null;
     private graph: Graph;
     private value: string;
-    private input: string;
     private lastPosition: monaco.Position = new monaco.Position(1, 1);
     private grid: number = 1;
     private maxAncestorDepth: number = 3;
@@ -71,7 +68,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         };
         this.graph = this.props.graph;
         this.value = this.graph.print();
-        this.input = this.props.input;
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
         this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
@@ -498,10 +494,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.graph = nextProps.graph;
             return true;
         }
-        if (this.props.input !== nextProps.input) {
-            this.input = nextProps.input;
-            this.props.passInput(this.input);
-        }
         return false;
     }
 
@@ -641,26 +633,25 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Input-----
     //--------------------------------------------------
 
-    public handleKeypressSearch() {
-        //TODO!!
-        this.graph.searchCurrent(this.input);
+    public handleKeypressSearch(input: string) {
+        this.graph.searchCurrent(input);
         this.updatePosition();
     }
 
     public handleKeypressToInput_Search() {
-        this.props.focusInput(Status.SEARCH);
+        this.props.focusStatusInput(Status.SEARCH, '');
     }
 
     public handleKeypressToInput_Comment() {
         let node = this.graph.getNodeAt(this.lastPosition);
         let comment = this.graph.getOuterCommentAt(this.lastPosition);
-        this.props.focusInput(Status.COMMENT, comment && comment.node === node ? comment.text : undefined);
+        this.props.focusStatusInput(Status.COMMENT, comment && comment.node === node ? comment.text : '');
     }
 
     public handleKeypressToInput_Rename() {
         let tarvar = this.graph.getTarVarAt(this.lastPosition);
-        if (tarvar) this.props.focusInput(Status.RENAME, tarvar && tarvar.hasAlias() ? tarvar.getAlias() : undefined);
-        else console.log('ERROR: INVALID NODE');
+        if (tarvar) this.props.focusStatusInput(Status.RENAME, tarvar && tarvar.hasAlias() ? tarvar.getAlias() : '');
+        else console.log('ERROR: NODE CANNOT RENAME');
     }
 
     //--------------------------------------------------
@@ -691,8 +682,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Comments-----
     //--------------------------------------------------
 
-    public handleKeypressComment() {
-        this.graph.addCommentAt(this.input, this.lastPosition);
+    public handleKeypressComment(input: string) {
+        this.graph.addCommentAt(input, this.lastPosition);
         this.decorateComments();
         this.resetPosition();
     }
@@ -725,29 +716,24 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Renaming-----
     //--------------------------------------------------
 
-    public handleKeypressRename() {
-        let tarvar = this.graph.getTarVarAt(this.lastPosition);
-        if (tarvar) {
-            if (!this.input) {
-                this.input = tarvar.getName();
-                this.props.passInput(this.input);
+    public handleKeypressRename(input: string) {
+        if (!input) this.handleKeypressUndoRename();
+        else {
+            let tarvar = this.graph.getTarVarAt(this.lastPosition);
+            if (tarvar) {
+                if (input === tarvar.getAlias()) return;
+                this.graph.setAliasAt(input, this.lastPosition);
+                this.updateValue();
             }
-            if (this.input === tarvar.getAlias()) return;
-            this.graph.setAliasAt(this.input, this.lastPosition);
-            this.updateValue();
+            this.resetPosition();
         }
-        this.resetPosition();
     }
 
     public handleKeypressUndoRename() {
-        let tarvar = this.graph.getNodeAt(this.lastPosition);
-        if (tarvar) {
-            this.input = tarvar.getName();
-            this.props.passInput(this.input);
-            if (this.graph.resetAliasAt(this.lastPosition)) {
-                this.updateValue();
-                this.resetPosition();
-            }
+        let tarvar = this.graph.getTarVarAt(this.lastPosition);
+        if (tarvar && this.graph.resetAliasAt(this.lastPosition)) {
+            this.updateValue();
+            this.resetPosition();
         }
     }
 
@@ -918,10 +904,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.graph.setCurrent(current);
         }
         this.lastPosition = position;
-        this.input = (current ? current.getAlias() : '') + this.graph.getCommentStringAt(this.lastPosition);
-        this.props.passInput(this.input);
+        this.props.updateStatusInput(
+            (current ? current.getAlias() : '') + this.graph.getCommentStringAt(this.lastPosition),
+            { line: position.lineNumber, column: position.column },
+        );
         this.props.closeModals();
-        this.props.resetStatus({ line: position.lineNumber, column: position.column });
         this.editor!.setPosition(position);
         this.editor!.revealPositionInCenterIfOutsideViewport(position);
         this.decorateCursor();

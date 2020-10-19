@@ -7,8 +7,7 @@ import InfoModal from './components/InfoModal';
 import KeybindModal from './components/KeybindModal';
 import TargetTreeModal from './components/TargetTreeModal';
 import Editor from './components/Editor';
-import Graph from './content/Graph';
-import { getData } from './content/TPCH';
+import { query, queryTotal, requestQuery } from './content/TPCH';
 import { treeData } from './content/tree/TargetTree';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
@@ -17,14 +16,11 @@ import './App.css';
 interface IAppProps {}
 
 interface IAppState {
-    loading: boolean;
-    index: number;
-    input: string;
-    line: number;
-    column: number;
     showInfoModal: boolean;
     showKeybindModal: boolean;
     showTargetTreeModal: boolean;
+    loading: boolean;
+    query: query | null;
 }
 
 /**
@@ -32,33 +28,29 @@ interface IAppState {
  * Main component
  */
 class App extends React.Component<IAppProps, IAppState> {
-    private data: Graph[] = [];
     private editor: Editor | null = null;
+    private dropdownElement: TpchDropdown | null = null;
     private inputElement: StatusInput | null = null;
     private buttonElement: KeybindButton | null = null;
     private ifModalElement: InfoModal | null = null;
+    private kbModalElement: KeybindModal | null = null;
     private ttModalElement: TargetTreeModal | null = null;
 
     constructor(props: IAppProps) {
         super(props);
         this.state = {
-            loading: true,
-            index: 0,
-            input: '',
-            line: 0,
-            column: 0,
             showInfoModal: false,
             showKeybindModal: false,
             showTargetTreeModal: false,
+            loading: true,
+            query: null,
         };
         this.handleDropdownChange = this.handleDropdownChange.bind(this);
         this.nextTpchQuery = this.nextTpchQuery.bind(this);
         this.prevTpchQuery = this.prevTpchQuery.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
-        this.passInput = this.passInput.bind(this);
-        this.focusInput = this.focusInput.bind(this);
-        this.resetStatus = this.resetStatus.bind(this);
+        this.focusStatusInput = this.focusStatusInput.bind(this);
+        this.updateStatusInput = this.updateStatusInput.bind(this);
         this.handleButtonPress = this.handleButtonPress.bind(this);
         this.toggleButton = this.toggleButton.bind(this);
         this.displayInfoModal = this.displayInfoModal.bind(this);
@@ -73,60 +65,45 @@ class App extends React.Component<IAppProps, IAppState> {
     //-----TPC-H Dropdown-----
     //--------------------------------------------------
 
-    public handleDropdownChange(event: React.ChangeEvent<HTMLSelectElement>) {
-        this.setState({ index: parseInt(event.target.value) });
+    public async handleDropdownChange(index: number) {
+        this.setState({ loading: true });
+        let query = await requestQuery(index);
+        this.setState({ loading: false, query });
         if (this.editor) this.editor.getInstance().focus();
-        this.resetStatus();
     }
 
     public nextTpchQuery() {
-        let index = this.state.index < this.data.length - 1 ? this.state.index + 1 : 0;
-        this.setState({ index });
+        if (this.dropdownElement) this.dropdownElement.nextItem();
     }
 
     public prevTpchQuery() {
-        let index = this.state.index > 0 ? this.state.index - 1 : this.data.length - 1;
-        this.setState({ index });
+        if (this.dropdownElement) this.dropdownElement.prevItem();
     }
 
     //--------------------------------------------------
     //-----Status Input-----
     //--------------------------------------------------
 
-    public handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({ input: event.target.value });
-    }
-
-    public handleInputKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
-        if (event.key === 'Tab') event.preventDefault();
-        else if (event.key === 'Enter') {
-            event.preventDefault();
-            if (this.editor && this.inputElement) {
-                this.editor.getInstance().focus();
-                if (this.inputElement.getStatus() === Status.COMMENT) this.editor.handleKeypressComment();
-                else if (this.inputElement.getStatus() === Status.RENAME) this.editor.handleKeypressRename();
-                else if (this.inputElement.getStatus() === Status.SEARCH) this.editor.handleKeypressSearch();
-            }
-            this.resetStatus();
+    public handleInputKeydown(status: Status, input: string) {
+        if (this.editor) {
+            this.editor.getInstance().focus();
+            if (status === Status.COMMENT) this.editor.handleKeypressComment(input);
+            else if (status === Status.RENAME) this.editor.handleKeypressRename(input);
+            else if (status === Status.SEARCH) this.editor.handleKeypressSearch(input);
         }
     }
 
-    public passInput(input: string) {
-        this.setState({ input });
-    }
-
-    public focusInput(status: Status, prev?: string) {
+    public focusStatusInput(status: Status, input: string) {
         if (this.inputElement) {
-            if (status === Status.SEARCH) this.setState({ input: '' });
-            if (status === Status.COMMENT) this.setState({ input: prev ? prev : '' });
-            if (status === Status.RENAME) this.setState({ input: prev ? prev : '' });
-            this.inputElement.setStatus(status);
+            if (status === Status.COMMENT) this.inputElement.setStatusComment(input);
+            else if (status === Status.RENAME) this.inputElement.setStatusRename(input);
+            else if (status === Status.SEARCH) this.inputElement.setStatusSearch(input);
             this.inputElement.getInstance().focus();
         }
     }
 
-    public resetStatus(position?: { line: number; column: number }) {
-        if (this.inputElement) this.inputElement.resetStatus(position);
+    public updateStatusInput(input?: string, position?: { line: number; column: number }) {
+        if (this.inputElement) this.inputElement.setStatusNode(input, position);
     }
 
     //--------------------------------------------------
@@ -197,29 +174,23 @@ class App extends React.Component<IAppProps, IAppState> {
     //--------------------------------------------------
 
     public async componentDidMount() {
-        this.data = await getData();
-        this.setState({ loading: false });
+        let query = await requestQuery(0);
+        this.setState({ query, loading: false });
     }
 
     render() {
         console.log('APP...');
-        if (this.state.loading) return <LoadAnimation />;
+        if (this.state.loading || !this.state.query) return <LoadAnimation />;
         setupLanguage();
         let dropdown = (
             <TpchDropdown
-                size={this.data.length}
-                index={this.state.index}
+                index={this.state.query.index}
+                size={queryTotal}
                 onDropdownChange={this.handleDropdownChange}
+                ref={(ref) => (this.dropdownElement = ref)}
             />
         );
-        let input = (
-            <StatusInput
-                input={this.state.input}
-                onInputChange={this.handleInputChange}
-                onInputKeydown={this.handleInputKeydown}
-                ref={(ref) => (this.inputElement = ref)}
-            />
-        );
+        let input = <StatusInput onInputKeydown={this.handleInputKeydown} ref={(ref) => (this.inputElement = ref)} />;
         let button = <KeybindButton onButtonPress={this.handleButtonPress} ref={(ref) => (this.buttonElement = ref)} />;
         let ifModal = (
             <InfoModal
@@ -228,7 +199,13 @@ class App extends React.Component<IAppProps, IAppState> {
                 ref={(ref) => (this.ifModalElement = ref)}
             />
         );
-        let kbModal = <KeybindModal showModal={this.state.showKeybindModal} onModalClick={this.displayKeybindModal} />;
+        let kbModal = (
+            <KeybindModal
+                showModal={this.state.showKeybindModal}
+                onModalClick={this.displayKeybindModal}
+                ref={(ref) => (this.kbModalElement = ref)}
+            />
+        );
         let ttModal = (
             <TargetTreeModal
                 showModal={this.state.showTargetTreeModal}
@@ -239,13 +216,11 @@ class App extends React.Component<IAppProps, IAppState> {
         let editor = (
             <Editor
                 language={languageID}
-                graph={this.data[this.state.index]}
-                input={this.state.input}
+                graph={this.state.query.content}
                 nextTpchQuery={this.nextTpchQuery}
                 prevTpchQuery={this.prevTpchQuery}
-                passInput={this.passInput}
-                focusInput={this.focusInput}
-                resetStatus={this.resetStatus}
+                focusStatusInput={this.focusStatusInput}
+                updateStatusInput={this.updateStatusInput}
                 toggleButton={this.toggleButton}
                 displayInfoModal={this.displayInfoModal}
                 buildInfoModal={this.buildInfoModal}

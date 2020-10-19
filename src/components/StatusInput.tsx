@@ -8,13 +8,12 @@ export enum Status {
 }
 
 interface IStatusInputProps {
-    input: string;
-    onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onInputKeydown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+    onInputKeydown: (status: Status, input: string) => void;
 }
 
 interface IStatusInputState {
     status: Status;
+    input: string;
     line: number;
     column: number;
 }
@@ -30,9 +29,12 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         super(props);
         this.state = {
             status: Status.NODE,
+            input: '',
             line: 1,
             column: 1,
         };
+        this.onChange = this.onChange.bind(this);
+        this.onKeydown = this.onKeydown.bind(this);
     }
 
     getInstance() {
@@ -43,16 +45,36 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         return this.state.status;
     }
 
-    setStatus(status: Status) {
-        this.setState({ status });
+    setStatusComment(input: string) {
+        this.setState({ status: Status.COMMENT, input });
     }
 
-    resetStatus(position?: { line: number; column: number }) {
+    setStatusNode(input?: string, position?: { line: number; column: number }) {
         this.setState({
             status: Status.NODE,
+            input: input ? input : this.state.input,
             line: position ? position.line : this.state.line,
             column: position ? position.column : this.state.column,
         });
+    }
+
+    setStatusRename(input: string) {
+        this.setState({ status: Status.RENAME, input });
+    }
+
+    setStatusSearch(input: string) {
+        this.setState({ status: Status.SEARCH, input });
+    }
+
+    onChange(event: React.ChangeEvent<HTMLInputElement>) {
+        this.setState({ input: event.target.value });
+    }
+
+    onKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
+        if (event.key === 'Enter' || event.key === 'Tab') {
+            event.preventDefault();
+            this.props.onInputKeydown(this.state.status, this.state.input);
+        }
     }
 
     render() {
@@ -61,22 +83,19 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
                 <input
                     id="sDisplay"
                     className="input"
-                    value={
-                        this.state.status === Status.NODE
-                            ? '[' + this.state.line + '/' + this.state.column + ']'
-                            : this.state.status
-                    }
-                    readOnly={true}
+                    value={getStatusValue(this.state.status, this.state.line, this.state.column)}
                     style={getStatusStyle(this.state.status)}
+                    onKeyDown={this.onKeydown}
+                    readOnly={true}
                 />
                 <input
                     id="sInput"
                     className="input"
-                    value={this.props.input}
                     placeholder={'----- EMPTY -----'}
+                    value={this.state.input}
+                    onChange={this.onChange}
+                    onKeyDown={this.onKeydown}
                     onClick={() => this.setState({ status: Status.SEARCH })}
-                    onChange={this.props.onInputChange}
-                    onKeyDown={this.props.onInputKeydown}
                     ref={(ref) => (this.inputElement = ref)}
                 />
             </div>
@@ -85,6 +104,10 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
 }
 
 export default StatusInput;
+
+function getStatusValue(status: Status, line: number, column: number) {
+    return status === Status.NODE ? '[' + line + '/' + column + ']' : status;
+}
 
 function getStatusStyle(status: Status) {
     if (status === Status.COMMENT) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
