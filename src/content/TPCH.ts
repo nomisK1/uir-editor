@@ -1,22 +1,23 @@
 import Graph from './Graph';
 import { sql } from './SQL';
 
+const fail = false; //FOR TESTING
 const url: string = 'https://umbra.db.in.tum.de:25992/irJson';
 const local: string = './data/';
-const dev = false; //FOR TESTING
 
 /**
  * requestQuery:
  * Request and return the TPC-H query at the specified index from the webserver or default to local data
  */
 export async function requestQuery(index: number) {
-    if (dev) return failure(); //FOR TESTING
+    if (fail) return failure(); //FOR TESTING
     function success(result: string): query {
         console.log('NETWORK SUCCESS: LOADING TPC-H QUERY ' + (index + 1) + ' @ URL "' + url + '"');
         let json = JSON.parse(result);
         return { index, content: new Graph({ gid: index + 1, json }) };
     }
     function failure(): query {
+        if (index > 21) index = 22;
         console.log('NETWORK FAILURE: LOADING TPC-H QUERY ' + (index + 1) + ' @ LOCAL PROJECT');
         let json = require(local + (index + 1) + '.json');
         return { index, content: new Graph({ gid: index + 1, json }) };

@@ -1,0 +1,17 @@
+{
+    "globals": [
+        {
+            "isConst": true,
+            "name": 666,
+            "size": 5,
+            "data": "DUMMY"
+        }
+    ],
+    "functions": [
+        {
+            "name": "error_unknown_query",
+            "returnType": "void",
+            "args": [{ "var": 666, "type": "global" }]
+        }
+    ]
+}

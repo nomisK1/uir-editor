@@ -720,4 +720,7 @@ group by
         cntrycode
 order by
         cntrycode`,
+
+    // INSERT SQL HERE
+    `select 42`,
 ];
