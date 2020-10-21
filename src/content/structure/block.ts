@@ -1,8 +1,6 @@
 import * as monaco from 'monaco-editor';
 import _node, { INodeProps, lookupJSON } from './_node';
-import _instruction from './_instruction';
-import assignment from './assignment';
-import operation from './operation';
+import instruction from './instruction';
 import variable from './variable';
 import target from './target';
 import label from './label';
@@ -13,7 +11,7 @@ interface IBlockProps extends INodeProps {}
 class block extends _node {
     protected label: label;
     protected targets: target[] = [];
-    protected instructions: _instruction[] = [];
+    protected instructions: instruction[] = [];
 
     constructor(props: IBlockProps) {
         super(props);
@@ -24,44 +22,28 @@ class block extends _node {
         });
         this.buildInstructions(lookupJSON(this.json, 'instructions'));
         this.findRanges();
-        this.range = new monaco.Range(
-            this.line,
-            0,
-            this.getLastLine(),
-            this.instructions[this.instructions.length - 1].toString().length + indentation,
-        );
     }
 
     private buildInstructions(jsons: Object[]) {
         let line = this.line;
         jsons.forEach((json) => {
             line += 1;
-            if (lookupJSON(json, 'dst'))
-                this.instructions.push(
-                    new assignment({
-                        json,
-                        line,
-                        context: this,
-                    }),
-                );
-            else {
-                this.instructions.push(
-                    new operation({
-                        json,
-                        line,
-                        context: this,
-                    }),
-                );
-            }
+            this.instructions.push(
+                new instruction({
+                    json,
+                    line,
+                    context: this,
+                }),
+            );
         });
-        this.instructions.forEach((i) => {
-            this.targets.push(...i.getTargets());
-        });
+        this.instructions.forEach((i) => this.targets.push(...i.getTargets()));
     }
 
     public findRanges() {
         this.name = this.context!.getName() + '//' + this.label.getAlias();
         this.label.setRange(new monaco.Range(this.line, 0, this.line, this.label.getAlias().length));
+        this.range = new monaco.Range(this.line, 0, this.getLastLine() + 1, 0);
+        //this.instructions[this.instructions.length - 1].toString().length + indentation,
     }
 
     public getLastLine() {
@@ -102,27 +84,19 @@ class block extends _node {
     }
 
     public getAssignments() {
-        let assignments: assignment[] = [];
+        let assignments: instruction[] = [];
         this.instructions.forEach((i) => {
-            if (i instanceof assignment) assignments.push(i);
+            if (i.getAssigned()) assignments.push(i);
         });
         return assignments;
     }
 
-    public getOperations() {
-        let operations: operation[] = [];
-        this.instructions.forEach((i) =>
-            operations.push(i instanceof assignment ? i.getOperation() : (i as operation)),
-        );
-        return operations;
-    }
-
     public getRelatedFunctions(fun: string) {
-        let nodes: _node[] = [];
-        this.getOperations().forEach((o) => {
-            if (o.getFunctionName() === fun) nodes.push(o);
+        let instructions: instruction[] = [];
+        this.instructions.forEach((i) => {
+            if (i.getFunctionName() === fun) instructions.push(i);
         });
-        return nodes;
+        return instructions;
     }
 
     public getLabel() {
@@ -134,13 +108,12 @@ class block extends _node {
     }
 
     public buildTargetTreeBranch() {
-        let operations = this.getOperations();
-        let op = operations[operations.length - 1];
+        let i = this.instructions[this.instructions.length - 1];
         return new branch({
             label: this.label,
-            targets: op.getTargets(),
-            opcode: op.getOpCode(),
-            operands: op.getValues(),
+            targets: i.getTargets(),
+            opcode: i.getOpCode(),
+            operands: i.getValues(),
         });
     }
 }

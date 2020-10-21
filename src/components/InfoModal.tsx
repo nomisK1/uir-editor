@@ -14,7 +14,7 @@ class InfoModal extends React.Component<IInfoModalProps> {
     private content: string | null = null;
 
     setData(data: string[]) {
-        this.header = data[0];
+        this.header = data[0].length > maxHeader ? data[0].slice(0, maxHeader) + '[...]' : data[0];
         this.content = data.slice(1).join('\n');
     }
 
@@ -39,3 +39,6 @@ class InfoModal extends React.Component<IInfoModalProps> {
 }
 
 export default InfoModal;
+
+// Maximum amount of characters in the header string
+const maxHeader = 100;

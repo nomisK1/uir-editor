@@ -915,6 +915,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateTree(position);
         //console.log(this.lastPosition);
         //console.log(this.grid);
+        console.log(current);
     }
 
     private resetPosition() {
@@ -1177,7 +1178,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private findNodeHighlights(position: monaco.Position) {
         let node = this.graph.getNodeAt(position);
-        console.log(node);
         let nodes = this.graph.getRelatedNodes(node);
         let ranges = nodes.map((n) => n.getRange());
         return ranges;

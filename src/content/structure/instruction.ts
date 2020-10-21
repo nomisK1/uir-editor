@@ -1,8 +1,6 @@
 import * as monaco from 'monaco-editor';
-import _node, { matchType, lookupJSON } from './_node';
+import _node, { INodeProps, matchType, lookupJSON } from './_node';
 import { indentation } from './block';
-import _instruction, { IInstructionProps } from './_instruction';
-import assignment from './assignment';
 import _value from './_value';
 import variable, { findVariableRangeIn } from './variable';
 import constant, { findConstantRangeIn } from './constant';
@@ -172,23 +170,36 @@ enum OpInfo {
     ZEXT = 'Zero extends its value by filling the higher order bits with zero to fit the type.\n~~~\n<result> = zext <ty> <value>',
 }
 
-interface IOperationProps extends IInstructionProps {}
+interface IInstructionProps extends INodeProps {}
 
-class operation extends _instruction {
+class instruction extends _node {
+    protected assignment?: variable;
     protected opcode: string | null;
     protected type: string | null;
     protected operands: (_value | target)[] = [];
 
-    constructor(props: IOperationProps) {
+    constructor(props: IInstructionProps) {
         super(props);
         this.opcode = matchOpCode(lookupJSON(this.json, 'opcode'))!;
         this.type = matchType(lookupJSON(this.json, 'type'));
-        this.name = 'operation@' + this.line;
-        this.build();
+        this.name = 'instruction@' + this.line;
+        this.buildOperands();
+        this.buildAssignment();
         this.findRanges();
     }
 
-    private build() {
+    private buildAssignment() {
+        if (lookupJSON(this.json, 'dst')) {
+            this.assignment = new variable({
+                json: this.json,
+                line: this.line,
+                context: this,
+            });
+            this.assignment.setParents(this.getVariables());
+        }
+    }
+
+    private buildOperands() {
         if (
             //[opcode]
             compareOpCode(OpCode.UNREACHABLE, this.opcode) ||
@@ -405,15 +416,14 @@ class operation extends _instruction {
     }
 
     public findRanges() {
-        let offset =
-            (this.context instanceof assignment ? this.context.toString().split('=')[0].length + 2 : 0) + indentation;
         let compare = this.toString();
+        if (this.assignment) compare = findVariableRangeIn(this.assignment, compare, indentation);
         this.operands.forEach((o) => {
-            if (o instanceof variable) compare = findVariableRangeIn(o, compare, offset);
-            else if (o instanceof constant) compare = findConstantRangeIn(o, compare, offset);
-            else if (o instanceof target) compare = findTargetRangeIn(o, compare, offset);
+            if (o instanceof variable) compare = findVariableRangeIn(o, compare, indentation);
+            else if (o instanceof constant) compare = findConstantRangeIn(o, compare, indentation);
+            else if (o instanceof target) compare = findTargetRangeIn(o, compare, indentation);
         });
-        this.range = new monaco.Range(this.line, offset, this.line, offset + this.toString().length);
+        this.range = new monaco.Range(this.line, indentation, this.line, this.toString().length + indentation);
     }
 
     private printOperands() {
@@ -437,7 +447,11 @@ class operation extends _instruction {
     }
 
     public toString() {
-        let str = this.opcode! + ' ' + (this.type ? this.type + ' ' : '');
+        let str =
+            (this.assignment ? '%' + this.assignment.getAlias() + ' = ' : '') +
+            this.opcode! +
+            ' ' +
+            (this.type ? this.type + ' ' : '');
         if (compareOpCode(OpCode.CALL, this.opcode))
             str += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
         else if (compareOpCode(OpCode.PHI, this.opcode)) str += this.printPhi();
@@ -447,11 +461,15 @@ class operation extends _instruction {
     }
 
     public getNodes() {
-        return [this, ...this.operands];
+        let nodes: _node[] = [this];
+        if (this.assignment) nodes.push(this.assignment);
+        nodes.push(...this.operands);
+        return nodes;
     }
 
     public getVariables() {
         let vars: variable[] = [];
+        if (this.assignment) vars.push(this.assignment);
         this.operands.forEach((o) => {
             if (o instanceof variable) vars.push(o);
         });
@@ -459,32 +477,21 @@ class operation extends _instruction {
     }
 
     public getNodeAt(position: monaco.Position): _node | null {
+        if (this.assignment && this.assignment.getRange().containsPosition(position))
+            return this.assignment.getNodeAt(position);
         for (let i = 0; i < this.operands.length; i++)
             if (this.operands[i].getRange().containsPosition(position)) return this.operands[i].getNodeAt(position);
         return this;
     }
 
-    public getInfo() {
-        return [...super.getInfo(), '\n\nOPCODE:\t' + this.opcode, matchOpInfo(this.opcode)!];
+    public getAssigned() {
+        return this.assignment ? this.assignment : null;
     }
 
-    public hasVariable(name: string) {
-        let vars = this.getVariables();
-        for (let i = 0; i < vars.length; i++) if (vars[i].getName() === name) return true;
+    public assignedChildOf(parent: string) {
+        for (let i = 0; i < this.operands.length; i++)
+            if (this.operands[i] instanceof variable && this.operands[i].getName() === parent) return true;
         return false;
-    }
-
-    public getFunctionName() {
-        if (compareOpCode(OpCode.CALL, this.opcode)) return '' + lookupJSON(this.json, 'fun').split('(')[0];
-        else return null;
-    }
-
-    public getTargets() {
-        let targets: target[] = [];
-        this.operands.forEach((o) => {
-            if (o instanceof target) targets.push(o);
-        });
-        return targets;
     }
 
     public getValues() {
@@ -494,13 +501,29 @@ class operation extends _instruction {
         });
         return values;
     }
+    public getTargets() {
+        let targets: target[] = [];
+        this.operands.forEach((o) => {
+            if (o instanceof target) targets.push(o);
+        });
+        return targets;
+    }
 
     public getOpCode() {
         return this.opcode!;
     }
+
+    public getInfo() {
+        return [...super.getInfo(), '\n\nOPCODE:\t' + this.opcode, matchOpInfo(this.opcode)!];
+    }
+
+    public getFunctionName() {
+        if (compareOpCode(OpCode.CALL, this.opcode)) return '' + lookupJSON(this.json, 'fun').split('(')[0];
+        else return null;
+    }
 }
 
-export default operation;
+export default instruction;
 
 //--------------------------------------------------
 //-----Helpers-----

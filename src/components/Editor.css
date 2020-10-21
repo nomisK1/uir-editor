@@ -7,14 +7,11 @@
 .glyphComment {
     background: rgba(120, 120, 38, 0.4); /* #78782633 */
 }
-.contentCommentassignment {
-    background: rgb(120, 120, 38, 0.3);
-}
 .contentCommentblock {
     background: rgb(120, 120, 38, 0.1);
 }
 .contentCommentconstant {
-    background: rgb(120, 120, 38, 0.4);
+    background: rgb(120, 120, 38, 0.5);
 }
 .contentCommentdeclaration {
     background: rgb(120, 120, 38, 0.1);
@@ -25,17 +22,17 @@
 .contentCommentglobal {
     background: rgb(120, 120, 38, 0.1);
 }
-.contentCommentlabel {
-    background: rgb(120, 120, 38, 0.4);
+.contentCommentinstruction {
+    background: rgb(120, 120, 38, 0.3);
 }
-.contentCommentoperation {
-    background: rgb(120, 120, 38, 0.2);
+.contentCommentlabel {
+    background: rgb(120, 120, 38, 0.5);
 }
 .contentCommenttarget {
-    background: rgb(120, 120, 38, 0.4);
+    background: rgb(120, 120, 38, 0.5);
 }
 .contentCommentvariable {
-    background: rgb(120, 120, 38, 0.4);
+    background: rgb(120, 120, 38, 0.5);
 }
 .contentCommentundefined {
     background: rgb(120, 120, 38, 0.1);

@@ -2,7 +2,7 @@ import * as monaco from 'monaco-editor';
 import _node, { lookupJSON } from './_node';
 import _function, { IFunctionProps } from './_function';
 import block from './block';
-import assignment from './assignment';
+import instruction from './instruction';
 import { findVariableRangeIn } from './variable';
 import target from './target';
 
@@ -95,7 +95,7 @@ class definition extends _function {
     }
 
     public getAssignments() {
-        let assignments: assignment[] = [];
+        let assignments: instruction[] = [];
         this.blocks.forEach((b) => assignments.push(...b.getAssignments()));
         return assignments;
     }

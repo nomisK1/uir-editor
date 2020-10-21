@@ -59,11 +59,10 @@ abstract class _node {
     public abstract getNodeAt(position: monaco.Position): _node | null;
 
     public getInfo() {
-        let str = this.toString();
         let start = this.getRange().getStartPosition();
         let end = this.getRange().getEndPosition();
         return [
-            str.length > maxHeader ? str.slice(0, maxHeader) + '[...]' : str,
+            this.toString(),
             'CLASS:\t' + this.constructor.name,
             'NAME:\t' + this.getAlias(),
             'RANGE:\t[' + start.lineNumber + '/' + start.column + '] ~ [' + end.lineNumber + '/' + end.column + ']',
@@ -159,6 +158,3 @@ export function lookupJSON(json: Object, key: string) {
     }
     return null;
 }
-
-// Maximum amount of characters in the header string
-const maxHeader = 120;
