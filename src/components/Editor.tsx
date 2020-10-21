@@ -4,7 +4,6 @@ import { themeID, monarchTheme } from '../language/uirTheme';
 import S from '../language/Singleton';
 import Graph, { comment } from '../content/Graph'; // eslint-disable-line
 import { treeData } from '../content/tree/TargetTree';
-import { Status } from './StatusInput';
 import './Editor.css';
 
 interface IEditorProps {
@@ -12,7 +11,9 @@ interface IEditorProps {
     graph: Graph;
     nextTpchQuery: () => void;
     prevTpchQuery: () => void;
-    focusStatusInput: (status: Status, input: string) => void;
+    focusStatusInput_Comment: (input: string) => void;
+    focusStatusInput_Rename: (input: string) => void;
+    focusStatusInput_Search: () => void;
     updateStatusInput: (input: string, position: { line: number; column: number }) => void;
     toggleButton: () => void;
     displayInfoModal: () => void;
@@ -639,18 +640,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressToInput_Search() {
-        this.props.focusStatusInput(Status.SEARCH, '');
+        this.props.focusStatusInput_Search();
     }
 
     public handleKeypressToInput_Comment() {
         let node = this.graph.getNodeAt(this.lastPosition);
         let comment = this.graph.getOuterCommentAt(this.lastPosition);
-        this.props.focusStatusInput(Status.COMMENT, comment && comment.node === node ? comment.text : '');
+        this.props.focusStatusInput_Comment(comment && comment.node === node ? comment.text : '');
     }
 
     public handleKeypressToInput_Rename() {
         let tarvar = this.graph.getTarVarAt(this.lastPosition);
-        if (tarvar) this.props.focusStatusInput(Status.RENAME, tarvar && tarvar.hasAlias() ? tarvar.getAlias() : '');
+        if (tarvar) this.props.focusStatusInput_Rename(tarvar && tarvar.hasAlias() ? tarvar.getAlias() : '');
         else console.log('ERROR: NODE CANNOT RENAME');
     }
 
@@ -717,16 +718,18 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressRename(input: string) {
-        if (!input) this.handleKeypressUndoRename();
-        else {
+        if (input) {
             let tarvar = this.graph.getTarVarAt(this.lastPosition);
-            if (tarvar) {
-                if (input === tarvar.getAlias()) return;
-                this.graph.setAliasAt(input, this.lastPosition);
-                this.updateValue();
+            if (tarvar && input !== tarvar.getName()) {
+                if (input !== tarvar.getAlias()) {
+                    this.graph.setAliasAt(input, this.lastPosition);
+                    this.updateValue();
+                }
+                this.resetPosition();
+                return;
             }
-            this.resetPosition();
         }
+        this.handleKeypressUndoRename();
     }
 
     public handleKeypressUndoRename() {

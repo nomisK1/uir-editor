@@ -117,7 +117,7 @@ enum OpInfo {
     CMPSUOLE = 'Returns ???\n~~~\ncmpsuole <ty> <op1> <op2>',
     CMPSUOLT = 'Returns ???\n~~~\ncmpsuolt <ty> <op1> <op2>',
     CMPULE = 'Returns ???\n~~~\ncmpule <ty> <op1> <op2>',
-    CMPULT = 'Returns ???\n~~~\ncmpult <ty> <op1> <op2>',
+    CMPULT = 'Returns 1 if the first operand is less than the second otherwise 0. (unsigned)\n~~~\ncmpult <ty> <op1> <op2>',
     CONDBR = 'Used to cause control flow to transfer to a different basic block in the current function depending on the condition.\n~~~\ncondbr <cond> <iftrue> <iffalse>',
     //CONST = '__________________________________________________',
     CRC32 = 'Calculates the CRC32 checksum of the given value.',

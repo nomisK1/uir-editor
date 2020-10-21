@@ -49,7 +49,9 @@ class App extends React.Component<IAppProps, IAppState> {
         this.nextTpchQuery = this.nextTpchQuery.bind(this);
         this.prevTpchQuery = this.prevTpchQuery.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
-        this.focusStatusInput = this.focusStatusInput.bind(this);
+        this.focusStatusInput_Comment = this.focusStatusInput_Comment.bind(this);
+        this.focusStatusInput_Rename = this.focusStatusInput_Rename.bind(this);
+        this.focusStatusInput_Search = this.focusStatusInput_Search.bind(this);
         this.updateStatusInput = this.updateStatusInput.bind(this);
         this.handleButtonPress = this.handleButtonPress.bind(this);
         this.toggleButton = this.toggleButton.bind(this);
@@ -93,11 +95,23 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    public focusStatusInput(status: Status, input: string) {
+    public focusStatusInput_Comment(input: string) {
         if (this.inputElement) {
-            if (status === Status.COMMENT) this.inputElement.setStatusComment(input);
-            else if (status === Status.RENAME) this.inputElement.setStatusRename(input);
-            else if (status === Status.SEARCH) this.inputElement.setStatusSearch(input);
+            this.inputElement.setStatusComment(input);
+            this.inputElement.getInstance().focus();
+        }
+    }
+
+    public focusStatusInput_Rename(input: string) {
+        if (this.inputElement) {
+            this.inputElement.setStatusRename(input);
+            this.inputElement.getInstance().focus();
+        }
+    }
+
+    public focusStatusInput_Search() {
+        if (this.inputElement) {
+            this.inputElement.setStatusSearch();
             this.inputElement.getInstance().focus();
         }
     }
@@ -219,7 +233,9 @@ class App extends React.Component<IAppProps, IAppState> {
                 graph={this.state.query.content}
                 nextTpchQuery={this.nextTpchQuery}
                 prevTpchQuery={this.prevTpchQuery}
-                focusStatusInput={this.focusStatusInput}
+                focusStatusInput_Comment={this.focusStatusInput_Comment}
+                focusStatusInput_Rename={this.focusStatusInput_Rename}
+                focusStatusInput_Search={this.focusStatusInput_Search}
                 updateStatusInput={this.updateStatusInput}
                 toggleButton={this.toggleButton}
                 displayInfoModal={this.displayInfoModal}

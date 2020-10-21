@@ -544,17 +544,8 @@ class Graph {
     public getCommentStringAt(position: monaco.Position) {
         return this.comments.length
             ? this.getCommentsAt(position)
-                  .map(
-                      (c) =>
-                          (c.node ? ' ' : '') +
-                          '["' +
-                          c.text +
-                          '"@' +
-                          c.range.getStartPosition().lineNumber +
-                          '/' +
-                          c.range.getStartPosition().column +
-                          ']',
-                  )
+                  //'@' + c.range.getStartPosition().lineNumber + '/' + c.range.getStartPosition().column +
+                  .map((c) => (c.node ? ' ' : '') + '["' + c.text + '"]')
                   .join('\n')
             : '';
     }

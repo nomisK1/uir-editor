@@ -62,8 +62,8 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         this.setState({ status: Status.RENAME, input });
     }
 
-    setStatusSearch(input: string) {
-        this.setState({ status: Status.SEARCH, input });
+    setStatusSearch() {
+        this.setState({ status: Status.SEARCH, input: '' });
     }
 
     onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -95,7 +95,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
                     value={this.state.input}
                     onChange={this.onChange}
                     onKeyDown={this.onKeydown}
-                    onClick={() => this.setState({ status: Status.SEARCH })}
+                    //onClick={() => this.setState({ status: Status.SEARCH })}
                     ref={(ref) => (this.inputElement = ref)}
                 />
             </div>
