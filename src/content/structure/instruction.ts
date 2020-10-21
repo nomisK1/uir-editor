@@ -195,7 +195,7 @@ class instruction extends _node {
                 line: this.line,
                 context: this,
             });
-            this.assignment.setParents(this.getVariables());
+            this.assignment.setParents(this.getAssignees());
         }
     }
 
@@ -488,10 +488,12 @@ class instruction extends _node {
         return this.assignment ? this.assignment : null;
     }
 
-    public assignedChildOf(parent: string) {
-        for (let i = 0; i < this.operands.length; i++)
-            if (this.operands[i] instanceof variable && this.operands[i].getName() === parent) return true;
-        return false;
+    public getAssignees() {
+        let vars: variable[] = [];
+        this.operands.forEach((o) => {
+            if (o instanceof variable) vars.push(o);
+        });
+        return vars;
     }
 
     public getValues() {

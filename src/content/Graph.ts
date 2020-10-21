@@ -311,7 +311,13 @@ class Graph {
         let context = variable.getOuterContext();
         if (context instanceof definition)
             context.getAssignments().forEach((a) => {
-                if (a.assignedChildOf(variable.getName())) children.push(a.getAssigned()!);
+                if (
+                    a
+                        .getAssignees()
+                        .map((v) => v.getName())
+                        .includes(variable.getName())
+                )
+                    children.push(a.getAssigned()!);
             });
         return children;
     }
