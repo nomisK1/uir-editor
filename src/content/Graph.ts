@@ -686,10 +686,10 @@ class Graph {
                 });
             this.updateComments();
             this.setLocalStorageAliases();
-            console.log('RENAME');
+            //console.log('RENAME');
             return true;
         } else {
-            console.log('ERROR: RENAME FAILED');
+            //console.log('ERROR: RENAME FAILED');
             return false;
         }
     }
@@ -723,10 +723,10 @@ class Graph {
             this.updateComments();
             this.removeLocalStorageAliases();
             this.setLocalStorageAliases();
-            console.log('UNNAME');
+            //console.log('UNNAME');
             return true;
         }
-        console.log('ERROR: UNNAME FAILED');
+        //console.log('ERROR: UNNAME FAILED');
         return false;
     }
 

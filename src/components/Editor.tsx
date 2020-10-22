@@ -544,11 +544,15 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressJumpRight() {
-        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column + 15));
+        let position = this.lastPosition.with(undefined, this.lastPosition.column + 15);
+        this.setGrid(position);
+        this.updatePosition(position);
     }
 
     public handleKeypressJumpLeft() {
-        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column - 15));
+        let position = this.lastPosition.with(undefined, this.lastPosition.column - 15);
+        this.setGrid(position);
+        this.updatePosition(position);
     }
 
     public handleKeypressJumpStart() {
