@@ -26,10 +26,10 @@ class InfoModal extends React.Component<IInfoModalProps> {
                 style={{ display: this.props.showModal ? 'block' : 'none' }}
                 onClick={this.props.onModalClick}
             >
-                <div className="modal-background">
+                <div className="modalBackground">
                     <span className="close">&times;</span>
-                    <h3 className="modal-header">{this.header}</h3>
-                    <div className="modal-content">
+                    <h3 className="modalHeader">{this.header}</h3>
+                    <div className="modalContent">
                         <span>{this.content}</span>
                     </div>
                 </div>

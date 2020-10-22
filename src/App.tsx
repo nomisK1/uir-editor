@@ -1,5 +1,5 @@
 import * as React from 'react';
-import LoadAnimation from './components/LoadAnimation';
+import UmbraLoader from './components/UmbraLoader';
 import QuerySelector from './components/QuerySelector';
 import StatusInput, { Status } from './components/StatusInput';
 import KeybindButton from './components/KeybindButton';
@@ -194,7 +194,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     render() {
         console.log('APP RENDERING...');
-        if (this.state.loading || !this.state.query) return <LoadAnimation />;
+        if (this.state.loading || !this.state.query) return <UmbraLoader />;
         setupLanguage();
         let selector = (
             <QuerySelector

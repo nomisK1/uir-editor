@@ -18,10 +18,10 @@ class KeybindModal extends React.Component<IKeybindModalProps> {
                 style={{ display: this.props.showModal ? 'block' : 'none' }}
                 onClick={this.props.onModalClick}
             >
-                <div className="modal-background">
+                <div className="modalBackground">
                     <span className="close">&times;</span>
-                    <h3 className="modal-header">Keybindings (UIR-Editor/public/keybinds.txt)</h3>
-                    <div className="modal-content">
+                    <h3 className="modalHeader">Keybindings (UIR-Editor/public/keybinds.txt)</h3>
+                    <div className="modalContent">
                         <img src="img/keybinds.png" alt="KEYBINDS" />
                     </div>
                 </div>

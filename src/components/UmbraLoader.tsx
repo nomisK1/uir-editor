@@ -1,17 +1,17 @@
 import React from 'react';
 
 /**
- * LoadAnimation:
- * Loading animation
+ * UmbraLoader:
+ * Umbra loading animation
  */
-class LoadAnimation extends React.Component {
+class UmbraLoader extends React.Component {
     render() {
         return (
-            <div className="umbra-loader">
+            <div className="umbraLoader">
                 <img src="img/umbralogo.png" alt="UMBRALOGO" />
             </div>
         );
     }
 }
 
-export default LoadAnimation;
+export default UmbraLoader;
