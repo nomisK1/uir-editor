@@ -2,7 +2,7 @@
     "globals": [
         {
             "isConst": true,
-            "name": 666,
+            "name": 404,
             "size": 5,
             "data": "DUMMY"
         }
@@ -11,7 +11,7 @@
         {
             "name": "error_unknown_query",
             "returnType": "void",
-            "args": [{ "var": 666, "type": "global" }]
+            "args": [{ "var": 404, "type": "global" }]
         }
     ]
 }

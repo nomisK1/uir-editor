@@ -1,13 +1,13 @@
 import * as React from 'react';
 import LoadAnimation from './components/LoadAnimation';
-import TpchDropdown from './components/TpchDropdown';
+import QuerySelector from './components/QuerySelector';
 import StatusInput, { Status } from './components/StatusInput';
 import KeybindButton from './components/KeybindButton';
 import InfoModal from './components/InfoModal';
 import KeybindModal from './components/KeybindModal';
 import TargetTreeModal from './components/TargetTreeModal';
 import Editor from './components/Editor';
-import { query, queryTotal, requestQuery } from './content/TPCH';
+import { query, queryTotal, requestQuery } from './content/request';
 import { treeData } from './content/tree/TargetTree';
 import { setupLanguage } from './language/setup';
 import { languageID } from './language/config';
@@ -29,11 +29,11 @@ interface IAppState {
  */
 class App extends React.Component<IAppProps, IAppState> {
     private editor: Editor | null = null;
-    private dropdownElement: TpchDropdown | null = null;
+    private selectionElement: QuerySelector | null = null;
     private inputElement: StatusInput | null = null;
     private buttonElement: KeybindButton | null = null;
     private ifModalElement: InfoModal | null = null;
-    private kbModalElement: KeybindModal | null = null;
+    //private kbModalElement: KeybindModal | null = null;
     private ttModalElement: TargetTreeModal | null = null;
 
     constructor(props: IAppProps) {
@@ -45,9 +45,9 @@ class App extends React.Component<IAppProps, IAppState> {
             loading: true,
             query: null,
         };
-        this.handleDropdownChange = this.handleDropdownChange.bind(this);
-        this.nextTpchQuery = this.nextTpchQuery.bind(this);
-        this.prevTpchQuery = this.prevTpchQuery.bind(this);
+        this.handleSelectionChange = this.handleSelectionChange.bind(this);
+        this.nextSelectionQuery = this.nextSelectionQuery.bind(this);
+        this.prevSelectionQuery = this.prevSelectionQuery.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
         this.focusStatusInput_Comment = this.focusStatusInput_Comment.bind(this);
         this.focusStatusInput_Rename = this.focusStatusInput_Rename.bind(this);
@@ -64,22 +64,22 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     //--------------------------------------------------
-    //-----TPC-H Dropdown-----
+    //-----Query Selector-----
     //--------------------------------------------------
 
-    public async handleDropdownChange(index: number) {
+    public async handleSelectionChange(index: number) {
         this.setState({ loading: true });
         let query = await requestQuery(index);
         this.setState({ loading: false, query });
         if (this.editor) this.editor.getInstance().focus();
     }
 
-    public nextTpchQuery() {
-        if (this.dropdownElement) this.dropdownElement.nextItem();
+    public nextSelectionQuery() {
+        if (this.selectionElement) this.selectionElement.nextItem();
     }
 
-    public prevTpchQuery() {
-        if (this.dropdownElement) this.dropdownElement.prevItem();
+    public prevSelectionQuery() {
+        if (this.selectionElement) this.selectionElement.prevItem();
     }
 
     //--------------------------------------------------
@@ -193,15 +193,15 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
     render() {
-        console.log('APP...');
+        console.log('APP RENDERING...');
         if (this.state.loading || !this.state.query) return <LoadAnimation />;
         setupLanguage();
-        let dropdown = (
-            <TpchDropdown
+        let selector = (
+            <QuerySelector
                 index={this.state.query.index}
                 size={queryTotal}
-                onDropdownChange={this.handleDropdownChange}
-                ref={(ref) => (this.dropdownElement = ref)}
+                onSelectionChange={this.handleSelectionChange}
+                ref={(ref) => (this.selectionElement = ref)}
             />
         );
         let input = <StatusInput onInputKeydown={this.handleInputKeydown} ref={(ref) => (this.inputElement = ref)} />;
@@ -217,7 +217,7 @@ class App extends React.Component<IAppProps, IAppState> {
             <KeybindModal
                 showModal={this.state.showKeybindModal}
                 onModalClick={this.displayKeybindModal}
-                ref={(ref) => (this.kbModalElement = ref)}
+                //ref={(ref) => (this.kbModalElement = ref)}
             />
         );
         let ttModal = (
@@ -231,8 +231,8 @@ class App extends React.Component<IAppProps, IAppState> {
             <Editor
                 language={languageID}
                 graph={this.state.query.content}
-                nextTpchQuery={this.nextTpchQuery}
-                prevTpchQuery={this.prevTpchQuery}
+                nextSelectionQuery={this.nextSelectionQuery}
+                prevSelectionQuery={this.prevSelectionQuery}
                 focusStatusInput_Comment={this.focusStatusInput_Comment}
                 focusStatusInput_Rename={this.focusStatusInput_Rename}
                 focusStatusInput_Search={this.focusStatusInput_Search}
@@ -250,7 +250,7 @@ class App extends React.Component<IAppProps, IAppState> {
         return (
             <div>
                 <div className="ui">
-                    {dropdown}
+                    {selector}
                     {input}
                     {button}
                 </div>

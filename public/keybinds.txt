@@ -63,8 +63,8 @@ Editor:
 
     tab      : toggleAllKeybinds
 
-    q         : nextTPCH
-    shift + q : prevTPCH
+    q         : nextQuery
+    shift + q : prevQuery
     
     shift + 1 : toggleNodeHighlighting
     shift + 2 : toggleVariableDecorating

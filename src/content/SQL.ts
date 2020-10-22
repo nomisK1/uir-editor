@@ -723,4 +723,6 @@ order by
 
     // INSERT SQL HERE
     `select 42`,
+    `select 43`,
+    `select 44`,
 ];

@@ -7,18 +7,18 @@ const local: string = './data/';
 
 /**
  * requestQuery:
- * Request and return the TPC-H query at the specified index from the webserver or default to local data
+ * Request and return the UIR-Query at the specified index from the webserver or default to local data
  */
 export async function requestQuery(index: number) {
     if (fail) return failure(); //FOR TESTING
     function success(result: string): query {
-        console.log('NETWORK SUCCESS: LOADING TPC-H QUERY ' + (index + 1) + ' @ URL "' + url + '"');
+        console.log('NETWORK SUCCESS: LOADING UIR-QUERY ' + (index + 1) + ' @ URL "' + url + '"');
         let json = JSON.parse(result);
         return { index, content: new Graph({ gid: index + 1, json }) };
     }
     function failure(): query {
-        if (index > 21) index = 22;
-        console.log('NETWORK FAILURE: LOADING TPC-H QUERY ' + (index + 1) + ' @ LOCAL PROJECT');
+        if (index > localTotal - 1) index = localTotal - 1;
+        console.log('NETWORK FAILURE: LOADING UIR-QUERY ' + (index + 1) + ' @ LOCAL PROJECT');
         let json = require(local + (index + 1) + '.json');
         return { index, content: new Graph({ gid: index + 1, json }) };
     }
@@ -42,3 +42,4 @@ export type query = {
 };
 
 export const queryTotal: number = sql.length;
+const localTotal: number = 23;

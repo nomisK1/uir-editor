@@ -25,8 +25,8 @@
     display: flex;
     width: 100%;
 }
-.dropdown {
-    width: 150px;
+.querySelector {
+    width: 175px;
     padding: 2px;
     color: white;
     background-color: rgba(0, 0, 0, 0.8);

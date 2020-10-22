@@ -1,17 +1,17 @@
 import React from 'react';
 
-interface ITpchDropdownProps {
+interface IQuerySelectorProps {
     index: number;
     size: number;
-    onDropdownChange: (index: number) => void;
+    onSelectionChange: (index: number) => void;
 }
 
 /**
- * TpchDropdown:
- * Dropdown for the TPC-H queries
+ * QuerySelector:
+ * Selector for the UIR-Queries
  */
-class TpchDropdown extends React.Component<ITpchDropdownProps> {
-    constructor(props: ITpchDropdownProps) {
+class QuerySelector extends React.Component<IQuerySelectorProps> {
+    constructor(props: IQuerySelectorProps) {
         super(props);
         this.onChange = this.onChange.bind(this);
     }
@@ -19,19 +19,19 @@ class TpchDropdown extends React.Component<ITpchDropdownProps> {
     onChange(event: React.ChangeEvent<HTMLSelectElement>) {
         let index = parseInt(event.target.value);
         this.setState({ index });
-        this.props.onDropdownChange(index);
+        this.props.onSelectionChange(index);
     }
 
     nextItem() {
         let index = this.props.index < this.props.size - 1 ? this.props.index + 1 : 0;
         this.setState({ index });
-        this.props.onDropdownChange(index);
+        this.props.onSelectionChange(index);
     }
 
     prevItem() {
         let index = this.props.index > 0 ? this.props.index - 1 : this.props.size - 1;
         this.setState({ index });
-        this.props.onDropdownChange(index);
+        this.props.onSelectionChange(index);
     }
 
     renderOptions() {
@@ -39,7 +39,7 @@ class TpchDropdown extends React.Component<ITpchDropdownProps> {
         for (let i = 0; i < this.props.size; i++)
             options.push(
                 <option key={i} value={i}>
-                    TPC-H {i + 1}
+                    {optionName} {i + 1}
                 </option>,
             );
         return options;
@@ -47,11 +47,13 @@ class TpchDropdown extends React.Component<ITpchDropdownProps> {
 
     render() {
         return (
-            <select id="tpchDropdown" className="dropdown" value={this.props.index} onChange={this.onChange}>
+            <select className="querySelector" value={this.props.index} onChange={this.onChange}>
                 {this.renderOptions()}
             </select>
         );
     }
 }
 
-export default TpchDropdown;
+export default QuerySelector;
+
+const optionName = 'UIR-Query';

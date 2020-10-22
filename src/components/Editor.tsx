@@ -9,8 +9,8 @@ import './Editor.css';
 interface IEditorProps {
     language: string;
     graph: Graph;
-    nextTpchQuery: () => void;
-    prevTpchQuery: () => void;
+    nextSelectionQuery: () => void;
+    prevSelectionQuery: () => void;
     focusStatusInput_Comment: (input: string) => void;
     focusStatusInput_Rename: (input: string) => void;
     focusStatusInput_Search: () => void;
@@ -116,8 +116,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
         this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
         this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
-        this.handleKeypressNextTpchQuery = this.handleKeypressNextTpchQuery.bind(this);
-        this.handleKeypressPrevTpchQuery = this.handleKeypressPrevTpchQuery.bind(this);
+        this.handleKeypressNextSelectionQuery = this.handleKeypressNextSelectionQuery.bind(this);
+        this.handleKeypressPrevSelectionQuery = this.handleKeypressPrevSelectionQuery.bind(this);
         this.handleKeypressDisplayInfoModal = this.handleKeypressDisplayInfoModal.bind(this);
         this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
         this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
@@ -130,7 +130,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     render() {
-        console.log('RENDERING EDITOR...');
+        console.log('EDITOR RENDERING...');
         console.log(this.graph);
         return <div className="editor" ref={(ref) => (this.container = ref)} style={{ height: '90vh' }} />;
     }
@@ -230,10 +230,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             );
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search, 'condition');
-            this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextTpchQuery, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextSelectionQuery, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.KEY_Q,
-                this.handleKeypressPrevTpchQuery,
+                this.handleKeypressPrevSelectionQuery,
                 'condition',
             );
             this.editor.addAction({
@@ -843,12 +843,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Query Selection-----
     //--------------------------------------------------
 
-    public handleKeypressNextTpchQuery() {
-        this.props.nextTpchQuery();
+    public handleKeypressNextSelectionQuery() {
+        this.props.nextSelectionQuery();
     }
 
-    public handleKeypressPrevTpchQuery() {
-        this.props.prevTpchQuery();
+    public handleKeypressPrevSelectionQuery() {
+        this.props.prevSelectionQuery();
     }
 
     //--------------------------------------------------
