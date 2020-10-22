@@ -127,12 +127,9 @@ class Graph {
         return definitions;
     }
 
-    private getVariablesByName(name: string) {
-        let vars: variable[] = [];
-        this.variables.forEach((v) => {
-            if (v.getName() === name) vars.push(v);
-        });
-        return vars;
+    private getNodeByNID(nid: number) {
+        let node = this.nodes.find((n) => n.getNID() === nid);
+        return node ? node : null;
     }
 
     private getNodeByAlias(alias: string) {
@@ -141,6 +138,14 @@ class Graph {
             if (n.getAlias() === alias) nodes.push(n);
         });
         return nodes;
+    }
+
+    private getVariablesByName(name: string) {
+        let vars: variable[] = [];
+        this.variables.forEach((v) => {
+            if (v.getName() === name) vars.push(v);
+        });
+        return vars;
     }
 
     private getComponentAt(position: monaco.Position) {
@@ -165,12 +170,6 @@ class Graph {
     public getVariableAt(position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (node instanceof variable) return node;
-        return null;
-    }
-
-    public getTarVarAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node instanceof variable || node instanceof target) return node;
         return null;
     }
 
@@ -503,17 +502,31 @@ class Graph {
             if (data) {
                 let json = JSON.parse(data);
                 let text = lookupJSON(json, 'text');
-                let position = lookupJSON(json, 'position');
-                this.addCommentAt(text, position);
+                let nid = lookupJSON(json, 'nid');
+                let node = this.getNodeByNID(nid);
+                let sl = lookupJSON(json, 'sl');
+                let sc = lookupJSON(json, 'sc');
+                let el = lookupJSON(json, 'el');
+                let ec = lookupJSON(json, 'ec');
+                this.addComment(text, node ? node : null, new monaco.Range(sl, sc, el, ec));
             }
         }
     }
 
     private setLocalStorageComments() {
         for (let i = 0; i < this.comments.length; i++) {
-            let text = this.comments[i].text;
-            let position = this.comments[i].position;
-            localStorage.setItem('c:' + this.gid + ':' + i, JSON.stringify({ text, position }));
+            let range = this.comments[i].range;
+            localStorage.setItem(
+                'c:' + this.gid + ':' + i,
+                JSON.stringify({
+                    text: this.comments[i].text,
+                    nid: this.comments[i].node ? this.comments[i].node!.getNID() : NaN,
+                    sl: range.startLineNumber,
+                    sc: range.startColumn,
+                    el: range.endLineNumber,
+                    ec: range.endColumn,
+                }),
+            );
         }
     }
 
@@ -523,6 +536,50 @@ class Graph {
             let key = 'c:' + this.gid + ':' + i;
             localStorage.removeItem(key);
         }
+    }
+
+    private addComment(text: string, node: _node | null, range: monaco.Range) {
+        this.removeComment(
+            this.comments.find(
+                (c) => c.node === node || (!c.node && c.range.startLineNumber === range.startLineNumber),
+            ),
+        );
+        if (text) {
+            this.comments.push({ text: text.slice(0, maxComment), node, range });
+            this.comments = sortCommentsByDepth(this.comments);
+            this.setLocalStorageComments();
+        }
+    }
+
+    public addCommentAt(text: string, position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        this.addComment(
+            text,
+            node ? node : null,
+            node ? node.getRange() : new monaco.Range(position.lineNumber, 1, position.lineNumber, 1),
+        );
+    }
+
+    private removeComment(comment?: comment) {
+        if (comment) {
+            this.comments.splice(this.comments.indexOf(comment), 1);
+            this.removeLocalStorageComments();
+            this.setLocalStorageComments();
+        }
+    }
+
+    public removeCommentAt(position: monaco.Position) {
+        this.removeComment(this.getOuterCommentAt(position));
+    }
+
+    public resetComments() {
+        this.comments = [];
+        this.removeLocalStorageComments();
+    }
+
+    private updateComments() {
+        for (let i = 0; i < this.comments.length; i++)
+            if (this.comments[i].node) this.comments[i].range = this.comments[i].node!.getRange();
     }
 
     public getComments() {
@@ -548,53 +605,6 @@ class Graph {
                   .map((c) => (c.node ? ' ' : '') + '["' + c.text + '"]')
                   .join('\n')
             : '';
-    }
-
-    public addCommentAt(text: string, position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        let comments = this.getCommentsAt(position);
-        this.removeComment(comments.find((c) => c.node === node || c.position === position));
-        if (text) {
-            let range = node ? node.getRange() : null;
-            let isWholeLine = false;
-            let pushNode = false;
-            if (range) pushNode = true;
-            else {
-                range = new monaco.Range(position.lineNumber, 1, position.lineNumber, 1);
-                isWholeLine = true;
-            }
-            this.comments.push({
-                text: text.slice(0, maxComment),
-                position,
-                range,
-                isWholeLine,
-                node: pushNode ? node! : undefined,
-            });
-            this.comments = sortCommentsByDepth(this.comments);
-            this.setLocalStorageComments();
-        }
-    }
-
-    private removeComment(comment?: comment) {
-        if (comment) {
-            this.comments.splice(this.comments.indexOf(comment), 1);
-            this.removeLocalStorageComments();
-            this.setLocalStorageComments();
-        }
-    }
-
-    public removeCommentAt(position: monaco.Position) {
-        this.removeComment(this.getOuterCommentAt(position));
-    }
-
-    public resetComments() {
-        this.comments = [];
-        this.removeLocalStorageComments();
-    }
-
-    private updateComments() {
-        for (let i = 0; i < this.comments.length; i++)
-            if (this.comments[i].node) this.comments[i].range = this.comments[i].node!.getRange();
     }
 
     public getNextCommentAt(position: monaco.Position): comment | null {
@@ -629,8 +639,8 @@ class Graph {
             if (data) {
                 let json = JSON.parse(data);
                 let alias = lookupJSON(json, 'alias');
-                let position = lookupJSON(json, 'position');
-                this.setAliasAt(alias, position);
+                let nid = lookupJSON(json, 'nid');
+                this.setAlias(alias, this.getNodeByNID(nid)!);
             }
         }
     }
@@ -638,8 +648,8 @@ class Graph {
     private setLocalStorageAliases() {
         for (let i = 0; i < this.aliases.length; i++) {
             let alias = this.aliases[i].alias;
-            let position = this.aliases[i].position;
-            localStorage.setItem('a:' + this.gid + ':' + i, JSON.stringify({ alias, position }));
+            let nid = this.aliases[i].node.getNID();
+            localStorage.setItem('a:' + this.gid + ':' + i, JSON.stringify({ alias, nid }));
         }
     }
 
@@ -651,56 +661,78 @@ class Graph {
         }
     }
 
-    public setAliasAt(alias: string, position: monaco.Position) {
-        let tarvar = this.getTarVarAt(position);
-        if (tarvar)
-            if (
-                alias &&
-                isLegal(alias) &&
-                !this.variables.map((v) => v.getName()).includes(alias) &&
-                !this.targets.map((t) => t.getName()).includes(alias) &&
-                !this.aliases.map((a) => a.alias).includes(alias)
-            ) {
-                this.resetAliasAt(position);
-                this.aliases.push({ alias, position: tarvar.getRange().getStartPosition() });
-                tarvar.setAlias(alias);
-                tarvar.getContext()!.findRanges();
-                if (tarvar instanceof variable)
-                    this.getVariableSiblings(tarvar).forEach((s) => {
-                        s.setAlias(alias);
-                        s.getContext()!.findRanges();
-                    });
-                else
-                    this.getRelatedTargets(tarvar).forEach((t) => {
-                        t.setAlias(alias);
-                        t.getContext()!.findRanges();
-                    });
-                this.updateComments();
-                this.setLocalStorageAliases();
-            } else console.log('ERROR: INVALID INPUT');
+    private setAlias(alias: string, node: _node) {
+        if (
+            (node instanceof variable || node instanceof target) &&
+            alias &&
+            isLegal(alias) &&
+            !this.variables.map((v) => v.getName()).includes(alias) &&
+            !this.targets.map((t) => t.getName()).includes(alias) &&
+            !this.aliases.map((a) => a.alias).includes(alias)
+        ) {
+            this.resetAlias(node);
+            this.aliases.push({ alias, node });
+            node.setAlias(alias);
+            node.getContext()!.findRanges();
+            if (node instanceof variable)
+                this.getVariableSiblings(node).forEach((s) => {
+                    s.setAlias(alias);
+                    s.getContext()!.findRanges();
+                });
+            if (node instanceof target)
+                this.getRelatedTargets(node).forEach((t) => {
+                    t.setAlias(alias);
+                    t.getContext()!.findRanges();
+                });
+            this.updateComments();
+            this.setLocalStorageAliases();
+            console.log('RENAME');
+            return true;
+        } else {
+            console.log('ERROR: RENAME FAILED');
+            return false;
+        }
     }
 
-    public resetAliasAt(position: monaco.Position) {
-        let tarvar = this.getTarVarAt(position);
-        if (tarvar && tarvar.hasAlias()) {
-            this.aliases.splice(this.aliases.map((a) => a.alias).indexOf(tarvar.getAlias()), 1);
-            tarvar.resetAlias();
-            tarvar.getContext()!.findRanges();
-            if (tarvar instanceof variable)
-                this.getVariableSiblings(tarvar).forEach((s) => {
+    public setAliasAt(alias: string, position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node) {
+            if (alias && alias !== node.getName()) {
+                return this.setAlias(alias, node);
+            }
+            return this.resetAlias(node);
+        }
+        return false;
+    }
+
+    private resetAlias(node: _node) {
+        if (node.hasAlias() && (node instanceof variable || node instanceof target)) {
+            this.aliases.splice(this.aliases.map((a) => a.alias).indexOf(node.getAlias()), 1);
+            node.resetAlias();
+            node.getContext()!.findRanges();
+            if (node instanceof variable)
+                this.getVariableSiblings(node).forEach((s) => {
                     s.resetAlias();
                     s.getContext()!.findRanges();
                 });
-            else
-                this.getRelatedTargets(tarvar).forEach((t) => {
+            if (node instanceof target)
+                this.getRelatedTargets(node).forEach((t) => {
                     t.resetAlias();
                     t.getContext()!.findRanges();
                 });
             this.updateComments();
             this.removeLocalStorageAliases();
             this.setLocalStorageAliases();
+            console.log('UNNAME');
             return true;
         }
+        console.log('ERROR: UNNAME FAILED');
+        return false;
+    }
+
+    public resetAliasAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node) return this.resetAlias(node);
         return false;
     }
 
@@ -771,12 +803,14 @@ export default Graph;
 
 export type comment = {
     text: string;
-    position: monaco.Position;
     range: monaco.Range;
-    isWholeLine: boolean;
-    node?: _node;
+    node: _node | null;
 };
-type alias = { alias: string; position: monaco.Position };
+
+type alias = {
+    alias: string;
+    node: _node;
+};
 
 //--------------------------------------------------
 //-----Helpers-----

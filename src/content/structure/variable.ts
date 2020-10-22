@@ -68,6 +68,10 @@ class variable extends _value {
     public hasAlias() {
         return this.alias ? true : false;
     }
+
+    public renamable() {
+        return true;
+    }
 }
 
 export default variable;

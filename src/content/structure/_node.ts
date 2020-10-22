@@ -36,6 +36,7 @@ export interface INodeProps {
  * Basic node for the Graph structure
  */
 abstract class _node {
+    protected nid: number = countNID();
     protected json: Object;
     protected line: number;
     protected context: _node | null;
@@ -81,25 +82,6 @@ abstract class _node {
         return this.line;
     }
 
-    public getContext() {
-        return this.context;
-    }
-
-    public getOuterContext(): _node {
-        if (this.context) {
-            return this.context.getOuterContext();
-        }
-        return this;
-    }
-
-    public getName() {
-        return this.name!;
-    }
-
-    public getAlias() {
-        return this.name!;
-    }
-
     private getRangeShifted() {
         return this.range
             ? this.range
@@ -115,6 +97,37 @@ abstract class _node {
     public setRange(range: monaco.Range) {
         this.range = range;
     }
+
+    public getContext() {
+        return this.context;
+    }
+
+    public getOuterContext(): _node {
+        if (this.context) {
+            return this.context.getOuterContext();
+        }
+        return this;
+    }
+
+    public getNID() {
+        return this.nid;
+    }
+
+    public getName() {
+        return this.name!;
+    }
+
+    public getAlias() {
+        return this.name!;
+    }
+
+    public hasAlias() {
+        return false;
+    }
+
+    public renamable() {
+        return false;
+    }
 }
 
 export default _node;
@@ -122,6 +135,12 @@ export default _node;
 //--------------------------------------------------
 //-----Helpers-----
 //--------------------------------------------------
+
+let id = 1;
+
+export function countNID() {
+    return id++;
+}
 
 export function compareType(type: Type | null, str: string | null) {
     if (!type || !str) return false;

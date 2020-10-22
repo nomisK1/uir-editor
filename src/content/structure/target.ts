@@ -57,6 +57,10 @@ class target extends _node {
     public hasAlias() {
         return this.alias ? true : false;
     }
+
+    public renamable() {
+        return true;
+    }
 }
 
 export default target;

@@ -11,7 +11,7 @@
     background: rgb(120, 120, 38, 0.1);
 }
 .contentCommentconstant {
-    background: rgb(120, 120, 38, 0.5);
+    background: rgb(120, 120, 38, 0.3);
 }
 .contentCommentdeclaration {
     background: rgb(120, 120, 38, 0.1);
@@ -23,19 +23,19 @@
     background: rgb(120, 120, 38, 0.1);
 }
 .contentCommentinstruction {
-    background: rgb(120, 120, 38, 0.3);
+    background: rgb(120, 120, 38, 0.2);
 }
 .contentCommentlabel {
-    background: rgb(120, 120, 38, 0.5);
+    background: rgb(120, 120, 38, 0.3);
 }
 .contentCommenttarget {
-    background: rgb(120, 120, 38, 0.5);
+    background: rgb(120, 120, 38, 0.3);
 }
 .contentCommentvariable {
-    background: rgb(120, 120, 38, 0.5);
+    background: rgb(120, 120, 38, 0.3);
 }
 .contentCommentundefined {
-    background: rgb(120, 120, 38, 0.1);
+    background: rgb(120, 120, 38, 0.05);
 }
 .glyphChild-4 {
     background: rgba(38, 120, 120, 0.1);

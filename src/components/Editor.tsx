@@ -650,9 +650,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressToInput_Rename() {
-        let tarvar = this.graph.getTarVarAt(this.lastPosition);
-        if (tarvar) this.props.focusStatusInput_Rename(tarvar && tarvar.hasAlias() ? tarvar.getAlias() : '');
-        else console.log('ERROR: NODE CANNOT RENAME');
+        let node = this.graph.getNodeAt(this.lastPosition);
+        if (node && node.renamable())
+            this.props.focusStatusInput_Rename(node && node.hasAlias() ? node.getAlias() : '');
+        else console.log('ERROR: NODE NOT RENAMABLE');
     }
 
     //--------------------------------------------------
@@ -718,23 +719,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressRename(input: string) {
-        if (input) {
-            let tarvar = this.graph.getTarVarAt(this.lastPosition);
-            if (tarvar && input !== tarvar.getName()) {
-                if (input !== tarvar.getAlias()) {
-                    this.graph.setAliasAt(input, this.lastPosition);
-                    this.updateValue();
-                }
-                this.resetPosition();
-                return;
-            }
-        }
-        this.handleKeypressUndoRename();
+        if (this.graph.setAliasAt(input, this.lastPosition)) this.updateValue();
+        this.resetPosition();
     }
 
     public handleKeypressUndoRename() {
-        let tarvar = this.graph.getTarVarAt(this.lastPosition);
-        if (tarvar && this.graph.resetAliasAt(this.lastPosition)) {
+        if (this.graph.resetAliasAt(this.lastPosition)) {
             this.updateValue();
             this.resetPosition();
         }
@@ -1157,7 +1147,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.commentDecorations.push({
             range: comment.range,
             options: {
-                isWholeLine: comment.isWholeLine,
+                isWholeLine: !comment.node,
                 className: 'contentComment' + comment.node?.constructor.name,
                 glyphMarginClassName: 'glyphComment',
                 minimap: {
@@ -1201,7 +1191,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return comment
             ? {
                   range: comment.range,
-                  contents: [{ value: comment.text }],
+                  contents: [{ value: this.graph.getCommentStringAt(position) }],
               }
             : null;
     }
