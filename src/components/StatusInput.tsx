@@ -2,8 +2,8 @@ import React from 'react';
 
 export enum Status {
     COMMENT = 'ADD COMMENT',
-    DISPLAY = 'CURRENT NODE',
     NOTE = 'ADD NOTE',
+    POSITION = 'POSITION',
     RENAME = 'RENAME NODE',
     SEARCH = 'SEARCH NODE',
 }
@@ -29,7 +29,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
     constructor(props: IStatusInputProps) {
         super(props);
         this.state = {
-            status: Status.DISPLAY,
+            status: Status.POSITION,
             input: '',
             line: 1,
             column: 1,
@@ -63,7 +63,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
     }
 
     update(input: string, line: number, column: number) {
-        this.setState({ status: Status.DISPLAY, input, line, column });
+        this.setState({ status: Status.POSITION, input, line, column });
     }
 
     onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -106,13 +106,12 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
 export default StatusInput;
 
 function getStatusValue(status: Status, line: number, column: number) {
-    return status === Status.DISPLAY ? '[' + line + '/' + column + ']' : status;
+    return status === Status.POSITION ? '[' + line + '/' + column + ']' : status;
 }
 
 function getStatusStyle(status: Status) {
-    //TODO
     if (status === Status.COMMENT) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
-    if (status === Status.NOTE) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
+    if (status === Status.NOTE) return { backgroundColor: 'rgb(255, 128, 0, 0.4)' };
     if (status === Status.RENAME) return { backgroundColor: 'rgb(255, 0, 0, 0.4)' };
     if (status === Status.SEARCH) return { backgroundColor: 'rgb(0, 0, 255, 0.4)' };
     else return { backgroundColor: 'rgb(160, 160, 160, 0.4)' };

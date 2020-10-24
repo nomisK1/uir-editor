@@ -44,8 +44,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private container: HTMLDivElement | null = null;
     private editor: monaco.editor.IStandaloneCodeEditor | null = null;
     private ctxKey: monaco.editor.IContextKey<boolean> | null = null;
-    private graph: Graph;
-    private value: string;
+    private graph: Graph = this.props.graph;
+    private value: string = '';
     private lastPosition: monaco.Position = new monaco.Position(1, 1);
     private grid: number = 1;
     private maxAncestorDepth: number = 3;
@@ -68,8 +68,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             activateNoteDecorating: true,
             activateTargetTreeHover: true,
         };
-        this.graph = this.props.graph;
-        this.value = this.graph.print();
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
         this.handleKeypressRevealCursor = this.handleKeypressRevealCursor.bind(this);
@@ -541,10 +539,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
      * Handle Value change
      */
     private updateValue() {
-        let value = this.graph.print();
-        //this.displayComments();
-        if (value !== this.value) this.value = value;
-        if (this.editor) this.editor.setValue(this.value);
+        let value = this.graph.getDisplayValue();
+        if (this.editor && value !== this.value) {
+            this.value = value;
+            this.editor.setValue(this.value);
+        }
         this.decorateNotes();
         this.decorateBookmarks();
     }
@@ -563,8 +562,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
         if (event.target.position && this.ctxKey && this.ctxKey.get()) this.setPosition(event.target.position);
-        //TODO
-        this.addLineComment('Hello World!');
     }
 
     public handleKeypressRevealCursor() {
@@ -666,7 +663,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Input-----
     //--------------------------------------------------
 
-    public handleKeypressToInput_Comment() {}
+    public handleKeypressToInput_Comment() {
+        let comment = this.graph.getCommentAt(this.lastPosition.lineNumber);
+        this.props.focusStatusInput_Comment(comment ? comment.text : '');
+    }
 
     public handleKeypressToInput_Note() {
         let node = this.graph.getNodeAt(this.lastPosition);
@@ -704,31 +704,36 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateBookmarks();
     }
 
+    public handleKeypressRevealBookmark() {
+        this.revealBookmark();
+    }
+
     private revealBookmark() {
         let bookmark = this.graph.getBookmark();
         if (bookmark) this.setPosition(new monaco.Position(bookmark, 0));
-    }
-
-    public handleKeypressRevealBookmark() {
-        this.revealBookmark();
     }
 
     //--------------------------------------------------
     //-----Comments-----
     //--------------------------------------------------
 
-    public addLineComment(input: string) {
-        let lines = this.value.split('\n');
-        lines[this.lastPosition.lineNumber - 1] += '\t// ' + input;
-        this.value = lines.join('\n');
-        //console.log(this.value);
+    public handleKeypressComment(input: string) {
+        this.graph.addCommentAt(input, this.lastPosition.lineNumber);
+        this.updateValue();
+        this.resetPosition();
     }
 
-    public handleKeypressComment(input: string) {}
+    public handleKeypressRemoveComment() {
+        this.graph.removeCommentAt(this.lastPosition.lineNumber);
+        this.updateValue();
+        this.resetPosition();
+    }
 
-    public handleKeypressRemoveComment() {}
-
-    public handleKeypressResetComments() {}
+    public handleKeypressResetComments() {
+        this.graph.resetComments();
+        this.updateValue();
+        this.resetPosition();
+    }
 
     //--------------------------------------------------
     //-----Notes-----
@@ -905,7 +910,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
      * Handle Position change
      */
     private setPosition(position: monaco.Position, grid?: true) {
-        if (this.editor && !position.equals(this.lastPosition)) {
+        if (this.editor) {
             if (grid) position = this.applyGrid(position);
             else this.setGrid(position);
             this.lastPosition = this.validate(position);

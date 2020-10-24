@@ -97,7 +97,12 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    public focusStatusInput_Comment(input: string) {}
+    public focusStatusInput_Comment(input: string) {
+        if (this.inputElement) {
+            this.inputElement.setStatusComment(input);
+            this.inputElement.getInstance().focus();
+        }
+    }
 
     public focusStatusInput_Note(input: string) {
         if (this.inputElement) {

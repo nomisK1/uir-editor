@@ -33,7 +33,8 @@ class Graph {
     private next?: variable;
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
-    private bookmark?: number = 0;
+    private bookmark: number | null = null;
+    private comments: comment[] = [];
     private notes: note[] = [];
     private aliases: alias[] = [];
 
@@ -89,6 +90,7 @@ class Graph {
             }),
         );
         this.retrieveLocalStorageBookmark();
+        this.retrieveLocalStorageComments();
         this.retrieveLocalStorageNotes();
         this.retrieveLocalStorageAliases();
     }
@@ -105,6 +107,12 @@ class Graph {
         let str = '';
         this.components.forEach((c) => (str += c.toString() + '\n\n'));
         return str.slice(0, -1);
+    }
+
+    public getDisplayValue() {
+        let lines = this.print().split('\n');
+        for (let i = 0; i < this.comments.length; i++) lines[this.comments[i].line] += '   // ' + this.comments[i].text;
+        return lines.join('\n');
     }
 
     //--------------------------------------------------
@@ -499,14 +507,14 @@ class Graph {
         localStorage.removeItem('b:' + this.gid);
     }
 
-    public addBookmarkAt(line: number) {
+    public addBookmarkAt(lineNumber: number) {
         this.removeBookmark();
-        this.bookmark = line;
+        this.bookmark = lineNumber;
         this.setLocalStorageBookmark();
     }
 
     public removeBookmark() {
-        this.bookmark = undefined;
+        this.bookmark = null;
         this.removeLocalStorageBookmark();
     }
 
@@ -515,14 +523,74 @@ class Graph {
     }
 
     //--------------------------------------------------
+    //-----Handle Comments-----
+    //--------------------------------------------------
+
+    private retrieveLocalStorageComments() {
+        for (let i = 0; i < localStorage.length; i++) {
+            let data = localStorage.getItem('c:' + this.gid + ':' + i);
+            if (data) {
+                let json = JSON.parse(data);
+                let text = lookupJSON(json, 'text');
+                let line = lookupJSON(json, 'line');
+                this.addComment(text, line);
+            }
+        }
+    }
+
+    private setLocalStorageComments() {
+        for (let i = 0; i < this.comments.length; i++) {
+            let text = this.comments[i].text;
+            let line = this.comments[i].line;
+            localStorage.setItem('c:' + this.gid + ':' + i, JSON.stringify({ text, line }));
+        }
+    }
+
+    private removeLocalStorageComments() {
+        for (let i = 0; i < localStorage.length; i++) localStorage.removeItem('c:' + this.gid + ':' + i);
+    }
+
+    public addCommentAt(text: string, lineNumber: number) {
+        this.addComment(text, lineNumber - 1);
+    }
+
+    private addComment(text: string, line: number) {
+        this.removeComment(line);
+        if (text) {
+            this.comments.push({ text, line });
+            this.setLocalStorageComments();
+        }
+    }
+
+    public removeCommentAt(lineNumber: number) {
+        this.removeComment(lineNumber - 1);
+    }
+
+    private removeComment(line: number) {
+        let index = this.comments.findIndex((c) => c.line === line);
+        if (index >= 0) {
+            this.comments.splice(index, 1);
+            this.removeLocalStorageComments();
+            this.setLocalStorageComments();
+        }
+    }
+
+    public resetComments() {
+        this.comments = [];
+        this.removeLocalStorageComments();
+    }
+
+    public getCommentAt(lineNumber: number) {
+        return this.comments.find((c) => c.line === lineNumber - 1);
+    }
+
+    //--------------------------------------------------
     //-----Handle Notes-----
     //--------------------------------------------------
 
     private retrieveLocalStorageNotes() {
-        let size = localStorage.length;
-        for (let i = 0; i < size; i++) {
-            let key = 'n:' + this.gid + ':' + i;
-            let data = localStorage.getItem(key);
+        for (let i = 0; i < localStorage.length; i++) {
+            let data = localStorage.getItem('n:' + this.gid + ':' + i);
             if (data) {
                 let json = JSON.parse(data);
                 let text = lookupJSON(json, 'text');
@@ -555,16 +623,12 @@ class Graph {
     }
 
     private removeLocalStorageNotes() {
-        let size = localStorage.length;
-        for (let i = 0; i < size; i++) {
-            let key = 'c:' + this.gid + ':' + i;
-            localStorage.removeItem(key);
-        }
+        for (let i = 0; i < localStorage.length; i++) localStorage.removeItem('n:' + this.gid + ':' + i);
     }
 
     private addNote(text: string, node: _node | null, range: monaco.Range) {
         this.removeNote(
-            this.notes.find((c) => c.node === node || (!c.node && c.range.startLineNumber === range.startLineNumber)),
+            this.notes.find((n) => n.node === node || (!n.node && n.range.startLineNumber === range.startLineNumber)),
         );
         if (text) {
             this.notes.push({ text: text.slice(0, maxNote), node, range });
@@ -610,8 +674,8 @@ class Graph {
 
     private getNotesAt(position: monaco.Position) {
         let notes: note[] = [];
-        this.notes.forEach((c) => {
-            if (c.range.containsPosition(position)) notes.push(c);
+        this.notes.forEach((n) => {
+            if (n.range.containsPosition(position)) notes.push(n);
         });
         return sortNotesByDepth(notes);
     }
@@ -623,8 +687,8 @@ class Graph {
     public getNoteStringAt(position: monaco.Position) {
         return this.notes.length
             ? this.getNotesAt(position)
-                  //'@' + c.range.getStartPosition().lineNumber + '/' + c.range.getStartPosition().column +
-                  .map((c) => (c.node ? ' ' : '') + '["' + c.text + '"]')
+                  //'@' + n.range.getStartPosition().lineNumber + '/' + n.range.getStartPosition().column +
+                  .map((n) => (n.node ? ' ' : '') + '["' + n.text + '"]')
                   .join('\n')
             : '';
     }
@@ -654,10 +718,8 @@ class Graph {
     //--------------------------------------------------
 
     private retrieveLocalStorageAliases() {
-        let size = localStorage.length;
-        for (let i = 0; i < size; i++) {
-            let key = 'a:' + this.gid + ':' + i;
-            let data = localStorage.getItem(key);
+        for (let i = 0; i < localStorage.length; i++) {
+            let data = localStorage.getItem('a:' + this.gid + ':' + i);
             if (data) {
                 let json = JSON.parse(data);
                 let alias = lookupJSON(json, 'alias');
@@ -676,11 +738,7 @@ class Graph {
     }
 
     private removeLocalStorageAliases() {
-        let size = localStorage.length;
-        for (let i = 0; i < size; i++) {
-            let key = 'a:' + this.gid + ':' + i;
-            localStorage.removeItem(key);
-        }
+        for (let i = 0; i < localStorage.length; i++) localStorage.removeItem('a:' + this.gid + ':' + i);
     }
 
     private setAlias(alias: string, node: _node) {
@@ -822,6 +880,11 @@ class Graph {
 }
 
 export default Graph;
+
+type comment = {
+    text: string;
+    line: number;
+};
 
 export type note = {
     text: string;
