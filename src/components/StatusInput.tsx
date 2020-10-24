@@ -3,6 +3,7 @@ import React from 'react';
 export enum Status {
     COMMENT = 'ADD COMMENT',
     NODE = 'CURRENT NODE',
+    NOTE = 'ADD NOTE',
     RENAME = 'RENAME NODE',
     SEARCH = 'SEARCH NODE',
 }
@@ -56,6 +57,9 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
             line: position ? position.line : this.state.line,
             column: position ? position.column : this.state.column,
         });
+    }
+    setStatusNote(input: string) {
+        this.setState({ status: Status.NOTE, input });
     }
 
     setStatusRename(input: string) {
@@ -111,6 +115,7 @@ function getStatusValue(status: Status, line: number, column: number) {
 
 function getStatusStyle(status: Status) {
     if (status === Status.COMMENT) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
+    if (status === Status.NOTE) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
     if (status === Status.RENAME) return { backgroundColor: 'rgb(255, 0, 0, 0.4)' };
     if (status === Status.SEARCH) return { backgroundColor: 'rgb(0, 0, 255, 0.4)' };
     else return { backgroundColor: 'rgb(160, 160, 160, 0.4)' };

@@ -4,37 +4,37 @@
 .contentBookmark {
     background: rgb(57, 9, 120, 0.4);
 }
-.glyphComment {
+.glyphNote {
     background: rgba(120, 120, 38, 0.4); /* #78782633 */
 }
-.contentCommentblock {
+.contentNoteblock {
     background: rgb(120, 120, 38, 0.1);
 }
-.contentCommentconstant {
+.contentNoteconstant {
     background: rgb(120, 120, 38, 0.3);
 }
-.contentCommentdeclaration {
+.contentNotedeclaration {
     background: rgb(120, 120, 38, 0.1);
 }
-.contentCommentdefinition {
+.contentNotedefinition {
     background: rgb(120, 120, 38, 0.1);
 }
-.contentCommentglobal {
+.contentNoteglobal {
     background: rgb(120, 120, 38, 0.1);
 }
-.contentCommentinstruction {
+.contentNoteinstruction {
     background: rgb(120, 120, 38, 0.2);
 }
-.contentCommentlabel {
+.contentNotelabel {
     background: rgb(120, 120, 38, 0.3);
 }
-.contentCommenttarget {
+.contentNotetarget {
     background: rgb(120, 120, 38, 0.3);
 }
-.contentCommentvariable {
+.contentNotevariable {
     background: rgb(120, 120, 38, 0.3);
 }
-.contentCommentundefined {
+.contentNoteundefined {
     background: rgb(120, 120, 38, 0.05);
 }
 .glyphChild-4 {

@@ -29,7 +29,7 @@ export const monarchTheme: monaco.editor.IStandaloneThemeData = {
         select: '#784F26',
         parent: '#78264F',
         child: '#267878',
-        comment: '#787826',
         bookmark: '#390978',
+        note: '#787826',
     },
 };

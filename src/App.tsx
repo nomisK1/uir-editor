@@ -49,7 +49,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.nextSelectionQuery = this.nextSelectionQuery.bind(this);
         this.prevSelectionQuery = this.prevSelectionQuery.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
-        this.focusStatusInput_Comment = this.focusStatusInput_Comment.bind(this);
+        this.focusStatusInput_Note = this.focusStatusInput_Note.bind(this);
         this.focusStatusInput_Rename = this.focusStatusInput_Rename.bind(this);
         this.focusStatusInput_Search = this.focusStatusInput_Search.bind(this);
         this.updateStatusInput = this.updateStatusInput.bind(this);
@@ -90,14 +90,17 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.editor) {
             this.editor.getInstance().focus();
             if (status === Status.COMMENT) this.editor.handleKeypressComment(input);
+            else if (status === Status.NOTE) this.editor.handleKeypressNote(input);
             else if (status === Status.RENAME) this.editor.handleKeypressRename(input);
             else if (status === Status.SEARCH) this.editor.handleKeypressSearch(input);
         }
     }
 
-    public focusStatusInput_Comment(input: string) {
+    public focusStatusInput_Comment(input: string) {}
+
+    public focusStatusInput_Note(input: string) {
         if (this.inputElement) {
-            this.inputElement.setStatusComment(input);
+            this.inputElement.setStatusNote(input);
             this.inputElement.getInstance().focus();
         }
     }
@@ -234,6 +237,7 @@ class App extends React.Component<IAppProps, IAppState> {
                 nextSelectionQuery={this.nextSelectionQuery}
                 prevSelectionQuery={this.prevSelectionQuery}
                 focusStatusInput_Comment={this.focusStatusInput_Comment}
+                focusStatusInput_Note={this.focusStatusInput_Note}
                 focusStatusInput_Rename={this.focusStatusInput_Rename}
                 focusStatusInput_Search={this.focusStatusInput_Search}
                 updateStatusInput={this.updateStatusInput}

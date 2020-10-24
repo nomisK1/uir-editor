@@ -38,9 +38,9 @@ export const hoverProvider: monaco.languages.HoverProvider = {
             const editor = S.getInstance().getEditor();
             if (editor) {
                 editor.decorateVariable(position);
-                let cHover = editor.getCommentHover(position);
+                let nHover = editor.getNoteHover(position);
                 let tHover = editor.getTargetTreeHover(position);
-                resolve(cHover ? cHover : tHover);
+                resolve(nHover ? nHover : tHover);
             }
             resolve({
                 range: new monaco.Range(0, 0, 0, 0),

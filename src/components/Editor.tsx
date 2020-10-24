@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as monaco from 'monaco-editor';
 import { themeID, monarchTheme } from '../language/uirTheme';
 import S from '../language/Singleton';
-import Graph, { comment } from '../content/Graph'; // eslint-disable-line
+import Graph, { note } from '../content/Graph'; // eslint-disable-line
 import { treeData } from '../content/tree/TargetTree';
 import './Editor.css';
 
@@ -12,6 +12,7 @@ interface IEditorProps {
     nextSelectionQuery: () => void;
     prevSelectionQuery: () => void;
     focusStatusInput_Comment: (input: string) => void;
+    focusStatusInput_Note: (input: string) => void;
     focusStatusInput_Rename: (input: string) => void;
     focusStatusInput_Search: () => void;
     updateStatusInput: (input: string, position: { line: number; column: number }) => void;
@@ -31,7 +32,7 @@ interface IEditorState {
     activateChildDecorating: boolean;
     activateParentDecorating: boolean;
     activateBookmarkDecorating: boolean;
-    activateCommentDecorating: boolean;
+    activateNoteDecorating: boolean;
     activateTargetTreeHover: boolean;
 }
 
@@ -53,7 +54,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private treeDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private bookmarkDecorations: monaco.editor.IModelDeltaDecoration[] = [];
-    private commentDecorations: monaco.editor.IModelDeltaDecoration[] = [];
+    private noteDecorations: monaco.editor.IModelDeltaDecoration[] = [];
 
     constructor(props: IEditorProps) {
         super(props);
@@ -64,7 +65,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             activateChildDecorating: true,
             activateParentDecorating: true,
             activateBookmarkDecorating: true,
-            activateCommentDecorating: true,
+            activateNoteDecorating: true,
             activateTargetTreeHover: true,
         };
         this.graph = this.props.graph;
@@ -89,6 +90,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressHoverParent = this.handleKeypressHoverParent.bind(this);
         this.handleKeypressParent = this.handleKeypressParent.bind(this);
         this.handleKeypressToInput_Comment = this.handleKeypressToInput_Comment.bind(this);
+        this.handleKeypressToInput_Note = this.handleKeypressToInput_Note.bind(this);
         this.handleKeypressToInput_Rename = this.handleKeypressToInput_Rename.bind(this);
         this.handleKeypressToInput_Search = this.handleKeypressToInput_Search.bind(this);
         this.handleKeypressSearch = this.handleKeypressSearch.bind(this);
@@ -100,8 +102,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressComment = this.handleKeypressComment.bind(this);
         this.handleKeypressRemoveComment = this.handleKeypressRemoveComment.bind(this);
         this.handleKeypressResetComments = this.handleKeypressResetComments.bind(this);
-        this.handleKeypressRevealNextComment = this.handleKeypressRevealNextComment.bind(this);
-        this.handleKeypressRevealPrevComment = this.handleKeypressRevealPrevComment.bind(this);
+        this.handleKeypressNote = this.handleKeypressNote.bind(this);
+        this.handleKeypressRemoveNote = this.handleKeypressRemoveNote.bind(this);
+        this.handleKeypressResetNotes = this.handleKeypressResetNotes.bind(this);
+        this.handleKeypressRevealNextNote = this.handleKeypressRevealNextNote.bind(this);
+        this.handleKeypressRevealPrevNote = this.handleKeypressRevealPrevNote.bind(this);
         this.handleKeypressRename = this.handleKeypressRename.bind(this);
         this.handleKeypressUndoRename = this.handleKeypressUndoRename.bind(this);
         this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
@@ -111,7 +116,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressToggleChildDecorating = this.handleKeypressToggleChildDecorating.bind(this);
         this.handleKeypressToggleParentDecorating = this.handleKeypressToggleParentDecorating.bind(this);
         this.handleKeypressToggleBookmarkDecorating = this.handleKeypressToggleBookmarkDecorating.bind(this);
-        this.handleKeypressToggleCommentDecorating = this.handleKeypressToggleCommentDecorating.bind(this);
+        this.handleKeypressToggleNoteDecorating = this.handleKeypressToggleNoteDecorating.bind(this);
         this.handleKeypressToggleTargetTreeHover = this.handleKeypressToggleTargetTreeHover.bind(this);
         this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
         this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
@@ -291,22 +296,49 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressResetComments,
             });
             this.editor.addAction({
-                id: 'revealNextComment',
-                label: 'Reveal Next Comment',
-                keybindings: [monaco.KeyCode.KEY_X],
-                contextMenuGroupId: '2_comment',
-                contextMenuOrder: 4,
+                id: 'addNote',
+                label: 'Add Note',
+                keybindings: [monaco.KeyCode.KEY_C],
+                contextMenuGroupId: '2_note',
+                contextMenuOrder: 1,
                 keybindingContext: 'condition',
-                run: this.handleKeypressRevealNextComment,
+                run: this.handleKeypressToInput_Note,
             });
             this.editor.addAction({
-                id: 'revealPrevComment',
-                label: 'Reveal Previous Comment',
+                id: 'removeNote',
+                label: 'Remove Note',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_C],
+                contextMenuGroupId: '2_note',
+                contextMenuOrder: 2,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRemoveNote,
+            });
+            this.editor.addAction({
+                id: 'resetNotes',
+                label: 'Reset All Notes',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_C],
+                contextMenuGroupId: '2_note',
+                contextMenuOrder: 3,
+                keybindingContext: 'condition',
+                run: this.handleKeypressResetNotes,
+            });
+            this.editor.addAction({
+                id: 'revealNextNote',
+                label: 'Reveal Next Note',
+                keybindings: [monaco.KeyCode.KEY_X],
+                contextMenuGroupId: '2_note',
+                contextMenuOrder: 4,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRevealNextNote,
+            });
+            this.editor.addAction({
+                id: 'revealPrevNote',
+                label: 'Reveal Previous Note',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_X],
-                contextMenuGroupId: '2_comment',
+                contextMenuGroupId: '2_note',
                 contextMenuOrder: 5,
                 keybindingContext: 'condition',
-                run: this.handleKeypressRevealPrevComment,
+                run: this.handleKeypressRevealPrevNote,
             });
             this.editor.addAction({
                 id: 'renameNode',
@@ -417,13 +449,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressToggleBookmarkDecorating,
             });
             this.editor.addAction({
-                id: 'toggleCommentDisplay',
-                label: 'Toggle Comment Display',
+                id: 'toggleNoteDisplay',
+                label: 'Toggle Note Display',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_7],
                 contextMenuGroupId: '5_features',
                 contextMenuOrder: 7,
                 keybindingContext: 'condition',
-                run: this.handleKeypressToggleCommentDecorating,
+                run: this.handleKeypressToggleNoteDecorating,
             });
             this.editor.addAction({
                 id: 'toggleTargetTreeHover',
@@ -519,6 +551,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.setGrid(position);
             this.updatePosition(position);
         }
+        this.addLineComment('Hello World!');
     }
 
     public handleKeypressRevealCursor() {
@@ -647,10 +680,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.props.focusStatusInput_Search();
     }
 
-    public handleKeypressToInput_Comment() {
+    public handleKeypressToInput_Comment() {}
+
+    public handleKeypressToInput_Note() {
         let node = this.graph.getNodeAt(this.lastPosition);
-        let comment = this.graph.getOuterCommentAt(this.lastPosition);
-        this.props.focusStatusInput_Comment(comment && comment.node === node ? comment.text : '');
+        let note = this.graph.getOuterNoteAt(this.lastPosition);
+        this.props.focusStatusInput_Note(note && note.node === node ? note.text : '');
     }
 
     public handleKeypressToInput_Rename() {
@@ -688,33 +723,50 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Comments-----
     //--------------------------------------------------
 
-    public handleKeypressComment(input: string) {
-        this.graph.addCommentAt(input, this.lastPosition);
-        this.decorateComments();
+    public addLineComment(input: string) {
+        let lines = this.value.split('\n');
+        lines[this.lastPosition.lineNumber - 1] += '\t// ' + input;
+        this.value = lines.join('\n');
+        console.log(this.value);
+    }
+
+    public handleKeypressComment(input: string) {}
+
+    public handleKeypressRemoveComment() {}
+
+    public handleKeypressResetComments() {}
+
+    //--------------------------------------------------
+    //-----Notes-----
+    //--------------------------------------------------
+
+    public handleKeypressNote(input: string) {
+        this.graph.addNoteAt(input, this.lastPosition);
+        this.decorateNotes();
         this.resetPosition();
     }
 
-    public handleKeypressRemoveComment() {
-        this.graph.removeCommentAt(this.lastPosition);
-        this.decorateComments();
+    public handleKeypressRemoveNote() {
+        this.graph.removeNoteAt(this.lastPosition);
+        this.decorateNotes();
         this.resetPosition();
     }
 
-    public handleKeypressResetComments() {
-        this.graph.resetComments();
-        this.decorateComments();
+    public handleKeypressResetNotes() {
+        this.graph.resetNotes();
+        this.decorateNotes();
         this.resetPosition();
     }
 
-    public handleKeypressRevealNextComment() {
-        let comment = this.graph.getNextCommentAt(this.lastPosition);
-        if (comment) this.updatePosition(comment.range.getStartPosition());
+    public handleKeypressRevealNextNote() {
+        let note = this.graph.getNextNoteAt(this.lastPosition);
+        if (note) this.updatePosition(note.range.getStartPosition());
         else this.resetPosition();
     }
 
-    public handleKeypressRevealPrevComment() {
-        let comment = this.graph.getPrevCommentAt(this.lastPosition);
-        if (comment) this.updatePosition(comment.range.getStartPosition());
+    public handleKeypressRevealPrevNote() {
+        let note = this.graph.getPrevNoteAt(this.lastPosition);
+        if (note) this.updatePosition(note.range.getStartPosition());
         else this.resetPosition();
     }
 
@@ -804,11 +856,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.decorateBookmarks();
     }
 
-    public handleKeypressToggleCommentDecorating() {
+    public handleKeypressToggleNoteDecorating() {
         this.setState({
-            activateCommentDecorating: !this.state.activateCommentDecorating,
+            activateNoteDecorating: !this.state.activateNoteDecorating,
         });
-        this.decorateComments();
+        this.decorateNotes();
     }
 
     public handleKeypressToggleTargetTreeHover() {
@@ -878,10 +930,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
      * Handle Value change
      */
     private updateValue() {
-        let query = this.graph.print();
-        if (query !== this.value) this.value = query;
+        let value = this.graph.print();
+        //this.displayComments();
+        if (value !== this.value) this.value = value;
         if (this.editor) this.editor.setValue(this.value);
-        this.decorateComments();
+        this.decorateNotes();
         this.decorateBookmarks();
     }
 
@@ -902,7 +955,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         }
         this.lastPosition = position;
         this.props.updateStatusInput(
-            (current ? current.getAlias() : '') + this.graph.getCommentStringAt(this.lastPosition),
+            (current ? current.getAlias() : '') + this.graph.getNoteStringAt(this.lastPosition),
             { line: position.lineNumber, column: position.column },
         );
         this.props.closeModals();
@@ -976,7 +1029,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 ...this.variableDecorations,
                 ...this.treeDecorations,
                 ...this.bookmarkDecorations,
-                ...this.commentDecorations,
+                ...this.noteDecorations,
             ]);
     }
 
@@ -1147,15 +1200,15 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.updateDecorations();
     }
 
-    private setCommentDecoration(comment: comment) {
-        this.commentDecorations.push({
-            range: comment.range,
+    private setNoteDecoration(note: note) {
+        this.noteDecorations.push({
+            range: note.range,
             options: {
-                isWholeLine: !comment.node,
-                className: 'contentComment' + comment.node?.constructor.name,
-                glyphMarginClassName: 'glyphComment',
+                isWholeLine: !note.node,
+                className: 'contentNote' + note.node?.constructor.name,
+                glyphMarginClassName: 'glyphNote',
                 minimap: {
-                    color: { id: 'comment' },
+                    color: { id: 'note' },
                     position: 1,
                 },
                 zIndex: 2,
@@ -1163,9 +1216,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         });
     }
 
-    private decorateComments() {
-        this.commentDecorations = [];
-        if (this.state.activateCommentDecorating) this.graph.getComments().forEach((c) => this.setCommentDecoration(c));
+    private decorateNotes() {
+        this.noteDecorations = [];
+        if (this.state.activateNoteDecorating) this.graph.getNotes().forEach((n) => this.setNoteDecoration(n));
         this.updateDecorations();
     }
 
@@ -1189,13 +1242,13 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return highlights;
     }
 
-    public getCommentHover(position: monaco.Position) {
-        if (!this.state.activateCommentDecorating) return null;
-        let comment = this.graph.getOuterCommentAt(position);
-        return comment
+    public getNoteHover(position: monaco.Position) {
+        if (!this.state.activateNoteDecorating) return null;
+        let note = this.graph.getOuterNoteAt(position);
+        return note
             ? {
-                  range: comment.range,
-                  contents: [{ value: this.graph.getCommentStringAt(position) }],
+                  range: note.range,
+                  contents: [{ value: this.graph.getNoteStringAt(position) }],
               }
             : null;
     }

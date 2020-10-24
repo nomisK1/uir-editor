@@ -34,7 +34,7 @@ class Graph {
     private currentParents: variable[] = [];
     private currentChildren: variable[] = [];
     private bookmark?: number = 0;
-    private comments: comment[] = [];
+    private notes: note[] = [];
     private aliases: alias[] = [];
 
     constructor(props: IGraphProps) {
@@ -89,7 +89,7 @@ class Graph {
             }),
         );
         this.retrieveLocalStorageBookmark();
-        this.retrieveLocalStorageComments();
+        this.retrieveLocalStorageNotes();
         this.retrieveLocalStorageAliases();
     }
 
@@ -491,13 +491,13 @@ class Graph {
     }
 
     //--------------------------------------------------
-    //-----Handle Comments-----
+    //-----Handle Notes-----
     //--------------------------------------------------
 
-    private retrieveLocalStorageComments() {
+    private retrieveLocalStorageNotes() {
         let size = localStorage.length;
         for (let i = 0; i < size; i++) {
-            let key = 'c:' + this.gid + ':' + i;
+            let key = 'n:' + this.gid + ':' + i;
             let data = localStorage.getItem(key);
             if (data) {
                 let json = JSON.parse(data);
@@ -508,19 +508,19 @@ class Graph {
                 let sc = lookupJSON(json, 'sc');
                 let el = lookupJSON(json, 'el');
                 let ec = lookupJSON(json, 'ec');
-                this.addComment(text, node ? node : null, new monaco.Range(sl, sc, el, ec));
+                this.addNote(text, node ? node : null, new monaco.Range(sl, sc, el, ec));
             }
         }
     }
 
-    private setLocalStorageComments() {
-        for (let i = 0; i < this.comments.length; i++) {
-            let range = this.comments[i].range;
+    private setLocalStorageNotes() {
+        for (let i = 0; i < this.notes.length; i++) {
+            let range = this.notes[i].range;
             localStorage.setItem(
-                'c:' + this.gid + ':' + i,
+                'n:' + this.gid + ':' + i,
                 JSON.stringify({
-                    text: this.comments[i].text,
-                    nid: this.comments[i].node ? this.comments[i].node!.getNID() : NaN,
+                    text: this.notes[i].text,
+                    nid: this.notes[i].node ? this.notes[i].node!.getNID() : NaN,
                     sl: range.startLineNumber,
                     sc: range.startColumn,
                     el: range.endLineNumber,
@@ -530,7 +530,7 @@ class Graph {
         }
     }
 
-    private removeLocalStorageComments() {
+    private removeLocalStorageNotes() {
         let size = localStorage.length;
         for (let i = 0; i < size; i++) {
             let key = 'c:' + this.gid + ':' + i;
@@ -538,91 +538,89 @@ class Graph {
         }
     }
 
-    private addComment(text: string, node: _node | null, range: monaco.Range) {
-        this.removeComment(
-            this.comments.find(
-                (c) => c.node === node || (!c.node && c.range.startLineNumber === range.startLineNumber),
-            ),
+    private addNote(text: string, node: _node | null, range: monaco.Range) {
+        this.removeNote(
+            this.notes.find((c) => c.node === node || (!c.node && c.range.startLineNumber === range.startLineNumber)),
         );
         if (text) {
-            this.comments.push({ text: text.slice(0, maxComment), node, range });
-            this.comments = sortCommentsByDepth(this.comments);
-            this.setLocalStorageComments();
+            this.notes.push({ text: text.slice(0, maxNote), node, range });
+            this.notes = sortNotesByDepth(this.notes);
+            this.setLocalStorageNotes();
         }
     }
 
-    public addCommentAt(text: string, position: monaco.Position) {
+    public addNoteAt(text: string, position: monaco.Position) {
         let node = this.getNodeAt(position);
-        this.addComment(
+        this.addNote(
             text,
             node ? node : null,
             node ? node.getRange() : new monaco.Range(position.lineNumber, 1, position.lineNumber, 1),
         );
     }
 
-    private removeComment(comment?: comment) {
-        if (comment) {
-            this.comments.splice(this.comments.indexOf(comment), 1);
-            this.removeLocalStorageComments();
-            this.setLocalStorageComments();
+    private removeNote(note?: note) {
+        if (note) {
+            this.notes.splice(this.notes.indexOf(note), 1);
+            this.removeLocalStorageNotes();
+            this.setLocalStorageNotes();
         }
     }
 
-    public removeCommentAt(position: monaco.Position) {
-        this.removeComment(this.getOuterCommentAt(position));
+    public removeNoteAt(position: monaco.Position) {
+        this.removeNote(this.getOuterNoteAt(position));
     }
 
-    public resetComments() {
-        this.comments = [];
-        this.removeLocalStorageComments();
+    public resetNotes() {
+        this.notes = [];
+        this.removeLocalStorageNotes();
     }
 
-    private updateComments() {
-        for (let i = 0; i < this.comments.length; i++)
-            if (this.comments[i].node) this.comments[i].range = this.comments[i].node!.getRange();
+    private updateNotes() {
+        for (let i = 0; i < this.notes.length; i++)
+            if (this.notes[i].node) this.notes[i].range = this.notes[i].node!.getRange();
     }
 
-    public getComments() {
-        return this.comments;
+    public getNotes() {
+        return this.notes;
     }
 
-    private getCommentsAt(position: monaco.Position) {
-        let comments: comment[] = [];
-        this.comments.forEach((c) => {
-            if (c.range.containsPosition(position)) comments.push(c);
+    private getNotesAt(position: monaco.Position) {
+        let notes: note[] = [];
+        this.notes.forEach((c) => {
+            if (c.range.containsPosition(position)) notes.push(c);
         });
-        return sortCommentsByDepth(comments);
+        return sortNotesByDepth(notes);
     }
 
-    public getOuterCommentAt(position: monaco.Position) {
-        return this.getCommentsAt(position)[0];
+    public getOuterNoteAt(position: monaco.Position) {
+        return this.getNotesAt(position)[0];
     }
 
-    public getCommentStringAt(position: monaco.Position) {
-        return this.comments.length
-            ? this.getCommentsAt(position)
+    public getNoteStringAt(position: monaco.Position) {
+        return this.notes.length
+            ? this.getNotesAt(position)
                   //'@' + c.range.getStartPosition().lineNumber + '/' + c.range.getStartPosition().column +
                   .map((c) => (c.node ? ' ' : '') + '["' + c.text + '"]')
                   .join('\n')
             : '';
     }
 
-    public getNextCommentAt(position: monaco.Position): comment | null {
-        this.comments = sortCommentsByPosition(this.comments);
-        if (this.comments.length) {
-            for (let i = 0; i < this.comments.length; i++)
-                if (!this.comments[i].range.getStartPosition().isBeforeOrEqual(position)) return this.comments[i];
-            return this.getNextCommentAt(this.getStartPosition());
+    public getNextNoteAt(position: monaco.Position): note | null {
+        this.notes = sortNotesByPosition(this.notes);
+        if (this.notes.length) {
+            for (let i = 0; i < this.notes.length; i++)
+                if (!this.notes[i].range.getStartPosition().isBeforeOrEqual(position)) return this.notes[i];
+            return this.getNextNoteAt(this.getStartPosition());
         }
         return null;
     }
 
-    public getPrevCommentAt(position: monaco.Position): comment | null {
-        this.comments = sortCommentsByPosition(this.comments);
-        if (this.comments.length) {
-            for (let i = this.comments.length - 1; i >= 0; i--)
-                if (this.comments[i].range.getStartPosition().isBefore(position)) return this.comments[i];
-            return this.getPrevCommentAt(this.getEndPosition());
+    public getPrevNoteAt(position: monaco.Position): note | null {
+        this.notes = sortNotesByPosition(this.notes);
+        if (this.notes.length) {
+            for (let i = this.notes.length - 1; i >= 0; i--)
+                if (this.notes[i].range.getStartPosition().isBefore(position)) return this.notes[i];
+            return this.getPrevNoteAt(this.getEndPosition());
         }
         return null;
     }
@@ -684,7 +682,7 @@ class Graph {
                     t.setAlias(alias);
                     t.getContext()!.findRanges();
                 });
-            this.updateComments();
+            this.updateNotes();
             this.setLocalStorageAliases();
             //console.log('RENAME');
             return true;
@@ -720,7 +718,7 @@ class Graph {
                     t.resetAlias();
                     t.getContext()!.findRanges();
                 });
-            this.updateComments();
+            this.updateNotes();
             this.removeLocalStorageAliases();
             this.setLocalStorageAliases();
             //console.log('UNNAME');
@@ -742,7 +740,7 @@ class Graph {
         this.variables.forEach((v) => v.getContext()!.findRanges());
         this.targets.forEach((t) => t.resetAlias());
         this.targets.forEach((t) => t.getContext()!.findRanges());
-        this.updateComments();
+        this.updateNotes();
         this.removeLocalStorageAliases();
     }
 
@@ -779,8 +777,8 @@ class Graph {
         let node = this.getNodeAt(position);
         if (node) {
             let info = node.getInfo();
-            let comments = this.getCommentStringAt(position);
-            if (comments) info.push('\n\nCOMMENTS:\n' + comments);
+            let notes = this.getNoteStringAt(position);
+            if (notes) info.push('\n\nNOTES:\n' + notes);
             return info;
         }
         return null;
@@ -801,7 +799,7 @@ class Graph {
 
 export default Graph;
 
-export type comment = {
+export type note = {
     text: string;
     range: monaco.Range;
     node: _node | null;
@@ -816,24 +814,24 @@ type alias = {
 //-----Helpers-----
 //--------------------------------------------------
 
-function sortCommentsByDepth(comments: comment[]) {
-    const compareCommentDepth = (a: comment, b: comment) => {
+function sortNotesByDepth(notes: note[]) {
+    const compareNoteDepth = (a: note, b: note) => {
         return a.range.containsRange(b.range) ? 1 : b.range.containsRange(a.range) ? -1 : 0;
     };
-    return comments.sort(compareCommentDepth);
+    return notes.sort(compareNoteDepth);
 }
 
-function sortCommentsByPosition(comments: comment[]) {
-    const compareCommentPosition = (a: comment, b: comment) => {
+function sortNotesByPosition(notes: note[]) {
+    const compareNotePosition = (a: note, b: note) => {
         let aPos = a.range.getStartPosition();
         let bPos = b.range.getStartPosition();
         return aPos.isBefore(bPos) ? -1 : !aPos.isBeforeOrEqual(bPos) ? 1 : 0;
     };
-    return comments.sort(compareCommentPosition);
+    return notes.sort(compareNotePosition);
 }
 
-// Maximum amount of characters in a comment
-const maxComment = 60;
+// Maximum amount of characters in a note
+const maxNote = 60;
 
 function isLegal(string: string) {
     for (let i = 0; i < string.length; i++) if (!legalStrings.includes(string[i])) return false;
