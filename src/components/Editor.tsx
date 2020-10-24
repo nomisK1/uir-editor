@@ -695,13 +695,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressAddBookmark() {
-        this.graph.addBookmarkAt(this.lastPosition.lineNumber);
-        this.decorateBookmarks();
+        if (this.graph.addBookmarkAt(this.lastPosition.lineNumber)) this.decorateBookmarks();
     }
 
     public handleKeypressRemoveBookmark() {
-        this.graph.removeBookmark();
-        this.decorateBookmarks();
+        if (this.graph.removeBookmark()) this.decorateBookmarks();
     }
 
     public handleKeypressRevealBookmark() {
@@ -718,21 +716,23 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressComment(input: string) {
-        this.graph.addCommentAt(input, this.lastPosition.lineNumber);
-        this.updateValue();
+        if (this.graph.addCommentAt(input, this.lastPosition.lineNumber)) this.updateValue();
         this.resetPosition();
     }
 
     public handleKeypressRemoveComment() {
-        this.graph.removeCommentAt(this.lastPosition.lineNumber);
-        this.updateValue();
-        this.resetPosition();
+        if (this.graph.removeCommentAt(this.lastPosition.lineNumber)) {
+            this.updateValue();
+            this.resetPosition();
+        }
     }
 
     public handleKeypressResetComments() {
-        this.graph.resetComments();
-        this.updateValue();
-        this.resetPosition();
+        if (this.graph.getComments().length) {
+            this.graph.resetComments();
+            this.updateValue();
+            this.resetPosition();
+        }
     }
 
     //--------------------------------------------------
@@ -740,21 +740,23 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressNote(input: string) {
-        this.graph.addNoteAt(input, this.lastPosition);
-        this.decorateNotes();
+        if (this.graph.addNoteAt(input, this.lastPosition)) this.decorateNotes();
         this.resetPosition();
     }
 
     public handleKeypressRemoveNote() {
-        this.graph.removeNoteAt(this.lastPosition);
-        this.decorateNotes();
-        this.resetPosition();
+        if (this.graph.removeNoteAt(this.lastPosition)) {
+            this.decorateNotes();
+            this.resetPosition();
+        }
     }
 
     public handleKeypressResetNotes() {
-        this.graph.resetNotes();
-        this.decorateNotes();
-        this.resetPosition();
+        if (this.graph.getNotes().length) {
+            this.graph.resetNotes();
+            this.decorateNotes();
+            this.resetPosition();
+        }
     }
 
     public handleKeypressRevealNextNote() {

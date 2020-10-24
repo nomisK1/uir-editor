@@ -508,14 +508,22 @@ class Graph {
     }
 
     public addBookmarkAt(lineNumber: number) {
-        this.removeBookmark();
-        this.bookmark = lineNumber;
-        this.setLocalStorageBookmark();
+        if (lineNumber !== this.bookmark) {
+            this.removeBookmark();
+            this.bookmark = lineNumber;
+            this.setLocalStorageBookmark();
+            return true;
+        }
+        return this.removeBookmark();
     }
 
     public removeBookmark() {
-        this.bookmark = null;
-        this.removeLocalStorageBookmark();
+        if (this.bookmark) {
+            this.bookmark = null;
+            this.removeLocalStorageBookmark();
+            return true;
+        }
+        return false;
     }
 
     public getBookmark() {
@@ -550,20 +558,19 @@ class Graph {
         for (let i = 0; i < localStorage.length; i++) localStorage.removeItem('c:' + this.gid + ':' + i);
     }
 
-    public addCommentAt(text: string, lineNumber: number) {
-        this.addComment(text, lineNumber - 1);
-    }
-
     private addComment(text: string, line: number) {
-        this.removeComment(line);
         if (text) {
+            this.removeComment(line);
             this.comments.push({ text, line });
             this.setLocalStorageComments();
+            return true;
         }
+        return this.removeComment(line);
     }
 
-    public removeCommentAt(lineNumber: number) {
-        this.removeComment(lineNumber - 1);
+    public addCommentAt(text: string, lineNumber: number) {
+        if (text) return this.addComment(text, lineNumber - 1);
+        return this.removeCommentAt(lineNumber);
     }
 
     private removeComment(line: number) {
@@ -572,7 +579,13 @@ class Graph {
             this.comments.splice(index, 1);
             this.removeLocalStorageComments();
             this.setLocalStorageComments();
+            return true;
         }
+        return false;
+    }
+
+    public removeCommentAt(lineNumber: number) {
+        return this.removeComment(lineNumber - 1);
     }
 
     public resetComments() {
@@ -582,6 +595,10 @@ class Graph {
 
     public getCommentAt(lineNumber: number) {
         return this.comments.find((c) => c.line === lineNumber - 1);
+    }
+
+    public getComments() {
+        return this.comments;
     }
 
     //--------------------------------------------------
@@ -627,35 +644,41 @@ class Graph {
     }
 
     private addNote(text: string, node: _node | null, range: monaco.Range) {
-        this.removeNote(
-            this.notes.find((n) => n.node === node || (!n.node && n.range.startLineNumber === range.startLineNumber)),
-        );
         if (text) {
+            this.removeNoteAt(range.getStartPosition());
             this.notes.push({ text: text.slice(0, maxNote), node, range });
             this.notes = sortNotesByDepth(this.notes);
             this.setLocalStorageNotes();
+            return true;
         }
+        return this.removeNoteAt(range.getStartPosition());
     }
 
     public addNoteAt(text: string, position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        this.addNote(
-            text,
-            node ? node : null,
-            node ? node.getRange() : new monaco.Range(position.lineNumber, 1, position.lineNumber, 1),
-        );
+        if (text) {
+            let node = this.getNodeAt(position);
+            return this.addNote(
+                text,
+                node ? node : null,
+                node ? node.getRange() : new monaco.Range(position.lineNumber, 1, position.lineNumber, 1),
+            );
+        }
+        return this.removeNoteAt(position);
     }
 
-    private removeNote(note?: note) {
-        if (note) {
-            this.notes.splice(this.notes.indexOf(note), 1);
+    private removeNote(note: note) {
+        let index = this.notes.indexOf(note);
+        if (index >= 0) {
+            this.notes.splice(index, 1);
             this.removeLocalStorageNotes();
             this.setLocalStorageNotes();
+            return true;
         }
+        return false;
     }
 
     public removeNoteAt(position: monaco.Position) {
-        this.removeNote(this.getOuterNoteAt(position));
+        return this.removeNote(this.getOuterNoteAt(position));
     }
 
     public resetNotes() {
