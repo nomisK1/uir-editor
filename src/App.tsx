@@ -49,6 +49,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.nextSelectionQuery = this.nextSelectionQuery.bind(this);
         this.prevSelectionQuery = this.prevSelectionQuery.bind(this);
         this.handleInputKeydown = this.handleInputKeydown.bind(this);
+        this.focusStatusInput_Comment = this.focusStatusInput_Comment.bind(this);
         this.focusStatusInput_Note = this.focusStatusInput_Note.bind(this);
         this.focusStatusInput_Rename = this.focusStatusInput_Rename.bind(this);
         this.focusStatusInput_Search = this.focusStatusInput_Search.bind(this);
@@ -119,8 +120,8 @@ class App extends React.Component<IAppProps, IAppState> {
         }
     }
 
-    public updateStatusInput(input?: string, position?: { line: number; column: number }) {
-        if (this.inputElement) this.inputElement.setStatusNode(input, position);
+    public updateStatusInput(input: string, line: number, column: number) {
+        if (this.inputElement) this.inputElement.update(input, line, column);
     }
 
     //--------------------------------------------------

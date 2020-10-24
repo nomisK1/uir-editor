@@ -2,7 +2,7 @@ import React from 'react';
 
 export enum Status {
     COMMENT = 'ADD COMMENT',
-    NODE = 'CURRENT NODE',
+    DISPLAY = 'CURRENT NODE',
     NOTE = 'ADD NOTE',
     RENAME = 'RENAME NODE',
     SEARCH = 'SEARCH NODE',
@@ -29,7 +29,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
     constructor(props: IStatusInputProps) {
         super(props);
         this.state = {
-            status: Status.NODE,
+            status: Status.DISPLAY,
             input: '',
             line: 1,
             column: 1,
@@ -50,14 +50,6 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         this.setState({ status: Status.COMMENT, input });
     }
 
-    setStatusNode(input?: string, position?: { line: number; column: number }) {
-        this.setState({
-            status: Status.NODE,
-            input: input ? input : this.state.input,
-            line: position ? position.line : this.state.line,
-            column: position ? position.column : this.state.column,
-        });
-    }
     setStatusNote(input: string) {
         this.setState({ status: Status.NOTE, input });
     }
@@ -68,6 +60,10 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
 
     setStatusSearch() {
         this.setState({ status: Status.SEARCH, input: '' });
+    }
+
+    update(input: string, line: number, column: number) {
+        this.setState({ status: Status.DISPLAY, input, line, column });
     }
 
     onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -110,10 +106,11 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
 export default StatusInput;
 
 function getStatusValue(status: Status, line: number, column: number) {
-    return status === Status.NODE ? '[' + line + '/' + column + ']' : status;
+    return status === Status.DISPLAY ? '[' + line + '/' + column + ']' : status;
 }
 
 function getStatusStyle(status: Status) {
+    //TODO
     if (status === Status.COMMENT) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
     if (status === Status.NOTE) return { backgroundColor: 'rgb(0, 255, 0, 0.4)' };
     if (status === Status.RENAME) return { backgroundColor: 'rgb(255, 0, 0, 0.4)' };

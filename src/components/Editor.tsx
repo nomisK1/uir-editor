@@ -15,7 +15,7 @@ interface IEditorProps {
     focusStatusInput_Note: (input: string) => void;
     focusStatusInput_Rename: (input: string) => void;
     focusStatusInput_Search: () => void;
-    updateStatusInput: (input: string, position: { line: number; column: number }) => void;
+    updateStatusInput: (input: string, line: number, column: number) => void;
     toggleButton: () => void;
     displayInfoModal: () => void;
     buildInfoModal: (data: string[]) => void;
@@ -72,30 +72,33 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.value = this.graph.print();
         S.getInstance().connect(this);
         this.handleMouseclick = this.handleMouseclick.bind(this);
+        this.handleKeypressRevealCursor = this.handleKeypressRevealCursor.bind(this);
         this.handleKeypressLeft = this.handleKeypressLeft.bind(this);
         this.handleKeypressDown = this.handleKeypressDown.bind(this);
         this.handleKeypressUp = this.handleKeypressUp.bind(this);
         this.handleKeypressRight = this.handleKeypressRight.bind(this);
-        this.handleKeypressJumpRight = this.handleKeypressJumpRight.bind(this);
-        this.handleKeypressJumpLeft = this.handleKeypressJumpLeft.bind(this);
-        this.handleKeypressJumpStart = this.handleKeypressJumpStart.bind(this);
-        this.handleKeypressJumpEnd = this.handleKeypressJumpEnd.bind(this);
-        this.handleKeypressJumpNextTarget = this.handleKeypressJumpNextTarget.bind(this);
-        this.handleKeypressJumpPrevTarget = this.handleKeypressJumpPrevTarget.bind(this);
-        this.handleKeypressJumpNextBlock = this.handleKeypressJumpNextBlock.bind(this);
-        this.handleKeypressJumpPrevBlock = this.handleKeypressJumpPrevBlock.bind(this);
-        this.handleKeypressJumpBack = this.handleKeypressJumpBack.bind(this);
         this.handleKeypressHoverChild = this.handleKeypressHoverChild.bind(this);
         this.handleKeypressChild = this.handleKeypressChild.bind(this);
         this.handleKeypressHoverParent = this.handleKeypressHoverParent.bind(this);
         this.handleKeypressParent = this.handleKeypressParent.bind(this);
+        this.handleKeypressJumpLeft = this.handleKeypressJumpLeft.bind(this);
+        this.handleKeypressJumpRight = this.handleKeypressJumpRight.bind(this);
+        this.handleKeypressJumpStart = this.handleKeypressJumpStart.bind(this);
+        this.handleKeypressJumpEnd = this.handleKeypressJumpEnd.bind(this);
+        this.handleKeypressNextOccurrence = this.handleKeypressNextOccurrence.bind(this);
+        this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
+        this.handleKeypressJumpNextTarget = this.handleKeypressJumpNextTarget.bind(this);
+        this.handleKeypressJumpPrevTarget = this.handleKeypressJumpPrevTarget.bind(this);
+        this.handleKeypressJumpNextBlock = this.handleKeypressJumpNextBlock.bind(this);
+        this.handleKeypressJumpPrevBlock = this.handleKeypressJumpPrevBlock.bind(this);
+        this.handleKeypressGoBack = this.handleKeypressGoBack.bind(this);
         this.handleKeypressToInput_Comment = this.handleKeypressToInput_Comment.bind(this);
         this.handleKeypressToInput_Note = this.handleKeypressToInput_Note.bind(this);
         this.handleKeypressToInput_Rename = this.handleKeypressToInput_Rename.bind(this);
         this.handleKeypressToInput_Search = this.handleKeypressToInput_Search.bind(this);
         this.handleKeypressSearch = this.handleKeypressSearch.bind(this);
-        this.handleKeypressNextOccurrence = this.handleKeypressNextOccurrence.bind(this);
-        this.handleKeypressPrevOccurrence = this.handleKeypressPrevOccurrence.bind(this);
+        this.handleKeypressNextSelectionQuery = this.handleKeypressNextSelectionQuery.bind(this);
+        this.handleKeypressPrevSelectionQuery = this.handleKeypressPrevSelectionQuery.bind(this);
         this.handleKeypressAddBookmark = this.handleKeypressAddBookmark.bind(this);
         this.handleKeypressRemoveBookmark = this.handleKeypressRemoveBookmark.bind(this);
         this.handleKeypressRevealBookmark = this.handleKeypressRevealBookmark.bind(this);
@@ -110,6 +113,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressRename = this.handleKeypressRename.bind(this);
         this.handleKeypressUndoRename = this.handleKeypressUndoRename.bind(this);
         this.handleKeypressResetNames = this.handleKeypressResetNames.bind(this);
+        this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
+        this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
+        this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
+        this.handleKeypressDisplayInfoModal = this.handleKeypressDisplayInfoModal.bind(this);
+        this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
+        this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
         this.handleKeypressToggleNodeHighlighting = this.handleKeypressToggleNodeHighlighting.bind(this);
         this.handleKeypressToggleCursorDecorating = this.handleKeypressToggleCursorDecorating.bind(this);
         this.handleKeypressToggleVariableDecorating = this.handleKeypressToggleVariableDecorating.bind(this);
@@ -118,15 +127,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.handleKeypressToggleBookmarkDecorating = this.handleKeypressToggleBookmarkDecorating.bind(this);
         this.handleKeypressToggleNoteDecorating = this.handleKeypressToggleNoteDecorating.bind(this);
         this.handleKeypressToggleTargetTreeHover = this.handleKeypressToggleTargetTreeHover.bind(this);
-        this.handleKeypressFoldAll = this.handleKeypressFoldAll.bind(this);
-        this.handleKeypressFoldAllBlocks = this.handleKeypressFoldAllBlocks.bind(this);
-        this.handleKeypressUnfoldAll = this.handleKeypressUnfoldAll.bind(this);
-        this.handleKeypressNextSelectionQuery = this.handleKeypressNextSelectionQuery.bind(this);
-        this.handleKeypressPrevSelectionQuery = this.handleKeypressPrevSelectionQuery.bind(this);
-        this.handleKeypressDisplayInfoModal = this.handleKeypressDisplayInfoModal.bind(this);
-        this.handleKeypressDisplayKeybindModal = this.handleKeypressDisplayKeybindModal.bind(this);
-        this.handleKeypressDisplayTargetTreeModal = this.handleKeypressDisplayTargetTreeModal.bind(this);
-        this.handleKeypressRevealCursor = this.handleKeypressRevealCursor.bind(this);
         this.handleKeypressToggleKeybinds = this.handleKeypressToggleKeybinds.bind(this);
     }
 
@@ -200,39 +200,33 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.handleKeypressHoverParent,
                 'condition',
             );
-            this.editor.addCommand(monaco.KeyCode.KEY_M, this.handleKeypressJumpRight, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_U, this.handleKeypressJumpLeft, 'condition');
             this.editor.addCommand(
-                monaco.KeyMod.Shift | monaco.KeyCode.KEY_M,
-                this.handleKeypressJumpLeft,
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_U,
+                this.handleKeypressJumpStart,
                 'condition',
             );
-            this.editor.addCommand(monaco.KeyCode.KEY_V, this.handleKeypressJumpStart, 'condition');
-            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_V, this.handleKeypressJumpEnd, 'condition');
-            this.editor.addCommand(monaco.KeyCode.KEY_T, this.handleKeypressJumpNextTarget, 'condition');
-            this.editor.addCommand(
-                monaco.KeyMod.Shift | monaco.KeyCode.KEY_T,
-                this.handleKeypressJumpPrevTarget,
-                'condition',
-            );
-            this.editor.addCommand(monaco.KeyCode.KEY_G, this.handleKeypressJumpNextBlock, 'condition');
-            this.editor.addCommand(
-                monaco.KeyMod.Shift | monaco.KeyCode.KEY_G,
-                this.handleKeypressJumpPrevBlock,
-                'condition',
-            );
-            this.editor.addCommand(monaco.KeyCode.KEY_U, this.handleKeypressJumpBack, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_I, this.handleKeypressJumpRight, 'condition');
+            this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.KEY_I, this.handleKeypressJumpEnd, 'condition');
             this.editor.addCommand(monaco.KeyCode.Enter, this.handleKeypressNextOccurrence, 'condition');
             this.editor.addCommand(
                 monaco.KeyMod.Shift | monaco.KeyCode.Enter,
                 this.handleKeypressPrevOccurrence,
                 'condition',
             );
-            this.editor.addCommand(monaco.KeyCode.KEY_N, this.handleKeypressNextOccurrence, 'condition');
+            this.editor.addCommand(monaco.KeyCode.KEY_T, this.handleKeypressJumpNextTarget, 'condition');
             this.editor.addCommand(
-                monaco.KeyMod.Shift | monaco.KeyCode.KEY_N,
-                this.handleKeypressPrevOccurrence,
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_T,
+                this.handleKeypressJumpPrevTarget,
                 'condition',
             );
+            this.editor.addCommand(monaco.KeyCode.KEY_R, this.handleKeypressJumpNextBlock, 'condition');
+            this.editor.addCommand(
+                monaco.KeyMod.Shift | monaco.KeyCode.KEY_R,
+                this.handleKeypressJumpPrevBlock,
+                'condition',
+            );
+            this.editor.addCommand(monaco.KeyCode.KEY_G, this.handleKeypressGoBack, 'condition');
             this.editor.addCommand(monaco.KeyCode.Backspace, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.US_SLASH, this.handleKeypressToInput_Search, 'condition');
             this.editor.addCommand(monaco.KeyCode.KEY_Q, this.handleKeypressNextSelectionQuery, 'condition');
@@ -242,37 +236,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 'condition',
             );
             this.editor.addAction({
-                id: 'addBookmark',
-                label: 'Add Bookmark',
-                keybindings: [monaco.KeyCode.KEY_B],
-                contextMenuGroupId: '1_bookmark',
-                contextMenuOrder: 1,
-                keybindingContext: 'condition',
-                run: this.handleKeypressAddBookmark,
-            });
-            this.editor.addAction({
-                id: 'revealBookmark',
-                label: 'Reveal Bookmark',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_B],
-                contextMenuGroupId: '1_bookmark',
-                contextMenuOrder: 2,
-                keybindingContext: 'condition',
-                run: this.handleKeypressRevealBookmark,
-            });
-            this.editor.addAction({
-                id: 'removeBookmark',
-                label: 'Remove Bookmark',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_B],
-                contextMenuGroupId: '1_bookmark',
-                contextMenuOrder: 3,
-                keybindingContext: 'condition',
-                run: this.handleKeypressRemoveBookmark,
-            });
-            this.editor.addAction({
                 id: 'addComment',
                 label: 'Add Comment',
                 keybindings: [monaco.KeyCode.KEY_C],
-                contextMenuGroupId: '2_comment',
+                contextMenuGroupId: '1_comment',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToInput_Comment,
@@ -281,7 +248,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'removeComment',
                 label: 'Remove Comment',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_C],
-                contextMenuGroupId: '2_comment',
+                contextMenuGroupId: '1_comment',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressRemoveComment,
@@ -290,7 +257,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'resetComments',
                 label: 'Reset All Comments',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_C],
-                contextMenuGroupId: '2_comment',
+                contextMenuGroupId: '1_comment',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressResetComments,
@@ -298,7 +265,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'addNote',
                 label: 'Add Note',
-                keybindings: [monaco.KeyCode.KEY_C],
+                keybindings: [monaco.KeyCode.KEY_N],
                 contextMenuGroupId: '2_note',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
@@ -307,7 +274,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'removeNote',
                 label: 'Remove Note',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_C],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_N],
                 contextMenuGroupId: '2_note',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
@@ -316,7 +283,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'resetNotes',
                 label: 'Reset All Notes',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_C],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_N],
                 contextMenuGroupId: '2_note',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
@@ -325,7 +292,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'revealNextNote',
                 label: 'Reveal Next Note',
-                keybindings: [monaco.KeyCode.KEY_X],
+                keybindings: [monaco.KeyCode.KEY_M],
                 contextMenuGroupId: '2_note',
                 contextMenuOrder: 4,
                 keybindingContext: 'condition',
@@ -334,17 +301,44 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'revealPrevNote',
                 label: 'Reveal Previous Note',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_X],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_M],
                 contextMenuGroupId: '2_note',
                 contextMenuOrder: 5,
                 keybindingContext: 'condition',
                 run: this.handleKeypressRevealPrevNote,
             });
             this.editor.addAction({
+                id: 'addBookmark',
+                label: 'Add Bookmark',
+                keybindings: [monaco.KeyCode.KEY_B],
+                contextMenuGroupId: '3_bookmark',
+                contextMenuOrder: 1,
+                keybindingContext: 'condition',
+                run: this.handleKeypressAddBookmark,
+            });
+            this.editor.addAction({
+                id: 'revealBookmark',
+                label: 'Reveal Bookmark',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_B],
+                contextMenuGroupId: '3_bookmark',
+                contextMenuOrder: 2,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRevealBookmark,
+            });
+            this.editor.addAction({
+                id: 'removeBookmark',
+                label: 'Remove Bookmark',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_B],
+                contextMenuGroupId: '3_bookmark',
+                contextMenuOrder: 3,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRemoveBookmark,
+            });
+            this.editor.addAction({
                 id: 'renameNode',
                 label: 'Rename Node',
-                keybindings: [monaco.KeyCode.KEY_R],
-                contextMenuGroupId: '3_alias',
+                keybindings: [monaco.KeyCode.KEY_V],
+                contextMenuGroupId: '4_alias',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToInput_Rename,
@@ -352,8 +346,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'unnameNode',
                 label: 'Unname Node',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_R],
-                contextMenuGroupId: '3_alias',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_V],
+                contextMenuGroupId: '4_alias',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressUndoRename,
@@ -361,8 +355,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'resetNames',
                 label: 'Reset All Names',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R],
-                contextMenuGroupId: '3_alias',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_V],
+                contextMenuGroupId: '4_alias',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressResetNames,
@@ -371,7 +365,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'foldAll',
                 label: 'Fold All',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F],
-                contextMenuGroupId: '4_folding',
+                contextMenuGroupId: '5_folding',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressFoldAll,
@@ -380,7 +374,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'foldBlocks',
                 label: 'Fold Blocks',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_F],
-                contextMenuGroupId: '4_folding',
+                contextMenuGroupId: '5_folding',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressFoldAllBlocks,
@@ -389,7 +383,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'unfoldAll',
                 label: 'Unfold All',
                 keybindings: [monaco.KeyCode.KEY_F],
-                contextMenuGroupId: '4_folding',
+                contextMenuGroupId: '5_folding',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressUnfoldAll,
@@ -398,7 +392,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleNodeHighlighting',
                 label: 'Toggle Node Highlighting',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_1],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleNodeHighlighting,
@@ -407,7 +401,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleCursorDecorating',
                 label: 'Toggle Cursor Decorating',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_2],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleCursorDecorating,
@@ -416,7 +410,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleVariableDecorating',
                 label: 'Toggle Variable Decorating',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_3],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleVariableDecorating,
@@ -425,7 +419,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleChildDecorating',
                 label: 'Toggle Child Decorating',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_4],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 4,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleChildDecorating,
@@ -434,7 +428,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleParentDecorating',
                 label: 'Toggle Parent Decorating',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_5],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 5,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleParentDecorating,
@@ -443,7 +437,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleBookmarkDisplay',
                 label: 'Toggle Bookmark Display',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_6],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 6,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleBookmarkDecorating,
@@ -452,7 +446,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleNoteDisplay',
                 label: 'Toggle Note Display',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_7],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 7,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleNoteDecorating,
@@ -461,7 +455,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleTargetTreeHover',
                 label: 'Toggle Target Tree Hover',
                 keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_8],
-                contextMenuGroupId: '5_features',
+                contextMenuGroupId: '6_features',
                 contextMenuOrder: 8,
                 keybindingContext: 'condition',
                 run: this.handleKeypressToggleTargetTreeHover,
@@ -470,7 +464,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'revealCursor',
                 label: 'Reveal Cursor',
                 keybindings: [monaco.KeyCode.Space],
-                //contextMenuGroupId: '6_other',
+                //contextMenuGroupId: '8_other',
                 contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressRevealCursor,
@@ -478,8 +472,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'displayTargetTreeModal',
                 label: 'Show Target Tree',
-                keybindings: [monaco.KeyCode.KEY_S],
-                contextMenuGroupId: '6_other',
+                keybindings: [monaco.KeyCode.KEY_D],
+                contextMenuGroupId: '8_other',
                 contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayTargetTreeModal,
@@ -487,8 +481,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'displayInfoModal',
                 label: 'Show Current Node Info',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
-                contextMenuGroupId: '6_other',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_D],
+                contextMenuGroupId: '8_other',
                 contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayInfoModal,
@@ -496,8 +490,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             this.editor.addAction({
                 id: 'displayKeybindModal',
                 label: 'Show Keyboard Shortcuts',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S],
-                contextMenuGroupId: '6_other',
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_D],
+                contextMenuGroupId: '8_other',
                 contextMenuOrder: 4,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayKeybindModal,
@@ -506,12 +500,9 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 id: 'toggleKeybinds',
                 label: 'Toggle All Keybinds',
                 keybindings: [monaco.KeyCode.Tab],
-                contextMenuGroupId: '6_other',
+                contextMenuGroupId: '8_other',
                 contextMenuOrder: 5,
                 run: this.handleKeypressToggleKeybinds,
-            });
-            this.editor.onDidChangeModelContent((_event) => {
-                this.value = this.editor!.getValue();
             });
             this.editor.focus();
         }
@@ -542,58 +533,74 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
+    //-----Value-----
+    //--------------------------------------------------
+
+    /**
+     * updateValue:
+     * Handle Value change
+     */
+    private updateValue() {
+        let value = this.graph.print();
+        //this.displayComments();
+        if (value !== this.value) this.value = value;
+        if (this.editor) this.editor.setValue(this.value);
+        this.decorateNotes();
+        this.decorateBookmarks();
+    }
+
+    public handleKeypressNextSelectionQuery() {
+        this.props.nextSelectionQuery();
+    }
+
+    public handleKeypressPrevSelectionQuery() {
+        this.props.prevSelectionQuery();
+    }
+
+    //--------------------------------------------------
     //-----Basic Navigation-----
     //--------------------------------------------------
 
     public handleMouseclick(event: monaco.editor.IEditorMouseEvent) {
-        let position = event.target.position;
-        if (position && this.ctxKey && this.ctxKey.get()) {
-            this.setGrid(position);
-            this.updatePosition(position);
-        }
+        if (event.target.position && this.ctxKey && this.ctxKey.get()) this.setPosition(event.target.position);
+        //TODO
         this.addLineComment('Hello World!');
     }
 
     public handleKeypressRevealCursor() {
-        this.resetPosition();
+        if (this.editor) this.editor.revealPositionInCenter(this.lastPosition);
     }
 
     public handleKeypressLeft() {
-        this.decreaseGrid();
-        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column - 1));
+        this.setPosition(this.lastPosition.with(undefined, this.lastPosition.column - 1));
     }
 
     public handleKeypressDown() {
-        this.updatePosition(this.lastPosition.with(this.lastPosition.lineNumber + 1, undefined));
+        this.setPosition(this.lastPosition.with(this.lastPosition.lineNumber + 1, undefined), true);
     }
 
     public handleKeypressUp() {
-        this.updatePosition(this.lastPosition.with(this.lastPosition.lineNumber - 1, undefined));
+        this.setPosition(this.lastPosition.with(this.lastPosition.lineNumber - 1, undefined), true);
     }
 
     public handleKeypressRight() {
-        this.increaseGrid();
-        this.updatePosition(this.lastPosition.with(undefined, this.lastPosition.column + 1));
+        this.setPosition(this.lastPosition.with(undefined, this.lastPosition.column + 1));
     }
 
     public handleKeypressJumpRight() {
-        let position = this.lastPosition.with(undefined, this.lastPosition.column + 15);
-        this.setGrid(position);
-        this.updatePosition(position);
+        this.setPosition(this.lastPosition.with(undefined, this.lastPosition.column + 15));
     }
 
     public handleKeypressJumpLeft() {
-        let position = this.lastPosition.with(undefined, this.lastPosition.column - 15);
-        this.setGrid(position);
-        this.updatePosition(position);
+        this.setPosition(this.lastPosition.with(undefined, this.lastPosition.column - 15));
     }
 
     public handleKeypressJumpStart() {
-        this.updatePosition(this.graph.getStartPosition());
+        this.setPosition(this.graph.getStartPosition());
     }
 
     public handleKeypressJumpEnd() {
-        this.updatePosition(this.graph.getEndPosition());
+        this.setPosition(this.graph.getEndPosition());
     }
 
     //--------------------------------------------------
@@ -631,54 +638,33 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressJumpNextTarget() {
-        let target = this.graph.getNextTargetAt(this.lastPosition);
-        if (target) {
-            this.graph.setCurrent(target);
-            this.updatePosition();
-        }
+        this.graph.setCurrentNextTarget(this.lastPosition);
+        this.updatePosition();
     }
 
     public handleKeypressJumpPrevTarget() {
-        let target = this.graph.getPrevTargetAt(this.lastPosition);
-        if (target) {
-            this.graph.setCurrent(target);
-            this.updatePosition();
-        }
+        this.graph.setCurrentPrevTarget(this.lastPosition);
+        this.updatePosition();
     }
 
     public handleKeypressJumpNextBlock() {
-        let label = this.graph.getNextLabelAt(this.lastPosition);
-        if (label) {
-            this.graph.setCurrent(label);
-            this.updatePosition();
-        }
+        this.graph.setCurrentNextLabel(this.lastPosition);
+        this.updatePosition();
     }
 
     public handleKeypressJumpPrevBlock() {
-        let label = this.graph.getPrevLabelAt(this.lastPosition);
-        if (label) {
-            this.graph.setCurrent(label);
-            this.updatePosition();
-        }
+        this.graph.setCurrentPrevLabel(this.lastPosition);
+        this.updatePosition();
     }
 
-    public handleKeypressJumpBack() {
-        this.graph.setCurrentToPrevious();
+    public handleKeypressGoBack() {
+        this.graph.setCurrentBack();
         this.updatePosition();
     }
 
     //--------------------------------------------------
     //-----Input-----
     //--------------------------------------------------
-
-    public handleKeypressSearch(input: string) {
-        this.graph.searchCurrent(input);
-        this.updatePosition();
-    }
-
-    public handleKeypressToInput_Search() {
-        this.props.focusStatusInput_Search();
-    }
 
     public handleKeypressToInput_Comment() {}
 
@@ -693,6 +679,15 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         if (node && node.renamable())
             this.props.focusStatusInput_Rename(node && node.hasAlias() ? node.getAlias() : '');
         else console.log('ERROR: NODE NOT RENAMABLE');
+    }
+
+    public handleKeypressToInput_Search() {
+        this.props.focusStatusInput_Search();
+    }
+
+    public handleKeypressSearch(input: string) {
+        this.graph.searchCurrent(input);
+        this.updatePosition();
     }
 
     //--------------------------------------------------
@@ -711,12 +706,11 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private revealBookmark() {
         let bookmark = this.graph.getBookmark();
-        if (bookmark) this.updatePosition(new monaco.Position(bookmark, 0));
+        if (bookmark) this.setPosition(new monaco.Position(bookmark, 0));
     }
 
     public handleKeypressRevealBookmark() {
         this.revealBookmark();
-        this.resetPosition();
     }
 
     //--------------------------------------------------
@@ -727,7 +721,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         let lines = this.value.split('\n');
         lines[this.lastPosition.lineNumber - 1] += '\t// ' + input;
         this.value = lines.join('\n');
-        console.log(this.value);
+        //console.log(this.value);
     }
 
     public handleKeypressComment(input: string) {}
@@ -760,14 +754,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public handleKeypressRevealNextNote() {
         let note = this.graph.getNextNoteAt(this.lastPosition);
-        if (note) this.updatePosition(note.range.getStartPosition());
-        else this.resetPosition();
+        if (note) this.setPosition(note.range.getStartPosition());
     }
 
     public handleKeypressRevealPrevNote() {
         let note = this.graph.getPrevNoteAt(this.lastPosition);
-        if (note) this.updatePosition(note.range.getStartPosition());
-        else this.resetPosition();
+        if (note) this.setPosition(note.range.getStartPosition());
     }
 
     //--------------------------------------------------
@@ -795,109 +787,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Feature Toggle-----
-    //--------------------------------------------------
-
-    public handleKeypressToggleKeybinds() {
-        this.props.toggleButton();
-        if (this.ctxKey) {
-            this.ctxKey.set(!this.ctxKey.get());
-            if (this.editor && this.ctxKey.get()) {
-                this.editor.focus();
-                let position = this.editor.getPosition();
-                if (position) {
-                    this.setGrid(position);
-                    this.updatePosition(position);
-                }
-            }
-        }
-    }
-
-    public handleKeypressToggleNodeHighlighting() {
-        this.setState({
-            activateNodeHighlighting: !this.state.activateNodeHighlighting,
-        });
-    }
-
-    public handleKeypressToggleCursorDecorating() {
-        this.setState({
-            activateCursorDecorating: !this.state.activateCursorDecorating,
-        });
-        this.cursorDecorations = [];
-        this.decorateCursor();
-    }
-
-    public handleKeypressToggleVariableDecorating() {
-        this.setState({
-            activateVariableDecorating: !this.state.activateVariableDecorating,
-        });
-        this.variableDecorations = [];
-        this.updateDecorations();
-    }
-
-    public handleKeypressToggleChildDecorating() {
-        this.setState({
-            activateChildDecorating: !this.state.activateChildDecorating,
-        });
-        this.updatePosition();
-    }
-
-    public handleKeypressToggleParentDecorating() {
-        this.setState({
-            activateParentDecorating: !this.state.activateParentDecorating,
-        });
-        this.updatePosition();
-    }
-
-    public handleKeypressToggleBookmarkDecorating() {
-        this.setState({
-            activateBookmarkDecorating: !this.state.activateBookmarkDecorating,
-        });
-        this.decorateBookmarks();
-    }
-
-    public handleKeypressToggleNoteDecorating() {
-        this.setState({
-            activateNoteDecorating: !this.state.activateNoteDecorating,
-        });
-        this.decorateNotes();
-    }
-
-    public handleKeypressToggleTargetTreeHover() {
-        this.setState({
-            activateTargetTreeHover: !this.state.activateTargetTreeHover,
-        });
-    }
-
-    //--------------------------------------------------
-    //-----Folding-----
-    //--------------------------------------------------
-
-    public handleKeypressFoldAll() {
-        if (this.editor) this.editor.trigger('fold', 'editor.foldAll', null);
-    }
-
-    public handleKeypressFoldAllBlocks() {
-        if (this.editor) this.editor.trigger('foldBlockComments', 'editor.foldAllBlockComments', null);
-    }
-
-    public handleKeypressUnfoldAll() {
-        if (this.editor) this.editor.trigger('unfold', 'editor.unfoldAll', null);
-    }
-
-    //--------------------------------------------------
-    //-----Query Selection-----
-    //--------------------------------------------------
-
-    public handleKeypressNextSelectionQuery() {
-        this.props.nextSelectionQuery();
-    }
-
-    public handleKeypressPrevSelectionQuery() {
-        this.props.prevSelectionQuery();
-    }
-
-    //--------------------------------------------------
     //-----Modals-----
     //--------------------------------------------------
 
@@ -922,90 +811,155 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----General-----
+    //-----Folding-----
+    //--------------------------------------------------
+
+    public handleKeypressFoldAll() {
+        if (this.editor) this.editor.trigger('fold', 'editor.foldAll', null);
+    }
+
+    public handleKeypressFoldAllBlocks() {
+        if (this.editor) this.editor.trigger('foldBlockComments', 'editor.foldAllBlockComments', null);
+    }
+
+    public handleKeypressUnfoldAll() {
+        if (this.editor) this.editor.trigger('unfold', 'editor.unfoldAll', null);
+    }
+
+    //--------------------------------------------------
+    //-----Toggle-----
+    //--------------------------------------------------
+
+    public handleKeypressToggleKeybinds() {
+        this.props.toggleButton();
+        if (this.ctxKey) {
+            this.ctxKey.set(!this.ctxKey.get());
+            if (this.editor && this.ctxKey.get()) {
+                this.editor.focus();
+                let position = this.editor.getPosition();
+                if (position) this.setPosition(position);
+            }
+        }
+    }
+
+    public handleKeypressToggleNodeHighlighting() {
+        this.setState({
+            activateNodeHighlighting: !this.state.activateNodeHighlighting,
+        });
+    }
+
+    public handleKeypressToggleCursorDecorating() {
+        this.setState({
+            activateCursorDecorating: !this.state.activateCursorDecorating,
+        });
+        this.decorateCursor();
+    }
+
+    public handleKeypressToggleVariableDecorating() {
+        this.setState({
+            activateVariableDecorating: !this.state.activateVariableDecorating,
+        });
+        this.decorateVariable(this.lastPosition);
+    }
+
+    public handleKeypressToggleChildDecorating() {
+        this.setState({
+            activateChildDecorating: !this.state.activateChildDecorating,
+        });
+        this.decorateTree(this.lastPosition);
+    }
+
+    public handleKeypressToggleParentDecorating() {
+        this.setState({
+            activateParentDecorating: !this.state.activateParentDecorating,
+        });
+        this.decorateTree(this.lastPosition);
+    }
+
+    public handleKeypressToggleBookmarkDecorating() {
+        this.setState({
+            activateBookmarkDecorating: !this.state.activateBookmarkDecorating,
+        });
+        this.decorateBookmarks();
+    }
+
+    public handleKeypressToggleNoteDecorating() {
+        this.setState({
+            activateNoteDecorating: !this.state.activateNoteDecorating,
+        });
+        this.decorateNotes();
+    }
+
+    public handleKeypressToggleTargetTreeHover() {
+        this.setState({
+            activateTargetTreeHover: !this.state.activateTargetTreeHover,
+        });
+    }
+
+    //--------------------------------------------------
+    //-----Position-----
     //--------------------------------------------------
 
     /**
-     * updateValue:
-     * Handle Value change
+     * setPosition:
+     * Handle Position change
      */
-    private updateValue() {
-        let value = this.graph.print();
-        //this.displayComments();
-        if (value !== this.value) this.value = value;
-        if (this.editor) this.editor.setValue(this.value);
-        this.decorateNotes();
-        this.decorateBookmarks();
+    private setPosition(position: monaco.Position, grid?: true) {
+        if (this.editor && !position.equals(this.lastPosition)) {
+            if (grid) position = this.applyGrid(position);
+            else this.setGrid(position);
+            this.lastPosition = this.validate(position);
+            this.editor.setPosition(this.lastPosition);
+            this.editor.revealPositionInCenterIfOutsideViewport(this.lastPosition);
+            this.decorateCursor();
+            this.decorateTree(this.lastPosition);
+            this.graph.updateCurrent(this.lastPosition);
+            let current = this.graph.getCurrent();
+            this.props.updateStatusInput(
+                (current ? current.getAlias() : '') + this.graph.getNoteStringAt(this.lastPosition),
+                this.lastPosition.lineNumber,
+                this.lastPosition.column,
+            );
+            this.props.closeModals();
+            console.log(current);
+        }
     }
 
     /**
      * updatePosition:
-     * Handle Position change
+     * Update Position to match the current Node of the Graph
      */
-    private updatePosition(position?: monaco.Position) {
+    private updatePosition() {
         let current = this.graph.getCurrent();
-        if (!position && current) {
-            position = current.getRange().getStartPosition();
-            this.setGrid(position);
-        } else {
-            if (!position) position = this.lastPosition;
-            position = this.validate(position);
-            current = this.graph.getNodeAt(position);
-            this.graph.setCurrent(current);
-        }
-        this.lastPosition = position;
-        this.props.updateStatusInput(
-            (current ? current.getAlias() : '') + this.graph.getNoteStringAt(this.lastPosition),
-            { line: position.lineNumber, column: position.column },
-        );
-        this.props.closeModals();
-        this.editor!.setPosition(position);
-        this.editor!.revealPositionInCenterIfOutsideViewport(position);
-        this.decorateCursor();
-        this.decorateTree(position);
-        //console.log(this.lastPosition);
-        //console.log(this.grid);
-        console.log(current);
+        if (current) this.setPosition(current.getRange().getStartPosition());
     }
 
+    /**
+     * resetPosition:
+     * Reset to last Position
+     */
     private resetPosition() {
-        this.setGrid(this.lastPosition);
-        this.updatePosition(this.lastPosition);
+        this.setPosition(this.lastPosition);
     }
-
-    //--------------------------------------------------
-    //-----Grid-----
-    //--------------------------------------------------
 
     private setGrid(position: monaco.Position) {
-        let max = this.getLineLength(position.lineNumber);
-        this.grid = max > position.column ? position.column : max;
+        this.grid = position.column;
     }
 
-    private decreaseGrid() {
-        let max = this.getLineLength(this.lastPosition.lineNumber);
-        this.grid = max > this.grid ? this.grid : max;
-        this.grid = this.grid > 1 ? this.grid - 1 : 1;
+    private applyGrid(position: monaco.Position) {
+        return position.with(undefined, this.grid > position.column ? this.grid : position.column);
     }
 
-    private increaseGrid() {
-        let max = this.getLineLength(this.lastPosition.lineNumber);
-        this.grid = max > this.grid ? this.grid + 1 : max;
-    }
-
+    /**
+     * validate:
+     * Return valid Position
+     */
     private validate(position: monaco.Position) {
         let maxL = this.graph.getEndPosition().lineNumber;
         let maxC = this.getLineLength(position.lineNumber);
-        let lineNumber = maxL < position.lineNumber ? maxL : position.lineNumber > 0 ? position.lineNumber : 1;
-        let column =
-            maxC >= this.grid && this.grid > position.column
-                ? this.grid
-                : position.column > maxC || this.grid > maxC
-                ? maxC
-                : position.column > 0
-                ? position.column
-                : 1;
-        return new monaco.Position(lineNumber, column);
+        let line = maxL < position.lineNumber ? maxL : position.lineNumber > 0 ? position.lineNumber : 1;
+        let column = maxC < position.column ? maxC : position.column > 0 ? position.column : 1;
+        return new monaco.Position(line, column);
     }
 
     private getLineLength(line: number) {
@@ -1015,7 +969,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Manage Decorations-----
+    //-----Decorations-----
     //--------------------------------------------------
 
     /**
@@ -1223,7 +1177,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     //--------------------------------------------------
-    //-----Manage Language Features-----
+    //-----Language Features-----
     //--------------------------------------------------
 
     private findNodeHighlights(position: monaco.Position) {

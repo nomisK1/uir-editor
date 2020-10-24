@@ -1,43 +1,43 @@
 `
 Navigation:
 
-    left-Arrow | h  : left
-    up-Arrow | j    : down
-    down-Arrow | k  : up
-    right-Arrow | l : right
+    space : revealCursor
+
+    left-arrow | h  : left
+    up-arrow | j    : down
+    down-arrow | k  : up
+    right-arrow | l : right
     
-    shift + (left-Arrow | h)  : cycleChildren
-    shift + (up-Arrow | j)    : jumpChild
-    shift + (down-Arrow | k)  : jumpParent
-    shift + (right-Arrow | l) : cycleParents
+    shift + (left-arrow | h)  : cycleChildren
+    shift + (up-arrow | j)    : jumpChild
+    shift + (down-arrow | k)  : jumpParent
+    shift + (right-arrow | l) : cycleParents
 
-    m                    : moveRight
-    shift + m            : moveLeft
+    u         : jumpLeft
+    shift + u : jumpStart
 
-    Enter | n            : jumpNextOccurrence
-    shift + (Enter | n)  : jumpPrevOccurrence
+    i         : jumpRight
+    shift + i : jumpEnd
+
+    backspace | us-slash : searchNode
+
+    enter         : jumpNextOccurrence
+    shift + enter : jumpPrevOccurrence
 
     t (insideDefinition) : jumpNextTarget
     shift + t            : jumpPrevTarget
 
-    g (insideDefinition) : jumpNextBlock
-    shift + g            : jumpPrevBlock
+    r (insideDefinition) : jumpNextBlock
+    shift + r            : jumpPrevBlock
     
-    v         : jumpStart
-    shift + v : jumpEnd
-    
-    u      : jumpBack
+    g : goBack
 
 
 Features:
 
-    Space:               : revealCursor
-    
-    Backspace | US-Slash : searchNode
-
-    s (insideDefinition) : showTargetTree
-    shift + s            : showCurrentNodeInfo
-    shift + alt + s      : showKeyboardShortcuts
+    d (insideDefinition) : displayTargetTree
+    shift + d            : displayCurrentNodeInfo
+    shift + alt + d      : displayKeyboardShortcuts
 
     b               : addBookmark
     shift + b       : revealBookmark
@@ -47,12 +47,15 @@ Features:
     shift + c       : removeComment
     shift + alt + c : resetAllComments
 
-    x               : revealNextComment
-    shift + x       : revealPrevComment
+    n               : addNote
+    shift + n       : removeNote
+    shift + alt + n : resetAllNotes
+    m               : revealNextNote
+    shift + m       : revealPrevNote
 
-    r               : renameNode
-    shift + r       : unnameNode
-    shift + alt + r : resetAllNames
+    v               : renameNode
+    shift + v       : unnameNode
+    shift + alt + v : resetAllNames
 
     shift + alt + f : foldAll
     shift + f       : foldBlocks
@@ -61,18 +64,19 @@ Features:
 
 Editor:
 
-    tab      : toggleAllKeybinds
-
     q         : nextQuery
     shift + q : prevQuery
     
     shift + 1 : toggleNodeHighlighting
-    shift + 2 : toggleVariableDecorating
-    shift + 3 : toggleChildDecorating
-    shift + 4 : toggleParentDecorating
-    shift + 5 : toggleBookmarkDisplay
-    shift + 6 : toggleCommentDisplay
-    shift + 7 : toggleTargetTreeHover
+    shift + 2 : toggleCursorDecorating
+    shift + 3 : toggleVariableDecorating
+    shift + 4 : toggleChildDecorating
+    shift + 5 : toggleParentDecorating
+    shift + 6 : toggleBookmarkDecorating
+    shift + 7 : toggleNoteDecorating
+    shift + 8 : toggleTargetTreeHover
+
+    tab      : toggleAllKeybinds
 
 
 Other:
