@@ -423,7 +423,7 @@ class instruction extends _node {
             else if (o instanceof constant) compare = findConstantRangeIn(o, compare, indentation);
             else if (o instanceof target) compare = findTargetRangeIn(o, compare, indentation);
         });
-        this.range = new monaco.Range(this.line, indentation, this.line, this.toString().length + indentation);
+        this.range = new monaco.Range(this.line, 0, this.line, this.toString().length + indentation);
     }
 
     private printOperands() {

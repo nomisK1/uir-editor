@@ -655,8 +655,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressGoBack() {
-        this.graph.setCurrentBack();
-        this.updatePosition();
+        if (this.graph.setCurrentBack()) this.updatePosition();
     }
 
     //--------------------------------------------------

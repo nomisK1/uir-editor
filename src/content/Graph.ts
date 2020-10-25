@@ -343,8 +343,8 @@ class Graph {
         this.setCurrent(this.getNodeAt(position));
     }
 
-    private setCurrent(node: _node | null) {
-        if (this.current && this.current !== node && !this.previous.includes(this.current))
+    private setCurrent(node: _node | null, back?: true) {
+        if (!back && this.current && this.current !== node && !(this.current instanceof block))
             this.previous.push(this.current);
         this.current = node;
         this.next = undefined;
@@ -393,15 +393,11 @@ class Graph {
 
     public setCurrentBack() {
         let last = this.previous.pop();
-        this.current = last ? last : null;
-        this.next = undefined;
-        if (this.current instanceof variable) {
-            this.currentParents = this.getVariableParents(this.current);
-            this.currentChildren = this.getVariableChildren(this.current);
-        } else {
-            this.currentParents = [];
-            this.currentChildren = [];
+        if (last) {
+            this.setCurrent(last, true);
+            return true;
         }
+        return false;
     }
 
     public setCurrentNextTarget(position: monaco.Position) {
