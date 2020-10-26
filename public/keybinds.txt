@@ -35,9 +35,9 @@ Navigation:
 
 Features:
 
-    d (insideDefinition) : displayTargetTree
-    shift + d            : displayCurrentNodeInfo
-    shift + alt + d      : displayKeyboardShortcuts
+    s (insideDefinition) : showTargetTree
+    shift + s            : showCurrentNodeInfo
+    shift + alt + s      : showKeyboardShortcuts
 
     b               : addBookmark
     shift + b       : revealBookmark

@@ -459,38 +459,29 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 run: this.handleKeypressToggleTargetTreeHover,
             });
             this.editor.addAction({
-                id: 'revealCursor',
-                label: 'Reveal Cursor',
-                keybindings: [monaco.KeyCode.Space],
-                //contextMenuGroupId: '8_other',
-                contextMenuOrder: 1,
-                keybindingContext: 'condition',
-                run: this.handleKeypressRevealCursor,
-            });
-            this.editor.addAction({
                 id: 'displayTargetTreeModal',
                 label: 'Show Target Tree',
-                keybindings: [monaco.KeyCode.KEY_D],
+                keybindings: [monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '8_other',
-                contextMenuOrder: 2,
+                contextMenuOrder: 1,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayTargetTreeModal,
             });
             this.editor.addAction({
                 id: 'displayInfoModal',
                 label: 'Show Current Node Info',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_D],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '8_other',
-                contextMenuOrder: 3,
+                contextMenuOrder: 2,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayInfoModal,
             });
             this.editor.addAction({
                 id: 'displayKeybindModal',
                 label: 'Show Keyboard Shortcuts',
-                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_D],
+                keybindings: [monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S],
                 contextMenuGroupId: '8_other',
-                contextMenuOrder: 4,
+                contextMenuOrder: 3,
                 keybindingContext: 'condition',
                 run: this.handleKeypressDisplayKeybindModal,
             });
@@ -499,8 +490,17 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 label: 'Toggle All Keybinds',
                 keybindings: [monaco.KeyCode.Tab],
                 contextMenuGroupId: '8_other',
-                contextMenuOrder: 5,
+                contextMenuOrder: 4,
                 run: this.handleKeypressToggleKeybinds,
+            });
+            this.editor.addAction({
+                id: 'revealCursor',
+                label: 'Reveal Cursor',
+                keybindings: [monaco.KeyCode.Space],
+                //contextMenuGroupId: '8_other',
+                contextMenuOrder: 5,
+                keybindingContext: 'condition',
+                run: this.handleKeypressRevealCursor,
             });
             this.editor.focus();
         }
