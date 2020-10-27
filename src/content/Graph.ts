@@ -765,7 +765,9 @@ class Graph {
     public getNoteHoverAt(position: monaco.Position) {
         let node = this.getNodeAt(position);
         if (!node) return null;
-        return { range: node.getRange(), text: this.getNoteStringAt(node.getRange().getStartPosition()) };
+        let text = this.getNoteStringAt(node.getRange().getStartPosition());
+        if (text) return { range: node.getRange(), text };
+        return null;
     }
 
     private getNoteInfoAt(position: monaco.Position) {
