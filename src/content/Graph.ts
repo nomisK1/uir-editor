@@ -219,7 +219,7 @@ class Graph {
         return targets;
     }
 
-    public getVariableSiblings(variable: variable | null) {
+    public getVariableSiblings(variable: variable) {
         let vars: variable[] = [];
         if (variable !== null && variable.getContext() !== null)
             if (variable.isGlobal()) vars.push(...this.getVariablesByName(variable.getName()));
@@ -707,17 +707,25 @@ class Graph {
         return this.getNotesAt(position)[0];
     }
 
+    private getRelatedNotesAt(position: monaco.Position) {
+        let notes = this.getNotesAt(position);
+        let node = this.getNodeAt(position);
+        let nodes: _node[] = [];
+        if (node instanceof variable) nodes = this.getVariableSiblings(node);
+        if (node instanceof target) nodes = this.getRelatedTargets(node);
+        let relatedNotes = this.notes.filter((n) => n.node && n.node !== node && nodes.includes(n.node));
+        return notes.length ? [notes[0], ...relatedNotes, ...notes.slice(1)] : notes;
+    }
+
     public getNoteStringAt(position: monaco.Position) {
-        return this.notes.length
-            ? this.getNotesAt(position)
-                  .map((n) => (n.node ? ' ' : '') + '"' + n.text + '"')
-                  .join('')
-            : '';
+        let notes = this.getRelatedNotesAt(position);
+        return notes.length ? ' (' + notes.map((n) => '"' + n.text + '"').join(', ') + ')' : '';
     }
 
     private getNoteInfoAt(position: monaco.Position) {
-        return this.notes.length
-            ? this.getNotesAt(position)
+        let notes = this.getRelatedNotesAt(position);
+        return notes.length
+            ? this.getRelatedNotesAt(position)
                   .map(
                       (n) =>
                           '@' +

@@ -1015,9 +1015,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     private getVariableDecorationsAt(position: monaco.Position) {
         let variable = this.graph.getVariableAt(position);
-        let vars = this.graph.getVariableSiblings(variable);
-        let ranges = vars.map((v) => v.getRange());
-        return ranges;
+        if (variable) {
+            let vars = this.graph.getVariableSiblings(variable);
+            let ranges = vars.map((v) => v.getRange());
+            return ranges;
+        }
+        return [];
     }
 
     private setVariableDecoration(range: monaco.Range) {
