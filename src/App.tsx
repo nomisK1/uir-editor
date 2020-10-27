@@ -259,14 +259,14 @@ class App extends React.Component<IAppProps, IAppState> {
         );
         return (
             <div>
+                {ifModal}
+                {kbModal}
+                {ttModal}
                 <div className="ui">
                     {selector}
                     {input}
                     {button}
                 </div>
-                {ifModal}
-                {kbModal}
-                {ttModal}
                 {editor}
             </div>
         );
