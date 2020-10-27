@@ -163,21 +163,15 @@ class Graph {
         return null;
     }
 
-    private getBlockAt(position: monaco.Position): block | null {
-        let component = this.getComponentAt(position);
-        if (component instanceof definition) return component.getBlockAt(position);
-        return null;
-    }
-
-    public getNodeAt(position: monaco.Position) {
+    private getNodeAt(position: monaco.Position) {
         let component = this.getComponentAt(position);
         if (component) return component.getNodeAt(position);
         return null;
     }
 
-    public getVariableAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node instanceof variable) return node;
+    private getBlockAt(position: monaco.Position): block | null {
+        let component = this.getComponentAt(position);
+        if (component instanceof definition) return component.getBlockAt(position);
         return null;
     }
 
@@ -185,7 +179,8 @@ class Graph {
     //-----Connect Nodes-----
     //--------------------------------------------------
 
-    public getRelatedNodes(node: _node | null) {
+    public getRelatedNodesAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
         let nodes: _node[] = [];
         if (node !== null) {
             nodes.push(node);
@@ -219,7 +214,7 @@ class Graph {
         return targets;
     }
 
-    public getVariableSiblings(variable: variable) {
+    private getRelatedVariables(variable: variable) {
         let vars: variable[] = [];
         if (variable !== null && variable.getContext() !== null)
             if (variable.isGlobal()) vars.push(...this.getVariablesByName(variable.getName()));
@@ -263,11 +258,21 @@ class Graph {
         return children;
     }
 
-    public getParentTree(variable: variable) {
+    public getVariableSiblingsAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        return node instanceof variable ? this.getRelatedVariables(node) : [];
+    }
+
+    public getCurrentSiblings() {
+        return this.current ? this.getVariableSiblingsAt(this.current.getRange().getStartPosition()) : [];
+    }
+
+    public getParentTree() {
+        if (!(this.current instanceof variable)) return [];
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
-        this.getVariableSiblings(variable).forEach((v) => tree.push({ variable: v, depth }));
-        let parents = this.getVariableParents(variable);
+        this.getRelatedVariables(this.current).forEach((v) => tree.push({ variable: v, depth }));
+        let parents = this.getVariableParents(this.current);
         while (parents.length > 0) {
             let grandparents: variable[] = [];
             depth++;
@@ -285,18 +290,19 @@ class Graph {
         return tree;
     }
 
-    public getChildTree(variable: variable) {
+    public getChildTree() {
+        if (!(this.current instanceof variable)) return [];
         let tree: { variable: variable; depth: number }[] = [];
         let depth = 0;
-        this.getVariableSiblings(variable).forEach((v) => tree.push({ variable: v, depth }));
-        let children = this.getVariableChildren(variable);
+        this.getRelatedVariables(this.current).forEach((v) => tree.push({ variable: v, depth }));
+        let children = this.getVariableChildren(this.current);
         while (children.length > 0) {
             let grandchildren: variable[] = [];
             depth--;
             // eslint-disable-next-line
             children.forEach((c) => {
                 if (!tree.map((t) => t.variable).includes(c)) {
-                    this.getVariableSiblings(c).forEach((v) => tree.push({ variable: v, depth }));
+                    this.getRelatedVariables(c).forEach((v) => tree.push({ variable: v, depth }));
                     grandchildren.push(...this.getVariableChildren(c));
                 }
             });
@@ -323,12 +329,16 @@ class Graph {
 
     public setCurrentParent() {
         let parent = this.currentParents[this.next ? this.currentParents.length - 1 : 0];
-        if (parent) this.setCurrent(parent);
+        if (!parent) return false;
+        this.setCurrent(parent);
+        return true;
     }
 
     public setCurrentChild() {
         let child = this.currentChildren[this.next ? this.currentChildren.length - 1 : 0];
-        if (child) this.setCurrent(child);
+        if (!child) return false;
+        this.setCurrent(child);
+        return true;
     }
 
     //--------------------------------------------------
@@ -365,10 +375,14 @@ class Graph {
                     !nodes[i].getRange().getStartPosition().isBeforeOrEqual(this.current.getRange().getStartPosition())
                 ) {
                     this.setCurrent(nodes[i]);
-                    return;
+                    return true;
                 }
-            this.setCurrent(nodes[0]);
+            if (nodes[0] !== this.current) {
+                this.setCurrent(nodes[0]);
+                return true;
+            }
         }
+        return false;
     }
 
     public setCurrentPrevOccurrence() {
@@ -377,18 +391,24 @@ class Graph {
             for (let i = nodes.length - 1; i >= 0; i--)
                 if (nodes[i].getRange().getStartPosition().isBefore(this.current.getRange().getStartPosition())) {
                     this.setCurrent(nodes[i]);
-                    return;
+                    return true;
                 }
-            this.setCurrent(nodes[nodes.length - 1]);
+            if (nodes[0] !== this.current) {
+                this.setCurrent(nodes[nodes.length - 1]);
+                return true;
+            }
         }
+        return false;
     }
 
     public searchCurrent(input: string) {
-        if (this.current && this.current.getAlias() === input) this.setCurrentNextOccurrence();
-        else {
-            let current = this.getNodeByAlias(input)[0];
-            this.setCurrent(current ? current : null);
+        if (this.current && this.current.getAlias() === input) return this.setCurrentNextOccurrence();
+        let find = this.getNodeByAlias(input)[0];
+        if (find && find !== this.current) {
+            this.setCurrent(find ? find : null);
+            return true;
         }
+        return false;
     }
 
     public setCurrentBack() {
@@ -400,15 +420,20 @@ class Graph {
         return false;
     }
 
-    public setCurrentNextTarget(position: monaco.Position) {
-        let target = this.getNextTargetAt(position);
-        if (target) this.setCurrent(target);
+    public setCurrentNextTarget() {
+        if (this.current) {
+            let target = this.getNextTargetAt(this.current.getRange().getStartPosition());
+            if (target && target !== this.current) {
+                this.setCurrent(target);
+                return true;
+            }
+        }
+        return false;
     }
 
     private getNextTargetAt(position: monaco.Position): target | null {
-        let node = this.getNodeAt(position);
-        if (node) {
-            let context = node.getOuterContext();
+        if (this.current) {
+            let context = this.current.getOuterContext();
             if (context instanceof definition) {
                 let targets = context.getTargets();
                 for (let i = 0; i < targets.length; i++)
@@ -419,15 +444,20 @@ class Graph {
         return null;
     }
 
-    public setCurrentPrevTarget(position: monaco.Position) {
-        let target = this.getPrevTargetAt(position);
-        if (target) this.setCurrent(target);
+    public setCurrentPrevTarget() {
+        if (this.current) {
+            let target = this.getPrevTargetAt(this.current.getRange().getStartPosition());
+            if (target && target !== this.current) {
+                this.setCurrent(target);
+                return true;
+            }
+        }
+        return false;
     }
 
     private getPrevTargetAt(position: monaco.Position): target | null {
-        let node = this.getNodeAt(position);
-        if (node) {
-            let context = node.getOuterContext();
+        if (this.current) {
+            let context = this.current.getOuterContext();
             if (context instanceof definition) {
                 let targets = context.getTargets();
                 for (let i = targets.length - 1; i >= 0; i--)
@@ -438,20 +468,25 @@ class Graph {
         return null;
     }
 
-    public setCurrentNextLabel(position: monaco.Position) {
-        let label = this.getNextLabelAt(position);
-        if (label) this.setCurrent(label);
+    public setCurrentNextLabel() {
+        if (this.current) {
+            let label = this.getNextLabelAt(this.current.getRange().getStartPosition());
+            if (label && label !== this.current) {
+                this.setCurrent(label);
+                return true;
+            }
+        }
+        return false;
     }
 
     private getNextLabelAt(position: monaco.Position): label | null {
-        let node = this.getNodeAt(position);
-        if (node) {
-            let context = node.getOuterContext();
+        if (this.current) {
+            let context = this.current.getOuterContext();
             if (context instanceof definition) {
                 let labels = context.getLabels();
-                if (node instanceof target && !(node instanceof label)) {
+                if (this.current instanceof target && !(this.current instanceof label)) {
                     for (let i = 0; i < labels.length; i++)
-                        if (labels[i].getAlias() === node.getAlias()) return labels[i];
+                        if (labels[i].getAlias() === this.current.getAlias()) return labels[i];
                 } else {
                     for (let i = 0; i < labels.length; i++)
                         if (!labels[i].getRange().getStartPosition().isBeforeOrEqual(position)) return labels[i];
@@ -462,20 +497,25 @@ class Graph {
         return null;
     }
 
-    public setCurrentPrevLabel(position: monaco.Position) {
-        let label = this.getPrevLabelAt(position);
-        if (label) this.setCurrent(label);
+    public setCurrentPrevLabel() {
+        if (this.current) {
+            let label = this.getPrevLabelAt(this.current.getRange().getStartPosition());
+            if (label && label !== this.current) {
+                this.setCurrent(label);
+                return true;
+            }
+        }
+        return false;
     }
 
     private getPrevLabelAt(position: monaco.Position): label | null {
-        let node = this.getNodeAt(position);
-        if (node) {
-            let context = node.getOuterContext();
+        if (this.current) {
+            let context = this.current.getOuterContext();
             if (context instanceof definition) {
                 let labels = context.getLabels();
-                if (node instanceof target && !(node instanceof label)) {
+                if (this.current instanceof target && !(this.current instanceof label)) {
                     for (let i = labels.length - 1; i >= 0; i--)
-                        if (labels[i].getAlias() === node.getAlias()) return labels[i];
+                        if (labels[i].getAlias() === this.current.getAlias()) return labels[i];
                 } else {
                     for (let i = labels.length - 1; i >= 0; i--)
                         if (labels[i].getRange().getStartPosition().isBefore(position)) return labels[i];
@@ -656,11 +696,12 @@ class Graph {
 
     public addNoteAt(text: string, position: monaco.Position) {
         if (text) {
-            let node = this.getNodeAt(position);
             return this.addNote(
                 text,
-                node ? node : null,
-                node ? node.getRange() : new monaco.Range(position.lineNumber, 1, position.lineNumber, 1),
+                this.current ? this.current : null,
+                this.current
+                    ? this.current.getRange()
+                    : new monaco.Range(position.lineNumber, 1, position.lineNumber, 1),
             );
         }
         return this.removeNoteAt(position);
@@ -706,20 +747,25 @@ class Graph {
     public getOuterNoteAt(position: monaco.Position) {
         return this.getNotesAt(position)[0];
     }
-
     private getRelatedNotesAt(position: monaco.Position) {
         let notes = this.getNotesAt(position);
         let node = this.getNodeAt(position);
         let nodes: _node[] = [];
-        if (node instanceof variable) nodes = this.getVariableSiblings(node);
+        if (node instanceof variable) nodes = this.getRelatedVariables(node);
         if (node instanceof target) nodes = this.getRelatedTargets(node);
         let relatedNotes = this.notes.filter((n) => n.node && n.node !== node && nodes.includes(n.node));
-        return notes.length ? [notes[0], ...relatedNotes, ...notes.slice(1)] : notes;
+        return notes.length ? [notes[0], ...relatedNotes, ...notes.slice(1)] : relatedNotes.length ? relatedNotes : [];
     }
 
     public getNoteStringAt(position: monaco.Position) {
         let notes = this.getRelatedNotesAt(position);
         return notes.length ? ' (' + notes.map((n) => '"' + n.text + '"').join(', ') + ')' : '';
+    }
+
+    public getNoteHoverAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (!node) return null;
+        return { range: node.getRange(), text: this.getNoteStringAt(node.getRange().getStartPosition()) };
     }
 
     private getNoteInfoAt(position: monaco.Position) {
@@ -804,7 +850,7 @@ class Graph {
             node.setAlias(alias);
             node.getContext()!.findRanges();
             if (node instanceof variable)
-                this.getVariableSiblings(node).forEach((s) => {
+                this.getRelatedVariables(node).forEach((s) => {
                     s.setAlias(alias);
                     s.getContext()!.findRanges();
                 });
@@ -815,21 +861,17 @@ class Graph {
                 });
             this.updateNotes();
             this.setLocalStorageAliases();
-            //console.log('RENAME');
             return true;
-        } else {
-            //console.log('ERROR: RENAME FAILED');
-            return false;
         }
+        return false;
     }
 
-    public setAliasAt(alias: string, position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node) {
-            if (alias && alias !== node.getName()) {
-                return this.setAlias(alias, node);
+    public addAlias(alias: string) {
+        if (this.current) {
+            if (alias && alias !== this.current.getName()) {
+                return this.setAlias(alias, this.current);
             }
-            return this.resetAlias(node);
+            return this.resetAlias(this.current);
         }
         return false;
     }
@@ -840,7 +882,7 @@ class Graph {
             node.resetAlias();
             node.getContext()!.findRanges();
             if (node instanceof variable)
-                this.getVariableSiblings(node).forEach((s) => {
+                this.getRelatedVariables(node).forEach((s) => {
                     s.resetAlias();
                     s.getContext()!.findRanges();
                 });
@@ -852,16 +894,13 @@ class Graph {
             this.updateNotes();
             this.removeLocalStorageAliases();
             this.setLocalStorageAliases();
-            //console.log('UNNAME');
             return true;
         }
-        //console.log('ERROR: UNNAME FAILED');
         return false;
     }
 
-    public resetAliasAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node) return this.resetAlias(node);
+    public removeAlias() {
+        if (this.current) return this.resetAlias(this.current);
         return false;
     }
 
@@ -883,20 +922,19 @@ class Graph {
     //-----Handle TargetTree-----
     //--------------------------------------------------
 
-    public getTargetTreeString(node: _node | null) {
-        if (node instanceof block) return new TargetTree({ root: node.getLabel() }).print();
-        if (node instanceof target) return new TargetTree({ root: node }).print();
+    public getTargetTreeHoverAt(position: monaco.Position) {
+        let node = this.getNodeAt(position);
+        if (node instanceof block)
+            return { range: node.getRange(), tree: new TargetTree({ root: node.getLabel() }).print() };
+        if (node instanceof target) return { range: node.getRange(), tree: new TargetTree({ root: node }).print() };
         return null;
     }
 
-    public getTargetTreeDataAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (!node) return null;
-        if (node instanceof target) return new TargetTree({ root: node }).toData();
-        else {
-            let block = this.getBlockAt(node.getRange().getStartPosition());
-            if (block) return new TargetTree({ root: block.getLabel() }).toData();
-        }
+    public getTargetTreeData() {
+        if (!this.current) return null;
+        if (this.current instanceof target) return new TargetTree({ root: this.current }).toData();
+        let block = this.getBlockAt(this.current.getRange().getStartPosition());
+        if (block) return new TargetTree({ root: block.getLabel() }).toData();
         return null;
     }
 
@@ -904,15 +942,12 @@ class Graph {
     //-----Handle Info-----
     //--------------------------------------------------
 
-    public getInfoAt(position: monaco.Position) {
-        let node = this.getNodeAt(position);
-        if (node) {
-            let info = node.getInfo();
-            let notes = this.getNoteInfoAt(position);
-            if (notes) info.push('\n\nNOTES:\n' + notes);
-            return info;
-        }
-        return null;
+    public getInfoData() {
+        if (!this.current) return null;
+        let info = this.current.getInfo();
+        let notes = this.getNoteInfoAt(this.current.getRange().getStartPosition());
+        if (notes) info.push('\n\nNOTES:\n' + notes);
+        return info;
     }
 
     //--------------------------------------------------
@@ -921,9 +956,7 @@ class Graph {
 
     public getFoldingRanges() {
         let ranges: { range: monaco.Range; definition?: boolean }[] = [];
-        this.getDefinitions().forEach((d) => {
-            ranges.push(...d.getFoldingRanges());
-        });
+        this.getDefinitions().forEach((d) => ranges.push(...d.getFoldingRanges()));
         return ranges;
     }
 }

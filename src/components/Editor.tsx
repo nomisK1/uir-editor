@@ -603,53 +603,45 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressNextOccurrence() {
-        this.graph.setCurrentNextOccurrence();
-        this.updatePosition();
+        if (this.graph.setCurrentNextOccurrence()) this.updatePosition();
     }
 
     public handleKeypressPrevOccurrence() {
-        this.graph.setCurrentPrevOccurrence();
-        this.updatePosition();
+        if (this.graph.setCurrentPrevOccurrence()) this.updatePosition();
     }
 
     public handleKeypressHoverChild() {
         let child = this.graph.getNextChild();
-        if (child) this.decorateVariable(child.getRange().getStartPosition());
+        if (child) this.decorateVariableAt(child.getRange().getStartPosition());
     }
 
     public handleKeypressChild() {
-        this.graph.setCurrentChild();
-        this.updatePosition();
+        if (this.graph.setCurrentChild()) this.updatePosition();
     }
 
     public handleKeypressHoverParent() {
         let parent = this.graph.getNextParent();
-        if (parent) this.decorateVariable(parent.getRange().getStartPosition());
+        if (parent) this.decorateVariableAt(parent.getRange().getStartPosition());
     }
 
     public handleKeypressParent() {
-        this.graph.setCurrentParent();
-        this.updatePosition();
+        if (this.graph.setCurrentParent()) this.updatePosition();
     }
 
     public handleKeypressJumpNextTarget() {
-        this.graph.setCurrentNextTarget(this.lastPosition);
-        this.updatePosition();
+        if (this.graph.setCurrentNextTarget()) this.updatePosition();
     }
 
     public handleKeypressJumpPrevTarget() {
-        this.graph.setCurrentPrevTarget(this.lastPosition);
-        this.updatePosition();
+        if (this.graph.setCurrentPrevTarget()) this.updatePosition();
     }
 
     public handleKeypressJumpNextBlock() {
-        this.graph.setCurrentNextLabel(this.lastPosition);
-        this.updatePosition();
+        if (this.graph.setCurrentNextLabel()) this.updatePosition();
     }
 
     public handleKeypressJumpPrevBlock() {
-        this.graph.setCurrentPrevLabel(this.lastPosition);
-        this.updatePosition();
+        if (this.graph.setCurrentPrevLabel()) this.updatePosition();
     }
 
     public handleKeypressGoBack() {
@@ -666,15 +658,14 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressToInput_Note() {
-        let node = this.graph.getNodeAt(this.lastPosition);
         let note = this.graph.getOuterNoteAt(this.lastPosition);
-        this.props.focusStatusInput_Note(note && note.node === node ? note.text : '');
+        this.props.focusStatusInput_Note(note && note.node === this.graph.getCurrent() ? note.text : '');
     }
 
     public handleKeypressToInput_Rename() {
-        let node = this.graph.getNodeAt(this.lastPosition);
-        if (node && node.renamable())
-            this.props.focusStatusInput_Rename(node && node.hasAlias() ? node.getAlias() : '');
+        let current = this.graph.getCurrent();
+        if (current && current.renamable())
+            this.props.focusStatusInput_Rename(current && current.hasAlias() ? current.getAlias() : '');
         else console.log('ERROR: NODE NOT RENAMABLE');
     }
 
@@ -683,8 +674,8 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressSearch(input: string) {
-        this.graph.searchCurrent(input);
-        this.updatePosition();
+        if (this.graph.searchCurrent(input)) this.updatePosition();
+        else this.resetPosition();
     }
 
     //--------------------------------------------------
@@ -771,12 +762,12 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressRename(input: string) {
-        if (this.graph.setAliasAt(input, this.lastPosition)) this.updateValue();
+        if (this.graph.addAlias(input)) this.updateValue();
         this.resetPosition();
     }
 
     public handleKeypressUndoRename() {
-        if (this.graph.resetAliasAt(this.lastPosition)) {
+        if (this.graph.removeAlias()) {
             this.updateValue();
             this.resetPosition();
         }
@@ -795,7 +786,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //--------------------------------------------------
 
     public handleKeypressDisplayInfoModal() {
-        let info = this.graph.getInfoAt(this.lastPosition);
+        let info = this.graph.getInfoData();
         if (info) {
             this.props.buildInfoModal(info);
             this.props.displayInfoModal();
@@ -807,7 +798,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     public handleKeypressDisplayTargetTreeModal() {
-        let tree = this.graph.getTargetTreeDataAt(this.lastPosition);
+        let tree = this.graph.getTargetTreeData();
         if (tree) {
             this.props.buildTargetTreeModal(tree);
             this.props.displayTargetTreeModal();
@@ -863,21 +854,21 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         this.setState({
             activateVariableDecorating: !this.state.activateVariableDecorating,
         });
-        this.decorateVariable(this.lastPosition);
+        this.decorateVariableAt(this.lastPosition);
     }
 
     public handleKeypressToggleChildDecorating() {
         this.setState({
             activateChildDecorating: !this.state.activateChildDecorating,
         });
-        this.decorateTree(this.lastPosition);
+        this.decorateTree();
     }
 
     public handleKeypressToggleParentDecorating() {
         this.setState({
             activateParentDecorating: !this.state.activateParentDecorating,
         });
-        this.decorateTree(this.lastPosition);
+        this.decorateTree();
     }
 
     public handleKeypressToggleBookmarkDecorating() {
@@ -913,10 +904,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             if (grid) position = this.applyGrid(position);
             else this.setGrid(position);
             this.lastPosition = this.validate(position);
-            this.editor.setPosition(this.lastPosition);
-            this.editor.revealPositionInCenterIfOutsideViewport(this.lastPosition);
-            this.decorateCursor();
-            this.decorateTree(this.lastPosition);
             this.graph.updateCurrent(this.lastPosition);
             let current = this.graph.getCurrent();
             this.props.updateStatusInput(
@@ -925,6 +912,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                 this.lastPosition.column,
             );
             this.props.closeModals();
+            this.editor.setPosition(this.lastPosition);
+            this.editor.revealPositionInCenterIfOutsideViewport(this.lastPosition);
+            this.decorateCursor();
+            this.decorateTree();
             console.log(current);
         }
     }
@@ -1014,13 +1005,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     }
 
     private getVariableDecorationsAt(position: monaco.Position) {
-        let variable = this.graph.getVariableAt(position);
-        if (variable) {
-            let vars = this.graph.getVariableSiblings(variable);
-            let ranges = vars.map((v) => v.getRange());
-            return ranges;
-        }
-        return [];
+        return this.graph.getVariableSiblingsAt(position).map((v) => v.getRange());
     }
 
     private setVariableDecoration(range: monaco.Range) {
@@ -1039,7 +1024,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         });
     }
 
-    public decorateVariable(position: monaco.Position) {
+    public decorateVariableAt(position: monaco.Position) {
         this.variableDecorations = [];
         if (this.state.activateVariableDecorating) {
             let decorations = this.getVariableDecorationsAt(position);
@@ -1051,19 +1036,21 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         return [];
     }
 
-    private getChildDecorationsAt(position: monaco.Position) {
-        let variable = this.graph.getVariableAt(position);
-        let vars = variable ? this.graph.getChildTree(variable) : [];
+    private getSelectDecorations() {
         let decorations: { range: monaco.Range; depth: number }[] = [];
-        vars.forEach((v) => decorations.push({ range: v.variable.getRange(), depth: v.depth }));
+        this.graph.getCurrentSiblings().forEach((s) => decorations.push({ range: s.getRange(), depth: 0 }));
         return decorations;
     }
 
-    private getParentDecorationsAt(position: monaco.Position) {
-        let variable = this.graph.getVariableAt(position);
-        let vars = variable ? this.graph.getParentTree(variable) : [];
+    private getChildDecorations() {
         let decorations: { range: monaco.Range; depth: number }[] = [];
-        vars.forEach((v) => decorations.push({ range: v.variable.getRange(), depth: v.depth }));
+        this.graph.getChildTree().forEach((t) => decorations.push({ range: t.variable.getRange(), depth: t.depth }));
+        return decorations;
+    }
+
+    private getParentDecorations() {
+        let decorations: { range: monaco.Range; depth: number }[] = [];
+        this.graph.getParentTree().forEach((t) => decorations.push({ range: t.variable.getRange(), depth: t.depth }));
         return decorations;
     }
 
@@ -1118,17 +1105,17 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
             }
     }
 
-    private decorateTree(position: monaco.Position) {
+    private decorateTree() {
         this.variableDecorations = [];
         this.treeDecorations = [];
         let decorations: { range: monaco.Range; depth: number }[] = [];
         if (!(this.state.activateChildDecorating || this.state.activateParentDecorating))
-            this.getVariableDecorationsAt(position).forEach((d) => decorations.push({ range: d, depth: 0 }));
+            decorations = this.getSelectDecorations();
         else if (this.state.activateChildDecorating && !this.state.activateParentDecorating)
-            decorations = this.getChildDecorationsAt(position);
+            decorations = this.getChildDecorations();
         else if (!this.state.activateChildDecorating && this.state.activateParentDecorating)
-            decorations = this.getParentDecorationsAt(position);
-        else decorations = [...this.getChildDecorationsAt(position), ...this.getParentDecorationsAt(position)];
+            decorations = this.getParentDecorations();
+        else decorations = [...this.getChildDecorations(), ...this.getParentDecorations()];
         let ranges: monaco.Range[] = [];
         decorations.forEach((d) => {
             this.setTreeDecoration(d);
@@ -1187,17 +1174,10 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     //-----Language Features-----
     //--------------------------------------------------
 
-    private findNodeHighlights(position: monaco.Position) {
-        let node = this.graph.getNodeAt(position);
-        let nodes = this.graph.getRelatedNodes(node);
-        let ranges = nodes.map((n) => n.getRange());
-        return ranges;
-    }
-
     public highlightNodes(position: monaco.Position) {
         let highlights: monaco.languages.DocumentHighlight[] = [];
         if (this.state.activateNodeHighlighting) {
-            let ranges = this.findNodeHighlights(position);
+            let ranges = this.graph.getRelatedNodesAt(position).map((n) => n.getRange());
             ranges.forEach((r) => highlights.push({ range: r }));
         }
         return highlights;
@@ -1205,23 +1185,22 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 
     public getNoteHover(position: monaco.Position) {
         if (!this.state.activateNoteDecorating) return null;
-        let note = this.graph.getOuterNoteAt(position);
-        return note
+        let hover = this.graph.getNoteHoverAt(position);
+        return hover
             ? {
-                  range: note.range,
-                  contents: [{ value: this.graph.getNoteStringAt(position) }],
+                  range: hover.range,
+                  contents: [{ value: hover.text }],
               }
             : null;
     }
 
     public getTargetTreeHover(position: monaco.Position) {
         if (!this.state.activateTargetTreeHover) return null;
-        let node = this.graph.getNodeAt(position);
-        let tree = this.graph.getTargetTreeString(node);
-        return node && tree
+        let hover = this.graph.getTargetTreeHoverAt(position);
+        return hover
             ? {
-                  range: node.getRange(),
-                  contents: [{ value: '```html\n' + tree + '\n```' }],
+                  range: hover.range,
+                  contents: [{ value: '```html\n' + hover.tree + '\n```' }],
               }
             : null;
     }
