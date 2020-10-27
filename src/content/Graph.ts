@@ -640,14 +640,18 @@ class Graph {
     }
 
     private addNote(text: string, node: _node | null, range: monaco.Range) {
+        let note = this.notes.find(
+            (n) => n.node === node || (!n.node && n.range.startLineNumber === range.startLineNumber),
+        );
         if (text) {
-            this.removeNoteAt(range.getStartPosition());
+            if (note) this.removeNote(note);
             this.notes.push({ text: text.slice(0, maxNote), node, range });
             this.notes = sortNotesByDepth(this.notes);
             this.setLocalStorageNotes();
             return true;
         }
-        return this.removeNoteAt(range.getStartPosition());
+        if (note) return this.removeNote(note);
+        return false;
     }
 
     public addNoteAt(text: string, position: monaco.Position) {
@@ -706,8 +710,26 @@ class Graph {
     public getNoteStringAt(position: monaco.Position) {
         return this.notes.length
             ? this.getNotesAt(position)
-                  //'@' + n.range.getStartPosition().lineNumber + '/' + n.range.getStartPosition().column +
-                  .map((n) => (n.node ? ' ' : '') + '["' + n.text + '"]')
+                  .map((n) => (n.node ? ' ' : '') + '"' + n.text + '"')
+                  .join('')
+            : '';
+    }
+
+    private getNoteInfoAt(position: monaco.Position) {
+        return this.notes.length
+            ? this.getNotesAt(position)
+                  .map(
+                      (n) =>
+                          '@' +
+                          (n.node ? n.node!.constructor.name : '') +
+                          '[' +
+                          n.range.getStartPosition().lineNumber +
+                          '/' +
+                          n.range.getStartPosition().column +
+                          ']:\t"' +
+                          n.text +
+                          '"',
+                  )
                   .join('\n')
             : '';
     }
@@ -878,7 +900,7 @@ class Graph {
         let node = this.getNodeAt(position);
         if (node) {
             let info = node.getInfo();
-            let notes = this.getNoteStringAt(position);
+            let notes = this.getNoteInfoAt(position);
             if (notes) info.push('\n\nNOTES:\n' + notes);
             return info;
         }

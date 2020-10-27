@@ -526,9 +526,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
         console.log('EDITOR UPDATED');
     }
 
-    public componentWillUnmount() {
-        if (this.editor) this.editor.dispose();
-    }
+    //public componentWillUnmount() {if (this.editor) this.editor.dispose();}
 
     //--------------------------------------------------
     //-----Value-----

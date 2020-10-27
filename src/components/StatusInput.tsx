@@ -96,6 +96,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
                     onChange={this.onChange}
                     onKeyDown={this.onKeydown}
                     //onClick={() => this.setState({ status: Status.SEARCH })}
+                    readOnly={this.state.status === Status.POSITION}
                     ref={(ref) => (this.inputElement = ref)}
                 />
             </div>
