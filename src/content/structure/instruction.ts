@@ -96,33 +96,33 @@ enum OpInfo {
     ADD = 'Returns the sum of its two operands.\n{ <result> = add <ty> <op1>, <op2> }',
     AND = 'Returns the bitwise logical and of its two operands.\n{ <result> = and <ty> <op1>, <op2> }',
     ASHR = 'Returns the first operand shifted to the right a specified number of bits with sign extension.\n{ <result> = ashr <ty> <op1>, <op2> }',
-    ATOMICCMPXCHG = 'Used to atomically compare the field in memory and exchange it with the operator if it meets the condition.\n{ atomiccmpxchg }', //TODO
+    //ATOMICCMPXCHG = 'Used to atomically compare the field in memory and exchange it with the operator if it meets the condition.\n{ atomiccmpxchg }',
     ATOMICLOAD = 'Used to atomically read from memory.\n{ <result> = atomicload <ty> <pointer> }',
     ATOMICRMWADD = 'Used to atomically modify memory.\nWrites the sum of its operands.\n{ <result> = atomicrmwadd <ty> <op1>, <op2> }',
     ATOMICRMWUMAX = 'Used to atomically modify memory.\nWrites the unsigned maximum of its operands.\n{ <result> = atomicrmwumax <ty> <op1>, <op2> }',
-    ATOMICRMWXCHG = 'Used to atomically modify memory.\n???\n{ atomicrmwxchg <ty> <int> <value>, <pointer> }', //TODO
+    ATOMICRMWXCHG = 'Used to atomically modify memory.\nExchanges the values of its operands.\n{ atomicrmwxchg <ty> <op1>, <op1> }',
     ATOMICSTORE = 'Used to atomically write to memory.\n{ atomicstore <ty> <value>, <pointer> }',
     BR = 'Used to cause control flow to transfer to a different basic block in the current function.\n{ br <label> }',
     BSWAP = 'Used to reverse the order of bytes in a register.\n{ bswap <ty> <op> }',
-    BUILDDATA128 = '???\n{ builddata128 d128 <op1> <op2> }', //TODO
-    CALL = 'Represents a simple function call.\n{ call <fnty> <fnref> (<function args>) }',
+    BUILDDATA128 = 'Used to build a data128 out of its two input operands.\n{ builddata128 d128 <op1> <op2> }',
+    CALL = 'Represents a simple function call.\n{ call <ty> <function> (<args>) }',
     //CALLBUILTIN = '__________________________________________________,
     CHECKEDSADD = '???\n{ checkedsadd <ty> <value>, <op1> <op2> <op3> }', //TODO
     CHECKEDSMUL = '???\n{ checkedsmul <ty> <value>, <op1> <op2> <op3> }', //TODO
     CHECKEDSSUB = '???\n{ checkedssub <ty> <value>, <op1> <op2> <op3> }', //TODO
     CMPEQ = 'Returns 1 if its two operands are equal otherwise 0.\n{ cmpeq <ty> <op1>, <op2> }',
     CMPNE = 'Returns 0 if its two operands are equal otherwise 1.\n{ cmpne <ty> <op1>, <op2> }',
-    CMPSLE = 'Returns ???\n{ cmpsle <ty> <op1> <op2> }', //TODO
-    CMPSLT = 'Returns ???\n{ cmpslt <ty> <op1> <op2> }', //TODO
+    CMPSLE = 'Returns signed 1 if its two operands are eaqual or the first is is less than the second otherwise 0.\n{ cmpsle <ty> <op1> <op2> }',
+    CMPSLT = 'Returns signed 1 if the first operand is is less than the second otherwise 0.\n{ cmpslt <ty> <op1> <op2> }',
     CMPSUOLE = 'Returns ???\n{ cmpsuole <ty> <op1> <op2> }', //TODO
     CMPSUOLT = 'Returns ???\n{ cmpsuolt <ty> <op1> <op2> }', //TODO
-    CMPULE = 'Returns ???\n{ cmpule <ty> <op1> <op2> }', //TODO
-    CMPULT = 'Returns unsigned 1 if the first operand is less than the second otherwise 0.\n{ cmpult <ty> <op1> <op2> }',
+    CMPULE = 'Returns unsigned 1 if its two operands are eaqual or the first is is less than the second otherwise 0.\n{ cmpule <ty> <op1> <op2> }',
+    CMPULT = 'Returns unsigned 1 if the first operand is is less than the second otherwise 0.\n{ cmpult <ty> <op1> <op2> }',
     CONDBR = 'Used to cause control flow to transfer to a different basic block in the current function depending on the condition.\n{ condbr <cond> <iftrue> <iffalse> }',
     //CONST = '__________________________________________________,
     CRC32 = 'Calculates the CRC32 checksum of the given value.\n{ crc32 <ty> <value>, <op> }',
     CTLZ = 'Counts the number of leading zeros in a variable.\n{ ctlz <ty> <op> }',
-    EXTRACTDATA128 = '???\n{ extractdata128 <ty> <op> }', //TODO
+    EXTRACTDATA128 = 'Used to extract values out of a data128.\n{ extractdata128 <ty> <op> }',
     FPTOSI = 'Converts the floating-point value to the nearest signed interger value (rounding towards zero).\n{ <result> = or <ty> <value> }',
     //FUNCTIONARGUMENT = '__________________________________________________,
     //FUNCTIONVARIABLE = '__________________________________________________,
