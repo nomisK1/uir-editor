@@ -2,7 +2,7 @@
 
 UIR-Editor
 
-A web application used to display TPC-H queries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
+A web application used to display queries compiled in the Umbra Intermediate Representation language, built with React, TypeScript and CSS.
 
 # Installation and Setup
 
@@ -10,15 +10,25 @@ Clone this repository. Node and npm is required.
 
 1. `npm install`
 
-2. **optional**: Start python development server by running the file: `server/static_server.py`
-
-3. `npm start`
+2. `npm start`
 
 App is hosted on `localhost:3000`
 
-Server is hosted on `localhost:8000` (alternatively local files will be used)
+Json files are hosted at `https://umbra.db.in.tum.de:25992/irJson` (alternatively local files will be used)
 
 # Description
+
+## Abstract
+
+Working with raw machine code can be difficult.
+Especially when there are few helpful resources available.
+Many users of the compiler language "Umbra Intermediate Representation" (UIR) face this problem.
+So far analyzing and understanding UIR code was challenging for new and experienced users.
+This thesis aims to provide an entry point for working with the machine language UIR of the Umbra Database System.
+It provides documentation of the fundamental machine code structure.
+Additionally a visualization application called the "UIR-Editor" is implemented to improve workflows for UmbraIR queries.
+This editor is used to display TPC-H queries compiled in the UIR language.
+It provides features that help the user understand the machine code and gain new insights.
 
 ## Motivation & Goal
 

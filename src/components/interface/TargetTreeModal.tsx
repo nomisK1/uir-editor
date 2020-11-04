@@ -1,6 +1,6 @@
 import React from 'react';
-import TTWrapper from '../content/tree/TTWrapper';
-import { treeData } from '../content/tree/TargetTree';
+import TTWrapper from '../../content/tree/TTWrapper';
+import { treeData } from '../../content/tree/TargetTree';
 
 interface ITargetTreeModalProps {
     showModal: boolean;

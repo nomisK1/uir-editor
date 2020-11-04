@@ -1,4 +1,4 @@
-import Graph from './Graph';
+import Graph from '../content/Graph';
 import { sql } from './SQL';
 
 const fail = false; //FOR TESTING

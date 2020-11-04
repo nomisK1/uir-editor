@@ -15,7 +15,7 @@ export const monarchTheme: monaco.editor.IStandaloneThemeData = {
         { token: 'variable', foreground: '9CDCFE' },
         { token: 'function', foreground: '7FE06C' },
         { token: 'label', foreground: 'E09C6C' },
-        { token: 'constdeclaredefine', foreground: 'E06CB0' },
+        { token: 'component', foreground: 'E06CB0' },
         { token: 'statement', foreground: 'D66CE0' },
         { token: 'operator', foreground: '9C6CE0' },
         { token: 'type', foreground: '5F73E5' },

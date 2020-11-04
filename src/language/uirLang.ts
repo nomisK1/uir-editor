@@ -15,7 +15,7 @@ export const monarchLanguage: monaco.languages.IMonarchLanguage = {
             [/%[\w]*/, 'variable'],
             [/@?umbra(::[\w]*)*(?=\()|@[\w_]*/, 'function'],
             [/^[\w]+:/, 'label'],
-            [/const |declare |define /, 'constdeclaredefine'],
+            [/const |declare |define /, 'component'],
             [/return|returnvoid|br|condbr|unreachable/, 'statement'],
             [
                 /ashr|add|and|atomiccmpxchg|atomicload|atomicrmwadd|atomicrmwumax|atomicrmwxchg|atomicstore|bswap|builddata128|call|callbuiltin|checkedsadd|checkedsmul|checkedssub|cmpeq|cmpne|cmpsle|cmpslt|cmpsuole|cmpsuolt|cmpule|cmpult|crc32|ctlz|extractdata128|fptosi|functionargument|functionvariable|gep|getelementptr|globalref|headerptrpair|inttoptr|isnotnull|isnull|lshr|load|mul|neg|not|or|overflowresult|phi|pow|ptrtoint|rotl|rotr|saddoverflow|sdiv|sext|sitofp|smuloverflow|srem|ssuboverflow|select|shl|store|sub|switch|trunc|uaddoverflow|udiv|umuloverflow|urem|usuboverflow|xor|zext/,
