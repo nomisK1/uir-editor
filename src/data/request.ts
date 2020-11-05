@@ -3,7 +3,7 @@ import { sql } from './SQL';
 
 const fail = false; //FOR TESTING
 const url: string = 'https://umbra.db.in.tum.de:25992/irJson';
-const local: string = './data/';
+const local: string = './local/';
 
 /**
  * requestQuery:
