@@ -37,6 +37,7 @@ class Graph {
     private comments: comment[] = [];
     private notes: note[] = [];
     private aliases: alias[] = [];
+    private nodeCount: number = 0;
 
     constructor(props: IGraphProps) {
         this.gid = props.gid;
@@ -78,6 +79,7 @@ class Graph {
         });
         this.components.forEach((c) => this.nodes.push(...c.getNodes()));
         this.nodes.forEach((n) => {
+            n.setNID(parseInt('' + this.gid + this.nodeCount++));
             if (n instanceof variable) this.variables.push(n);
             if (n instanceof target) this.targets.push(n);
         });

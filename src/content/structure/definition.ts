@@ -20,9 +20,8 @@ class definition extends _function {
     }
 
     private buildBlocks(jsons: Object[]) {
-        let line = this.line;
+        let line = this.line + linebreaksBeforeBlocks;
         jsons.forEach((json) => {
-            line += linebreaks;
             this.blocks.push(
                 new block({
                     json,
@@ -30,7 +29,7 @@ class definition extends _function {
                     context: this,
                 }),
             );
-            line = this.blocks[this.blocks.length - 1].getLastLine();
+            line = this.blocks[this.blocks.length - 1].getLastLine() + linebreaksBetweenBlocks;
         });
         let labels = this.blocks.map((b) => b.getLabel());
         let labelNames = labels.map((l) => l.getName());
@@ -53,14 +52,14 @@ class definition extends _function {
         let str = '';
         this.blocks.forEach((b) => {
             str += b.toString();
-            for (let i = 0; i < linebreaks; i++) str += '\n';
+            for (let i = 0; i < linebreaksBetweenBlocks; i++) str += '\n';
         });
         return str.slice(0, -1);
     }
 
     public toString() {
         return (
-            'define ' + this.type + ' @' + this.name + '(' + this.printArgs() + ') [\n] {\n' + this.printBlocks() + '}'
+            'define ' + this.type + ' @' + this.name + '(' + this.printArgs() + ') [] {\n' + this.printBlocks() + '}'
         );
     }
 
@@ -134,5 +133,8 @@ class definition extends _function {
 
 export default definition;
 
+// Number of linebreaks before the first block
+const linebreaksBeforeBlocks = 1;
+
 // Number of linebreaks between blocks
-const linebreaks = 2;
+const linebreaksBetweenBlocks = 2;

@@ -14,7 +14,7 @@ enum OpCode {
     ADD = 'add',
     AND = 'and',
     ASHR = 'ashr',
-    //ATOMICCMPXCHG = 'atomiccmpxchg',
+    ATOMICCMPXCHG = 'atomiccmpxchg',
     ATOMICLOAD = 'atomicload',
     ATOMICRMWADD = 'atomicrmwadd',
     ATOMICRMWUMAX = 'atomicrmwumax',
@@ -57,7 +57,7 @@ enum OpCode {
     NEG = 'neg',
     NOT = 'not',
     OR = 'or',
-    //OVERFLOWRESULT = 'overflowresult',
+    OVERFLOWRESULT = 'overflowresult',
     PHI = 'phi',
     POW = 'pow',
     PTRTOINT = 'ptrtoint',
@@ -96,7 +96,7 @@ enum OpInfo {
     ADD = 'Returns the sum of its two operands.\n{ <result> = add <ty> <op1>, <op2> }',
     AND = 'Returns the bitwise logical and of its two operands.\n{ <result> = and <ty> <op1>, <op2> }',
     ASHR = 'Returns the first operand shifted to the right a specified number of bits with sign extension.\n{ <result> = ashr <ty> <op1>, <op2> }',
-    //ATOMICCMPXCHG = 'Used to atomically compare the field in memory and exchange it with the operator if it meets the condition.\n{ atomiccmpxchg }',
+    ATOMICCMPXCHG = 'Used to atomically compare the field in memory (pointer) and exchange it with the new value if it meets the condition.\n{ <result> = atomiccmpxchg <ty> <expectedValue>, <newValue>, <pointer> }',
     ATOMICLOAD = 'Used to atomically read from memory.\n{ <result> = atomicload <ty> <pointer> }',
     ATOMICRMWADD = 'Used to atomically modify memory.\nWrites the sum of its operands.\n{ <result> = atomicrmwadd <ty> <op1>, <op2> }',
     ATOMICRMWUMAX = 'Used to atomically modify memory.\nWrites the unsigned maximum of its operands.\n{ <result> = atomicrmwumax <ty> <op1>, <op2> }',
@@ -106,10 +106,10 @@ enum OpInfo {
     BSWAP = 'Used to reverse the order of bytes in a register.\n{ bswap <ty> <op> }',
     BUILDDATA128 = 'Used to build a data128 out of its two input operands.\n{ builddata128 d128 <op1> <op2> }',
     CALL = 'Represents a simple function call.\n{ call <ty> <function> (<args>) }',
-    //CALLBUILTIN = '__________________________________________________,
-    CHECKEDSADD = 'Returns the sum of its two operands with signed overflow check.\n{ checkedsadd <ty> <op1>, <op2> }',
-    CHECKEDSMUL = 'Returns the product of its two operands with signed overflow check.\n{ checkedsmul <ty> <op1>, <op2>}',
-    CHECKEDSSUB = 'Returns the difference of its two operands with signed overflow check.\n{ checkedssub <ty> <op1>, <op2> }',
+    //CALLBUILTIN = '__________________________________________________',
+    CHECKEDSADD = 'Returns the sum of its two operands with signed overflow check.\n{ checkedsadd <ty> <op1>, <op2> <iftrue> <iffalse> }',
+    CHECKEDSMUL = 'Returns the product of its two operands with signed overflow check.\n{ checkedsmul <ty> <op1>, <op2> <iftrue> <iffalse> }',
+    CHECKEDSSUB = 'Returns the difference of its two operands with signed overflow check.\n{ checkedssub <ty> <op1>, <op2> <iftrue> <iffalse> }',
     CMPEQ = 'Returns 1 if its two operands are equal otherwise 0.\n{ cmpeq <ty> <op1>, <op2> }',
     CMPNE = 'Returns 0 if its two operands are equal otherwise 1.\n{ cmpne <ty> <op1>, <op2> }',
     CMPSLE = 'Returns signed 1 if its two operands are equal or the first is is less than the second otherwise 0.\n{ cmpsle <ty> <op1> <op2> }',
@@ -119,17 +119,17 @@ enum OpInfo {
     CMPULE = 'Returns unsigned 1 if its two operands are equal or the first is is less than the second otherwise 0.\n{ cmpule <ty> <op1> <op2> }',
     CMPULT = 'Returns unsigned 1 if the first operand is is less than the second otherwise 0.\n{ cmpult <ty> <op1> <op2> }',
     CONDBR = 'Used to cause control flow to transfer to a different basic block in the current function depending on the condition.\n{ condbr <cond> <iftrue> <iffalse> }',
-    //CONST = '__________________________________________________,
+    //CONST = '__________________________________________________',
     CRC32 = 'Calculates the CRC32 checksum of the given value.\n{ crc32 <ty> <value>, <op> }',
     CTLZ = 'Counts the number of leading zeros in a variable.\n{ ctlz <ty> <op> }',
     EXTRACTDATA128 = 'Used to extract values out of a data128.\n{ extractdata128 <ty> <op> }',
     FPTOSI = 'Converts the floating-point value to the nearest signed interger value (rounding towards zero).\n{ <result> = or <ty> <value> }',
-    //FUNCTIONARGUMENT = '__________________________________________________,
-    //FUNCTIONVARIABLE = '__________________________________________________,
+    //FUNCTIONARGUMENT = '__________________________________________________',
+    //FUNCTIONVARIABLE = '__________________________________________________',
     GEP = 'Used to get the address of a subelement of an aggregate data structure. It performs address calculation only and does not access memory.\n{ <result> = gep <ty> <pointer>, <ty> <offset> }',
     GETELEMENTPTR = 'Used to get the address of a subelement of an aggregate data structure. It performs address calculation only and does not access memory.\n{ <result> = getelementpr <ty> <pointer>, <ty> <offset> }',
-    //GLOBALREF = '__________________________________________________,
-    //HEADERPTRPAIR = '__________________________________________________,
+    //GLOBALREF = '__________________________________________________',
+    //HEADERPTRPAIR = '__________________________________________________',
     INTTOPTR = 'Converts value to a pointer by applying either a zero extension or a truncation depending on the size of the integer value.\n{ <result> = intoptr ptr <value> }',
     ISNOTNULL = 'Returns 1 if its operand evaluates to null otherwise 0.\n{ isnotnull <ty> <value> }',
     ISNULL = 'Returns 0 if its operand evaluates to null otherwise 1.\n{ isnull <ty> <value> }',
@@ -139,7 +139,7 @@ enum OpInfo {
     NEG = 'Returns the negation of its operand.\n{ <result> = neg <ty> <op1> }',
     NOT = 'Returns the negation of its operand.\n{ <result> = not <ty> <op1> }',
     OR = 'Returns the bitwise logical inclusive or of its two operands.\n{ <result> = or <ty> <op1>, <op2> }',
-    //OVERFLOWRESULT = '__________________________________________________,
+    OVERFLOWRESULT = '__________________________________________________', //TODO
     PHI = 'At runtime, logically takes on the value specified by the pair corresponding to the predecessor basic block that executed just prior to the current block.\n{ <result> = phi <ty> [<val0>, <label0> <val1>, <label1>] }',
     POW = 'Calculates the power of two numbers.\n{ pow <ty> <op1>, <op2> }',
     PTRTOINT = 'Converts the pointer value to the specified integer type.\n{ <result> = ptrtoint <ty> <pointer> }',
@@ -177,6 +177,7 @@ class instruction extends _node {
     protected opcode: string | null;
     protected type: string | null;
     protected operands: (_value | target)[] = [];
+    protected unknown?: true; //TODO - unknown OpCodes
 
     constructor(props: IInstructionProps) {
         super(props);
@@ -268,6 +269,18 @@ class instruction extends _node {
         ) {
             this.buildPhi(lookupJSON(this.json, 'incoming'));
         } else if (
+            //[dst,opcode,type,expectedValue,newValue,pointer]
+            compareOpCode(OpCode.ATOMICCMPXCHG, this.opcode)
+        ) {
+            this.buildValues(lookupJSON(this.json, 'expectedValue'));
+            this.buildValues(lookupJSON(this.json, 'newValue'));
+            this.buildValues(lookupJSON(this.json, 'pointer'));
+        } else if (
+            //[dst,opcode,src]
+            compareOpCode(OpCode.OVERFLOWRESULT, this.opcode)
+        ) {
+            this.buildValues(lookupJSON(this.json, 'src'));
+        } else if (
             //[dst,opcode,type,src]
             compareOpCode(OpCode.AND, this.opcode) ||
             compareOpCode(OpCode.ADD, this.opcode) ||
@@ -312,8 +325,9 @@ class instruction extends _node {
         ) {
             this.buildValuesHideType(lookupJSON(this.json, 'src'));
         } else {
-            //TODO - unknown enum OpCodes!
-            throw new Error('UNKNOWN OPCODE!');
+            //TODO
+            this.unknown = true;
+            throw new Error('UNKNOWN OPCODE');
         }
     }
 
@@ -452,12 +466,13 @@ class instruction extends _node {
             this.opcode! +
             ' ' +
             (this.type ? this.type + ' ' : '');
-        if (compareOpCode(OpCode.CALL, this.opcode))
+        if (this.unknown) str += '   // [' + Object.keys(this.json) + ']';
+        else if (compareOpCode(OpCode.CALL, this.opcode))
             str += lookupJSON(this.json, 'fun') + ' (' + this.printOperands() + ')';
         else if (compareOpCode(OpCode.PHI, this.opcode)) str += this.printPhi();
         else if (compareOpCode(OpCode.UNREACHABLE, this.opcode)) str = str.slice(0, -1);
         else str += this.printOperands();
-        return str /* + '//[' + Object.keys(this.json) + ']' */;
+        return str;
     }
 
     public getNodes() {

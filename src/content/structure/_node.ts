@@ -36,7 +36,7 @@ export interface INodeProps {
  * Basic node for the Graph structure
  */
 abstract class _node {
-    protected nid: number = countNID();
+    protected nid: number | null = null;
     protected json: Object;
     protected line: number;
     protected context: _node | null;
@@ -113,6 +113,10 @@ abstract class _node {
         return this.nid;
     }
 
+    public setNID(nid: number) {
+        this.nid = nid;
+    }
+
     public getName() {
         return this.name!;
     }
@@ -135,12 +139,6 @@ export default _node;
 //--------------------------------------------------
 //-----Helpers-----
 //--------------------------------------------------
-
-let id = 1;
-
-export function countNID() {
-    return id++;
-}
 
 export function compareType(type: Type | null, str: string | null) {
     if (!type || !str) return false;

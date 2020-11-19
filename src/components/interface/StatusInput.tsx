@@ -35,7 +35,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
             column: 1,
         };
         this.onChange = this.onChange.bind(this);
-        this.onKeydown = this.onKeydown.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
     }
 
     getInstance() {
@@ -70,7 +70,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
         this.setState({ input: event.target.value });
     }
 
-    onKeydown(event: React.KeyboardEvent<HTMLDivElement>) {
+    onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
         if (event.key === 'Enter' || event.key === 'Tab') {
             event.preventDefault();
             this.props.onInputKeydown(this.state.status, this.state.input);
@@ -85,7 +85,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
                     className="input"
                     value={getStatusValue(this.state.status, this.state.line, this.state.column)}
                     style={getStatusStyle(this.state.status)}
-                    onKeyDown={this.onKeydown}
+                    onKeyDown={this.onKeyDown}
                     readOnly={true}
                 />
                 <input
@@ -94,7 +94,7 @@ class StatusInput extends React.Component<IStatusInputProps, IStatusInputState> 
                     placeholder={'----- EMPTY -----'}
                     value={this.state.input}
                     onChange={this.onChange}
-                    onKeyDown={this.onKeydown}
+                    onKeyDown={this.onKeyDown}
                     //onClick={() => this.setState({ status: Status.SEARCH })}
                     readOnly={this.state.status === Status.POSITION}
                     ref={(ref) => (this.inputElement = ref)}

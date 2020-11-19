@@ -9,7 +9,7 @@
     ],
     "functions": [
         {
-            "name": "error_unknown_query",
+            "name": "dummy_query",
             "returnType": "void",
             "args": [{ "var": 404, "type": "global" }]
         }
