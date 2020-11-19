@@ -37,7 +37,6 @@ class Graph {
     private comments: comment[] = [];
     private notes: note[] = [];
     private aliases: alias[] = [];
-    private nodeCount: number = 0;
 
     constructor(props: IGraphProps) {
         this.gid = props.gid;
@@ -78,8 +77,9 @@ class Graph {
             this.line = this.components[this.components.length - 1].getLastLine() + 2;
         });
         this.components.forEach((c) => this.nodes.push(...c.getNodes()));
+        let id = 0;
         this.nodes.forEach((n) => {
-            n.setNID(parseInt('' + this.gid + this.nodeCount++));
+            n.setNID(parseInt('' + this.gid + id++));
             if (n instanceof variable) this.variables.push(n);
             if (n instanceof target) this.targets.push(n);
         });
