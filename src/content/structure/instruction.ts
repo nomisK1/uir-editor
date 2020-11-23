@@ -139,7 +139,7 @@ enum OpInfo {
     NEG = 'Returns the negation of its operand.\n{ <result> = neg <ty> <op1> }',
     NOT = 'Returns the negation of its operand.\n{ <result> = not <ty> <op1> }',
     OR = 'Returns the bitwise logical inclusive or of its two operands.\n{ <result> = or <ty> <op1>, <op2> }',
-    OVERFLOWRESULT = '__________________________________________________', //TODO
+    OVERFLOWRESULT = 'Validates the result of the previous atomiccmpxchg operation and returns the result.\n{ <result> = overflowresult <op> }',
     PHI = 'At runtime, logically takes on the value specified by the pair corresponding to the predecessor basic block that executed just prior to the current block.\n{ <result> = phi <ty> [<val0>, <label0> <val1>, <label1>] }',
     POW = 'Calculates the power of two numbers.\n{ pow <ty> <op1>, <op2> }',
     PTRTOINT = 'Converts the pointer value to the specified integer type.\n{ <result> = ptrtoint <ty> <pointer> }',

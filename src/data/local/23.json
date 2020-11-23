@@ -2,16 +2,55 @@
     "globals": [
         {
             "isConst": true,
-            "name": 404,
-            "size": 5,
-            "data": "DUMMY"
+            "name": 698,
+            "size": 8,
+            "data": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
         }
     ],
     "functions": [
         {
-            "name": "dummy_query",
+            "name": "umbra::Dummy::init(umbra::Dummy*, void const*)",
             "returnType": "void",
-            "args": [{ "var": 404, "type": "global" }]
+            "args": [
+                { "var": 807, "type": "object umbra::Dummy*" },
+                { "var": 821, "type": "int8*" }
+            ]
+        },
+        {
+            "name": "_123_dummyStep",
+            "returnType": "int32",
+            "args": [
+                { "var": "trampoline", "type": "int8*" },
+                { "var": "localState", "type": "int8*" }
+            ],
+            "variables": [],
+            "blocks": [
+                {
+                    "label": "body",
+                    "instructions": [
+                        {
+                            "dst": 7429,
+                            "opcode": "getelementptr",
+                            "type": "int8",
+                            "pointer": { "var": "localState" },
+                            "offsets": [{ "type": "i64", "const": 32 }]
+                        },
+                        {
+                            "opcode": "call",
+                            "type": "void",
+                            "fun": "umbra::Dummy::init(umbra::Dummy*, void const*)",
+                            "args": [
+                                { "global": false, "var": 7429 },
+                                { "global": true, "var": 698 }
+                            ]
+                        },
+                        {
+                            "opcode": "return",
+                            "value": { "type": "i32", "const": 0 }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
