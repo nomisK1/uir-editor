@@ -48,7 +48,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
     private value: string = '';
     private lastPosition: monaco.Position = new monaco.Position(1, 1);
     private grid: number = 1;
-    private maxAncestorDepth: number = 3;
     private decorations: string[] = [];
     private cursorDecorations: monaco.editor.IModelDeltaDecoration[] = [];
     private variableDecorations: monaco.editor.IModelDeltaDecoration[] = [];
@@ -1069,7 +1068,7 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
                     zIndex: 5,
                 },
             });
-        } else if (Math.abs(leaf.depth) <= this.maxAncestorDepth)
+        } else if (Math.abs(leaf.depth) <= maxAncestorDepth)
             if (leaf.depth < 0) {
                 if (leaf.depth < -4) leaf.depth = -4;
                 let className = 'contentChild' + leaf.depth;
@@ -1221,3 +1220,6 @@ class Editor extends React.Component<IEditorProps, IEditorState> {
 }
 
 export default Editor;
+
+// Number of decorated ancestor levels
+const maxAncestorDepth = 3;
