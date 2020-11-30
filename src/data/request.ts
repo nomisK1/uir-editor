@@ -14,6 +14,9 @@ export async function requestQuery(index: number) {
     function success(result: string): query {
         console.log('NETWORK SUCCESS: LOADING UIR-QUERY ' + (index + 1) + ' @ URL "' + url + '"');
         let json = JSON.parse(result);
+        // TODO: rounding of long values while parsing
+        // https://stackoverflow.com/questions/18755125/node-js-is-there-any-proper-way-to-parse-json-with-large-numbers-long-bigint
+        //console.log(json);
         return { index, content: new Graph({ gid: index + 1, json }) };
     }
     function failure(): query {
@@ -32,6 +35,7 @@ export async function requestQuery(index: number) {
     };
     let response = await fetch(url, requestOptions);
     let result = await response.text();
+    //console.log(result);
     if (response.ok) return success(result);
     return failure();
 }

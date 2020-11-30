@@ -4,6 +4,7 @@
     font-size: 14px;
     letter-spacing: 0px;
 }
+/* UmbraLoader */
 .umbraLoader {
     position: absolute;
     top: 50%;
@@ -22,10 +23,12 @@
         transform: rotate(360deg);
     }
 }
+/* UserInterface */
 .ui {
     display: flex;
     width: 100%;
 }
+/* Dropdown */
 .querySelector {
     width: 175px;
     padding: 2px;
@@ -33,6 +36,7 @@
     background-color: rgba(0, 0, 0, 0.8);
     box-sizing: border-box;
 }
+/* Input */
 .statusInput {
     display: flex;
     width: inherit;
@@ -52,6 +56,7 @@
     color: rgba(0, 0, 0, 0.8);
     pointer-events: none;
 }
+/* Button */
 .keybindButton {
     width: fit-content;
     box-sizing: border-box;
@@ -61,6 +66,7 @@
     top: 50%;
     transform: translateY(-50%);
 }
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -116,11 +122,13 @@
 }
 .modalContent span {
     display: block;
-    margin: 10%;
+    margin: 8%;
     font-size: 26px;
+    font-size: 2.5vh;
     color: white;
     white-space: pre-wrap;
 }
+/* TargetTree */
 .ttWrapper {
     width: 100%;
     height: 90%;
