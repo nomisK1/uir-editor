@@ -9,8 +9,7 @@ import TargetTreeModal from './components/interface/TargetTreeModal';
 import Editor from './components/Editor';
 import { query, queryTotal, requestQuery } from './data/request';
 import { treeData } from './content/tree/TargetTree';
-import { setupLanguage } from './language/setup';
-import { languageID } from './language/config';
+import { languageID, registerLanguage } from './language/register';
 import './App.css';
 
 interface IAppProps {}
@@ -204,7 +203,7 @@ class App extends React.Component<IAppProps, IAppState> {
     render() {
         console.log('APP RENDERING...');
         if (this.state.loading || !this.state.query) return <UmbraLoader />;
-        setupLanguage();
+        registerLanguage();
         let selector = (
             <QuerySelector
                 index={this.state.query.index}
