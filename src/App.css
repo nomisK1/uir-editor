@@ -58,20 +58,17 @@
 }
 /* Button */
 .keybindButton {
-    width: fit-content;
-    box-sizing: border-box;
+    display: flex;
 }
-.keybindButton img {
+.keybindButton svg {
     position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 4px;
 }
 /* Modal */
 .modal {
-    display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 100px;
+    padding-top: 50px;
     width: 100%;
     height: 100%;
     overflow: auto;
@@ -80,10 +77,10 @@
 .modalBackground {
     background-color: #fefefe;
     margin: auto;
-    padding: 20px;
+    padding: 5px;
     border: 1px solid #888;
     width: 80%;
-    height: 70%;
+    height: 80%;
     overflow: hidden;
 }
 .close {
@@ -91,23 +88,20 @@
     float: right;
     font-size: 28px;
     font-weight: bold;
+    padding-right: 10px;
 }
 .close:hover,
 .close:focus {
     color: rgba(0, 0, 0, 0.8);
-    text-decoration: none;
     cursor: pointer;
 }
 .modalHeader {
     color: rgba(0, 0, 0, 0.8);
-    font-size: 17px;
-    font-weight: 600;
-    padding: 5px;
+    font-weight: bold;
+    padding-left: 10px;
 }
 .modalContent {
-    text-align: left;
-    width: 100%;
-    height: 90%;
+    height: 95%;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 15px;
     overflow: hidden;
@@ -131,7 +125,7 @@
 /* TargetTree */
 .ttWrapper {
     width: 100%;
-    height: 90%;
+    height: 95%;
 }
 .ttCanvas {
     border-radius: 15px;

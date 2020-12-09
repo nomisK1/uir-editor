@@ -1,4 +1,5 @@
 import React from 'react';
+import { KeyboardIcon } from '../../svg/Icons';
 
 interface IKeybindButtonProps {
     onButtonPress: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -31,7 +32,7 @@ class KeybindButton extends React.Component<IKeybindButtonProps, IKeybindButtonS
                 onClick={this.props.onButtonPress}
                 style={{ backgroundColor: this.state.active ? 'green' : 'red' }}
             >
-                <img src="img/kbicon.png" alt="KBICON" />
+                <KeyboardIcon />
             </button>
         );
     }
